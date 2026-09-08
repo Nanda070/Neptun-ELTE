@@ -2077,7 +2077,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
               Visibility(
                 visible: _shouldShowSnackbar,
-                child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+                child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, changer: (){
                   if(!mounted){
                     return;
                   }

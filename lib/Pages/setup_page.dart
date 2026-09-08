@@ -837,7 +837,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, changer: (){
                 if(!mounted){
                   return;
                 }
@@ -1684,7 +1684,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, changer: (){
                 if(!mounted){
                   return;
                 }
@@ -2081,7 +2081,7 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, changer: (){
                 if(!mounted){
                   return;
                 }

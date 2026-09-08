@@ -211,33 +211,140 @@ import '../storage.dart';
           '"Password":"$password"'
         '}';
     }
-  
-    static Future<List<Term>> _getTermIDs() async{
-      if(storage.DataCache.getIsDemoAccount()!){
-        return <Term>[Term(70876, 'DEMO Félév')];
-      }
-      return getTerms();
+  }
+
+  class TermsRequest{
+    static List<Term> sortTerms(List<Term> termList) {
+      termList.sort((a, b) {
+        final reg = RegExp(r'(\d{4})/(?:\d{2}|\d{4})/(\d)');
+        final matchA = reg.firstMatch(a.termName);
+        final matchB = reg.firstMatch(b.termName);
+        if (matchA != null && matchB != null) {
+          int yearA = int.tryParse(matchA.group(1) ?? '0') ?? 0;
+          int semA = int.tryParse(matchA.group(2) ?? '0') ?? 0;
+          int yearB = int.tryParse(matchB.group(1) ?? '0') ?? 0;
+          int semB = int.tryParse(matchB.group(2) ?? '0') ?? 0;
+          if (yearA != yearB) return yearA.compareTo(yearB);
+          return semA.compareTo(semB);
+        }
+        return a.termName.compareTo(b.termName);
+      });
+      return termList;
     }
 
-    static Future<List<Term>> getTerms() async{
-      if(storage.DataCache.getIsDemoAccount()!){
-        return <Term>[Term(70876, 'DEMO Félév')];
+    static Future<List<Term>> getTerms({bool forceRefresh = false}) async {
+      if (storage.DataCache.getIsDemoAccount() ?? false) {
+        return [Term('70876', 'DEMO Félév (2025/26/1)'), Term('70877', 'DEMO Félév (2025/26/2)')];
       }
-      final username = storage.DataCache.getUsername();
-      final password = storage.DataCache.getPassword();
-      final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
-      final request = await _APIRequest.postRequest(url, _APIRequest.getGenericPostData(username!, password!));
-
-      final decoded = conv.json.decode(request);
-      if (decoded['PeriodTermsList'] == null) return [];
-      List<dynamic> termList = decoded['PeriodTermsList'];
-
-
+      if (!forceRefresh) {
+        final cachedRaw = storage.DataCache.getCachedTermsRaw();
+        if (cachedRaw.isNotEmpty) {
+          try {
+            final list = cachedRaw.map((s) => Term.deserialize(s)).toList();
+            if (list.isNotEmpty) {
+              return sortTerms(list);
+            }
+          } catch (_) {}
+        }
+      }
 
       List<Term> terms = [];
-      for (var term in termList){
-        final map = term as Map<String, dynamic>;
-        terms.add(Term(map['Id'], map['TermName']));
+      if (storage.DataCache.getIsModernApi()) {
+        try {
+          final token = await storage.DataCache.getAccessToken();
+          String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+          
+          // 1. Try RegisteredCourses/GetTerms
+          try {
+            final rTermsUrl = Uri.parse("$baseUrl/api/RegisteredCourses/GetTerms");
+            final rTermsResponse = await _APIRequest.getRequest(rTermsUrl, bearerToken: token!);
+            final rTermsDecoded = conv.json.decode(rTermsResponse);
+            if (rTermsDecoded['data'] != null && rTermsDecoded['data'] is List) {
+              for (var item in rTermsDecoded['data']) {
+                final val = item['value']?.toString() ?? '';
+                final text = item['text']?.toString() ?? item['termName']?.toString() ?? val;
+                if (val.isNotEmpty) {
+                  terms.add(Term(val, text));
+                }
+              }
+            }
+          } catch (_) {}
+
+          // 2. Try TakenSubjects/Terms
+          if (terms.isEmpty) {
+            try {
+              final termsUrl = Uri.parse("$baseUrl/api/TakenSubjects/Terms");
+              final termsResponse = await _APIRequest.getRequest(termsUrl, bearerToken: token!);
+              final termsDecoded = conv.json.decode(termsResponse);
+              if (termsDecoded['data'] != null && termsDecoded['data'] is List) {
+                for (var item in termsDecoded['data']) {
+                  final val = item['value']?.toString() ?? '';
+                  final text = item['text']?.toString() ?? item['termName']?.toString() ?? val;
+                  if (val.isNotEmpty) {
+                    terms.add(Term(val, text));
+                  }
+                }
+              }
+            } catch (_) {}
+          }
+
+          // 3. Try Periods/GetTerms
+          if (terms.isEmpty) {
+            try {
+              final pTermsUrl = Uri.parse("$baseUrl/api/Periods/GetTerms");
+              final pTermsResponse = await _APIRequest.getRequest(pTermsUrl, bearerToken: token!);
+              final pTermsDecoded = conv.json.decode(pTermsResponse);
+              if (pTermsDecoded['data'] != null && pTermsDecoded['data'] is List) {
+                for (var item in pTermsDecoded['data']) {
+                  final val = item['value']?.toString() ?? '';
+                  final text = item['text']?.toString() ?? item['termName']?.toString() ?? val;
+                  if (val.isNotEmpty) {
+                    terms.add(Term(val, text));
+                  }
+                }
+              }
+            } catch (_) {}
+          }
+        } catch (e) {
+          debug.log("Hiba a modern félévek lekérésekor: $e");
+        }
+      } else {
+        try {
+          final username = storage.DataCache.getUsername();
+          final password = storage.DataCache.getPassword();
+          final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
+          final request = await _APIRequest.postRequest(url, _APIRequest.getGenericPostData(username!, password!));
+
+          final decoded = conv.json.decode(request);
+          if (decoded['PeriodTermsList'] != null && decoded['PeriodTermsList'] is List) {
+            List<dynamic> termList = decoded['PeriodTermsList'];
+            for (var term in termList){
+              final map = term as Map<String, dynamic>;
+              terms.add(Term(map['Id'], map['TermName'] ?? ''));
+            }
+          }
+        } catch (e) {
+          debug.log("Hiba a régi félévek lekérésekor: $e");
+        }
+      }
+
+      if (terms.isNotEmpty) {
+        terms = sortTerms(terms);
+        await storage.DataCache.setCachedTermsRaw(terms.map((t) => t.serialize()).toList());
+        final currentSelected = storage.DataCache.getSelectedTermId();
+        final currentSelectedName = storage.DataCache.getSelectedTermName();
+
+        Term? matchedTerm;
+        if (currentSelected != null && terms.any((t) => t.id == currentSelected)) {
+          matchedTerm = terms.firstWhere((t) => t.id == currentSelected);
+        } else if (currentSelectedName != null && terms.any((t) => t.termName == currentSelectedName)) {
+          matchedTerm = terms.firstWhere((t) => t.termName == currentSelectedName);
+        } else {
+          matchedTerm = terms.last;
+        }
+
+        await storage.DataCache.setSelectedTermId(matchedTerm.id);
+        await storage.DataCache.setSelectedTermName(matchedTerm.termName);
       }
       return terms;
     }
@@ -404,21 +511,22 @@ import '../storage.dart';
       return false;
     }
 
-    static Future<int?> getFirstStudyweek() async{
-      final periods = await PeriodsRequest.getPeriods();
+    static Future<int?> getFirstStudyweek({String? termId}) async{
+      final periods = await PeriodsRequest.getPeriods(termId: termId);
       if(storage.DataCache.getIsDemoAccount()!){
         return DateTime(2024, 9, 1).millisecondsSinceEpoch;
       }
       final now = DateTime.now().millisecondsSinceEpoch;
-      if(periods == null){
+      if(periods == null || periods.isEmpty){
         return null;
       }
   
       PeriodEntry? period;
       int neededExtraWeeks = 0;
       for (var item in periods){
-        if(item.name.toLowerCase().contains('végleges tárgyjelentkezés')){
-          if(item.startEpoch <= now || period != null && item.startEpoch <= now && item.startEpoch > period.startEpoch){
+        final name = item.name.toLowerCase();
+        if(name.contains('végleges tárgyjelentkezés') || name.contains('szorgalmi időszak') || name.contains('oktatási időszak')){
+          if(item.startEpoch <= now || period == null || (item.startEpoch <= now && item.startEpoch > period.startEpoch)){
             period = item;
             neededExtraWeeks = 0;
           }
@@ -426,98 +534,179 @@ import '../storage.dart';
       }
       if(period == null){
         for (var item in periods){
-          if(item.name.toLowerCase().contains('bejelentkezési időszak')){
-            if(item.startEpoch <= now || period != null && item.startEpoch <= now && item.startEpoch > period.startEpoch){
+          final name = item.name.toLowerCase();
+          if(name.contains('bejelentkezési időszak') || name.contains('regisztrációs időszak')){
+            if(item.startEpoch <= now || period == null || (item.startEpoch <= now && item.startEpoch > period.startEpoch)){
               period = item;
               neededExtraWeeks = 1;
             }
           }
         }
         if(period == null){
-          return null;
+          period = periods.first;
         }
       }
   
-      //final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
-      final date = DateTime.fromMillisecondsSinceEpoch(period.endEpoch);
+      final date = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
       int difference = date.weekday - DateTime.monday;
-
-      final roundedDate = date.subtract(Duration(days: difference)).add(Duration(days: 7 * neededExtraWeeks));
+      final roundedDate = DateTime(date.year, date.month, date.day).subtract(Duration(days: difference)).add(Duration(days: 7 * neededExtraWeeks));
 
       return roundedDate.millisecondsSinceEpoch;
     }
   }
 
 class CalendarRequest {
-  static String? _cachedTrainingId;
+  static List<String>? _cachedTrainingIds;
 
-  static Future<String?> getStudentTrainingId({bool forceRefresh = false}) async {
+  static Future<List<String>> getStudentTrainingIds({bool forceRefresh = false}) async {
     if (forceRefresh) {
-      _cachedTrainingId = null;
+      _cachedTrainingIds = null;
     }
-    if (_cachedTrainingId != null) return _cachedTrainingId;
-    if (!(storage.DataCache.getIsModernApi())) return null;
+    if (_cachedTrainingIds != null && _cachedTrainingIds!.isNotEmpty) return _cachedTrainingIds!;
+    if (!(storage.DataCache.getIsModernApi())) return [];
+
+    final storedId = storage.DataCache.getStudentTrainingId();
+    if (!forceRefresh && storedId != null && storedId.isNotEmpty) {
+      _cachedTrainingIds = [storedId];
+      return _cachedTrainingIds!;
+    }
 
     try {
       final token = await storage.DataCache.getAccessToken();
+      if (token == null || token.isEmpty) return [];
       String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
-      final url = Uri.parse("$baseUrl/api/Calendar/GetStudentTrainings");
 
-      final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
-      final decoded = conv.json.decode(responseRaw);
+      // Tier 1: /api/Calendar/GetStudentTrainings
+      try {
+        final url = Uri.parse("$baseUrl/api/Calendar/GetStudentTrainings");
+        final responseRaw = await _APIRequest.getRequest(url, bearerToken: token);
+        final decoded = conv.json.decode(responseRaw);
 
-      if (decoded['data'] != null && decoded['data'].isNotEmpty) {
-        for (var training in decoded['data']) {
-          if (training['actualStudentTraining'] == true) {
-            _cachedTrainingId = training['studentTrainingId'];
-            return _cachedTrainingId;
+        List<String> ids = [];
+        if (decoded['data'] != null && decoded['data'] is List) {
+          for (var training in decoded['data']) {
+            final tid = training['studentTrainingId']?.toString();
+            if (tid != null && tid.isNotEmpty && !ids.contains(tid)) {
+              if (training['actualStudentTraining'] == true) {
+                ids.insert(0, tid);
+              } else {
+                ids.add(tid);
+              }
+            }
           }
         }
-        _cachedTrainingId = decoded['data'][0]['studentTrainingId'];
-        return _cachedTrainingId;
+        if (ids.isNotEmpty) {
+          _cachedTrainingIds = ids;
+          await storage.DataCache.setStudentTrainingId(ids.first);
+          return ids;
+        }
+      } catch (e) {
+        debug.log("Hiba a GetStudentTrainings lekérésekor: $e");
       }
-    } catch (e) { }
-    return null;
+
+      // Tier 2: /api/UserInfo
+      try {
+        final uInfoUrl = Uri.parse("$baseUrl/api/UserInfo");
+        final uInfoRaw = await _APIRequest.getRequest(uInfoUrl, bearerToken: token);
+        final uInfoDecoded = conv.json.decode(uInfoRaw);
+        if (uInfoDecoded['data'] != null) {
+          final tid = uInfoDecoded['data']['studentTrainingId']?.toString();
+          if (tid != null && tid.isNotEmpty) {
+            _cachedTrainingIds = [tid];
+            await storage.DataCache.setStudentTrainingId(tid);
+            return [tid];
+          }
+        }
+      } catch (e) {
+        debug.log("Hiba a UserInfo lekérésekor: $e");
+      }
+
+      // Tier 3: /api/ContextUserProfile/MyTrainings
+      try {
+        final myTrainingsUrl = Uri.parse("$baseUrl/api/ContextUserProfile/MyTrainings");
+        final myTrainingsRaw = await _APIRequest.getRequest(myTrainingsUrl, bearerToken: token);
+        final myTrainingsDecoded = conv.json.decode(myTrainingsRaw);
+        List<String> ids = [];
+        if (myTrainingsDecoded['data'] != null && myTrainingsDecoded['data'] is List) {
+          for (var training in myTrainingsDecoded['data']) {
+            final tid = training['studentTrainingId']?.toString();
+            if (tid != null && tid.isNotEmpty && !ids.contains(tid)) {
+              ids.add(tid);
+            }
+          }
+        }
+        if (ids.isNotEmpty) {
+          _cachedTrainingIds = ids;
+          await storage.DataCache.setStudentTrainingId(ids.first);
+          return ids;
+        }
+      } catch (e) {
+        debug.log("Hiba a MyTrainings lekérésekor: $e");
+      }
+
+    } catch (e) {
+      debug.log("Hiba a student trainings lekérésekor: $e");
+    }
+
+    if (storedId != null && storedId.isNotEmpty) {
+      return [storedId];
+    }
+    return [];
+  }
+
+  static Future<String?> getStudentTrainingId({bool forceRefresh = false}) async {
+    final ids = await getStudentTrainingIds(forceRefresh: forceRefresh);
+    return ids.isNotEmpty ? ids.first : null;
   }
 
   static List<CalendarEntry> getCalendarEntriesFromJSON(String jsonString) {
-    if (jsonString == '{}') return [];
-    final decoded = conv.json.decode(jsonString);
-    List<CalendarEntry> list = [];
-    if (storage.DataCache.getIsModernApi()) {
-      if (decoded['calendarData'] != null) {
+    if (jsonString == '{}' || jsonString.isEmpty) return [];
+    try {
+      final decoded = conv.json.decode(jsonString);
+      List<CalendarEntry> list = [];
+      if (storage.DataCache.getIsModernApi()) {
+        if (decoded is Map && decoded['calendarData'] != null && decoded['calendarData'] is List) {
+          for (var item in decoded['calendarData']) {
+            if (item is! Map) continue;
+            int startMs = item['start_ms'] is int ? item['start_ms'] : int.tryParse(item['start_ms']?.toString() ?? '0') ?? 0;
+            int endMs = item['end_ms'] is int ? item['end_ms'] : int.tryParse(item['end_ms']?.toString() ?? '0') ?? 0;
+            int eventType = item['type'] is int ? item['type'] : int.tryParse(item['type']?.toString() ?? '0') ?? 0;
+
+            list.add(CalendarEntry.fromModern(
+              startEpoch: startMs,
+              endEpoch: endMs,
+              location: item['location']?.toString() ?? "Nincs megadva",
+              title: item['title']?.toString() ?? "Nincs cím",
+              eventType: eventType,
+              subjectCode: item['subjectCode']?.toString() ?? '-',
+              teacher: item['teacher']?.toString() ?? 'Nincs megadva',
+              classInstanceId: item['classInstanceId']?.toString(),
+              taskId: item['taskId']?.toString(),
+            ));
+          }
+        }
+        return list;
+      }
+
+      if (decoded['calendarData'] != null && decoded['calendarData'] is List) {
         for (var item in decoded['calendarData']) {
-          list.add(CalendarEntry.fromModern(
-            startEpoch: item['start_ms'],
-            endEpoch: item['end_ms'],
-            location: item['location'] ?? "Nincs megadva",
-            title: item['title'] ?? "Nincs cím",
-            eventType: item['type'],
-            subjectCode: item['subjectCode'],
-            teacher: item['teacher'],
-            classInstanceId: item['classInstanceId'],
-            taskId: item['taskId'],
+          String rawStart = item['start']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+          String rawEnd = item['end']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+
+          list.add(CalendarEntry(
+            rawStart.isEmpty ? '0' : rawStart,
+            rawEnd.isEmpty ? '0' : rawEnd,
+            item['location'] ?? "Nincs megadva",
+            item['title'] ?? "Nincs cím",
+            item['type'] == 1,
           ));
         }
       }
       return list;
+    } catch (e) {
+      debug.log("Hiba a naptár JSON feldolgozásakor: $e");
+      return [];
     }
-
-    if (decoded['calendarData'] != null) {
-      for (var item in decoded['calendarData']) {
-        String rawStart = item['start']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
-        String rawEnd = item['end']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
-
-        list.add(CalendarEntry(
-          rawStart.isEmpty ? '0' : rawStart,
-          rawEnd.isEmpty ? '0' : rawEnd,
-          item['location'] ?? "Nincs megadva",
-          item['title'] ?? "Nincs cím",
-          item['type'] == 1,
-        ));
-      }
-    }
-    return list;
   }
 
   static Future<String> makeCalendarRequest(String calendarJson) async {
@@ -535,8 +724,11 @@ class CalendarRequest {
         final startEpoch = int.parse(numRegex.firstMatch(startDateRaw)!.group(0)!);
         final endEpoch = int.parse(numRegex.firstMatch(endDateRaw)!.group(0)!);
 
-        final startIso = DateTime.fromMillisecondsSinceEpoch(startEpoch).toIso8601String();
-        final endIso = DateTime.fromMillisecondsSinceEpoch(endEpoch).toIso8601String();
+        final startDate = DateTime.fromMillisecondsSinceEpoch(startEpoch);
+        final nextMonday = startDate.add(const Duration(days: 7));
+
+        final startIso = "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}T00:00:00.000";
+        final endIso = "${nextMonday.year.toString().padLeft(4, '0')}-${nextMonday.month.toString().padLeft(2, '0')}-${nextMonday.day.toString().padLeft(2, '0')}T23:59:59.999";
 
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
         String responseRaw = "";
@@ -546,22 +738,43 @@ class CalendarRequest {
         bool dispExams = storage.DataCache.getDisplayExams() ?? true;
         bool dispPeriods = storage.DataCache.getDisplayPeriods() ?? true;
 
-        try {
-          final trainingId = await getStudentTrainingId(forceRefresh: false);
-          if (trainingId != null) {
-            final token = await storage.DataCache.getAccessToken();
+        List<String> trainingIds = await getStudentTrainingIds(forceRefresh: false);
+        final token = await storage.DataCache.getAccessToken();
 
-            final url = Uri.parse("$baseUrl/api/Calendar/GetCalendarEvents?startDate=$startIso&endDate=$endIso&studentTrainingIds[0]=$trainingId&displayClasses=true&displayExams=true&displayOnlineMeetings=false&displayOtherEvents=true&displayPeriods=false&displayTasks=true");
+        if (token != null && token.isNotEmpty) {
+          final baseUri = Uri.parse(baseUrl);
+          final cleanBasePath = baseUri.path.endsWith('/') ? baseUri.path.substring(0, baseUri.path.length - 1) : baseUri.path;
+          final calendarPath = '$cleanBasePath/api/Calendar/GetCalendarEvents'.replaceAll('//', '/');
 
-            responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
+          Map<String, String> queryParams = {
+            'startDate': startIso,
+            'endDate': endIso,
+            'isClassesVisible': dispClasses.toString(),
+            'isExamsVisible': dispExams.toString(),
+            'isFinalExamsVisible': 'true',
+            'isOnlineMeetingsVisible': 'true',
+            'isOtherEventsVisible': 'true',
+            'isPeriodsVisible': dispPeriods.toString(),
+            'isTasksVisible': 'true',
+          };
+          for (int i = 0; i < trainingIds.length; i++) {
+            queryParams['studentTrainingIds[$i]'] = trainingIds[i];
+          }
 
-            if (responseRaw.contains('"statusCode":410') || responseRaw.contains('Authorization has been denied') || responseRaw.contains('"statusCode": 401')) {
-              needsReAuth = true;
-            }
-          } else {
+          final url = baseUri.replace(path: calendarPath, queryParameters: queryParams);
+          debug.log("Naptár kérés küldése: $url");
+
+          responseRaw = await _APIRequest.getRequest(url, bearerToken: token);
+
+          if (responseRaw.contains('"statusCode":410') || 
+              responseRaw.contains('Authorization has been denied') || 
+              responseRaw.contains('"statusCode": 401') || 
+              responseRaw.contains('"statusCode":401') ||
+              responseRaw.contains('A megadott kérelem nem engedélyezett') ||
+              responseRaw.contains('Unauthorized')) {
             needsReAuth = true;
           }
-        } catch (e) {
+        } else {
           needsReAuth = true;
         }
 
@@ -571,36 +784,89 @@ class CalendarRequest {
           final password = storage.DataCache.getPassword()!;
           await InstitutesRequest.validateLoginCredentialsUrl(baseUrl, username, password);
 
-          final newTrainingId = await getStudentTrainingId(forceRefresh: true);
-          if (newTrainingId == null) return '{"calendarData": []}';
-
+          final newTrainingIds = await getStudentTrainingIds(forceRefresh: true);
           final newToken = await storage.DataCache.getAccessToken();
-          final retryUrl = Uri.parse("$baseUrl/api/Calendar/GetCalendarEvents?startDate=$startIso&endDate=$endIso&studentTrainingIds[0]=$newTrainingId&displayClasses=$dispClasses&displayExams=$dispExams&displayOnlineMeetings=false&displayOtherEvents=false&displayPeriods=$dispPeriods&displayTasks=false");
 
-          responseRaw = await _APIRequest.getRequest(retryUrl, bearerToken: newToken!);
+          if (newToken != null && newToken.isNotEmpty) {
+            final baseUri = Uri.parse(baseUrl);
+            final cleanBasePath = baseUri.path.endsWith('/') ? baseUri.path.substring(0, baseUri.path.length - 1) : baseUri.path;
+            final calendarPath = '$cleanBasePath/api/Calendar/GetCalendarEvents'.replaceAll('//', '/');
+
+            Map<String, String> queryParams = {
+              'startDate': startIso,
+              'endDate': endIso,
+              'isClassesVisible': dispClasses.toString(),
+              'isExamsVisible': dispExams.toString(),
+              'isFinalExamsVisible': 'true',
+              'isOnlineMeetingsVisible': 'true',
+              'isOtherEventsVisible': 'true',
+              'isPeriodsVisible': dispPeriods.toString(),
+              'isTasksVisible': 'true',
+            };
+            for (int i = 0; i < newTrainingIds.length; i++) {
+              queryParams['studentTrainingIds[$i]'] = newTrainingIds[i];
+            }
+
+            final retryUrl = baseUri.replace(path: calendarPath, queryParameters: queryParams);
+            responseRaw = await _APIRequest.getRequest(retryUrl, bearerToken: newToken);
+          }
+        }
+
+        // Fallback ha studentTrainingIds-szel 400-at vagy üreset adna vissza
+        if ((responseRaw.contains('400') || responseRaw.isEmpty || responseRaw == '{"data":[]}' || responseRaw == '{"data":null}') && token != null) {
+          final baseUri = Uri.parse(baseUrl);
+          final cleanBasePath = baseUri.path.endsWith('/') ? baseUri.path.substring(0, baseUri.path.length - 1) : baseUri.path;
+          final calendarPath = '$cleanBasePath/api/Calendar/GetCalendarEvents'.replaceAll('//', '/');
+
+          Map<String, String> fallbackParams = {
+            'startDate': startIso,
+            'endDate': endIso,
+            'isClassesVisible': dispClasses.toString(),
+            'isExamsVisible': dispExams.toString(),
+            'isFinalExamsVisible': 'true',
+            'isOnlineMeetingsVisible': 'true',
+            'isOtherEventsVisible': 'true',
+            'isPeriodsVisible': dispPeriods.toString(),
+            'isTasksVisible': 'true',
+          };
+          final fallbackUrl = baseUri.replace(path: calendarPath, queryParameters: fallbackParams);
+          final fbRaw = await _APIRequest.getRequest(fallbackUrl, bearerToken: token);
+          if (fbRaw.isNotEmpty && !fbRaw.contains('400') && !fbRaw.contains('Error')) {
+            responseRaw = fbRaw;
+          }
         }
 
         final newApiData = conv.json.decode(responseRaw);
         List<Map<String, dynamic>> mappedList = [];
 
-        if (newApiData['data'] != null) {
+        if (newApiData is Map && newApiData['data'] != null) {
           var dataPart = newApiData['data'];
           Iterable items = dataPart is List ? dataPart : [dataPart];
 
           for (var event in items) {
-            final eventStartEpoch = DateTime.parse(event['startDate']).millisecondsSinceEpoch;
-            final eventEndEpoch = DateTime.parse(event['endDate']).millisecondsSinceEpoch;
+            if (event is! Map) continue;
+            final typeId = event['eventTypeId'] ?? 0;
+            if (typeId == 6) {
+              continue; // Szemeszter időszak banner kihagyása a heti nézetben
+            }
+
+            final startStr = event['startDate']?.toString();
+            final endStr = event['endDate']?.toString();
+            if (startStr == null || endStr == null) continue;
+
+            final eventStartEpoch = DateTime.tryParse(startStr)?.millisecondsSinceEpoch ?? 0;
+            final eventEndEpoch = DateTime.tryParse(endStr)?.millisecondsSinceEpoch ?? 0;
 
             mappedList.add({
               'start_ms': eventStartEpoch,
               'end_ms': eventEndEpoch,
-              'location': event['rooms'] ?? event['room'] ?? 'Nincs megadva',
-              'title': event['name'] ?? event['subjectName'] ?? 'Ismeretlen',
-              'type': event['eventTypeId'] ?? 0,
-              'subjectCode': event['courseCode'] ?? '-',
-              'teacher': event['courseTutor'] ?? 'Nincs megadva',
-              'classInstanceId': event['classInstanceId'] ?? '',
-              'taskId': event['id'] ?? event['taskId'] ?? event['midTermTaskId'] ?? '',
+              'location': event['rooms'] ?? event['room'] ?? event['location'] ?? 'Nincs megadva',
+              'title': event['name'] ?? event['subjectName'] ?? event['title'] ?? 'Ismeretlen',
+              'type': typeId,
+              'subjectCode': event['courseCode'] ?? event['subjectCode'] ?? '-',
+              'teacher': event['courseTutor'] ?? event['teacher'] ?? 'Nincs megadva',
+              'classInstanceId': event['classInstanceId']?.toString() ?? '',
+              'taskId': event['id']?.toString() ?? event['taskId']?.toString() ?? event['midTermTaskId']?.toString() ?? '',
             });
           }
         }
@@ -611,7 +877,6 @@ class CalendarRequest {
         return '{"calendarData": []}';
       }
     } else {
-
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
       final request = await _APIRequest.postRequest(url, calendarJson);
       return request;
@@ -762,27 +1027,22 @@ class CalendarRequest {
     }
   }
 
-    static String getCalendarOneWeekJSON(String username, String password, int weekOffset){
+    static String getCalendarOneWeekJSON(String username, String password, int weekOffset, {String? termId}){
       if(storage.DataCache.getIsDemoAccount()!){
         return '';
       }
       final DateTime now = DateTime.now();
-      DateTime previousMonday = now.subtract(Duration(days: now.weekday));
-      if (previousMonday.weekday == 7) {
-        previousMonday = previousMonday.subtract(const Duration(days: 7));
-      }
-      previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
+      final mondayThisWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+      final int deltaWeeks = weekOffset - 1;
 
-      DateTime nextSunday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
-      if (nextSunday.weekday == 7) {
-        nextSunday = nextSunday.subtract(const Duration(days: 7));
-      }
+      final targetMonday = mondayThisWeek.add(Duration(days: deltaWeeks * 7));
+      final targetSunday = targetMonday.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59, milliseconds: 999));
 
-      DateTime startOfTargetWeek = previousMonday.add(Duration(days: weekOffset * 7));
-      DateTime endOfTargetWeek = nextSunday.add(Duration(days: weekOffset * 7));//.add(Duration(days: 7));
+      final epochStart = targetMonday.millisecondsSinceEpoch;
+      final epochEnd = targetSunday.millisecondsSinceEpoch;
 
-      final epochStart = startOfTargetWeek.millisecondsSinceEpoch;
-      final epochEnd = endOfTargetWeek.millisecondsSinceEpoch;
+      final activeTermId = termId ?? storage.DataCache.getSelectedTermId();
+      final termInt = int.tryParse(activeTermId ?? '0') ?? 0;
 
       return
         '{'
@@ -792,13 +1052,14 @@ class CalendarRequest {
           '"Exam":true,'
           '"startDate":"/Date($epochStart)/",'
           '"endDate":"/Date($epochEnd)/",'
-          '"TotalRowCount":-1'
+          '"TotalRowCount":-1,'
+          '"filter":{"TermID":$termInt}'
         '}';
     }
   }
 
 class MarkbookRequest{
-  static Future<List<Subject>?> getMarkbookSubjects() async{
+  static Future<List<Subject>?> getMarkbookSubjects({String? termId}) async{
     if(storage.DataCache.getIsDemoAccount()!){
       return <Subject>[
         Subject(false, 1, 'DEMO tantárgy 1', 0, 4, 0),
@@ -807,52 +1068,143 @@ class MarkbookRequest{
     }
     else if(storage.DataCache.getHasICSFile() ?? false){ return []; }
 
-    // --- MODERN API ÁG (Párhuzamos lekéréssel!) ---
-    if (storage.DataCache.getIsModernApi() /*?? false*/) {
+    final activeTermId = termId ?? storage.DataCache.getSelectedTermId();
+
+    // --- MODERN API ÁG (Közvetlen és gyors feldolgozás) ---
+    if (storage.DataCache.getIsModernApi()) {
       try {
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
 
-        // 1. Félévek lekérése
-        final termsUrl = Uri.parse("$baseUrl/api/TakenSubjects/Terms");
-        final termsResponse = await _APIRequest.getRequest(termsUrl, bearerToken: token!);
-        final termsDecoded = conv.json.decode(termsResponse);
-        if (termsDecoded['data'] == null || termsDecoded['data'].isEmpty) return [];
+        // 1. Resolve term GUID
+        List<Term> terms = await TermsRequest.getTerms();
+        String effectiveTermGuid = '';
 
-        // Legutolsó félév kiválasztása
-        String activeTermId = termsDecoded['data'].last['value'];
-
-        // 2. Felvett tárgyak listájának lekérése
-        final subjectsUrl = Uri.parse("$baseUrl/api/TakenSubjects?request.termId=$activeTermId&sortAndPage.firstRow=0&sortAndPage.lastRow=50");
-        final subjectsResponse = await _APIRequest.getRequest(subjectsUrl, bearerToken: token);
-        final subjectsDecoded = conv.json.decode(subjectsResponse);
-
-        List<Subject> modernSubjects = [];
-
-        if (subjectsDecoded['data'] != null) {
-          // PÁRHUZAMOS LEKÉRÉS ELŐKÉSZÍTÉSE
-          List<Future<Subject?>> fetchTasks = [];
-
-          for (var item in subjectsDecoded['data']) {
-            String subjectId = item['subjectId'];
-            String subjectName = item['subjectName'] ?? 'Ismeretlen';
-            int credit = item['subjectCredit'] ?? 0;
-
-            // Hozzáadjuk a listához a lekérési feladatot, de még NEM várjuk meg!
-            fetchTasks.add(_fetchSubjectGrade(baseUrl, token, subjectId, activeTermId, subjectName, credit));
+        if (activeTermId != null && activeTermId.isNotEmpty) {
+          for (var t in terms) {
+            if (t.id == activeTermId || t.termName == activeTermId || t.termName == storage.DataCache.getSelectedTermName()) {
+              effectiveTermGuid = t.id;
+              break;
+            }
           }
+          if (effectiveTermGuid.isEmpty && activeTermId.contains('-') && activeTermId.length > 20) {
+            effectiveTermGuid = activeTermId;
+          }
+        }
 
-          // MOST lőjük ki mindet EGYSZERRE! (Villámgyors)
-          List<Subject?> results = await Future.wait(fetchTasks);
+        if (effectiveTermGuid.isEmpty && terms.isNotEmpty) {
+          effectiveTermGuid = terms.last.id;
+        }
 
-          // Összefűzzük a sikeres válaszokat
-          for (var res in results) {
-            if (res != null) {
-              modernSubjects.add(res);
+        // 2. Felvett tárgyak és kurzusok lekérése
+        dynamic rawData;
+
+        // A) Próbálkozás a TakenSubjects végponttal
+        String subjectsUrlStr = "$baseUrl/api/TakenSubjects?sortAndPage.firstRow=0&sortAndPage.lastRow=100&sortAndPage.subjectName=asc";
+        if (effectiveTermGuid.isNotEmpty) {
+          subjectsUrlStr = "$baseUrl/api/TakenSubjects?request.termId=$effectiveTermGuid&sortAndPage.firstRow=0&sortAndPage.lastRow=100&sortAndPage.subjectName=asc";
+        }
+        try {
+          final subjectsUrl = Uri.parse(subjectsUrlStr);
+          final subjectsResponse = await _APIRequest.getRequest(subjectsUrl, bearerToken: token!);
+          final subjectsDecoded = conv.json.decode(subjectsResponse);
+          if (subjectsDecoded['data'] != null && subjectsDecoded['data'] is List && (subjectsDecoded['data'] as List).isNotEmpty) {
+            rawData = subjectsDecoded['data'];
+          }
+        } catch (_) {}
+
+        // B) Ha a TakenSubjects üres, próbálkozás a RegisteredCourses végponttal (Felvett kurzusok)
+        if (rawData == null || (rawData is List && rawData.isEmpty)) {
+          String regUrlStr = "$baseUrl/api/RegisteredCourses/GetRegisteredCourses?sortAndPage.subjectName=asc";
+          if (effectiveTermGuid.isNotEmpty) {
+            regUrlStr = "$baseUrl/api/RegisteredCourses/GetRegisteredCourses?request.termId=$effectiveTermGuid&sortAndPage.subjectName=asc";
+          }
+          try {
+            final regUrl = Uri.parse(regUrlStr);
+            final regResponse = await _APIRequest.getRequest(regUrl, bearerToken: token!);
+            final regDecoded = conv.json.decode(regResponse);
+            if (regDecoded['data'] != null && regDecoded['data'] is List && (regDecoded['data'] as List).isNotEmpty) {
+              rawData = regDecoded['data'];
+            }
+          } catch (_) {}
+        }
+
+        // C) Tartalék: TakenSubjects félév-szűrés nélkül
+        if (rawData == null || (rawData is List && rawData.isEmpty)) {
+          try {
+            final fallbackUrl = Uri.parse("$baseUrl/api/TakenSubjects?sortAndPage.firstRow=0&sortAndPage.lastRow=100&sortAndPage.subjectName=asc");
+            final fallbackRes = await _APIRequest.getRequest(fallbackUrl, bearerToken: token!);
+            final fbDecoded = conv.json.decode(fallbackRes);
+            if (fbDecoded['data'] != null && fbDecoded['data'] is List && (fbDecoded['data'] as List).isNotEmpty) {
+              rawData = fbDecoded['data'];
+            }
+          } catch (_) {}
+        }
+
+        // D) Tartalék: RegisteredCourses félév-szűrés nélkül
+        if (rawData == null || (rawData is List && rawData.isEmpty)) {
+          try {
+            final fallbackUrl = Uri.parse("$baseUrl/api/RegisteredCourses/GetRegisteredCourses?sortAndPage.subjectName=asc");
+            final fallbackRes = await _APIRequest.getRequest(fallbackUrl, bearerToken: token!);
+            final fbDecoded = conv.json.decode(fallbackRes);
+            if (fbDecoded['data'] != null && fbDecoded['data'] is List && (fbDecoded['data'] as List).isNotEmpty) {
+              rawData = fbDecoded['data'];
+            }
+          } catch (_) {}
+        }
+
+        Map<String, Subject> modernSubjectsMap = {};
+
+        if (rawData != null && rawData is List) {
+          for (var item in rawData) {
+            if (item is! Map) continue;
+            String subjectName = item['subjectName'] ?? item['name'] ?? item['subjectCode'] ?? 'Ismeretlen tárgy';
+            String subjectCode = item['subjectCode']?.toString() ?? subjectName;
+            int credit = (item['subjectCredit'] as num?)?.toInt() ?? (item['credit'] as num?)?.toInt() ?? 0;
+            
+            bool isCompleted = item['completed'] == true || item['isCompleted'] == true || item['passed'] == true;
+            int grade = (item['grade'] as num?)?.toInt() ?? (item['resultValue'] as num?)?.toInt() ?? 0;
+            int failState = 0;
+
+            if (item['uiDisplayState'] != null && item['uiDisplayState'] is Map) {
+              final ui = item['uiDisplayState'];
+              int uiType = (ui['type'] as num?)?.toInt() ?? 0;
+              if (uiType == 1) {
+                isCompleted = true;
+              }
+              if (ui['reasons'] != null && ui['reasons'] is List) {
+                for (var r in ui['reasons']) {
+                  final rStr = r.toString().toLowerCase();
+                  if (rStr.contains('teljesített') || rStr.contains('aláírva')) {
+                    isCompleted = true;
+                  }
+                  if (rStr.contains('megtagadva') || rStr.contains('nem teljesített')) {
+                    failState = 1;
+                  }
+                  final parsedG = parseTextToGrade(r.toString());
+                  if (parsedG > 0) {
+                    grade = parsedG;
+                  }
+                }
+              }
+            }
+
+            if (isCompleted && grade == 0) {
+              grade = 5;
+            }
+
+            if (modernSubjectsMap.containsKey(subjectCode)) {
+              final existing = modernSubjectsMap[subjectCode]!;
+              if (isCompleted) existing.completed = true;
+              if (grade > existing.grade) existing.grade = grade;
+              if (credit > existing.credit) existing.credit = credit;
+              if (failState > existing.failState) existing.failState = failState;
+            } else {
+              modernSubjectsMap[subjectCode] = Subject(isCompleted, credit, subjectName, 0, grade, failState);
             }
           }
         }
-        return modernSubjects;
+        return modernSubjectsMap.values.toList();
       } catch (e) {
         debug.log("Hiba a modern tárgyak lekérésekor: $e");
         return [];
@@ -860,7 +1212,8 @@ class MarkbookRequest{
     }
 
     // --- RÉGI API ÁG (Ahol még él a /MobileService.svc) ---
-    String responseJson = await _getMarkbookJSon();
+    int oldTermId = int.tryParse(activeTermId ?? '0') ?? 0;
+    String responseJson = await _getMarkbookJSon(oldTermId);
     List<dynamic> markbooklistRaw = [];
     final decoded = conv.json.decode(responseJson);
     if (decoded['MarkBookList'] == null) return null;
@@ -879,51 +1232,11 @@ class MarkbookRequest{
     return subjects;
   }
 
-  // --- ÚJ SEGÉDFÜGGVÉNY: Egy adott tárgy érdemjegyének letöltése ---
-  static Future<Subject?> _fetchSubjectGrade(String baseUrl, String token, String subjectId, String termId, String subjectName, int credit) async {
-    try {
-      final url = Uri.parse("$baseUrl/api/SubjectCourse/GetSubjectDetails?subjectId=$subjectId&termId=$termId");
-      final responseRaw = await _APIRequest.getRequest(url, bearerToken: token);
-      final decoded = conv.json.decode(responseRaw);
-
-      if (decoded['data'] != null) {
-        int grade = 0;
-        bool isCompleted = false;
-
-        if (decoded['data']['subjectResult'] != null) {
-          var result = decoded['data']['subjectResult'];
-          isCompleted = result['passed'] ?? false;
-
-          // Ha van konkrét számes jegy (pl. 3)
-          if (result['resultValue'] != null) {
-            grade = result['resultValue'];
-          }
-          // Ha csak szöveg van (pl. "Megfelelt", "Jeles")
-          else if (result['resultName'] != null) {
-            grade = parseTextToGrade(result['resultName']);
-          }
-        }
-        // Ha nincs subjectResult, de a statusText azt mondja "Teljesített"
-        else if (decoded['data']['subjectStatus'] != null) {
-          if (decoded['data']['subjectStatus']['statusText'] == 'Teljesített') {
-            isCompleted = true;
-            grade = 5; // Pipa fog megjelenni
-          }
-        }
-
-        return Subject(isCompleted, credit, subjectName, 0, grade, 0);
-      }
-    } catch (e) {
-      debug.log("Hiba a(z) $subjectName jegyének lekérésekor: $e");
-    }
-    return null;
-  }
-
-  static Future<String> _getMarkbookJSon() async{
+  static Future<String> _getMarkbookJSon([int termId = 0]) async{
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
     final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MARKBOOK_URL);
-    final json = '{"UserLogin":"$username","Password":"$password","CurrentPage":1,"filter":{"TermID": 0},"TotalRowCount":-1}';
+    final json = '{"UserLogin":"$username","Password":"$password","CurrentPage":1,"filter":{"TermID": $termId},"TotalRowCount":-1}';
     return await _APIRequest.postRequest(url, json);
   }
 
@@ -973,6 +1286,8 @@ class MarkbookRequest{
 }
 
 class CashinRequest{
+  static Future<List<CashinEntry>?> getCashin() => getAllCashins();
+
   static Future<List<CashinEntry>?> getAllCashins() async{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
@@ -986,7 +1301,7 @@ class CashinRequest{
     }
 
 
-    if (storage.DataCache.getIsModernApi()/* ?? false*/) {
+    if (storage.DataCache.getIsModernApi()) {
       try {
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
@@ -998,19 +1313,26 @@ class CashinRequest{
 
         List<CashinEntry> modernCashins = [];
 
-        if (decoded['data'] != null) {
+        if (decoded['data'] != null && decoded['data'] is List) {
           for (var item in decoded['data']) {
-            int amount = (item['transactionValue'] as double).toInt();
+            final rawVal = item['transactionValue'];
+            int amount = ((rawVal as num?) ?? 0).toInt();
             if (item['sign'] == '-') {
               amount = -amount;
             }
 
+            final rawDate = item['transferDate']?.toString();
+            final dateMs = rawDate != null ? (DateTime.tryParse(rawDate)?.millisecondsSinceEpoch ?? 0) : 0;
+
             modernCashins.add(CashinEntry(
                 amount,
-                DateTime.parse(item['transferDate']).millisecondsSinceEpoch,
-                item['transactionPayingType'] ?? 'Ismeretlen tranzakció',
-                item['transactionId'] ?? 'ismeretlen_id',
-                item['transactionStatus'] ?? 'Ismeretlen státusz'
+                dateMs,
+                item['transactionPayingType']?.toString() ?? 'Ismeretlen tranzakció',
+                item['transactionId']?.toString() ?? 'ismeretlen_id',
+                item['transactionStatus']?.toString() ?? 'Ismeretlen státusz',
+                direction: item['transactionDirection']?.toString(),
+                note: item['transactionNote']?.toString(),
+                currency: item['transactionCurrency']?.toString() ?? 'HUF'
             ));
           }
         }
@@ -1049,11 +1371,37 @@ class CashinRequest{
     catch (_){ return []; }
     return ls;
   }
+
+  static Future<double?> getCollectiveInvoiceBalance() async {
+    if (storage.DataCache.getIsDemoAccount()!) {
+      await storage.DataCache.setAccountBalance(15000.0, currency: 'HUF');
+      return 15000.0;
+    }
+    if (storage.DataCache.getIsModernApi()) {
+      try {
+        final token = await storage.DataCache.getAccessToken();
+        String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+        final url = Uri.parse("$baseUrl/api/FinancialDataDashboard/GetCollectiveInvoices");
+        final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
+        final decoded = conv.json.decode(responseRaw);
+        if (decoded['data'] != null && decoded['data'] is List && (decoded['data'] as List).isNotEmpty) {
+          final first = decoded['data'][0];
+          final balance = (first['collectiveInvoiceBalance'] as num?)?.toDouble() ?? 0.0;
+          final currency = first['collectiveInvoiceCurrency']?.toString() ?? 'HUF';
+          await storage.DataCache.setAccountBalance(balance, currency: currency);
+          return balance;
+        }
+      } catch (e) {
+        debug.log("Hiba a gyűjtőszámla egyenleg lekérésekor: $e");
+      }
+    }
+    return storage.DataCache.getAccountBalance();
+  }
 }
 
 class PeriodsRequest{
 
-  static Future<List<PeriodEntry>?> getPeriods() async{
+  static Future<List<PeriodEntry>?> getPeriods({String? termId}) async{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
       return <PeriodEntry>[
@@ -1065,34 +1413,69 @@ class PeriodsRequest{
       return [PeriodEntry('végleges tárgyjelentkezés', await ICSCalendar.getFirstEventStartMs(), await ICSCalendar.getFirstEventStartMs() + Duration(days: 365).inMilliseconds, 1)];
     }
 
+    final activeTermId = termId ?? storage.DataCache.getSelectedTermId();
+
     // --- MODERN API ÁG ---
-    if (storage.DataCache.getIsModernApi()/* ?? false*/) {
+    if (storage.DataCache.getIsModernApi()) {
       try {
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
 
-        // 1. Félévek (Terms) lekérése
-        final termsUrl = Uri.parse("$baseUrl/api/Periods/GetTerms");
-        final termsResponse = await _APIRequest.getRequest(termsUrl, bearerToken: token!);
-        final termsDecoded = conv.json.decode(termsResponse);
+        List<Term> terms = await TermsRequest.getTerms();
+        String effectiveTermGuid = '';
 
-        if (termsDecoded['data'] == null || termsDecoded['data'].isEmpty) return [];
+        if (activeTermId != null && activeTermId.isNotEmpty) {
+          for (var t in terms) {
+            if (t.id == activeTermId || t.termName == activeTermId || t.termName == storage.DataCache.getSelectedTermName()) {
+              effectiveTermGuid = t.id;
+              break;
+            }
+          }
+          if (effectiveTermGuid.isEmpty && activeTermId.contains('-') && activeTermId.length > 20) {
+            effectiveTermGuid = activeTermId;
+          }
+        }
 
-        // 2. Legutolsó félév (pl. "2025/26/2") kiválasztása
-        String activeTermId = termsDecoded['data'].last['value'];
+        if (effectiveTermGuid.isEmpty && terms.isNotEmpty) {
+          effectiveTermGuid = terms.last.id;
+        }
+
+        if (effectiveTermGuid.isEmpty) return [];
 
         // 3. Időszakok lekérése az adott félévhez
-        final periodsUrl = Uri.parse("$baseUrl/api/Periods/GetPeriods?request.termId=$activeTermId&sortAndPage.firstRow=0&sortAndPage.lastRow=50&sortAndPage.fromDate=asc");
-        final periodsResponse = await _APIRequest.getRequest(periodsUrl, bearerToken: token);
-        final periodsDecoded = conv.json.decode(periodsResponse);
+        String periodsUrlStr = "$baseUrl/api/Periods/GetPeriods?sortAndPage.firstRow=0&sortAndPage.lastRow=50&sortAndPage.fromDate=asc";
+        if (effectiveTermGuid.isNotEmpty) {
+          periodsUrlStr = "$baseUrl/api/Periods/GetPeriods?request.termId=$effectiveTermGuid&sortAndPage.firstRow=0&sortAndPage.lastRow=50&sortAndPage.fromDate=asc";
+        }
+        final periodsUrl = Uri.parse(periodsUrlStr);
+        final periodsResponse = await _APIRequest.getRequest(periodsUrl, bearerToken: token!);
+        var periodsDecoded = conv.json.decode(periodsResponse);
+
+        if ((periodsDecoded['data'] == null || (periodsDecoded['data'] is List && (periodsDecoded['data'] as List).isEmpty)) && effectiveTermGuid.isNotEmpty) {
+          final fallbackUrl = Uri.parse("$baseUrl/api/Periods/GetPeriods?sortAndPage.firstRow=0&sortAndPage.lastRow=50&sortAndPage.fromDate=asc");
+          final fallbackRes = await _APIRequest.getRequest(fallbackUrl, bearerToken: token);
+          final fbDecoded = conv.json.decode(fallbackRes);
+          if (fbDecoded['data'] != null && fbDecoded['data'] is List && (fbDecoded['data'] as List).isNotEmpty) {
+            periodsDecoded = fbDecoded;
+          }
+        }
 
         List<PeriodEntry> modernPeriods = [];
-        if (periodsDecoded['data'] != null) {
+        if (periodsDecoded['data'] != null && periodsDecoded['data'] is List) {
           for (var item in periodsDecoded['data']) {
+            final fromStr = item['fromDate']?.toString();
+            final toStr = item['toDate']?.toString();
+            if (fromStr == null || toStr == null) continue;
+
+            final fromEpoch = DateTime.tryParse(fromStr)?.millisecondsSinceEpoch ?? 0;
+            final toEpoch = DateTime.tryParse(toStr)?.millisecondsSinceEpoch ?? 0;
+
+            final pName = item['periodName']?.toString() ?? item['periodType']?.toString() ?? 'Ismeretlen időszak';
+
             modernPeriods.add(PeriodEntry(
-                item['periodName'] ?? 'Ismeretlen időszak',
-                DateTime.parse(item['fromDate']).millisecondsSinceEpoch,
-                DateTime.parse(item['toDate']).millisecondsSinceEpoch,
+                pName,
+                fromEpoch,
+                toEpoch,
                 1 // partOfSemester fake adat (nem használja igazán a UI)
             ));
           }
@@ -1106,17 +1489,25 @@ class PeriodsRequest{
     }
 
     // --- RÉGI API ÁG ---
-    final terms = await _APIRequest._getTermIDs();
+    List<Term> terms = [];
+    if (activeTermId != null && activeTermId.isNotEmpty) {
+      terms = [Term(activeTermId, storage.DataCache.getSelectedTermName() ?? '')];
+    } else {
+      terms = await TermsRequest.getTerms();
+    }
     if(terms.isEmpty) return <PeriodEntry>[PeriodEntry('Hiba lépett fel!\nNincs term id.', DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch, 1)];
 
     List<PeriodEntry> periods = <PeriodEntry>[];
     int cntperiod = terms.length;
     for(var term in terms){
-      final jsonresult = await _getPeriodJSon(term.id);
-      final result = conv.json.decode(jsonresult)['PeriodList'] as List<dynamic>;
-      for(var period in result){
-        final currPeriod = period as Map<String, dynamic>;
-        periods.add(PeriodEntry(currPeriod['PeriodTypeName'], int.parse(currPeriod['FromDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), int.parse(currPeriod['ToDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), cntperiod));
+      final jsonresult = await _getPeriodJSon(term.intId);
+      final decoded = conv.json.decode(jsonresult);
+      if (decoded['PeriodList'] != null) {
+        final result = decoded['PeriodList'] as List<dynamic>;
+        for(var period in result){
+          final currPeriod = period as Map<String, dynamic>;
+          periods.add(PeriodEntry(currPeriod['PeriodTypeName'], int.parse(currPeriod['FromDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), int.parse(currPeriod['ToDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), cntperiod));
+        }
       }
       cntperiod--;
     }
@@ -1133,10 +1524,35 @@ class PeriodsRequest{
 }
 
 class MailRequest{
+  static Future<int> getUnreadMessageCount() async {
+    if (storage.DataCache.getIsDemoAccount()!) {
+      await storage.DataCache.setUnreadMailCount(1);
+      return 1;
+    }
+    if (storage.DataCache.getIsModernApi()) {
+      try {
+        final token = await storage.DataCache.getAccessToken();
+        String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+        final url = Uri.parse("$baseUrl/api/Message/GetUnreadedMessagesCount");
+        final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
+        final decoded = conv.json.decode(responseRaw);
+        if (decoded['data'] != null && decoded['data']['count'] != null) {
+          int count = (decoded['data']['count'] as num).toInt();
+          await storage.DataCache.setUnreadMailCount(count);
+          return count;
+        }
+      } catch (e) {
+        debug.log("Hiba az olvasatlan üzenetek számának lekérésekor: $e");
+      }
+    }
+    return storage.DataCache.getUnreadMailCount();
+  }
+
   static Future<List<int>> getUnreadMessagesAndAllMessages()async{
     try{
-      if (storage.DataCache.getIsModernApi()/* ?? false*/) {
-        return [0, 0, 0];
+      if (storage.DataCache.getIsModernApi()) {
+        final unread = await getUnreadMessageCount();
+        return [unread, 0, 0];
       }
       List<int> list = [];
       final json = await _getMailJson(0);
@@ -1163,7 +1579,7 @@ class MailRequest{
       return [];
     }
 
-    if (storage.DataCache.getIsModernApi()/* ?? false*/) {
+    if (storage.DataCache.getIsModernApi()) {
       try {
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
@@ -1234,7 +1650,7 @@ class MailRequest{
       return oldDetails;
     }
 
-    if (storage.DataCache.getIsModernApi()/* ?? false*/) {
+    if (storage.DataCache.getIsModernApi()) {
       try {
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
@@ -1273,10 +1689,18 @@ class MailRequest{
 }
   
   class Term{
-    int id;
+    String id;
     String termName;
-  
-    Term(this.id, this.termName);
+
+    Term(dynamic id, this.termName) : id = id.toString();
+
+    int get intId => int.tryParse(id) ?? 0;
+
+    Map<String, dynamic> toMap() => {'id': id, 'termName': termName};
+    factory Term.fromMap(Map<String, dynamic> map) => Term(map['id']?.toString() ?? '', map['termName']?.toString() ?? '');
+
+    String serialize() => conv.jsonEncode(toMap());
+    factory Term.deserialize(String str) => Term.fromMap(conv.jsonDecode(str));
   }
   
   class Subject{
@@ -1431,8 +1855,11 @@ class CashinEntry{
   late int dueDateMs;
   late String comment;
   late bool completed = false;
+  String? direction;
+  String? note;
+  String? currency;
 
-  CashinEntry(this.ammount, this.dueDateMs, this.comment, this.ID, String completedStatus){
+  CashinEntry(this.ammount, this.dueDateMs, this.comment, this.ID, String completedStatus, {this.direction, this.note, this.currency}){
     if(completedStatus.toLowerCase() == 'teljesített' ||
         completedStatus.toLowerCase() == 'törölt' ||
         completedStatus.toLowerCase() == 'pénzügyileg igazolt'){
@@ -1442,7 +1869,7 @@ class CashinEntry{
 
   @override
   String toString() {
-    return '$ammount\n$dueDateMs\n$comment\n$completed\n$ID';
+    return '$ammount\n$dueDateMs\n$comment\n$completed\n$ID\n${direction ?? ''}\n${note ?? ''}\n${currency ?? ''}';
   }
 
   CashinEntry fillWithExisting(String existing){
@@ -1450,11 +1877,14 @@ class CashinEntry{
     if(data.isEmpty || data.length < 5){
       return this;
     }
-    ammount = int.parse(data[0]);
-    dueDateMs = int.parse(data[1]);
+    ammount = int.tryParse(data[0]) ?? 0;
+    dueDateMs = int.tryParse(data[1]) ?? 0;
     comment = data[2];
-    completed = bool.parse(data[3]);
+    completed = bool.tryParse(data[3]) ?? false;
     ID = data[4];
+    if (data.length > 5) direction = data[5].isNotEmpty ? data[5] : null;
+    if (data.length > 6) note = data[6].isNotEmpty ? data[6] : null;
+    if (data.length > 7) currency = data[7].isNotEmpty ? data[7] : null;
     return this;
   }
 }
@@ -1523,39 +1953,29 @@ class CashinEntry{
   
     void fillIsActiveStatus() {
       final now = DateTime.now().millisecondsSinceEpoch;
-      isActive = (startEpoch < now && now < endEpoch);
-  
-      switch (name.toLowerCase().trim()){
-        case 'előzetes tárgyjelentkezés':
-          type = PeriodType.timetableRegistration;
-          break;
-        case 'jegybeírási időszak':
-          type = PeriodType.gradingTime;
-          break;
-        case 'bejelentkezési időszak':
-          type = PeriodType.loginTime;
-          break;
-        case 'megajánlott jegy beírási időszak':
-          type = PeriodType.pregivenGradingAccepting;
-          break;
-        case 'végleges tárgyjelentkezés':
-          type = PeriodType.timetableFinalization;
-          break;
-        case 'kurzusjelentkezési időszak':
-          type = PeriodType.coursesRegistration;
-          break;
-        case 'szorgalmi időszak':
-          type = PeriodType.nerdTime;
-          break;
-        case 'vizsgajelentkezési időszak':
-          type = PeriodType.examTime;
-          break;
-        case 'beiratkozási időszak':
-          type = PeriodType.signinTime;
-          break;
-        default:
-          type = PeriodType.none;
-          break;
+      isActive = (startEpoch <= now && now <= endEpoch);
+
+      final lower = name.toLowerCase().trim();
+      if (lower.contains('előzetes tárgyjelentkezés') || lower.contains('tárgyfelvétel')) {
+        type = PeriodType.timetableRegistration;
+      } else if (lower.contains('jegybeírás') || lower.contains('értékelés')) {
+        type = PeriodType.gradingTime;
+      } else if (lower.contains('bejelentkezés') || lower.contains('regisztráció')) {
+        type = PeriodType.loginTime;
+      } else if (lower.contains('megajánlott jegy')) {
+        type = PeriodType.pregivenGradingAccepting;
+      } else if (lower.contains('végleges tárgyjelentkezés')) {
+        type = PeriodType.timetableFinalization;
+      } else if (lower.contains('kurzusjelentkezés') || lower.contains('kurzusfelvétel')) {
+        type = PeriodType.coursesRegistration;
+      } else if (lower.contains('szorgalmi')) {
+        type = PeriodType.nerdTime;
+      } else if (lower.contains('vizsga')) {
+        type = PeriodType.examTime;
+      } else if (lower.contains('beiratkozás')) {
+        type = PeriodType.signinTime;
+      } else {
+        type = PeriodType.none;
       }
     }
   }
@@ -1925,21 +2345,25 @@ class CashinEntry{
       if(_langMapCache != null){
         return _langMapCache;
       }
-      final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Languages/supportedLanguages.json');
-      final response = await http.get(url);
+      try {
+        final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Languages/supportedLanguages.json');
+        final response = await http.get(url);
 
-      if (response.statusCode != 200) {
+        if (response.statusCode != 200) {
+          return null;
+        }
+
+        Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+        final allLangItems = jsonMap['languagesMap'] as List<dynamic>;
+        final List<LangPackMap> langPacksRoot = [];
+        for (var item in allLangItems){
+          langPacksRoot.add(LangPackMap.fromMap(item));
+        }
+        _langMapCache = langPacksRoot;
+        return langPacksRoot;
+      } catch (e) {
         return null;
       }
-
-      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
-      final allLangItems = jsonMap['languagesMap'] as List<dynamic>;
-      final List<LangPackMap> langPacksRoot = [];
-      for (var item in allLangItems){
-        langPacksRoot.add(LangPackMap.fromMap(item));
-      }
-      _langMapCache = langPacksRoot;
-      return langPacksRoot;
     }
   }
 
@@ -1967,21 +2391,25 @@ class CashinEntry{
       if(_themeMapCache != null){
         return _themeMapCache;
       }
-      final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Themes/supportedThemes.json');
-      final response = await http.get(url);
+      try {
+        final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Themes/supportedThemes.json');
+        final response = await http.get(url);
 
-      if (response.statusCode != 200) {
+        if (response.statusCode != 200) {
+          return null;
+        }
+
+        Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+        final allThemeItems = jsonMap['themesMap'] as List<dynamic>;
+        final List<ThemePackMap> themePacksRoot = [];
+        for (var item in allThemeItems){
+          themePacksRoot.add(ThemePackMap.fromMap(item));
+        }
+        _themeMapCache = themePacksRoot;
+        return themePacksRoot;
+      } catch (e) {
         return null;
       }
-
-      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
-      final allThemeItems = jsonMap['themesMap'] as List<dynamic>;
-      final List<ThemePackMap> themePacksRoot = [];
-      for (var item in allThemeItems){
-        themePacksRoot.add(ThemePackMap.fromMap(item));
-      }
-      _themeMapCache = themePacksRoot;
-      return themePacksRoot;
     }
 
     static Future<AppPalette?> getThemePackById(List<ThemePackMap>? themes, String neededID)async{

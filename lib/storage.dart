@@ -32,7 +32,12 @@ Future<int?> getInt(String key) async {
   return prefs.getInt(key);
 }
 
-Future<double?> getFloat(String key) async {
+Future<void> saveDouble(String key, double value) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setDouble(key, value);
+}
+
+Future<double?> getDouble(String key) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getDouble(key);
 }
@@ -73,6 +78,10 @@ class DataCache{
     _isDemoAccount = false;
     _icsLocationPath = '';
     _icsIsUploaded = false;
+    _selectedTermId = null;
+    _selectedTermName = null;
+    _cachedTermsList = [];
+    _studentTrainingId = null;
     setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
     setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
@@ -80,6 +89,7 @@ class DataCache{
     setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
     setUserWeekOffset(_persistentSetting_weekOffset!);
     setUserSelectedLanguage(_persistentSetting_userSelectedLanguage!);
+    setUserSelectedLanguageCode(_persistentSetting_userSelectedLanguageCode);
     setNeedsHaptics(_persistentSetting_needBetterHaptics! ? 1 : 0);
     setIsInstalledFromGPlay(_permanentConfiguration_isInstalledFromGooglePlay!);
     setDownloadedSupportedLanguages(_languageJsonSupportedLangs);
@@ -95,6 +105,10 @@ class DataCache{
   late String? _instituteUrl = '';
   late String? _accessToken = ''; //new systems token query
   late String? _refreshToken = '';
+  String? _selectedTermId;
+  String? _selectedTermName;
+  List<String> _cachedTermsList = [];
+  String? _studentTrainingId;
   late bool _hasNetwork = false;
   late bool? _hasLogin = false;
   late bool? _hasCachedCalendar = false;
@@ -126,13 +140,19 @@ class DataCache{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool(key);
   }
+  double _fontScale = 1.0;
   static double getFontScale() {
-    return _prefs?.getDouble('FontScale') ?? 1.0;
+    return _instance._fontScale;
   }
 
   static Future<void> setFontScale(double scale) async {
-    await _prefs?.setDouble('FontScale', scale);
+    _instance._fontScale = scale;
+    await saveDouble('FontScale', scale);
   }
+
+  double? _accountBalance;
+  String? _accountBalanceCurrency = 'HUF';
+  int _unreadMailCount = 0;
 
   late bool? _persistentSetting_familyFriendlyLoadingComments = false;
   late bool? _persistentSetting_showExamNotifications = true;
@@ -142,6 +162,7 @@ class DataCache{
   late int? _persistentSetting_weekOffset = 0;
   late bool? _persistentSetting_needBetterHaptics = true;
   late int? _persistentSetting_userSelectedLanguage = -1;
+  String? _persistentSetting_userSelectedLanguageCode;
 
   late int? _permanentConfiguration_isInstalledFromGooglePlay = 0;
 
@@ -209,9 +230,10 @@ class DataCache{
     tmp = await getInt('HasCachedMail');
     _hasCachedMail = tmp != null && tmp != 0;
 
-    _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
-    Connectivity().onConnectivityChanged.listen((event) async {
-      _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
+    final connResults = await Connectivity().checkConnectivity();
+    _hasNetwork = connResults.any((r) => r != ConnectivityResult.none);
+    Connectivity().onConnectivityChanged.listen((event) {
+      _hasNetwork = event.any((r) => r != ConnectivityResult.none);
     });
 
     tmp = await getInt('HasCachedFirstWeekEpoch');
@@ -270,6 +292,13 @@ class DataCache{
     tmp = await getInt('SETTING_UserSelectedLanguage');
     _persistentSetting_userSelectedLanguage = tmp ?? -1;
 
+    _persistentSetting_userSelectedLanguageCode = await getString('SETTING_UserSelectedLanguageCode');
+
+    _selectedTermId = await getString('SELECTED_TermId');
+    _selectedTermName = await getString('SELECTED_TermName');
+    _cachedTermsList = await getStringList('CACHED_TermsList') ?? [];
+    _studentTrainingId = await getString('STUDENT_TrainingId');
+
     tmp = await getInt('CONFIG_IsInstalledFromGPlay');
     _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
 
@@ -281,6 +310,14 @@ class DataCache{
 
     tmp = await getInt('ICS_HasIcsUpload');
     _icsIsUploaded = tmp != null && tmp != 0;
+
+    final fs = await getDouble('FontScale');
+    _fontScale = fs ?? 1.0;
+
+    _accountBalance = await getDouble('ACCOUNT_Balance');
+    _accountBalanceCurrency = await getString('ACCOUNT_BalanceCurrency') ?? 'HUF';
+    final unread = await getInt('CachedMailsUnread');
+    _unreadMailCount = unread ?? 0;
   }
 
   static Future<void> loadThemeOnly()async{
@@ -293,9 +330,6 @@ class DataCache{
     _instance._username = value;
     await saveString('Username', value.toString());
   }
-
-  // A sima dolgoknak (pl. beállítások, isModernApi, stb.) marad a SharedPreferences
-  static SharedPreferences? _prefs;
 
   // A kritikus dolgoknak (jelszó, token) létrehozzuk a Secure Storage-ot
   static const _secureStorage = FlutterSecureStorage();
@@ -414,6 +448,23 @@ class DataCache{
     await saveInt('HasCachedMail', value ?? 0);
   }
 
+  static double? getAccountBalance() => _instance._accountBalance;
+  static String getAccountBalanceCurrency() => _instance._accountBalanceCurrency ?? 'HUF';
+  static Future<void> setAccountBalance(double? value, {String currency = 'HUF'}) async {
+    _instance._accountBalance = value;
+    _instance._accountBalanceCurrency = currency;
+    if (value != null) {
+      await saveDouble('ACCOUNT_Balance', value);
+      await saveString('ACCOUNT_BalanceCurrency', currency);
+    }
+  }
+
+  static int getUnreadMailCount() => _instance._unreadMailCount;
+  static Future<void> setUnreadMailCount(int value) async {
+    _instance._unreadMailCount = value;
+    await saveInt('CachedMailsUnread', value);
+  }
+
   static bool? getHasCachedFirstWeekEpoch(){return _instance._hasCachedFirstWeekEpoch;}
   static Future<void> setHasCachedFirstWeekEpoch(int? value) async{
     _instance._hasCachedFirstWeekEpoch = value != null && value != 0;
@@ -474,6 +525,56 @@ class DataCache{
     await saveInt('SETTING_UserSelectedLanguage', value ?? -1);
   }
 
+  static String? getUserSelectedLanguageCode() => _instance._persistentSetting_userSelectedLanguageCode;
+  static Future<void> setUserSelectedLanguageCode(String? value) async {
+    _instance._persistentSetting_userSelectedLanguageCode = value;
+    if (value == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('SETTING_UserSelectedLanguageCode');
+    } else {
+      await saveString('SETTING_UserSelectedLanguageCode', value);
+    }
+  }
+
+  static String? getSelectedTermId() => _instance._selectedTermId;
+  static Future<void> setSelectedTermId(String? value) async {
+    _instance._selectedTermId = value;
+    if (value == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('SELECTED_TermId');
+    } else {
+      await saveString('SELECTED_TermId', value);
+    }
+  }
+
+  static String? getSelectedTermName() => _instance._selectedTermName;
+  static Future<void> setSelectedTermName(String? value) async {
+    _instance._selectedTermName = value;
+    if (value == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('SELECTED_TermName');
+    } else {
+      await saveString('SELECTED_TermName', value);
+    }
+  }
+
+  static List<String> getCachedTermsRaw() => _instance._cachedTermsList;
+  static Future<void> setCachedTermsRaw(List<String> value) async {
+    _instance._cachedTermsList = value;
+    await saveStringList('CACHED_TermsList', value);
+  }
+
+  static String? getStudentTrainingId() => _instance._studentTrainingId;
+  static Future<void> setStudentTrainingId(String? value) async {
+    _instance._studentTrainingId = value;
+    if (value == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('STUDENT_TrainingId');
+    } else {
+      await saveString('STUDENT_TrainingId', value);
+    }
+  }
+
   static bool? getNeedsHaptics(){return _instance._persistentSetting_needBetterHaptics;}
   static Future<void> setNeedsHaptics(int? value)async{
     _instance._persistentSetting_needBetterHaptics =  value != null && value != 0;
@@ -519,7 +620,7 @@ class DataCache{
   static bool? getHasICSFile(){return _instance._icsIsUploaded;}
   static Future<void> setHasICSFile(bool? value)async{
     _instance._icsIsUploaded = value ?? false;
-    await saveInt('ICS_HasIcsUpload', value != null && value != 0 ? 1 : 0);
+    await saveInt('ICS_HasIcsUpload', value == true ? 1 : 0);
   }
   // Saját memóriaváltozók, hogy ne kelljen a _prefs-re támaszkodni
   static bool? _displayClasses = true;

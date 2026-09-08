@@ -11,8 +11,21 @@ class PaymentElementWidget extends StatelessWidget{
   final int dueDateMs;
   final String name;
   final bool completed;
+  final String? direction;
+  final String? note;
+  final String? currency;
 
-  const PaymentElementWidget({super.key, required this.ammount, required this.dueDateMs, required this.name, required this.ID, required this.completed});
+  const PaymentElementWidget({
+    super.key,
+    required this.ammount,
+    required this.dueDateMs,
+    required this.name,
+    required this.ID,
+    required this.completed,
+    this.direction,
+    this.note,
+    this.currency,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +36,18 @@ class PaymentElementWidget extends StatelessWidget{
     final isNonTimed = dueDateMs <= 0;
     final isMissed = dueDateMs < nowMs && !isNonTimed && !completed;
 
+    final isPositive = ammount > 0;
+    final isNegative = ammount < 0;
 
-    final cardColor = completed ? AppColors.getTheme().currentClassGreen :
+    final cardColor = completed ? (isPositive ? AppColors.getTheme().currentClassGreen : (isNegative ? AppColors.getTheme().secondary : AppColors.getTheme().currentClassGreen)) :
     isMissed ? AppColors.getTheme().errorRed :
     Colors.amber.shade600;
 
-    return Container(
+    final formattedAmount = ammount < 0 ? "-${(-ammount).toString()} Ft" : (ammount > 0 && completed ? "+${ammount.toString()} Ft" : "${ammount.toString()} Ft");
 
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         color: cardColor.withValues(alpha: 0.05),
         borderRadius: const BorderRadius.all(Radius.circular(20.0)),
@@ -42,6 +58,7 @@ class PaymentElementWidget extends StatelessWidget{
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             name,
@@ -52,13 +69,25 @@ class PaymentElementWidget extends StatelessWidget{
               fontSize: 15.0 * fontScale,
             ),
           ),
+          if (direction != null && direction!.isNotEmpty) ...[
+            const SizedBox(height: 3),
+            Text(
+              direction!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.getTheme().textColor.withValues(alpha: 0.6),
+                fontWeight: FontWeight.w500,
+                fontSize: 12.0 * fontScale,
+              ),
+            ),
+          ],
           const SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               EmojiRichText(
-                text: completed ? '✅' : isMissed ? '🙉' : '💰',
+                text: completed ? (isPositive ? '📥' : '📤') : isMissed ? '🙉' : '💰',
                 defaultStyle: TextStyle(
                   color: AppColors.getTheme().onPrimaryContainer,
                   fontWeight: FontWeight.w900,
@@ -73,7 +102,7 @@ class PaymentElementWidget extends StatelessWidget{
               Expanded(
                   flex: 2,
                   child: Text(
-                    AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_MoneyDisplay, [ammount]),
+                    formattedAmount,
                     style: TextStyle(
                       color: cardColor,
                       fontWeight: FontWeight.w900,
@@ -112,6 +141,18 @@ class PaymentElementWidget extends StatelessWidget{
               ) : const SizedBox(),
             ],
           ),
+          if (note != null && note!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              note!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.getTheme().textColor.withValues(alpha: 0.5),
+                fontSize: 11.0 * fontScale,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
           const SizedBox(height: 5),
           !isNonTimed && !completed ? Text(
             isMissed ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentMissedTime, [-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentDeadlineTime, [Duration(milliseconds: dueDateMs - nowMs).inDays + 1]),
@@ -126,4 +167,4 @@ class PaymentElementWidget extends StatelessWidget{
       ),
     );
   }
-}
+}

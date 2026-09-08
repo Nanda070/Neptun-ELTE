@@ -63,9 +63,7 @@ class TimetableElementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  // --- font upscale ---
-  //double fontScale = storage.DataCache.getFontScale()/* ?? 1.0*/;
-  double fontScale = 1.15;
+    double fontScale = storage.DataCache.getFontScale();
 
   return GestureDetector(
     onTap: () {

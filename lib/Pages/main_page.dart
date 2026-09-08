@@ -63,6 +63,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _instance?.setBlurComplex(b);
   }
 
+  static void navigateToView(int to) {
+    _instance?.switchView(to);
+  }
+
   bool _showBlur = false;
   void setBlur(bool state){
     setState(() {
@@ -188,10 +192,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     if(Platform.isAndroid){
       Future.delayed(Duration.zero, ()async{
-        tz.initializeTimeZones();
-        final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
-        final String timeZone = timeZoneInfo.identifier;
-        tz.setLocalLocation(tz.getLocation(timeZone));
+        try {
+          tz.initializeTimeZones();
+          final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
+          final String timeZone = timeZoneInfo.identifier;
+          tz.setLocalLocation(tz.getLocation(timeZone));
+        } catch (_) {
+          try {
+            tz.setLocalLocation(tz.getLocation('Europe/Budapest'));
+          } catch (_) {
+            tz.setLocalLocation(tz.UTC);
+          }
+        }
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         AppUpdater.checkAndInstallUpdate(context);
@@ -318,41 +330,33 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     Future.delayed(Duration.zero,() async{
       await AppNotifications.cancelScheduledNotifs();
     }).whenComplete((){
-      Future.delayed(Duration.zero, () async{
+      Future.microtask(() async {
         await fetchCalendar();
-      }).then((value) async {
-        if(storage.DataCache.getNeedExamNotifications()!){
-          Future.delayed(Duration.zero,() async{
-            if(!storage.DataCache.getHasNetwork()){
-              return;
-            }
+        if(storage.DataCache.getNeedExamNotifications() ?? false){
+          if(storage.DataCache.getHasNetwork()){
             await _skimForExams();
-          });
+          }
         }
         setupCalendar(true);
       });
 
-      Future.delayed(Duration.zero, () async{
+      Future.microtask(() async {
         await fetchMarkbook();
-      }).then((value) {
         setupMarkbook();
       });
 
-      Future.delayed(Duration.zero, () async{
+      Future.microtask(() async {
         await fetchPayments();
-      }).then((value) {
         setupPayments();
       });
 
-      Future.delayed(Duration.zero, () async{
+      Future.microtask(() async {
         await fetchPeriods();
-      }).then((value) {
         setupPeriods();
       });
 
-      Future.delayed(Duration.zero, () async{
+      Future.microtask(() async {
         await fetchMails();
-      }).then((value) {
         setupMails();
       });
     });
@@ -439,6 +443,38 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   static void settingsUserWeekOffsetChangeDetect(){
     _instance?._settingsUserWeekOffsetChangeDetect();
   }
+
+  static void onSemesterChanged(){
+    _instance?._onSemesterChanged();
+  }
+
+  void _onSemesterChanged(){
+    Future.delayed(Duration.zero, () async {
+      await storage.DataCache.setHasCachedMarkbook(0);
+      await storage.DataCache.setHasCachedPeriods(0);
+      await storage.DataCache.setHasCachedCalendar(0);
+      await storage.DataCache.setHasCachedFirstWeekEpoch(0);
+
+      final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+      if (firstWeekOfSemester != null) {
+        await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+        storage.DataCache.setHasCachedFirstWeekEpoch(1);
+      }
+
+      if (mounted) {
+        setState(() {
+          weeksSinceStart = calcPassedWeeks();
+        });
+      }
+
+      await Future.wait([
+        onMarkbookRefresh(),
+        onPeriodsRefresh(),
+        onCalendarRefresh(false),
+      ]);
+    });
+  }
+
   void _settingsUserWeekOffsetChangeDetect(){
     final currentOffset = storage.DataCache.getUserWeekOffset()!;
     if(settingsUserWeekOffsetPrev != currentOffset){
@@ -739,151 +775,77 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _setupCalendar(bool thisweekCalendar){
+    mondayCalendar.clear();
+    tuesdayCalendar.clear();
+    wednessdayCalendar.clear();
+    thursdayCalendar.clear();
+    fridayCalendar.clear();
+    saturdayCalendar.clear();
+    sundayCalendar.clear();
+
     if (thisweekCalendar) {
       _classesNotificationList.clear();
     }
+
+    // Sort entries chronologically
+    calendarEntries.sort((a, b) => a.startEpoch.compareTo(b.startEpoch));
+
     int idx = 1;
     int prev = 0;
     api.CalendarEntry? prevEntry;
     final currWeekday = DateTime.now().weekday;
-    for(var item in calendarEntries){
-      if(!item.isExam){
-        continue;
-      }
-      final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
-      if(prev != wkday){
-        idx = 1;
-        prev = wkday;
-      }
-      switch(wkday){
-        case 1:
-          mondayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false, // exam is an exam, not the current class, but even if this is true, nothing would change
-          ));
-          break;
-        case 2:
-          tuesdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-        case 3:
-          wednessdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-        case 4:
-          thursdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-        case 5:
-          fridayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-        case 6:
-          saturdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-        case 7:
-          sundayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: false,
-          ));
-          break;
-      }
-      idx++;
-    }
-
     final now = DateTime.now();
+
     for(var item in calendarEntries){
-      if(item.isExam){
-        continue;
-      }
       final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
       if(prev != wkday){
         idx = 1;
         prev = wkday;
         prevEntry = item;
-      }
-      if(thisweekCalendar && currWeekday == wkday){
-        _classesNotificationList.add(item);
-      }
-      if(idx == 2 && item.startEpoch == prevEntry!.startEpoch){
-        idx--;
-      }
-      final isCurrent = now.millisecondsSinceEpoch >= item.startEpoch && now.millisecondsSinceEpoch <= item.endEpoch && wkday == currWeekday && currentWeekOffset == 1; // if we are on the homepage, and the day is the same as today, and the event is not expired => it is currently active
-      switch(wkday){
-        case 1:
-          mondayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 2:
-          tuesdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 3:
-          wednessdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 4:
-          thursdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 5:
-          fridayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 6:
-          saturdayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-        case 7:
-          sundayCalendar.add(t_table.TimetableElementWidget(
-            entry: item,
-            position: idx,
-            isCurrent: isCurrent,
-          ));
-          break;
-      }
-      if(idx == 1 || prevEntry == null || item.startEpoch != prevEntry.startEpoch){
-        prevEntry = item;
+      } else if (prevEntry != null && item.startEpoch == prevEntry.startEpoch) {
+        // Same timeslot
+      } else {
         idx++;
       }
+      prevEntry = item;
+
+      if(thisweekCalendar && currWeekday == wkday && !item.isExam){
+        _classesNotificationList.add(item);
+      }
+
+      final isCurrent = !item.isExam && now.millisecondsSinceEpoch >= item.startEpoch && now.millisecondsSinceEpoch <= item.endEpoch && wkday == currWeekday && currentWeekOffset == 1;
+
+      final widget = t_table.TimetableElementWidget(
+        entry: item,
+        position: idx,
+        isCurrent: isCurrent,
+      );
+
+      switch(wkday){
+        case 1:
+          mondayCalendar.add(widget);
+          break;
+        case 2:
+          tuesdayCalendar.add(widget);
+          break;
+        case 3:
+          wednessdayCalendar.add(widget);
+          break;
+        case 4:
+          thursdayCalendar.add(widget);
+          break;
+        case 5:
+          fridayCalendar.add(widget);
+          break;
+        case 6:
+          saturdayCalendar.add(widget);
+          break;
+        case 7:
+          sundayCalendar.add(widget);
+          break;
+      }
     }
-    calendarTabController.index = currentWeekOffset == 1 ? currWeekday - 1 > 6 ? 0 : currWeekday - 1 : calendarTabController.index;
+    calendarTabController.index = currentWeekOffset == 1 ? (currWeekday - 1 > 6 ? 0 : currWeekday - 1) : calendarTabController.index;
   }
 
   List<Widget> calendarTabs = <Widget>[].toList();
@@ -1001,10 +963,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
   
   void _setupMarkbook(){
+    markbookList.clear();
+    totalCredits = 0;
     totalAvg = 5;
     totalAvg30 = 5;
     if(markbookEntries.isEmpty){
-      totalCredits = 0;
       markbookList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -1140,29 +1103,29 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   void _setupPayments(){
     _paymentsNotificationList.clear();
+    paymentsList.clear();
     totalMoney = 0;
-    //order them
-    for (int i = 0; i < paymentsEntries.length; i++){
-      for (int j = i; j < paymentsEntries.length; j++){
-        if(paymentsEntries[j].dueDateMs < paymentsEntries[i].dueDateMs){
-          final tmp = paymentsEntries[i];
-          paymentsEntries[i] = paymentsEntries[j];
-          paymentsEntries[j] = tmp;
-        }
-      }
-    }
 
-    bool isEmpty = true;
+    // Sort descending by date (newest first)
+    paymentsEntries.sort((a, b) => b.dueDateMs.compareTo(a.dueDateMs));
+
     for(var item in paymentsEntries){
       if(item.completed){
-        totalMoney += item.ammount;
-        continue;
+        totalMoney += item.ammount.abs();
       }
-      isEmpty = false;
-      paymentsList.add(PaymentElementWidget(ammount: item.ammount, dueDateMs: item.dueDateMs, ID: item.ID, name: item.comment, completed: item.completed));
-      if(item.dueDateMs > DateTime.now().millisecondsSinceEpoch || item.dueDateMs == 0){
+      if(!item.completed && (item.dueDateMs > DateTime.now().millisecondsSinceEpoch || item.dueDateMs == 0)){
         _paymentsNotificationList.add(item);
       }
+      paymentsList.add(PaymentElementWidget(
+        ammount: item.ammount,
+        dueDateMs: item.dueDateMs,
+        ID: item.ID,
+        name: item.comment,
+        completed: item.completed,
+        direction: item.direction,
+        note: item.note,
+        currency: item.currency,
+      ));
     }
 
     if(_paymentsNotificationList.isNotEmpty){
@@ -1171,7 +1134,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       });
     }
 
-    if(isEmpty){
+    if(paymentsEntries.isEmpty){
       paymentsList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -1229,6 +1192,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   void _setupPeriods(){
     _periodsNotificationList.clear();
+    periodList.clear();
+    countActivePeriods = 0;
+    countFuturePeriods = 0;
+    countExpiredPeriods = 0;
     //order them
     for (int i = 0; i < periodEntries.length; i++){
       for (int j = i; j < periodEntries.length; j++){
@@ -1443,19 +1410,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Future<void> fetchCalendar() async{
     if(storage.DataCache.getHasICSFile() ?? false){
       final DateTime now = DateTime.now();
-      DateTime previousMonday = now.subtract(Duration(days: now.weekday));
-      if (previousMonday.weekday == 7) {
-        previousMonday = previousMonday.subtract(const Duration(days: 7));
-      }
-      previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
+      final mondayThisWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+      final int deltaWeeks = currentWeekOffset - 1;
 
-      DateTime nextSunday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
-      if (nextSunday.weekday == 7) {
-        nextSunday = nextSunday.subtract(const Duration(days: 7));
-      }
-
-      DateTime startOfTargetWeek = previousMonday.add(Duration(days: currentWeekOffset * 7));
-      DateTime endOfTargetWeek = nextSunday.add(Duration(days: currentWeekOffset * 7));
+      final startOfTargetWeek = mondayThisWeek.add(Duration(days: deltaWeeks * 7));
+      final endOfTargetWeek = startOfTargetWeek.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59, milliseconds: 999));
 
       final epochStart = startOfTargetWeek.millisecondsSinceEpoch;
       final epochEnd = endOfTargetWeek.millisecondsSinceEpoch;
@@ -1468,95 +1427,109 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     bool hasCachedCalendar = storage.DataCache.getHasCachedCalendar() ?? false;
     final cacheTime = await storage.getString('CalendarCacheTime');
+    final cachedTerm = await storage.getString('CalendarCacheTermId');
+    final activeTerm = storage.DataCache.getSelectedTermId() ?? '';
 
     if(!hasCachedCalendar && !storage.DataCache.getHasNetwork()){
       return;
     }
-    // if we had a save, and the cached value is not older than a day, we can load that up
-    if(hasCachedCalendar && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds && !storage.DataCache.getIsDemoAccount()!) {
-      final len = await storage.getInt('CachedCalendarLength');
-      for(int i = 0; i < len!; i++){
+    // if we had a save, and the cached value is not older than a day, and active term matches, load it ONLY if cached length > 0!
+    final len = await storage.getInt('CachedCalendarLength');
+    if(hasCachedCalendar && (cachedTerm == activeTerm || activeTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds && !storage.DataCache.getIsDemoAccount()! && len != null && len > 0) {
+      calendarEntries.clear();
+      for(int i = 0; i < len; i++){
         final calEntry = await storage.getString('CachedCalendar_$i');
-        calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry!));
+        if (calEntry != null) {
+          calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry));
+        }
       }
-      storage.DataCache.setHasCachedFirstWeekEpoch(1);
-      //auto get details
-      api.CalendarRequest.fillMissingDetails(calendarEntries, () {
-        if (mounted) setState(() {});
-      });
+      if (calendarEntries.isNotEmpty) {
+        storage.DataCache.setHasCachedFirstWeekEpoch(1);
+        api.CalendarRequest.fillMissingDetails(calendarEntries, () {
+          if (mounted) setState(() {});
+        });
 
-      Future.delayed(Duration.zero,()async{
-        await _setupClassesNotifications(_classesNotificationList);
-      });
-      return;
+        Future.delayed(Duration.zero,()async{
+          await _setupClassesNotifications(_classesNotificationList);
+        });
+        return;
+      }
     }
-    //otherwise, just fetch again
-    //final isWeekend = DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday ? 1 : 0;
-    //final userOffset = storage.DataCache.getUserWeekOffset()!;
+
+    // Otherwise, fetch fresh from network!
     final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset));
     calendarEntries.clear();
     final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
-    //calendarEntries = list2;
     calendarEntries = list;
 
-    //automatic room finder lol
+    // automatic room finder
     api.CalendarRequest.fillMissingDetails(calendarEntries, () {
       if (mounted) setState(() {});
     });
-    //autofinder end
 
-    if(currentWeekOffset == 1) {
+    if(currentWeekOffset == 1 && calendarEntries.isNotEmpty) {
       storage.saveInt('CachedCalendarLength', calendarEntries.length);
-      //cache calendar
+      storage.saveString('CalendarCacheTermId', activeTerm);
       for (int i = 0; i < calendarEntries.length; i++) {
         storage.saveString('CachedCalendar_$i', calendarEntries[i].toString());
       }
       final now = DateTime.now();
       storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
+      storage.DataCache.setHasCachedCalendar(1);
       Future.delayed(Duration.zero,()async{
         await _setupClassesNotifications(_classesNotificationList);
       });
     }
-    storage.DataCache.setHasCachedCalendar(1);
   }
 
   Future<void> fetchMarkbook() async{
+    markbookEntries.clear();
     bool hasCachedMarkbook= storage.DataCache.getHasCachedMarkbook() ?? false;
     final cacheTime = await storage.getString('MarkbookCacheTime');
+    final cachedTerm = await storage.getString('MarkbookCacheTermId');
+    final currentTerm = storage.DataCache.getSelectedTermId() ?? '';
 
     if(!hasCachedMarkbook && !storage.DataCache.getHasNetwork()){
       return;
     }
 
-    // if we had a save, and the cached value is not older than a day, we can load that up
-    if(hasCachedMarkbook && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+    // if we had a save, and the cached value is not older than a day, and term matches, we can load that up
+    if(hasCachedMarkbook && (cachedTerm == currentTerm || currentTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
       final len = await storage.getInt('CachedMarkbookLength');
-      for(int i = 0; i < len!; i++){
-        final calEntry = await storage.getString('CachedMarkbook_$i');
-        markbookEntries.add(api.Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(calEntry!));
+      if (len != null && len > 0) {
+        for(int i = 0; i < len; i++){
+          final calEntry = await storage.getString('CachedMarkbook_$i');
+          if (calEntry != null) {
+            markbookEntries.add(api.Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(calEntry));
+          }
+        }
+        if (markbookEntries.isNotEmpty) {
+          return;
+        }
       }
-      return;
     }
 
     //otherwise, just fetch again
-    final request = await api.MarkbookRequest.getMarkbookSubjects();
+    final request = await api.MarkbookRequest.getMarkbookSubjects(termId: currentTerm.isNotEmpty ? currentTerm : null);
     if(request == null || request.isEmpty){
       markbookEntries = [];
       return;
     }
     markbookEntries = request;
 
-    storage.saveInt('CachedMarkbookLength', markbookEntries.length);
-    //cache calendar
-    for (int i = 0; i < markbookEntries.length; i++) {
-      storage.saveString('CachedMarkbook_$i', markbookEntries[i].toString());
+    if (markbookEntries.isNotEmpty) {
+      storage.saveInt('CachedMarkbookLength', markbookEntries.length);
+      for (int i = 0; i < markbookEntries.length; i++) {
+        storage.saveString('CachedMarkbook_$i', markbookEntries[i].toString());
+      }
+      storage.saveString('MarkbookCacheTime', DateTime.now().toString());
+      storage.saveString('MarkbookCacheTermId', currentTerm);
+      storage.DataCache.setHasCachedMarkbook(1);
     }
-    storage.saveString('MarkbookCacheTime', DateTime.now().toString());
-
-    storage.DataCache.setHasCachedMarkbook(1);
   }
 
   Future<void> fetchPayments() async{
+    paymentsEntries.clear();
     bool hasCachedPayments = storage.DataCache.getHasCachedPayments() ?? false;
 
     final cacheTime = await storage.getString('PaymentsCacheTime');
@@ -1568,65 +1541,85 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     // if we had a save, and the cached value is not older than a day, we can load that up
     if(hasCachedPayments && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
       final len = await storage.getInt('CachedPaymentsLength');
-      for(int i = 0; i < len!; i++){
-        final calEntry = await storage.getString('CachedPayments_$i');
-        paymentsEntries.add(api.CashinEntry(0, 0, 'NULL', "", 'NULL').fillWithExisting(calEntry!));
+      if (len != null && len > 0) {
+        for(int i = 0; i < len; i++){
+          final calEntry = await storage.getString('CachedPayments_$i');
+          if (calEntry != null) {
+            final entry = api.CashinEntry(0, 0, "ERROR", "ERROR", "").fillWithExisting(calEntry);
+            paymentsEntries.add(entry);
+          }
+        }
+        if (paymentsEntries.isNotEmpty) {
+          return;
+        }
       }
-      return;
     }
 
     //otherwise, just fetch again
     final request = await api.CashinRequest.getAllCashins();
+    await api.CashinRequest.getCollectiveInvoiceBalance();
     if(request == null || request.isEmpty){
+      paymentsEntries = [];
       return;
     }
     paymentsEntries = request;
 
-    storage.saveInt('CachedPaymentsLength', paymentsEntries.length);
-    //cache calendar
-    for (int i = 0; i < paymentsEntries.length; i++) {
-      storage.saveString('CachedPayments_$i', paymentsEntries[i].toString());
+    if (paymentsEntries.isNotEmpty) {
+      storage.saveInt('CachedPaymentsLength', paymentsEntries.length);
+      for (int i = 0; i < paymentsEntries.length; i++) {
+        storage.saveString('CachedPayments_$i', paymentsEntries[i].toString());
+      }
+      storage.saveString('PaymentsCacheTime', DateTime.now().toString());
+      storage.DataCache.setHasCachedPayments(1);
     }
-    storage.saveString('PaymentsCacheTime', DateTime.now().toString());
-
-    storage.DataCache.setHasCachedPayments(1);
   }
 
   Future<void> fetchPeriods() async{
+    periodEntries.clear();
     bool hasCachedPeriods = storage.DataCache.getHasCachedPeriods() ?? false;
 
     final cacheTime = await storage.getString('PeriodsCacheTime');
+    final cachedTerm = await storage.getString('PeriodsCacheTermId');
+    final currentTerm = storage.DataCache.getSelectedTermId() ?? '';
 
     if(!hasCachedPeriods && !storage.DataCache.getHasNetwork()){
       return;
     }
 
-    // if we had a save, and the cached value is not older than a day, we can load that up
-    if(hasCachedPeriods && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+    // if we had a save, and the cached value is not older than a day, and term matches, we can load that up
+    if(hasCachedPeriods && (cachedTerm == currentTerm || currentTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
       final len = await storage.getInt('CachedPeriodsLength');
-      for(int i = 0; i < len!; i++){
-        final calEntry = await storage.getString('CachedPeriods_$i');
-        final entry = api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry!);
-        periodEntries.add(entry);
+      if (len != null && len > 0) {
+        for(int i = 0; i < len; i++){
+          final calEntry = await storage.getString('CachedPeriods_$i');
+          if (calEntry != null) {
+            final entry = api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry);
+            periodEntries.add(entry);
+          }
+        }
+        if (periodEntries.isNotEmpty) {
+          return;
+        }
       }
-      return;
     }
 
     //otherwise, just fetch again
-    final request = await api.PeriodsRequest.getPeriods();
+    final request = await api.PeriodsRequest.getPeriods(termId: currentTerm.isNotEmpty ? currentTerm : null);
     if(request == null || request.isEmpty){
+      periodEntries = [];
       return;
     }
     periodEntries = request;
 
-    storage.saveInt('CachedPeriodsLength', periodEntries.length);
-    //cache calendar
-    for (int i = 0; i < periodEntries.length; i++) {
-      storage.saveString('CachedPeriods_$i', periodEntries[i].toString());
+    if (periodEntries.isNotEmpty) {
+      storage.saveInt('CachedPeriodsLength', periodEntries.length);
+      for (int i = 0; i < periodEntries.length; i++) {
+        storage.saveString('CachedPeriods_$i', periodEntries[i].toString());
+      }
+      storage.saveString('PeriodsCacheTime', DateTime.now().toString());
+      storage.saveString('PeriodsCacheTermId', currentTerm);
+      storage.DataCache.setHasCachedPeriods(1);
     }
-    storage.saveString('PeriodsCacheTime', DateTime.now().toString());
-
-    storage.DataCache.setHasCachedPeriods(1);
   }
 
   int currentMailPage = 1;
@@ -1735,6 +1728,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _markbookDebounce = true;
     clearMarkbook();
     await storage.DataCache.setHasCachedMarkbook(0);
+    await api.TermsRequest.getTerms(forceRefresh: true);
     await fetchMarkbook();
     setupMarkbook();
     _markbookDebounce = false;
@@ -1775,6 +1769,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _periodsDebounce = true;
     clearPeriods();
     await storage.DataCache.setHasCachedPeriods(0);
+    await api.TermsRequest.getTerms(forceRefresh: true);
     await fetchPeriods();
     setupPeriods();
     _periodsDebounce = false;

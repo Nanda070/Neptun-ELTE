@@ -21,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late String _languageCurrSelect;
   late String _themesCurrSelect;
   late double _currentFontScale;
+  List<LangPackMap> _availableLanguages = Language.getAllLanguagesWithNative();
 
   @override
   void initState() {
@@ -30,12 +31,43 @@ class _SettingsPageState extends State<SettingsPage> {
     _currentFontScale = DataCache.getFontScale();
     _themesCurrSelect = AppColors.getTheme().paletteName;
 
-    final lIdx = DataCache.getUserSelectedLanguage()!;
-    if (lIdx <= -1) {
-      final langCodeIdx = AppStrings.getAllLangCodes().indexOf(Platform.localeName.split('_')[0].toLowerCase());
-      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[langCodeIdx];
-    } else {
-      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[lIdx];
+    _initLanguageSelection();
+    _loadOnlineLanguages();
+  }
+
+  void _initLanguageSelection() {
+    final selectedCode = DataCache.getUserSelectedLanguageCode();
+    final selectedIdx = DataCache.getUserSelectedLanguage() ?? -1;
+    final allCodes = _availableLanguages.map((l) => l.langId).toList();
+
+    int targetIdx = -1;
+    if (selectedCode != null && selectedCode.isNotEmpty) {
+      targetIdx = allCodes.indexOf(selectedCode);
+    }
+    if (targetIdx == -1 && selectedIdx >= 0 && selectedIdx < _availableLanguages.length) {
+      targetIdx = selectedIdx;
+    }
+    if (targetIdx == -1) {
+      final deviceCode = Platform.localeName.split('_')[0].toLowerCase();
+      targetIdx = allCodes.indexOf(deviceCode);
+    }
+    if (targetIdx == -1) {
+      targetIdx = 0;
+    }
+
+    final targetLang = _availableLanguages[targetIdx];
+    _languageCurrSelect = "${targetLang.langFlag} ${targetLang.langName}";
+  }
+
+  Future<void> _loadOnlineLanguages() async {
+    if (DataCache.getHasNetwork()) {
+      final onlineLangs = await Language.getAllLanguages();
+      if (onlineLangs != null && mounted) {
+        setState(() {
+          _availableLanguages = Language.getAllLanguagesWithNative();
+          _initLanguageSelection();
+        });
+      }
     }
   }
 
@@ -157,30 +189,65 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  value: _languageCurrSelect,
+                  value: _availableLanguages.any((l) => "${l.langFlag} ${l.langName}" == _languageCurrSelect)
+                      ? _languageCurrSelect
+                      : "${_availableLanguages.first.langFlag} ${_availableLanguages.first.langName}",
                   dropdownColor: AppColors.getTheme().rootBackground,
                   icon: Icon(Icons.arrow_drop_down_rounded, color: AppColors.getTheme().textColor),
                   isExpanded: true,
-                  items: AppStrings.getLanguageNamesWithFlag().map((String value) {
+                  items: _availableLanguages.map((LangPackMap item) {
+                    final strValue = "${item.langFlag} ${item.langName}";
                     return DropdownMenuItem<String>(
-                        value: value,
+                        value: strValue,
                         child: EmojiRichText(
-                          text: value,
+                          text: strValue,
                           defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 14),
                           emojiStyle: TextStyle(color: AppColors.getTheme().textColor, fontSize: 18, fontFamily: "Noto Color Emoji"),
                         )
                     );
                   }).toList(),
-                  onChanged: (String? value) {
+                  onChanged: (String? value) async {
                     if (value == null) return;
                     AppHaptics.lightImpact();
-                    // language logic from old popup
-                    final flagWeLookFor = value.split(' ')[0];
-                    final languageIdx = AppStrings.getAllLangFlags().indexOf(flagWeLookFor);
-                    DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
 
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Splitter()));
+                    final selected = _availableLanguages.firstWhere(
+                      (l) => "${l.langFlag} ${l.langName}" == value,
+                      orElse: () => _availableLanguages.first,
+                    );
+
+                    if (!AppStrings.hasLanguageDownloaded(selected.langId) && selected.langURL.isNotEmpty) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (ctx) => Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: AppColors.getTheme().rootBackground,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+
+                      final allLangs = await Language.getAllLanguages();
+                      await Language.getLanguagePackById(allLangs, selected.langId);
+                      AppStrings.saveDownloadedLanguageData();
+                      if (mounted && Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    }
+
+                    final allCodes = AppStrings.getAllLangCodes();
+                    final newIdx = allCodes.indexOf(selected.langId);
+                    await DataCache.setUserSelectedLanguage(newIdx >= 0 ? newIdx : 0);
+                    await DataCache.setUserSelectedLanguageCode(selected.langId);
+
+                    if (mounted) {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Splitter()));
+                    }
                   },
                 ),
               ),

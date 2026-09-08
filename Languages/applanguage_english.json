@@ -172,5 +172,10 @@
   "popup_case1_langSwap_DownloadingLangFail": "Can't download, no internet",
   "popup_case1_settingOption9_ThemeSwap": "App theme",
   "popup_case1_settingOption9_ThemeSwapDescription": "Select how the app should look like",
-  "popup_case1_themeSwap_DownloadingThemeFail": "Downloading theme"
+  "popup_case1_themeSwap_DownloadingThemeFail": "Downloading theme",
+  "topmenu_AccountBalance": "Account balance",
+  "topmenu_UnreadMessagesBadge": "%0 new messages",
+  "topmenu_NoUnreadMessages": "No new messages",
+  "topmenu_MessagesTitle": "Messages",
+  "topmenu_PaymentsTitle": "Payments"
 }

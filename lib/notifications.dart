@@ -10,12 +10,24 @@ class AppNotifications{
     Counter();
     if(Platform.isAndroid){
       tz.initializeTimeZones();
-      final timeZoneName = await FlutterTimezone.getLocalTimezone();
-      final String timeZone = timeZoneName.identifier;
-      tz.setLocalLocation(tz.getLocation(timeZone));
+      try {
+        final timeZoneName = await FlutterTimezone.getLocalTimezone();
+        final String timeZone = timeZoneName.identifier;
+        tz.setLocalLocation(tz.getLocation(timeZone));
+      } catch (_) {
+        try {
+          tz.setLocalLocation(tz.getLocation('Europe/Budapest'));
+        } catch (_) {
+          tz.setLocalLocation(tz.UTC);
+        }
+      }
 
-      AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
-      _localnotifs.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+      try {
+        await AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
+      } catch (_) {}
+      try {
+        await _localnotifs.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+      } catch (_) {}
     }
     await _localnotifs.initialize(settings: const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),

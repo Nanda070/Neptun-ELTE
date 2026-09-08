@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.4+10
+version: 1.0.5+16
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dev_dependencies:
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
 
@@ -39,21 +39,21 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   linked_scroll_controller: ^0.2.0
-  fluttertoast: ^9.0.0
+  fluttertoast: ^9.1.0
   url_launcher: ^6.3.0
   package_info_plus: ^10.1.0
   flutter_timezone: ^5.0.2
-  flutter_local_notifications: ^21.0.0
+  flutter_local_notifications: ^22.3.0
   timezone: ^0.11.0
-  in_app_update: ^4.2.3
+  in_app_update: ^4.2.5
   device_info_plus: ^13.1.0
   vibration: ^3.1.8
-  flutter_native_splash: ^2.3.10
+  flutter_native_splash: ^2.4.7
   http: ^1.6.0
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.5
   connectivity_plus: ^7.1.1
   provider: ^6.1.2
-  file_picker: ^12.0.0-beta.1
+  file_picker: ^12.2.0
   path_provider: ^2.1.5
   flutter_secure_storage: ^8.1.0
   change_app_package_name: ^1.5.0
@@ -76,10 +76,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-  #    - assets/neptun2_logo.png
+  #assets:
+  #  - assets/neptun2_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
