@@ -1316,9 +1316,26 @@ class CashinRequest{
         if (decoded['data'] != null && decoded['data'] is List) {
           for (var item in decoded['data']) {
             final rawVal = item['transactionValue'];
-            int amount = ((rawVal as num?) ?? 0).toInt();
-            if (item['sign'] == '-') {
-              amount = -amount;
+            int amount = ((rawVal as num?) ?? 0).toInt().abs();
+            final sign = item['sign']?.toString() ?? '';
+            final dir = item['transactionDirection']?.toString().toLowerCase() ?? '';
+            final type = item['transactionPayingType']?.toString().toLowerCase() ?? '';
+
+            // Student perspective:
+            // Receiving money (scholarship, kifizetés, jóváírás, sign == '-'): POSITIVE (+)
+            // Paying money (tuition, fees, befizetés, sign == '+'): NEGATIVE (-)
+            bool isReceiving = sign == '-' ||
+                dir.contains('kifizet') ||
+                dir.contains('jóváírás') ||
+                dir.contains('bejövő') ||
+                type.contains('ösztöndíj') ||
+                type.contains('támogatás') ||
+                type.contains('jutalom');
+
+            if (isReceiving) {
+              amount = amount; // Positive
+            } else {
+              amount = -amount; // Negative
             }
 
             final rawDate = item['transferDate']?.toString();

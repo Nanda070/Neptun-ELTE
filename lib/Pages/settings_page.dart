@@ -8,6 +8,7 @@ import '../language.dart';
 import '../storage.dart';
 import '../Misc/emojirich_text.dart';
 import '../Pages/startup_page.dart';
+import '../Misc/auto_updater.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -360,21 +361,30 @@ class _SettingsPageState extends State<SettingsPage> {
               width: 120,
               decoration: BoxDecoration(color: AppColors.getTheme().textColor.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(12)),
               child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.remove, color: AppColors.getTheme().textColor, size: 18),
-                    onPressed: () { AppHaptics.lightImpact(); HomePageState.settingsUserWeekOffsetAdd(-1); setState((){}); },
-                  ),
-                  Expanded(
-                    child: Text(HomePageState.getUserWeekOffsetTextController().text.isEmpty ? "Auto" : HomePageState.getUserWeekOffsetTextController().text, textAlign: TextAlign.center, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold)),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add, color: AppColors.getTheme().textColor, size: 18),
-                    onPressed: () { AppHaptics.lightImpact(); HomePageState.settingsUserWeekOffsetAdd(1); setState((){}); },
-                  ),
-                ],
+                 children: [
+                   IconButton(
+                     icon: Icon(Icons.remove, color: AppColors.getTheme().textColor, size: 18),
+                     onPressed: () { AppHaptics.lightImpact(); HomePageState.settingsUserWeekOffsetAdd(-1); setState((){}); },
+                   ),
+                   Expanded(
+                     child: Text(HomePageState.getUserWeekOffsetTextController().text.isEmpty ? "Auto" : HomePageState.getUserWeekOffsetTextController().text, textAlign: TextAlign.center, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold)),
+                   ),
+                   IconButton(
+                     icon: Icon(Icons.add, color: AppColors.getTheme().textColor, size: 18),
+                     onPressed: () { AppHaptics.lightImpact(); HomePageState.settingsUserWeekOffsetAdd(1); setState((){}); },
+                   ),
+                 ],
               ),
             ),
+          ),
+          ListTile(
+            leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
+            title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            trailing: Icon(Icons.chevron_right_rounded, color: AppColors.getTheme().textColor.withValues(alpha: 0.4)),
+            onTap: () {
+              AppHaptics.lightImpact();
+              AppUpdater.checkAndInstallUpdate(context, force: true);
+            },
           ),
           const SizedBox(height: 40),
         ],

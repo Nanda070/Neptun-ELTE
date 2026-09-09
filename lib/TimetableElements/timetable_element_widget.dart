@@ -301,6 +301,206 @@ class TimetableElementWidget extends StatelessWidget {
 }
 }
 
+class BreakElementWidget extends StatelessWidget {
+  final int startEpoch;
+  final int endEpoch;
+  final bool isCurrent;
+  final String nextClassTitle;
+
+  const BreakElementWidget({
+    super.key,
+    required this.startEpoch,
+    required this.endEpoch,
+    required this.isCurrent,
+    this.nextClassTitle = '',
+  });
+
+  String _formatDuration(int ms) {
+    final dur = Duration(milliseconds: ms);
+    if (dur.inMinutes < 60) {
+      return "${dur.inMinutes} perc";
+    }
+    final hours = dur.inHours;
+    final mins = dur.inMinutes.remainder(60);
+    return mins > 0 ? "$hours óra $mins perc" : "$hours óra";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fontScale = storage.DataCache.getFontScale();
+    final startDate = DateTime.fromMillisecondsSinceEpoch(startEpoch);
+    final endDate = DateTime.fromMillisecondsSinceEpoch(endEpoch);
+    final startHour = startDate.hour.toString().padLeft(2, '0');
+    final startMin = startDate.minute.toString().padLeft(2, '0');
+    final endHour = endDate.hour.toString().padLeft(2, '0');
+    final endMin = endDate.minute.toString().padLeft(2, '0');
+    final timeRange = "$startHour:$startMin - $endHour:$endMin";
+    final breakDurationText = _formatDuration(endEpoch - startEpoch);
+
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    final remainingMs = endEpoch - nowMs;
+    final remainingDur = Duration(milliseconds: remainingMs > 0 ? remainingMs : 0);
+    final remainingFormatted = "${remainingDur.inHours.toString().padLeft(2, '0')}:${(remainingDur.inMinutes.remainder(60)).toString().padLeft(2, '0')}";
+
+    if (isCurrent) {
+      // --- AKTÍV SZÜNET (Visszaszámláló órával és kiemeléssel) ---
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.getTheme().currentClassGreen.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.getTheme().currentClassGreen.withValues(alpha: 0.6),
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.getTheme().currentClassGreen.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.coffee_rounded,
+                color: AppColors.getTheme().currentClassGreen,
+                size: 20 * fontScale,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Szünet most",
+                        style: TextStyle(
+                          color: AppColors.getTheme().currentClassGreen,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14 * fontScale,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        "($breakDurationText)",
+                        style: TextStyle(
+                          color: AppColors.getTheme().textColor.withValues(alpha: 0.6),
+                          fontSize: 12 * fontScale,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "$timeRange ${nextClassTitle.isNotEmpty ? '• Következő: $nextClassTitle' : ''}",
+                    style: TextStyle(
+                      color: AppColors.getTheme().textColor.withValues(alpha: 0.7),
+                      fontSize: 12 * fontScale,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.timelapse_rounded,
+                  color: AppColors.getTheme().currentClassGreen,
+                  size: 18 * fontScale,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  remainingFormatted,
+                  style: TextStyle(
+                    color: AppColors.getTheme().currentClassGreen,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15 * fontScale,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    // --- NORMÁL ÓRA VONAL SZÜNET ELVÁLASZTÓ ---
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.getTheme().textColor.withValues(alpha: 0.0),
+                    AppColors.getTheme().textColor.withValues(alpha: 0.15),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: AppColors.getTheme().textColor.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.getTheme().textColor.withValues(alpha: 0.08),
+                width: 0.8,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.coffee_rounded,
+                  size: 13 * fontScale,
+                  color: AppColors.getTheme().onPrimaryContainer.withValues(alpha: 0.7),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  "$breakDurationText szünet • $timeRange",
+                  style: TextStyle(
+                    color: AppColors.getTheme().textColor.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11 * fontScale,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.getTheme().textColor.withValues(alpha: 0.15),
+                    AppColors.getTheme().textColor.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class FreedayElementWidget extends StatelessWidget{
   const FreedayElementWidget({super.key});
 

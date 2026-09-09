@@ -39,11 +39,17 @@ class PaymentElementWidget extends StatelessWidget{
     final isPositive = ammount > 0;
     final isNegative = ammount < 0;
 
-    final cardColor = completed ? (isPositive ? AppColors.getTheme().currentClassGreen : (isNegative ? AppColors.getTheme().secondary : AppColors.getTheme().currentClassGreen)) :
-    isMissed ? AppColors.getTheme().errorRed :
-    Colors.amber.shade600;
+    final cardColor = completed
+        ? (isPositive ? AppColors.getTheme().currentClassGreen : AppColors.getTheme().onPrimaryContainer)
+        : (isMissed ? AppColors.getTheme().errorRed : Colors.amber.shade600);
 
-    final formattedAmount = ammount < 0 ? "-${(-ammount).toString()} Ft" : (ammount > 0 && completed ? "+${ammount.toString()} Ft" : "${ammount.toString()} Ft");
+    final curr = (currency != null && currency!.isNotEmpty) ? currency! : 'Ft';
+    final absAmount = ammount.abs();
+    final formattedNum = absAmount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ');
+
+    final formattedAmount = completed
+        ? (isPositive ? "+$formattedNum $curr" : (isNegative ? "-$formattedNum $curr" : "$formattedNum $curr"))
+        : "$formattedNum $curr";
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),

@@ -59,6 +59,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _instance = this;
   }
 
+  static BuildContext? getContext() => _instance?.context;
+
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+
   static void showBlurPopup(bool b){
     _instance?.setBlurComplex(b);
   }
@@ -178,20 +182,23 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ICSCalendar.initialize();
     }
 
-    Future.delayed(const Duration(seconds: 4), () async {
-      // Az új letöltő meghívása
-      await AppUpdater.checkAndInstallUpdate(context);
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
+      final hasConn = results.any((r) => r != ConnectivityResult.none);
+      if (hasConn && mounted) {
+        // Csendes háttérbeli frissítés kapcsolat visszatérésekor
+        Future.microtask(() => onCalendarRefresh(false));
+      }
     });
 
-    Future.delayed(Duration(seconds: 4),()async{
+    Future.delayed(const Duration(seconds: 4), () async {
       await LanguageManager.suggestLang(context, null, null);
     });
-    Future.delayed(Duration(seconds: 1),()async{
+    Future.delayed(const Duration(seconds: 1), () async {
       await LanguageManager.refreshAllDownloadedLangs();
     });
 
     if(Platform.isAndroid){
-      Future.delayed(Duration.zero, ()async{
+      Future.delayed(Duration.zero, () async {
         try {
           tz.initializeTimeZones();
           final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
@@ -795,6 +802,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     api.CalendarEntry? prevEntry;
     final currWeekday = DateTime.now().weekday;
     final now = DateTime.now();
+    final Map<int, api.CalendarEntry> prevClassPerWkday = {};
 
     for(var item in calendarEntries){
       final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
@@ -812,6 +820,39 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(thisweekCalendar && currWeekday == wkday && !item.isExam){
         _classesNotificationList.add(item);
       }
+
+      // Szünet detektálása az azonos napon lévő egymást követő órák között
+      final prevClass = prevClassPerWkday[wkday];
+      if (prevClass != null && !prevClass.isExam && !item.isExam) {
+        final breakStart = prevClass.endEpoch;
+        final breakEnd = item.startEpoch;
+        final breakMs = breakEnd - breakStart;
+        if (breakMs >= 5 * 60 * 1000) { // legalább 5 perces szünet
+          final isCurrentBreak = now.millisecondsSinceEpoch >= breakStart &&
+              now.millisecondsSinceEpoch < breakEnd &&
+              wkday == currWeekday &&
+              currentWeekOffset == 1;
+
+          final breakWidget = t_table.BreakElementWidget(
+            startEpoch: breakStart,
+            endEpoch: breakEnd,
+            isCurrent: isCurrentBreak,
+            nextClassTitle: item.title,
+          );
+
+          switch(wkday){
+            case 1: mondayCalendar.add(breakWidget); break;
+            case 2: tuesdayCalendar.add(breakWidget); break;
+            case 3: wednessdayCalendar.add(breakWidget); break;
+            case 4: thursdayCalendar.add(breakWidget); break;
+            case 5: fridayCalendar.add(breakWidget); break;
+            case 6: saturdayCalendar.add(breakWidget); break;
+            case 7: sundayCalendar.add(breakWidget); break;
+          }
+        }
+      }
+
+      prevClassPerWkday[wkday] = item;
 
       final isCurrent = !item.isExam && now.millisecondsSinceEpoch >= item.startEpoch && now.millisecondsSinceEpoch <= item.endEpoch && wkday == currWeekday && currentWeekOffset == 1;
 
@@ -870,7 +911,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Text(
           name,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 12
           ),
@@ -888,26 +929,37 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             color: w.isNotEmpty ? AppColors.getTheme().textColor.withValues(alpha: 0.03) : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: w.isNotEmpty ? w : isLoading ? <Widget>[
-              Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.getTheme().textColor,
-                ),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            child: KeyedSubtree(
+              key: ValueKey<String>('day_${name}_${weeksSinceStart}_${w.length}_$isLoading'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: w.isNotEmpty ? w : isLoading ? <Widget>[
+                  Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.getTheme().textColor,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.getTheme().textColor.withValues(alpha: .2),
+                      fontWeight: FontWeight.w300,
+                      fontSize: 10
+                    ),
+                  )
+                ] : <Widget>[const t_table.FreedayElementWidget()],
               ),
-              const SizedBox(height: 20),
-              Text(
-                api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.getTheme().textColor.withValues(alpha: .2),
-                  fontWeight: FontWeight.w300,
-                  fontSize: 10
-                ),
-              )
-            ] : <Widget>[const t_table.FreedayElementWidget()],
+            ),
           ),
         ),
       ),
@@ -1407,7 +1459,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     return list;
   }
 
-  Future<void> fetchCalendar() async{
+  Future<void> fetchCalendar({bool allowCache = true, bool silentRefreshIfOnline = true}) async{
     if(storage.DataCache.getHasICSFile() ?? false){
       final DateTime now = DateTime.now();
       final mondayThisWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
@@ -1425,60 +1477,94 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       storage.DataCache.setHasCachedFirstWeekEpoch(1);
       return;
     }
-    bool hasCachedCalendar = storage.DataCache.getHasCachedCalendar() ?? false;
-    final cacheTime = await storage.getString('CalendarCacheTime');
-    final cachedTerm = await storage.getString('CalendarCacheTermId');
-    final activeTerm = storage.DataCache.getSelectedTermId() ?? '';
 
-    if(!hasCachedCalendar && !storage.DataCache.getHasNetwork()){
-      return;
-    }
-    // if we had a save, and the cached value is not older than a day, and active term matches, load it ONLY if cached length > 0!
-    final len = await storage.getInt('CachedCalendarLength');
-    if(hasCachedCalendar && (cachedTerm == activeTerm || activeTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds && !storage.DataCache.getIsDemoAccount()! && len != null && len > 0) {
-      calendarEntries.clear();
-      for(int i = 0; i < len; i++){
-        final calEntry = await storage.getString('CachedCalendar_$i');
-        if (calEntry != null) {
-          calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry));
+    final activeTerm = storage.DataCache.getSelectedTermId() ?? '';
+    final cachedTerm = await storage.getString('CalendarCacheTermId');
+    final bool hasNetwork = storage.DataCache.getHasNetwork();
+
+    // 1. Helyi tárolóból betöltés offline használathoz és azonnali megjelenítéshez
+    if (allowCache) {
+      final weekKey = 'CachedCalendar_w$currentWeekOffset';
+      int? len = await storage.getInt('${weekKey}_len');
+      if (len == null && currentWeekOffset == 1) {
+        len = await storage.getInt('CachedCalendarLength');
+      }
+
+      if (len != null && len > 0 && (cachedTerm == activeTerm || activeTerm.isEmpty || !hasNetwork)) {
+        final List<api.CalendarEntry> cached = [];
+        for (int i = 0; i < len; i++) {
+          final calEntry = await storage.getString('${weekKey}_$i') ?? (currentWeekOffset == 1 ? await storage.getString('CachedCalendar_$i') : null);
+          if (calEntry != null) {
+            cached.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry));
+          }
+        }
+        if (cached.isNotEmpty) {
+          calendarEntries = cached;
+          storage.DataCache.setHasCachedFirstWeekEpoch(1);
+          api.CalendarRequest.fillMissingDetails(calendarEntries, () {
+            if (mounted) setState(() {});
+          });
+
+          if (currentWeekOffset == 1) {
+            Future.delayed(Duration.zero, () async {
+              await _setupClassesNotifications(_classesNotificationList);
+            });
+          }
+
+          // Ha offline vagy nem kérünk csendes frissítést, kész vagyunk
+          if (!hasNetwork || !silentRefreshIfOnline) {
+            return;
+          }
         }
       }
-      if (calendarEntries.isNotEmpty) {
-        storage.DataCache.setHasCachedFirstWeekEpoch(1);
+    }
+
+    // 2. Ha nincs internet kapcsolat
+    if (!hasNetwork) {
+      return;
+    }
+
+    // 3. Friss adatok lekérése a hálózatról
+    try {
+      final request = await api.CalendarRequest.makeCalendarRequest(
+        api.CalendarRequest.getCalendarOneWeekJSON(
+          storage.DataCache.getUsername()!,
+          storage.DataCache.getPassword()!,
+          currentWeekOffset,
+        ),
+      );
+      final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
+
+      if (list.isNotEmpty || request.isNotEmpty) {
+        calendarEntries = list;
+
         api.CalendarRequest.fillMissingDetails(calendarEntries, () {
           if (mounted) setState(() {});
         });
 
-        Future.delayed(Duration.zero,()async{
-          await _setupClassesNotifications(_classesNotificationList);
-        });
-        return;
+        // Mentés offline tárba az adott hétre
+        final weekKey = 'CachedCalendar_w$currentWeekOffset';
+        await storage.saveInt('${weekKey}_len', calendarEntries.length);
+        for (int i = 0; i < calendarEntries.length; i++) {
+          await storage.saveString('${weekKey}_$i', calendarEntries[i].toString());
+        }
+
+        if (currentWeekOffset == 1) {
+          await storage.saveInt('CachedCalendarLength', calendarEntries.length);
+          await storage.saveString('CalendarCacheTermId', activeTerm);
+          for (int i = 0; i < calendarEntries.length; i++) {
+            await storage.saveString('CachedCalendar_$i', calendarEntries[i].toString());
+          }
+          final now = DateTime.now();
+          await storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
+          await storage.DataCache.setHasCachedCalendar(1);
+          Future.delayed(Duration.zero, () async {
+            await _setupClassesNotifications(_classesNotificationList);
+          });
+        }
       }
-    }
-
-    // Otherwise, fetch fresh from network!
-    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset));
-    calendarEntries.clear();
-    final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
-    calendarEntries = list;
-
-    // automatic room finder
-    api.CalendarRequest.fillMissingDetails(calendarEntries, () {
-      if (mounted) setState(() {});
-    });
-
-    if(currentWeekOffset == 1 && calendarEntries.isNotEmpty) {
-      storage.saveInt('CachedCalendarLength', calendarEntries.length);
-      storage.saveString('CalendarCacheTermId', activeTerm);
-      for (int i = 0; i < calendarEntries.length; i++) {
-        storage.saveString('CachedCalendar_$i', calendarEntries[i].toString());
-      }
-      final now = DateTime.now();
-      storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
-      storage.DataCache.setHasCachedCalendar(1);
-      Future.delayed(Duration.zero,()async{
-        await _setupClassesNotifications(_classesNotificationList);
-      });
+    } catch (e) {
+      debugPrint("Hiba a naptár hálózati lekérésekor: $e");
     }
   }
 
@@ -1683,35 +1769,36 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Future<void> onCalendarRefresh(bool isPaging) async{
     if(_noRefreshCalendar){
-      Future.delayed(Duration(seconds: 2), (){
+      Future.delayed(const Duration(seconds: 2), (){
         _noRefreshCalendar = false;
       });
     }
-    if(!storage.DataCache.getHasNetwork() || _calendarDebounce || _noRefreshCalendar){
+    if(_calendarDebounce || _noRefreshCalendar){
       return;
     }
-    keepHomeButtonHidden = true;
-    if(_calendarTimer != null){
-      _calendarTimer!.cancel();
-    }
-    clearCalendar();
-    setupCalendarController(false, true);
-    _calendarTimer = Timer(Duration(milliseconds: isPaging ? 500 : 0), () async {
-      _calendarDebounce = true;
-      setState(() {
-        canDoCalendarPaging = false;
-        isLoadingCalendar = true;
-        keepHomeButtonHidden = false;
-      });
-      await storage.DataCache.setHasCachedCalendar(0);
-      //await storage.DataCache.setHasCachedFirstWeekEpoch(0);
-      await fetchCalendar();
-      setupCalendar(false);
-      _calendarDebounce = false;
-      setState(() {
-        isLoadingCalendar = false;
-      });
+    _calendarTimer?.cancel();
+    _calendarDebounce = true;
+    keepHomeButtonHidden = false;
+    setState(() {
+      weeksSinceStart = calcPassedWeeks();
+      canDoCalendarPaging = false;
+      isLoadingCalendar = true;
     });
+
+    try {
+      await fetchCalendar(allowCache: false, silentRefreshIfOnline: true);
+      setupCalendar(false);
+    } catch (e) {
+      debugPrint("Hiba az onCalendarRefresh során: $e");
+    } finally {
+      _calendarDebounce = false;
+      if (mounted) {
+        setState(() {
+          isLoadingCalendar = false;
+          canDoCalendarPaging = true;
+        });
+      }
+    }
   }
 
   bool _markbookDebounce = false;
@@ -1831,6 +1918,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   @override
   void dispose() {
+    _connectivitySubscription?.cancel();
+    _calendarTimer?.cancel();
     super.dispose();
     calendarEntries.clear();
     mondayCalendar.clear();

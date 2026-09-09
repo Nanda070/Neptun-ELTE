@@ -12,6 +12,7 @@ import '../Misc/emojirich_text.dart';
 import '../language.dart';
 import '../notifications.dart';
 import '../Pages/settings_page.dart';
+import '../Misc/auto_updater.dart';
 
 class AppDrawer extends StatefulWidget {
   final String loggedInUsername;
@@ -422,6 +423,16 @@ class _AppDrawerState extends State<AppDrawer> {
                           // check if calendar needs to refresh if closing menu
                           HomePageState.settingsUserWeekOffsetChangeDetect();
                         });
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
+                      title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      onTap: () {
+                        AppHaptics.lightImpact();
+                        final rootContext = HomePageState.getContext() ?? context;
+                        Navigator.pop(context);
+                        AppUpdater.checkAndInstallUpdate(rootContext, force: true);
                       },
                     ),
                     ListTile(
