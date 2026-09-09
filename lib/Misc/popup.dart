@@ -1521,34 +1521,36 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             )
           ],
         ));
-        list.add(const SizedBox(height: 4));
-        list.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-                child: Icon(
-                  Icons.tag_rounded,
-                  color: AppColors.getTheme().onPrimaryContainer,
-                  size: 24,
-                )
-            ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Flexible(
-                child: SelectableText.rich(
-                  TextSpan(
-                    text: entry.subjectCode,
-                    style: TextStyle(
-                        color: AppColors.getTheme().textColor,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14
+        if (entry.courseType != null && entry.courseType!.trim().isNotEmpty && entry.courseType != '-') {
+          list.add(const SizedBox(height: 4));
+          list.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                  child: Icon(
+                    Icons.menu_book_rounded,
+                    color: AppColors.getTheme().currentClassGreen,
+                    size: 24,
+                  )
+              ),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+              Flexible(
+                  child: SelectableText.rich(
+                    TextSpan(
+                      text: entry.courseType!,
+                      style: TextStyle(
+                          color: AppColors.getTheme().currentClassGreen,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14
+                      ),
                     ),
-                  ),
-                )
-            )
-          ],
-        ));
+                  )
+              )
+            ],
+          ));
+        }
         if(entry.location.trim().isNotEmpty){
           list.add(const SizedBox(height: 4));
           list.add(Row(

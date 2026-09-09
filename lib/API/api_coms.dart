@@ -679,6 +679,7 @@ class CalendarRequest {
               title: item['title']?.toString() ?? "Nincs cím",
               eventType: eventType,
               subjectCode: item['subjectCode']?.toString() ?? '-',
+              courseType: item['courseType']?.toString(),
               teacher: item['teacher']?.toString() ?? 'Nincs megadva',
               classInstanceId: item['classInstanceId']?.toString(),
               taskId: item['taskId']?.toString(),
@@ -857,13 +858,17 @@ class CalendarRequest {
             final eventStartEpoch = DateTime.tryParse(startStr)?.millisecondsSinceEpoch ?? 0;
             final eventEndEpoch = DateTime.tryParse(endStr)?.millisecondsSinceEpoch ?? 0;
 
+            final subjectCode = event['courseCode'] ?? event['subjectCode'] ?? '-';
+            final courseType = event['courseTypeName'] ?? event['courseType'] ?? event['typeName'] ?? event['type'] ?? '';
+
             mappedList.add({
               'start_ms': eventStartEpoch,
               'end_ms': eventEndEpoch,
               'location': event['rooms'] ?? event['room'] ?? event['location'] ?? 'Nincs megadva',
               'title': event['name'] ?? event['subjectName'] ?? event['title'] ?? 'Ismeretlen',
               'type': typeId,
-              'subjectCode': event['courseCode'] ?? event['subjectCode'] ?? '-',
+              'subjectCode': subjectCode,
+              'courseType': courseType.toString(),
               'teacher': event['courseTutor'] ?? event['teacher'] ?? 'Nincs megadva',
               'classInstanceId': event['classInstanceId']?.toString() ?? '',
               'taskId': event['id']?.toString() ?? event['taskId']?.toString() ?? event['midTermTaskId']?.toString() ?? '',
@@ -886,17 +891,24 @@ class CalendarRequest {
 
   static Future<Map<String, String>> getCourseDetails(String classInstanceId) async {
     if (storage.DataCache.getIsModernApi() != true) {
-      return {"room": "Nem támogatott (Régi API)", "teacher": "Nem támogatott"};
+      return {"room": "Nem támogatott (Régi API)", "teacher": "Nem támogatott", "type": "", "code": ""};
     }
 
     final cachedRoom = await storage.getString('room_$classInstanceId');
     final cachedTeacher = await storage.getString('teacher_$classInstanceId');
+    final cachedType = await storage.getString('type_$classInstanceId');
+    final cachedCode = await storage.getString('code_$classInstanceId');
 
     if (!(storage.DataCache.getHasNetwork())) {
       if (cachedRoom != null) {
-        return {"room": cachedRoom, "teacher": cachedTeacher ?? "Nincs tanár"};
+        return {
+          "room": cachedRoom,
+          "teacher": cachedTeacher ?? "Nincs tanár",
+          "type": cachedType ?? "",
+          "code": cachedCode ?? "",
+        };
       }
-      return {"room": "Nincs internet", "teacher": "Offline mód"};
+      return {"room": "Nincs internet", "teacher": "Offline mód", "type": "", "code": ""};
     }
 
     try {
@@ -908,25 +920,33 @@ class CalendarRequest {
       final decoded = conv.json.decode(responseRaw);
 
       if (decoded['data'] != null) {
-        final r = decoded['data']['room'] ?? "Nincs terem";
-        final t = decoded['data']['courseTutor'] ?? "Nincs tanár";
-
+        final d = decoded['data'];
+        final r = d['room']?.toString() ?? d['rooms']?.toString() ?? "Nincs terem";
+        final t = d['courseTutor']?.toString() ?? d['tutor']?.toString() ?? d['teacher']?.toString() ?? "Nincs tanár";
+        final type = d['courseTypeName']?.toString() ?? d['courseType']?.toString() ?? d['typeName']?.toString() ?? d['type']?.toString() ?? "";
+        final code = d['subjectCode']?.toString() ?? d['courseCode']?.toString() ?? "";
 
         await storage.saveString('room_$classInstanceId', r);
         await storage.saveString('teacher_$classInstanceId', t);
+        if (type.isNotEmpty) await storage.saveString('type_$classInstanceId', type);
+        if (code.isNotEmpty) await storage.saveString('code_$classInstanceId', code);
 
-        return {"room": r, "teacher": t};
+        return {"room": r, "teacher": t, "type": type, "code": code};
       }
     } catch (e) {
       debug.log("Hiba az óra részleteinek lekérésekor: $e");
     }
 
-
     if (cachedRoom != null) {
-      return {"room": cachedRoom, "teacher": cachedTeacher ?? "Nincs tanár"};
+      return {
+        "room": cachedRoom,
+        "teacher": cachedTeacher ?? "Nincs tanár",
+        "type": cachedType ?? "",
+        "code": cachedCode ?? "",
+      };
     }
 
-    return {"room": "Hiba a betöltésnél", "teacher": "Hiba a betöltésnél"};
+    return {"room": "Hiba a betöltésnél", "teacher": "Hiba a betöltésnél", "type": "", "code": ""};
   }
 
 
@@ -1778,6 +1798,7 @@ class CalendarEntry {
 
   late String subjectCode;
   late String teacher;
+  late String? courseType;
   late String? classInstanceId;
   late String? taskId;
 
@@ -1807,16 +1828,23 @@ class CalendarEntry {
       title = rawTitle;
     }
 
-    final regex2 = RegExp(r'\(.*?\)');
-    final match2 = regex2.firstMatch(rawTitle);
-    subjectCode = match2 != null ? match2.group(0)!.replaceAll('(', '').replaceAll(')', '') : "-";
+    final regex2 = RegExp(r'\(([^)]+)\)');
+    final matches = regex2.allMatches(rawTitle).map((m) => m.group(1)!.trim()).toList();
+    if (matches.isNotEmpty) {
+      subjectCode = matches[0];
+    } else {
+      subjectCode = "-";
+    }
 
-    var regex3 = RegExp(r'\(.*?\)(?=\s*\(.*?\)*$)');
-    var match3 = regex3.firstMatch(rawTitle);
-    if (match3 != null) {
-      teacher = match3.group(0)!.trim().replaceAll('(', '').replaceAll(')', '');
+    if (matches.length > 2) {
+      courseType = matches[1];
+      teacher = matches[2];
+    } else if (matches.length > 1) {
+      teacher = matches[1];
+      courseType = null;
     } else {
       teacher = "-";
+      courseType = null;
     }
   }
 
@@ -1829,13 +1857,14 @@ class CalendarEntry {
     required this.eventType,
     required this.subjectCode,
     required this.teacher,
+    this.courseType,
     this.classInstanceId,
     this.taskId,
   });
 
   @override
   String toString() {
-    return '$startEpoch\n$endEpoch\n$location\n$title\n$eventType\n$teacher\n$subjectCode\n${classInstanceId ?? ""}\n${taskId ?? ""}';
+    return '$startEpoch\n$endEpoch\n$location\n$title\n$eventType\n$teacher\n$subjectCode\n${classInstanceId ?? ""}\n${taskId ?? ""}\n${courseType ?? ""}';
   }
 
   CalendarEntry fillWithExisting(String existing) {
@@ -1861,6 +1890,10 @@ class CalendarEntry {
     if (data.length >= 9 && data[8].trim().isNotEmpty) {
       taskId = data[8].trim();
     } else { taskId = null; }
+
+    if (data.length >= 10 && data[9].trim().isNotEmpty) {
+      courseType = data[9].trim();
+    } else { courseType = null; }
 
     return this;
   }

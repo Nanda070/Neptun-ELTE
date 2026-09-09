@@ -133,18 +133,53 @@ class TimetableElementWidget extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator())
                     );
                   }
-                  if (snapshot.hasData) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("📍 Terem: ${snapshot.data!['room']}", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
+                  final data = snapshot.data ?? {};
+                  final room = (data['room'] != null && data['room']!.isNotEmpty && data['room'] != 'Nincs terem') ? data['room']! : entry.location;
+                  final teacher = (data['teacher'] != null && data['teacher']!.isNotEmpty && data['teacher'] != 'Nincs tanár') ? data['teacher']! : entry.teacher;
+                  final courseType = (data['type'] != null && data['type']!.isNotEmpty) ? data['type']! : (entry.courseType ?? '');
+                  final subjectCode = (data['code'] != null && data['code']!.isNotEmpty && data['code'] != '-') ? data['code']! : entry.subjectCode;
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (subjectCode.isNotEmpty && subjectCode != '-') ...[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("🏷️ Tárgykód: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                            Expanded(child: SelectableText(subjectCode, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
+                          ],
+                        ),
                         const SizedBox(height: 10),
-                        Text("👨‍🏫 Tanár: ${snapshot.data!['teacher']}", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
                       ],
-                    );
-                  }
-                  return Text("Hiba a betöltésnél.", style: TextStyle(color: AppColors.getTheme().textColor));
+                      if (courseType.isNotEmpty && courseType != '-') ...[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("📖 Típus: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                            Expanded(child: SelectableText(courseType, style: TextStyle(color: AppColors.getTheme().currentClassGreen, fontWeight: FontWeight.bold, fontSize: 15))),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("👨‍🏫 Tanár: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                          Expanded(child: SelectableText(teacher, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("📍 Terem: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                          Expanded(child: SelectableText(room, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
+                        ],
+                      ),
+                    ],
+                  );
                 },
               ),
               actions: [
@@ -156,6 +191,7 @@ class TimetableElementWidget extends StatelessWidget {
             );
           }
         );
+        return;
       } else {
 
         TimetableCurrentlySelected.entry = entry;
