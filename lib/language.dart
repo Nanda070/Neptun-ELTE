@@ -10,8 +10,8 @@ class AppStrings{
   static bool _hasInit = false;
   static late final String _defaultLocale;
 
-  static List<String> _supportedLanguages = ['hu', 'en'];
-  static List<String> _supportedLanguagesFlags = ['🇭🇺', '🇺🇸/🇬🇧'];
+  static List<String> _supportedLanguages = ['en', 'hu'];
+  static List<String> _supportedLanguagesFlags = ['🇺🇸/🇬🇧', '🇭🇺'];
   static final Map<String, LanguagePack> _languages = {};
 
   static List<String> _downloadedSupportedLanguages = [];
@@ -23,7 +23,7 @@ class AppStrings{
       return;
     }
     _defaultLocale = Platform.localeName.split('_')[0].toLowerCase();
-    _languages.addAll({_supportedLanguages[0]: LanguagePack(
+    _languages.addAll({_supportedLanguages[1]: LanguagePack(
       language_flag: '🇭🇺',
       rootpage_setupPage_SelectLoginTypeHeader: 'Válassz bejelentkezési módot',
       rootpage_setupPage_InstitutesSelection: 'Intézmény választás',
@@ -216,7 +216,7 @@ class AppStrings{
       calendarLogin_setupPage_ImportICSFileButton: 'Feltöltés'
     )});
     //---
-    _languages.addAll({_supportedLanguages[1]: LanguagePack(
+    _languages.addAll({_supportedLanguages[0]: LanguagePack(
       language_flag: '🇺🇸/🇬🇧',
       rootpage_setupPage_SelectLoginTypeHeader: 'Select login method',
       rootpage_setupPage_InstitutesSelection: 'Institute selection',
@@ -446,7 +446,11 @@ class AppStrings{
     final currLangId = DataCache.getUserSelectedLanguage();
     final selectonList = _supportedLanguages + _downloadedSupportedLanguages;
     if(currLangId == null || currLangId == -1 || currLangId >= selectonList.length || currLangId < 0){
-      return _defaultLocale;
+      // Default language is English; use device locale only if we have that pack.
+      if (selectonList.contains(_defaultLocale)) {
+        return _defaultLocale;
+      }
+      return 'en';
     }
     return selectonList[currLangId];
   }
@@ -455,8 +459,8 @@ class AppStrings{
     final selectonList = Map<String, LanguagePack>.from(_languages);
     selectonList.addAll(_downloadedLanguages);
     if(!selectonList.containsKey(id)){
-      if (selectonList.containsKey(_supportedLanguages[1])) {
-        return selectonList[_supportedLanguages[1]]!; // default to english
+      if (selectonList.containsKey('en')) {
+        return selectonList['en']!; // default to english
       }
       return selectonList['hu']!;
     }

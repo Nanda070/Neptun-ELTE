@@ -1,5 +1,5 @@
 name: neptun2
-description: Remake of Neptun 2 app
+description: Neptun Mobile — university Neptun client for Android and iOS
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -36,9 +36,6 @@ dev_dependencies:
 dependencies:
   flutter:
     sdk: flutter
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
   linked_scroll_controller: ^0.2.0
   fluttertoast: ^9.1.0
   url_launcher: ^6.3.0
@@ -57,7 +54,6 @@ dependencies:
   file_picker: ^12.2.0
   path_provider: ^2.1.5
   flutter_secure_storage: ^8.1.0
-  change_app_package_name: ^1.5.0
   dio: ^5.9.2
   open_filex: ^4.7.0
 

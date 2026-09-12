@@ -8,7 +8,7 @@ class AppNotifications{
   static final FlutterLocalNotificationsPlugin _localnotifs = FlutterLocalNotificationsPlugin();
   static Future<void> initialize()async{
     Counter();
-    if(Platform.isAndroid){
+    if(Platform.isAndroid || Platform.isIOS){
       tz.initializeTimeZones();
       try {
         final timeZoneName = await FlutterTimezone.getLocalTimezone();
@@ -21,7 +21,9 @@ class AppNotifications{
           tz.setLocalLocation(tz.UTC);
         }
       }
+    }
 
+    if(Platform.isAndroid){
       try {
         await AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
       } catch (_) {}
@@ -29,8 +31,29 @@ class AppNotifications{
         await _localnotifs.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
       } catch (_) {}
     }
+
+    if(Platform.isIOS){
+      try {
+        await _localnotifs.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+      } catch (_) {}
+    }
+
     await _localnotifs.initialize(settings: const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ),
+        macOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ),
         linux: LinuxInitializationSettings(
             defaultActionName: 'Dismiss'
         )
@@ -83,6 +106,16 @@ class AppNotifications{
           ticker: 'Neptun Mobile Időzített Értesítés',
           styleInformation: BigTextStyleInformation(content, contentTitle: title)
       ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      macOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
       linux: const LinuxNotificationDetails(
         defaultActionName: 'Dismiss',
         urgency: LinuxNotificationUrgency.normal,
@@ -90,7 +123,7 @@ class AppNotifications{
     );
     final counter = Counter.getCount();
     _scheduledNotifLinks.add(NotificationLink(id, counter));
-    if(Platform.isAndroid){
+    if(Platform.isAndroid || Platform.isIOS){
       await _localnotifs.zonedSchedule(
         id: counter,
         title: title,
@@ -112,6 +145,16 @@ class AppNotifications{
           priority: Priority.high,
           ticker: 'Neptun Mobile Azonnali Értesítés',
           styleInformation: BigTextStyleInformation(desc, contentTitle: title)
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      macOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
       ),
       linux: const LinuxNotificationDetails(
         defaultActionName: 'Dismiss',

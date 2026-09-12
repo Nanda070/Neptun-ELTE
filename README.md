@@ -1,46 +1,103 @@
 # Neptun Mobile
 
-## 
-# All downloads: [![GitHub all releases](https://img.shields.io/github/downloads/zoligamer/Neptun-Mobile-fork/total?style=for-the-badge&color=blue)](https://github.com/zoligamer/Neptun-Mobile-fork/releases)
-# Latest downloads: [![GitHub release (latest by asset)](https://img.shields.io/github/downloads/zoligamer/Neptun-Mobile-fork/latest/total?style=for-the-badge&color=green)](https://github.com/zoligamer/Neptun-Mobile-fork/releases)
-##
+A modern mobile client for the Hungarian university **Neptun** system — timetable, grades, messages, payments, and periods in one place.
 
-# Ne maradj le a frissítésekről: https://github.com/zoligamer/Neptun-Mobile-fork/releases/latest
-# BUG REPORT OLDAL: https://github.com/zoligamer/Neptun-Mobile-fork/issues/new/choose
+**Platforms:** Android · iOS  
+**Languages:** English (default) · Hungarian · Russian · Turkish
 
-Neptun Mobil alkalmazás.
+[![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
+[![Issues](https://img.shields.io/badge/Bug%20reports-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
 
-Funkciók:
-- Értesítések 🫨 Nem maradsz le az órákról, vizsgákról, de még a befizetésekről sem!
-- Átlátható órarend 📆 Mindig tudni fogod, hogy a héten milyen órád lesz!
-- Jegyek, átlagok, kreditek, beérkezett üzenetek, befizetések és még sok más
-- Egyre modernebb UI.
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Developer docs](docs/DEVELOPER.md)
 
-**Ha van valami ötleted, vagy simán csak egy hibát akarsz bejelenteni, a hibabejelentés fülnél tedd meg.**
+---
 
-Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
-Az alkalmazás alapjainak fejlesztőjét itt megtalálod! https://github.com/domedav/Neptun-2
+## Features
 
-## 1.0.0
-Órarend fül, bejelentkezés alapok
-## 1.0.1
-2FA azonosítás. ⚠ Még nem működik teljesen! ⚠
-## 1.0.2
-Accessibility funckió(Még tesztelés alatt), Naptár nézet, Új oldalmenü.
-## 1.0.3 Beta
-Naptár logika újraalkotás, pontos órák, állapotjelző. Pénzügyek, Tárgyak, Üzenetek, Időszakok oldalak működésképesek.
-## 1.0.3
+- **Timetable** — week view with class and exam reminders  
+- **Markbook** — subjects and grades  
+- **Messages** — Neptun inbox  
+- **Payments** — fees and due dates  
+- **Periods** — registration and study periods  
+- **Themes & languages** — custom palettes; EN / HU built-in, RU / TR downloadable  
+- **Notifications** — class, exam, payment, and period alerts (Android & iOS)
 
-+ Alsó menü elemek működése
-+ Értesítések nem duplikálódnak, termek kiírása értesítésben!
-+ Napi ellenőrzéssel automata frissítő
-+ Frissítette linkek a fájlokban
+---
 
-## 1.0.4
-bugs are in testing phase, 1.0.4 non alpha release will contain the fixes!
+## Run locally
 
-## 1.0.5
-- ✅Választható féléveket, így az alapján listázza ki az adatokat az app.
-- 💲💲💲pénzügyek helyes megjelenítése, és az oldalmenüben megjelenése az aktív gyűjtőszámlád összegével
-- ♿Accessibility, könnyed mód: betűméret állítás, korrigált nyelv választás, működő nyelvekkel
-# More coming soon
+### Requirements
+
+- [Flutter](https://docs.flutter.dev/get-started/install) (stable)  
+- For Android: Android SDK  
+- For iOS: macOS + Xcode + CocoaPods
+
+```bash
+git clone https://github.com/Nanda070/Neptun-Mobile-fork.git
+cd Neptun-Mobile-fork
+flutter pub get
+```
+
+### Android
+
+```bash
+flutter devices
+flutter run -d <android-device-id>
+# or
+flutter build apk
+```
+
+### iOS
+
+```bash
+# Generate/refresh iOS folder if needed (does not wipe lib/):
+flutter create --platforms=ios --org com.nanda070 --project-name neptun_mobile .
+
+flutter pub get
+cd ios && pod install && cd ..
+flutter devices
+flutter run -d <ios-device-or-simulator-id>
+```
+
+**Bundle ID:** `com.nanda070.neptun_mobile.app`  
+**Display name:** Neptun Mobile
+
+Physical device: open `ios/Runner.xcworkspace` in Xcode, select your Team (Apple ID), then run again. Trust the developer profile on the phone if prompted.
+
+---
+
+## Contacts
+
+| | |
+|---|---|
+| **GitHub** | [Nanda070](https://github.com/Nanda070) |
+| **Discord** | nandak070 |
+| **Telegram** | [nanda070](https://t.me/nanda070) |
+| **Email** | [adnan.huseynli1@gmail.com](mailto:adnan.huseynli1@gmail.com) |
+| **Web** | [nanda.is-a.dev](https://nanda.is-a.dev/) · [cheterin.online](https://cheterin.online) · [chetmedia.com](https://chetmedia.com) |
+
+Bug reports & ideas: [GitHub Issues](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
+
+---
+
+## Docs
+
+- [README (Russian)](README.ru.md)
+- [Developer / technical notes](docs/DEVELOPER.md) — iOS setup, signing, notifications, Android-only bits
+
+---
+
+## Credits
+
+People who previously worked on related code (historical, not product identity):
+
+- **domedav** — original Neptun 2 foundations  
+- **zoligamer** — earlier fork work  
+
+Neptun Mobile is an independent project by **Nanda070**.
+
+---
+
+## License
+
+See [LICENSE](LICENSE).

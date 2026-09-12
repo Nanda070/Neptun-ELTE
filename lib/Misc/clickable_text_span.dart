@@ -54,11 +54,8 @@ class ClickableTextSpan extends StatelessWidget{
 
   static VoidCallback getNewOpenLinkCallback(String text){
     return ()async{
-      if(!Platform.isAndroid){
-        return;
-      }
       final url = Uri.parse(text);
-      await launchUrl(url);
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     };
   }
 }

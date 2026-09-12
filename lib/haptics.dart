@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:neptun2/storage.dart';
 import 'package:vibration/vibration.dart';
 
@@ -17,12 +18,18 @@ class AppHaptics{
   }
 
   static Future<bool> _canAppVibrate()async{
+    final settingsVibrate = await DataCache.getNeedsHaptics()!;
+    if(!settingsVibrate){
+      return false;
+    }
+    if(Platform.isIOS){
+      return true;
+    }
     if(!Platform.isAndroid){
       return false;
     }
     final canVibrate = await Vibration.hasVibrator();
-    final settingsVibrate = await DataCache.getNeedsHaptics()!;
-    if(!canVibrate || !settingsVibrate){
+    if(!canVibrate){
       return false;
     }
     return true;
@@ -47,6 +54,10 @@ class AppHaptics{
       if(!canVibrate){
         return;
       }
+      if(Platform.isIOS){
+        HapticFeedback.lightImpact();
+        return;
+      }
       await Vibration.vibrate(pattern: [0, 10], intensities: [1]);
     });
   }
@@ -57,6 +68,10 @@ class AppHaptics{
       if(!canVibrate){
         return;
       }
+      if(Platform.isIOS){
+        HapticFeedback.mediumImpact();
+        return;
+      }
       await Vibration.vibrate(duration: 16, pattern: [0, 16], intensities: [15]);
     });
   }
@@ -65,6 +80,10 @@ class AppHaptics{
     Future.delayed(Duration.zero, ()async{
       final canVibrate = await _canAppVibrate();
       if(!canVibrate){
+        return;
+      }
+      if(Platform.isIOS){
+        HapticFeedback.heavyImpact();
         return;
       }
       await Vibration.vibrate(duration: 35, pattern: [0, 35], intensities: [30]);
@@ -78,6 +97,10 @@ class AppHaptics{
       if(!canVibrate){
         return;
       }
+      if(Platform.isIOS){
+        HapticFeedback.selectionClick();
+        return;
+      }
       await Vibration.vibrate(duration: 1, pattern: [0, 1], intensities: [1]);
     });
   }
@@ -86,6 +109,10 @@ class AppHaptics{
     Future.delayed(Duration.zero, ()async{
       final canVibrate = await _canAppVibrate();
       if(!canVibrate){
+        return;
+      }
+      if(Platform.isIOS){
+        HapticFeedback.heavyImpact();
         return;
       }
       await Vibration.vibrate(duration: 195, pattern: [0, 35, 125, 35], intensities: [20, 10]);
@@ -98,6 +125,10 @@ class AppHaptics{
       if(!canVibrate){
         return;
       }
+      if(Platform.isIOS){
+        HapticFeedback.mediumImpact();
+        return;
+      }
       await Vibration.vibrate(duration: 130, pattern: [0, 15, 100, 15], intensities: [10, 5]);
     });
   }
@@ -106,6 +137,10 @@ class AppHaptics{
     Future.delayed(Duration.zero, ()async{
       final canVibrate = await _canAppVibrate();
       if(!canVibrate){
+        return;
+      }
+      if(Platform.isIOS){
+        HapticFeedback.heavyImpact();
         return;
       }
       await Vibration.vibrate(duration: 365, pattern: [0, 45, 75, 35, 70, 25, 45, 15, 25, 10, 10, 10, 5, 5], intensities: [50, 40, 30, 20, 10, 10, 10, 10, 5]);

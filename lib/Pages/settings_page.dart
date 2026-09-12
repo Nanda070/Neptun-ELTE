@@ -377,15 +377,16 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
-            title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
-            trailing: Icon(Icons.chevron_right_rounded, color: AppColors.getTheme().textColor.withValues(alpha: 0.4)),
-            onTap: () {
-              AppHaptics.lightImpact();
-              AppUpdater.checkAndInstallUpdate(context, force: true);
-            },
-          ),
+          if (Platform.isAndroid)
+            ListTile(
+              leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
+              title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+              trailing: Icon(Icons.chevron_right_rounded, color: AppColors.getTheme().textColor.withValues(alpha: 0.4)),
+              onTap: () {
+                AppHaptics.lightImpact();
+                AppUpdater.checkAndInstallUpdate(context, force: true);
+              },
+            ),
           const SizedBox(height: 40),
         ],
       ),

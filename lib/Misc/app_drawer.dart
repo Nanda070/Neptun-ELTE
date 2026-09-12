@@ -425,38 +425,69 @@ class _AppDrawerState extends State<AppDrawer> {
                         });
                       },
                     ),
-                    ListTile(
-                      leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
-                      title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
-                      onTap: () {
-                        AppHaptics.lightImpact();
-                        final rootContext = HomePageState.getContext() ?? context;
-                        Navigator.pop(context);
-                        AppUpdater.checkAndInstallUpdate(rootContext, force: true);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.favorite_rounded, color: Colors.pinkAccent),
-                      title: Text(AppStrings.getLanguagePack().topmenu_buttons_SupportDev, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
-                      onTap: () {
-                        AppHaptics.lightImpact();
-                        Navigator.pop(context);
-                        if(Platform.isAndroid){
-                          launchUrl(Uri.parse('https://buymeacoffee.com/zoligamer')).whenComplete(() {
-                            Fluttertoast.showToast(msg: '❤️', toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.SNACKBAR, backgroundColor: AppColors.getTheme().rootBackground, textColor: AppColors.getTheme().textColor);
-                          });
-                        }
-                      },
-                    ),
+                    if (Platform.isAndroid)
+                      ListTile(
+                        leading: Icon(Icons.system_update_rounded, color: AppColors.getTheme().textColor),
+                        title: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                        onTap: () {
+                          AppHaptics.lightImpact();
+                          final rootContext = HomePageState.getContext() ?? context;
+                          Navigator.pop(context);
+                          AppUpdater.checkAndInstallUpdate(rootContext, force: true);
+                        },
+                      ),
                     ListTile(
                       leading: Icon(Icons.bug_report_rounded, color: AppColors.getTheme().textColor),
                       title: Text(AppStrings.getLanguagePack().topmenu_buttons_Bugreport, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
                       onTap: () {
                         AppHaptics.lightImpact();
                         Navigator.pop(context);
-                        if(Platform.isAndroid){
-                          launchUrl(Uri.parse('https://github.com/zoligamer/Neptun-Mobile-fork/issues/new/choose'));
-                        }
+                        launchUrl(
+                          Uri.parse('https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose'),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.link_rounded, color: AppColors.getTheme().textColor),
+                      title: Text('Contacts', style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      onTap: () {
+                        AppHaptics.lightImpact();
+                        Navigator.pop(context);
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: AppColors.getTheme().rootBackground,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                          ),
+                          builder: (ctx) {
+                            Widget contactTile(IconData icon, String label, String url) {
+                              return ListTile(
+                                leading: Icon(icon, color: AppColors.getTheme().textColor),
+                                title: Text(label, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                                onTap: () {
+                                  AppHaptics.lightImpact();
+                                  launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                                },
+                              );
+                            }
+                            return SafeArea(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  contactTile(Icons.code_rounded, 'GitHub: Nanda070', 'https://github.com/Nanda070'),
+                                  contactTile(Icons.chat_rounded, 'Discord: nandak070', 'https://discord.com/users/nandak070'),
+                                  contactTile(Icons.send_rounded, 'Telegram: nanda070', 'https://t.me/nanda070'),
+                                  contactTile(Icons.email_rounded, 'Email', 'mailto:adnan.huseynli1@gmail.com'),
+                                  contactTile(Icons.language_rounded, 'nanda.is-a.dev', 'https://nanda.is-a.dev/'),
+                                  contactTile(Icons.language_rounded, 'cheterin.online', 'https://cheterin.online'),
+                                  contactTile(Icons.language_rounded, 'chetmedia.com', 'https://chetmedia.com'),
+                                  const SizedBox(height: 8),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

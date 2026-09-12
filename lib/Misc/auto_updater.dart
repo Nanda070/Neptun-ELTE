@@ -15,11 +15,14 @@ import '../storage.dart';
 import '../colors.dart';
 
 class AppUpdater {
-  static const String repoOwner = "zoligamer";
+  static const String repoOwner = "Nanda070";
   static const String repoName = "Neptun-Mobile-fork";
 
-  /// Fő belépési pont.
+  /// Fő belépési pont. APK updater — Android only.
   static Future<void> checkAndInstallUpdate(BuildContext? context, {bool force = false}) async {
+    if (!Platform.isAndroid) {
+      return;
+    }
     // 1. Internet ellenőrzés
     final conn = await Connectivity().checkConnectivity();
     if (conn.contains(ConnectivityResult.none) && !conn.any((c) => c != ConnectivityResult.none)) {

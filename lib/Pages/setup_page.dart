@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -285,12 +284,8 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                               ),
                               child: IconButton(
                                 onPressed: (){
-                                  if(!Platform.isAndroid){
-                                    return;
-                                  }
-
-                                  final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
-                                  launchUrl(url);
+                                  final url = Uri.parse('https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose');
+                                  launchUrl(url, mode: LaunchMode.externalApplication);
                                 },
                                 icon: Icon(
                                   Icons.feed_rounded,
@@ -1287,7 +1282,13 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       if(value == 1){ // 1: SIKERES BELÉPÉS
         storage.DataCache.setUsername(_username.toUpperCase());
         storage.DataCache.setPassword(_password);
-        storage.DataCache.setInstituteUrl(selected.URL);
+        // Prefer API base set by login (e.g. ELTE /ujhallgato), not raw list URL (/Account)
+        final apiBase = storage.DataCache.getInstituteUrl();
+        if (apiBase == null || apiBase.isEmpty) {
+          storage.DataCache.setInstituteUrl(
+            api.InstitutesRequest.normalizeModernApiBaseUrl(selected.URL),
+          );
+        }
         storage.DataCache.setHasLogin(1);
         // proceed logic
         Navigator.popUntil(context, (route) => route.willHandlePopInternally);
@@ -1313,7 +1314,12 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                 // Mivel jó a kód, elmentjük az adatokat és beléptetjük
                 storage.DataCache.setUsername(_username.toUpperCase());
                 storage.DataCache.setPassword(_password);
-                storage.DataCache.setInstituteUrl(selected.URL);
+                final apiBase = storage.DataCache.getInstituteUrl();
+                if (apiBase == null || apiBase.isEmpty) {
+                  storage.DataCache.setInstituteUrl(
+                    api.InstitutesRequest.normalizeModernApiBaseUrl(selected.URL),
+                  );
+                }
                 storage.DataCache.setHasLogin(1);
 
                 Navigator.popUntil(context, (route) => route.willHandlePopInternally);

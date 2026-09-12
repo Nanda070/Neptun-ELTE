@@ -363,7 +363,7 @@ import '../storage.dart';
     }
 
     static Future<List<dynamic>?> getRawJsonWithNameUrlPairs() async{
-      final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/universityNameUrlPairs.json');
+      final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/universityNameUrlPairs.json');
       final response = await http.get(url);
 
       if (response.statusCode != 200) {
@@ -389,6 +389,33 @@ import '../storage.dart';
     static Future<int> validateLoginCredentials(Institute institute, String username, String password) async{
       return validateLoginCredentialsUrl(institute.URL, username, password);
     }
+
+    /// Modern Neptun API root (…/ujhallgato), not the Angular /Account SPA route.
+    static String normalizeModernApiBaseUrl(String rawUrl) {
+      var url = rawUrl.trim();
+      if (url.endsWith('/')) {
+        url = url.substring(0, url.length - 1);
+      }
+      url = url.replaceAll(RegExp(r'/login(\.aspx)?$', caseSensitive: false), '');
+      url = url.replaceAll(RegExp(r'/MobileService\.svc$', caseSensitive: false), '');
+      // /Account is the web login page, not the REST API prefix
+      url = url.replaceAll(RegExp(r'/Account/?$', caseSensitive: false), '');
+
+      final uri = Uri.tryParse(url);
+      if (uri == null || uri.host.isEmpty) {
+        return url;
+      }
+
+      final host = uri.host.toLowerCase();
+      final path = uri.path.replaceAll(RegExp(r'/+$'), '');
+      // ELTE student API lives under /ujhallgato (list used to ship …/Account)
+      if (host.contains('elte.hu') &&
+          (path.isEmpty || path == '/' || path.toLowerCase() == '/account')) {
+        return uri.replace(path: '/ujhallgato').toString().replaceAll(RegExp(r'/+$'), '');
+      }
+      return url.replaceAll(RegExp(r'/+$'), '');
+    }
+
     //
 // --- 2FA
     static Future<int> validateLoginCredentialsUrl(String rawUrl, String username, String password) async {
@@ -404,15 +431,27 @@ import '../storage.dart';
       String baseUrl = url.replaceAll(RegExp(r'/login(\.aspx)?$', caseSensitive: false), '');
       baseUrl = baseUrl.replaceAll(RegExp(r'/MobileService\.svc$', caseSensitive: false), '');
 
-      // Path normalization for specific institutions is handled by the modern API detection below.
-
       if (containsAspx) {
-
         bool success = await _tryOldLogin(baseUrl, username, password);
         return success ? 1 : 0;
-      } else {
-        return await _tryModernLogin(baseUrl, username, password);
       }
+
+      baseUrl = normalizeModernApiBaseUrl(rawUrl);
+      return await _tryModernLogin(baseUrl, username, password);
+    }
+
+    static bool _isTwoFactorPayload(dynamic response, int statusCode) {
+      if (response is! Map) return false;
+      final data = response['data'];
+      if (data is! Map) return false;
+      if (data['isTwoFactorRequired'] == true || data['requiresTwoFactor'] == true) {
+        return true;
+      }
+      // Neptun often answers 202 with only twoFactorLoginToken
+      if (data['twoFactorLoginToken'] != null && data['accessToken'] == null) {
+        return true;
+      }
+      return statusCode == 202 && data['twoFactorLoginToken'] != null;
     }
 
     static Future<int> _tryModernLogin(String baseUrl, String username, String password) async {
@@ -432,15 +471,29 @@ import '../storage.dart';
         }
 
         final responseRaw = await _APIRequest.postRequestRaw(modernApiUrl, body, cookie: cookieHeader);
-        final response = conv.jsonDecode(responseRaw.body);
+        final rawBody = responseRaw.body.trim();
+        if (rawBody.isEmpty) {
+          return 0;
+        }
+
+        dynamic response;
+        try {
+          response = conv.jsonDecode(rawBody);
+        } catch (_) {
+          // Plain-text errors (e.g. invalid password) → treat as failed login
+          return 0;
+        }
 
         // Extract and save cookies/tokens
         _APIRequest._extractAndSaveCookiesAndTokens(responseRaw, username);
 
-        final is2fa = response["data"] != null && (response["data"]["isTwoFactorRequired"] == true || response["data"]["requiresTwoFactor"] == true);
-        if (is2fa) {
+        if (_isTwoFactorPayload(response, responseRaw.statusCode)) {
           await storage.DataCache.setInstituteUrl(baseUrl);
-          await storage.DataCache.setAccessToken(response["data"]["twoFactorLoginToken"]);
+          final tfToken = response["data"]["twoFactorLoginToken"];
+          if (tfToken != null) {
+            await storage.DataCache.setAccessToken(tfToken.toString());
+          }
+          await storage.DataCache.setIsModernApi(true);
           return 2; // 2FA KELL
         }
 
@@ -457,7 +510,8 @@ import '../storage.dart';
 
     static Future<bool> submitTwoFactorCode(String username, String password, String code) async {
       try {
-        String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+        String baseUrl = normalizeModernApiBaseUrl(storage.DataCache.getInstituteUrl() ?? '');
+        if (baseUrl.isEmpty) return false;
 
         final url = Uri.parse("$baseUrl/api/Account/Authenticate");
         final body = conv.jsonEncode({
@@ -477,8 +531,19 @@ import '../storage.dart';
           cookieHeader = 'devicecookie-$b64=$savedCookieVal';
         }
 
-        final responseRaw = await _APIRequest.postRequestRaw(url, body, cookie: cookieHeader);
-        final response = conv.jsonDecode(responseRaw.body);
+        final pendingTwoFactorToken = storage.DataCache.getAccessToken();
+        final responseRaw = await _APIRequest.postRequestRaw(
+          url,
+          body,
+          cookie: cookieHeader,
+          bearerToken: (pendingTwoFactorToken != null && pendingTwoFactorToken.isNotEmpty)
+              ? pendingTwoFactorToken
+              : null,
+        );
+        final rawBody = responseRaw.body.trim();
+        if (rawBody.isEmpty) return false;
+
+        final response = conv.jsonDecode(rawBody);
 
         // Extract and save cookies/tokens
         _APIRequest._extractAndSaveCookiesAndTokens(responseRaw, username);
@@ -486,6 +551,7 @@ import '../storage.dart';
         if (response["data"] != null && response["data"]["accessToken"] != null) {
           await storage.DataCache.setAccessToken(response["data"]["accessToken"]);
           await storage.DataCache.setIsModernApi(true);
+          await storage.DataCache.setInstituteUrl(baseUrl);
           return true;
         }
       } catch (e) { }
@@ -2316,24 +2382,6 @@ class CashinEntry{
     static bool isDaylightSavings(DateTime time){
       return (daylightSavingsTimeFrom.microsecondsSinceEpoch < time.microsecondsSinceEpoch && time.microsecondsSinceEpoch < daylightSavingsTimeTo.microsecondsSinceEpoch);
     }
-    static Future<AppUpdateHelper?> getAppUpdateHelper() async{
-      final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/appMinimumAllowedVersion.json');
-      final response = await http.get(url);
-
-      if (response.statusCode != 200) {
-        return null;
-      }
-
-      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
-      return AppUpdateHelper(minAppVer: jsonMap["latestMinimumAllowedVerBuildNum"], minDisableVer: jsonMap["disableAppMinimumVersion"], updateUrl: jsonMap["updatePageJumper"]);
-    }
-  }
-
-  class AppUpdateHelper{
-    final int? minAppVer;
-    final int? minDisableVer;
-    final String? updateUrl;
-    const AppUpdateHelper({required this.minAppVer, required this.minDisableVer, required this.updateUrl});
   }
 
   class Language{
@@ -2382,8 +2430,8 @@ class CashinEntry{
     static List<LangPackMap>? _langMapCache;
     static List<LangPackMap> getAllLanguagesWithNative(){
       final nativeList = <LangPackMap>[
-        LangPackMap(langName: 'Magyar', langId: 'hu', langURL: '', langFlag: '🇭🇺'),
-        LangPackMap(langName: 'English', langId: 'en', langURL: '', langFlag: '🇺🇸/🇬🇧')];
+        LangPackMap(langName: 'English', langId: 'en', langURL: '', langFlag: '🇺🇸/🇬🇧'),
+        LangPackMap(langName: 'Magyar', langId: 'hu', langURL: '', langFlag: '🇭🇺')];
 
       if(!DataCache.getHasNetwork()){
         return nativeList;
@@ -2396,7 +2444,7 @@ class CashinEntry{
         return _langMapCache;
       }
       try {
-        final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Languages/supportedLanguages.json');
+        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Languages/supportedLanguages.json');
         final response = await http.get(url);
 
         if (response.statusCode != 200) {
@@ -2442,7 +2490,7 @@ class CashinEntry{
         return _themeMapCache;
       }
       try {
-        final url = Uri.parse('https://raw.githubusercontent.com/zoligamer/Neptun-Mobile-fork/refs/heads/main/Themes/supportedThemes.json');
+        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Themes/supportedThemes.json');
         final response = await http.get(url);
 
         if (response.statusCode != 200) {

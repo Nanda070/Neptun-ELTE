@@ -1,23 +1,22 @@
 ---
-name: Hibabejelentés
-about: Írd le mi a probléma
+name: Bug report
+about: Describe the problem
 title: "[BUG]"
 labels: bug
-assignees: domedav
+assignees: Nanda070
 
 ---
 
-**Milyen problémát tapasztalsz?**
-Egy pontos leírás a problémáról.
+**What problem did you experience?**
+A clear description of the issue.
 
-**Mit csináltál a probléma előhívásához?**
-Részletes leírás hogyan lehet replikálni a problémát
-1.  Csináld ezt '...'
-2. Majd ezt'....'
-3. Stb '....'
-4. Probléma itt ilyen módon jelentkezett
+**Steps to reproduce**
+1. Do this '...'
+2. Then this '....'
+3. Etc. '....'
+4. Problem appeared this way
 
-**Képernyőképek**
-Ha lehet, küldj képernyőképeket a probléma kapcsán
+**Screenshots**
+If possible, attach screenshots related to the problem.
 
-**Ha nem a legfrissebb applikáció verzióval jelentkezett a probléma, figyelmen kívül lesz hagyva!**
+**Please use the latest app version when reporting.**
