@@ -1341,6 +1341,17 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
         PopupWidgetHandler.doPopup(context);
         return;
       }
+      else if(value == api.InstitutesRequest.loginServerBusy){
+        // Overloaded Neptun / timeout — not wrong password
+        AppHaptics.attentionLightImpact();
+        setState(() {
+          _paintRed = false;
+          _canProceed = true;
+          _isLoading = false;
+          _showNeptunServerError = false;
+        });
+        _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgressSlow, 6);
+      }
       else { // 0: HIBÁS JELSZÓ VAGY NEPTUN KÓD
         AppHaptics.attentionLightImpact();
         setState(() {

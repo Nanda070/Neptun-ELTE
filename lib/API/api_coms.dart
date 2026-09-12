@@ -65,13 +65,14 @@ import '../storage.dart';
       return response ?? '{}';
     }
 
-    static Future<http.Response> postRequestRaw(Uri url, String requestBody,{String? bearerToken, String? cookie}) async {
+    static Future<http.Response> postRequestRaw(Uri url, String requestBody,{String? bearerToken, String? cookie, Duration? timeout}) async {
       HttpOverrides.global = NeptunCerts.getCerts();
   
       final client = http.Client();
       final request = http.Request('POST', url);
 
       request.headers['Content-Type'] = 'application/json';
+      request.headers['Accept'] = 'application/json, text/plain, */*';
       if (bearerToken != null && bearerToken.isNotEmpty) {
         request.headers['Authorization'] = 'Bearer $bearerToken';
       }
@@ -81,8 +82,10 @@ import '../storage.dart';
       request.body = requestBody;
 
       try {
-        final streamedResponse = await client.send(request);
-        final response = await http.Response.fromStream(streamedResponse);
+        final sendFuture = client.send(request).then((streamed) => http.Response.fromStream(streamed));
+        final response = timeout == null
+            ? await sendFuture
+            : await sendFuture.timeout(timeout);
         client.close();
         return response;
       } catch (e) {
@@ -390,6 +393,13 @@ import '../storage.dart';
       return validateLoginCredentialsUrl(institute.URL, username, password);
     }
 
+    /// Login result codes for modern/old auth.
+    /// 1 = success, 2 = 2FA required, 0 = invalid credentials, 3 = server/network busy.
+    static const int loginOk = 1;
+    static const int loginNeeds2fa = 2;
+    static const int loginInvalidCredentials = 0;
+    static const int loginServerBusy = 3;
+
     /// Modern Neptun API root (…/ujhallgato), not the Angular /Account SPA route.
     static String normalizeModernApiBaseUrl(String rawUrl) {
       var url = rawUrl.trim();
@@ -416,12 +426,32 @@ import '../storage.dart';
       return url.replaceAll(RegExp(r'/+$'), '');
     }
 
+    static List<String> _modernLoginBaseCandidates(String rawUrl) {
+      final primary = normalizeModernApiBaseUrl(rawUrl);
+      final out = <String>[];
+      void add(String? u) {
+        if (u == null || u.isEmpty) return;
+        final cleaned = u.replaceAll(RegExp(r'/+$'), '');
+        if (!out.contains(cleaned)) out.add(cleaned);
+      }
+
+      add(primary);
+      final uri = Uri.tryParse(primary);
+      if (uri != null && uri.host.toLowerCase().contains('elte.hu')) {
+        // Order: documented student API first, then older aliases.
+        add(uri.replace(path: '/ujhallgato').toString());
+        add(uri.replace(path: '/hallgato').toString());
+        add(uri.replace(path: '').toString());
+      }
+      return out;
+    }
+
     //
 // --- 2FA
     static Future<int> validateLoginCredentialsUrl(String rawUrl, String username, String password) async {
       if(username == 'DEMO' && password == 'DEMO'){
         await storage.DataCache.setIsDemoAccount(1);
-        return 1;
+        return loginOk;
       }
 
       String url = rawUrl.trim();
@@ -433,11 +463,24 @@ import '../storage.dart';
 
       if (containsAspx) {
         bool success = await _tryOldLogin(baseUrl, username, password);
-        return success ? 1 : 0;
+        return success ? loginOk : loginInvalidCredentials;
       }
 
-      baseUrl = normalizeModernApiBaseUrl(rawUrl);
-      return await _tryModernLogin(baseUrl, username, password);
+      var sawServerBusy = false;
+      for (final candidate in _modernLoginBaseCandidates(rawUrl)) {
+        final result = await _tryModernLogin(candidate, username, password);
+        if (result == loginOk || result == loginNeeds2fa) {
+          return result;
+        }
+        if (result == loginInvalidCredentials) {
+          // Endpoint answered clearly — stop trying aliases.
+          return loginInvalidCredentials;
+        }
+        if (result == loginServerBusy) {
+          sawServerBusy = true;
+        }
+      }
+      return sawServerBusy ? loginServerBusy : loginInvalidCredentials;
     }
 
     static bool _isTwoFactorPayload(dynamic response, int statusCode) {
@@ -452,6 +495,30 @@ import '../storage.dart';
         return true;
       }
       return statusCode == 202 && data['twoFactorLoginToken'] != null;
+    }
+
+    static bool _looksLikeInvalidCredentials(String body, int statusCode) {
+      if (statusCode == 401 || statusCode == 403) return true;
+      final lower = body.toLowerCase();
+      return lower.contains('érvénytelen') ||
+          lower.contains('ervenytelen') ||
+          lower.contains('invalid') ||
+          lower.contains('wrong password') ||
+          lower.contains('hibás') ||
+          lower.contains('hibas');
+    }
+
+    static bool _looksLikeServerBusy(String body, int statusCode) {
+      if (statusCode == 429 || statusCode == 502 || statusCode == 503 || statusCode == 504) {
+        return true;
+      }
+      final lower = body.toLowerCase();
+      return lower.contains('full') ||
+          lower.contains('overload') ||
+          lower.contains('too many') ||
+          lower.contains('try again') ||
+          lower.contains('maintenance') ||
+          lower.contains('unavailable');
     }
 
     static Future<int> _tryModernLogin(String baseUrl, String username, String password) async {
@@ -470,41 +537,74 @@ import '../storage.dart';
           cookieHeader = 'devicecookie-$b64=$savedCookieVal';
         }
 
-        final responseRaw = await _APIRequest.postRequestRaw(modernApiUrl, body, cookie: cookieHeader);
+        final responseRaw = await _APIRequest.postRequestRaw(
+          modernApiUrl,
+          body,
+          cookie: cookieHeader,
+          timeout: const Duration(seconds: 20),
+        );
         final rawBody = responseRaw.body.trim();
+        final status = responseRaw.statusCode;
+
         if (rawBody.isEmpty) {
-          return 0;
+          // Empty 4xx/5xx from overloaded Neptun — not "wrong password"
+          if (status >= 500 || status == 0 || status == 400 || status == 408 || status == 429) {
+            return loginServerBusy;
+          }
+          return loginServerBusy;
+        }
+
+        if (_looksLikeServerBusy(rawBody, status)) {
+          return loginServerBusy;
         }
 
         dynamic response;
         try {
           response = conv.jsonDecode(rawBody);
         } catch (_) {
-          // Plain-text errors (e.g. invalid password) → treat as failed login
-          return 0;
+          if (_looksLikeInvalidCredentials(rawBody, status)) {
+            return loginInvalidCredentials;
+          }
+          return loginServerBusy;
         }
 
         // Extract and save cookies/tokens
         _APIRequest._extractAndSaveCookiesAndTokens(responseRaw, username);
 
-        if (_isTwoFactorPayload(response, responseRaw.statusCode)) {
+        if (_isTwoFactorPayload(response, status)) {
           await storage.DataCache.setInstituteUrl(baseUrl);
           final tfToken = response["data"]["twoFactorLoginToken"];
           if (tfToken != null) {
             await storage.DataCache.setAccessToken(tfToken.toString());
           }
           await storage.DataCache.setIsModernApi(true);
-          return 2; // 2FA KELL
+          return loginNeeds2fa;
         }
 
         if (response["data"] != null && response["data"]["accessToken"] != null) {
           await storage.DataCache.setAccessToken(response["data"]["accessToken"]);
           await storage.DataCache.setIsModernApi(true);
           await storage.DataCache.setInstituteUrl(baseUrl);
-          return 1;
+          return loginOk;
         }
-      } catch (e) { }
-      return 0; // HIBA
+
+        // Structured error from API
+        final err = response['error'] ?? response['ErrorMessage'] ?? response['message'];
+        if (err != null && _looksLikeInvalidCredentials(err.toString(), status)) {
+          return loginInvalidCredentials;
+        }
+        if (status >= 500 || _looksLikeServerBusy(rawBody, status)) {
+          return loginServerBusy;
+        }
+        if (_looksLikeInvalidCredentials(rawBody, status)) {
+          return loginInvalidCredentials;
+        }
+        return loginServerBusy;
+      } on TimeoutException {
+        return loginServerBusy;
+      } catch (e) {
+        return loginServerBusy;
+      }
     }
 
 
@@ -539,6 +639,7 @@ import '../storage.dart';
           bearerToken: (pendingTwoFactorToken != null && pendingTwoFactorToken.isNotEmpty)
               ? pendingTwoFactorToken
               : null,
+          timeout: const Duration(seconds: 35),
         );
         final rawBody = responseRaw.body.trim();
         if (rawBody.isEmpty) return false;
