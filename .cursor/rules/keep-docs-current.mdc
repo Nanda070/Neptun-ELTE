@@ -1,0 +1,35 @@
+---
+description: Keep README and developer docs in sync with every code or product change
+alwaysApply: true
+---
+
+# Keep documentation current
+
+After **any** feature, fix, rename, platform change, or new behavior, update **all** user-facing and developer docs in the same turn. Do not leave docs for “later”.
+
+## Files that must stay in sync
+
+| File | Language | Role |
+|------|----------|------|
+| `README.md` | EN | Product README (main) |
+| `README.ru.md` | RU | Same content as EN README |
+| `docs/TECHNICAL.md` | EN | Full technical doc (canonical) |
+| `docs/TECHNICAL.ru.md` | RU | Same facts as EN TECHNICAL |
+| `docs/DEVELOPER.md` | EN/short | iOS cheatsheet; must not contradict TECHNICAL |
+
+EN and RU pairs must match on facts (bundle IDs, commands, languages, contacts, APIs). If you change one, change the other.
+
+## What to update when
+
+- **Identity** (name, bundle IDs, contacts, GitHub): README EN+RU + TECHNICAL EN+RU + DEVELOPER.
+- **How to run / iOS / Android / signing**: README + TECHNICAL §14–18 + DEVELOPER.
+- **API, login, 2FA, cache, languages, removed features**: TECHNICAL EN+RU (honesty table if completeness changed).
+- **User-visible features**: README feature list EN+RU.
+
+## Honesty
+
+Document what the code actually does. If something is untested (e.g. live ELTE 2FA), say so. Do not delete the 2FA warning in the app until the owner confirms after a live check.
+
+## End of task
+
+Before finishing a change, scan the five files above for stale IDs, commands, or claims. Cross-link EN ↔ RU where a new doc is added.

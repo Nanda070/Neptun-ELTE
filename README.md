@@ -8,7 +8,7 @@ A modern mobile client for the Hungarian university **Neptun** system — timeta
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
 [![Issues](https://img.shields.io/badge/Bug%20reports-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
 
-> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical docs](docs/TECHNICAL.md) · [iOS cheatsheet](docs/DEVELOPER.md)
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical docs](docs/TECHNICAL.md) · [RU](docs/TECHNICAL.ru.md) · [iOS cheatsheet](docs/DEVELOPER.md)
 
 ---
 
@@ -84,7 +84,8 @@ Bug reports & ideas: [GitHub Issues](https://github.com/Nanda070/Neptun-Mobile-f
 ## Docs
 
 - [README (Russian)](README.ru.md)
-- [Technical documentation](docs/TECHNICAL.md) — architecture, APIs, iOS/Android, auth
+- [Technical documentation (EN)](docs/TECHNICAL.md) — architecture, APIs, iOS/Android, auth
+- [Техническая документация (RU)](docs/TECHNICAL.ru.md)
 - [iOS cheatsheet](docs/DEVELOPER.md)
 
 ---

@@ -1,121 +1,123 @@
-# Neptun Mobile — техническая документация
+# Neptun Mobile — technical documentation
 
-> **Аудитория:** разработчики и люди с доступом к репозиторию.  
-> Файл только в git (`docs/TECHNICAL.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
-> Идентификаторы кода, пути, пакеты и API-маршруты — на английском, как в репозитории.
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md)
 
-Последняя сверка с кодовой базой: **сентябрь 2026** (iOS-таргет, языки EN/HU/RU/TR, логин modern API + 2FA-код, ELTE URL, разделение «неверный пароль» vs «сервер занят»). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
+> **Audience:** developers and anyone with repo access.  
+> Git-only (`docs/TECHNICAL.md`). **Not** published as a website, **no** public route.  
+> Code identifiers, paths, packages, and API routes stay in English, as in the repo.
 
-Короткий iOS-шпаргалка: [`docs/DEVELOPER.md`](DEVELOPER.md). Продуктовый обзор: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
+Last sync with the codebase: **September 2026** (iOS target, languages EN/HU/RU/TR, modern API login + 2FA code path, ELTE URL, “invalid password” vs “server busy”). Sources: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
+
+Short iOS cheatsheet: [`docs/DEVELOPER.md`](DEVELOPER.md). Product overview: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
 
 ---
 
-## Оглавление
+## Contents
 
-1. [Обзор продукта](#1-обзор-продукта)
-2. [Репозиторий](#2-репозиторий)
-3. [Стек](#3-стек)
-4. [Архитектура и поток запросов](#4-архитектура-и-поток-запросов)
-5. [Экраны](#5-экраны)
-6. [Setup / вход](#6-setup--вход)
-7. [Home tabs (5 вкладок)](#7-home-tabs-5-вкладок)
-8. [API Neptun](#8-api-neptun)
-9. [Auth, 2FA, токены](#9-auth-2fa-токены)
-10. [Доменные возможности](#10-доменные-возможности)
-11. [Честность: full vs thin](#11-честность-full-vs-thin)
-12. [Слой данных](#12-слой-данных)
-13. [Уведомления](#13-уведомления)
+1. [Product overview](#1-product-overview)
+2. [Repository](#2-repository)
+3. [Stack](#3-stack)
+4. [Architecture and request flow](#4-architecture-and-request-flow)
+5. [Screens](#5-screens)
+6. [Setup / login](#6-setup--login)
+7. [Home tabs (5)](#7-home-tabs-5)
+8. [Neptun APIs](#8-neptun-apis)
+9. [Auth, 2FA, tokens](#9-auth-2fa-tokens)
+10. [Domain features](#10-domain-features)
+11. [Honesty: full vs thin](#11-honesty-full-vs-thin)
+12. [Data layer](#12-data-layer)
+13. [Notifications](#13-notifications)
 14. [iOS](#14-ios)
 15. [Android](#15-android)
-16. [Отключённые / удалённые функции](#16-отключённые--удалённые-функции)
-17. [Переменные окружения](#17-переменные-окружения)
-18. [Сборка, CI, запуск](#18-сборка-ci-запуск)
-19. [История и контакты](#19-история-и-контакты)
-20. [Ключевые решения «почему так»](#20-ключевые-решения-почему-так)
-21. [Карта важных файлов](#21-карта-важных-файлов)
+16. [Removed / disabled](#16-removed--disabled)
+17. [Environment](#17-environment)
+18. [Build, CI, run](#18-build-ci-run)
+19. [History and contacts](#19-history-and-contacts)
+20. [Why we chose this](#20-why-we-chose-this)
+21. [Important files](#21-important-files)
 
 ---
 
-## 1. Обзор продукта
+## 1. Product overview
 
-**Neptun Mobile** — неофициальный мобильный клиент университетской системы **Neptun** (SDA Informatika): расписание, зачётка, платежи, периоды, сообщения.
+**Neptun Mobile** is an unofficial mobile client for the **Neptun** university system (SDA Informatika): timetable, markbook, payments, periods, messages.
 
-- Целевая аудитория: студенты вузов, у которых есть Neptun-код и студенческий портал.
-- Список институтов: `universityNameUrlPairs.json` (грузится с GitHub raw, не как Flutter-asset).
+- Audience: students with a Neptun code and a student portal.
+- Institute list: `universityNameUrlPairs.json` (loaded from GitHub raw, not a Flutter asset).
 - Display name: **Neptun Mobile**.
-- Версия (`pubspec.yaml`): **1.0.5+18**.
-- Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
-- Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
-- Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
-- Это **не** официальное приложение SDA и **не** App Store / Play production-бренд.
+- Version (`pubspec.yaml`): **1.0.5+18**.
+- Dart package: `neptun2` (imports `package:neptun2/...`).
+- UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
+- Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
+- This is **not** an official SDA app and **not** an App Store / Play production brand.
 
-Репозиторий: [Nanda070/Neptun-Mobile-fork](https://github.com/Nanda070/Neptun-Mobile-fork). Продукт независимый; прошлые авторы указаны только в credits.
+Repo: [Nanda070/Neptun-Mobile-fork](https://github.com/Nanda070/Neptun-Mobile-fork). Independent product; earlier authors are credits only.
 
 ---
 
-## 2. Репозиторий
+## 2. Repository
 
 ```
 Neptun-Mobile-fork/
-├── lib/                      # Весь продукт (Dart)
+├── lib/                      # Entire product (Dart)
 │   ├── main.dart
 │   ├── storage.dart          # DataCache singleton
 │   ├── language.dart         # EN/HU + remote packs
-│   ├── colors.dart           # Темы
+│   ├── colors.dart           # Themes
 │   ├── notifications.dart
 │   ├── haptics.dart
 │   ├── API/                  # Neptun HTTP + ICS parser
-│   ├── Pages/                # Экраны
+│   ├── Pages/                # Screens
 │   ├── Navigator/            # Top / bottom nav
 │   ├── Misc/                 # Drawer, popup, updater, snackbar
-│   └── *Elements/            # Виджеты вкладок
+│   └── *Elements/            # Tab widgets
 ├── android/                  # Native Android
-├── ios/                      # Native iOS (сгенерирован flutter create)
-├── Languages/                # supportedLanguages.json + JSON-паки
-├── Themes/                   # supportedThemes.json + JSON-палитры
+├── ios/                      # Native iOS (flutter create)
+├── Languages/                # supportedLanguages.json + JSON packs
+├── Themes/                   # supportedThemes.json + palettes
 ├── universityNameUrlPairs.json
-├── docs/                     # TECHNICAL.md, DEVELOPER.md
-├── .github/workflows/        # Только Android debug APK
+├── docs/                     # TECHNICAL.md (EN), TECHNICAL.ru.md, DEVELOPER.md
+├── .github/workflows/        # Android debug APK only
 ├── pubspec.yaml
-├── README.md                 # EN, пользовательский
+├── README.md                 # EN product README
 └── README.ru.md
 ```
 
-| Путь | Назначение |
-|------|------------|
-| `lib/` | UI, API, кэш, уведомления |
+| Path | Role |
+|------|------|
+| `lib/` | UI, API, cache, notifications |
 | `android/` | Gradle, `applicationId` `com.nanda070.neptun_mobile.app` |
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
-| `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
-| `Themes/` | Каталог скачиваемых тем |
-| `docs/` | Документация для разработчиков |
+| `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
+| `Themes/` | Downloadable theme catalog |
+| `docs/` | Developer documentation |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
 
-**Нет:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, backend этого приложения.
+**Missing:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, and any first-party backend.
 
 ---
 
-## 3. Стек
+## 3. Stack
 
-| Слой | Технологии |
-|------|------------|
+| Layer | Tech |
+|-------|------|
 | UI | **Flutter** / **Dart** `>=3.1.4 <4.0.0`, **Material 3** |
-| Состояние | `provider` — только тема (`ThemeNotifier`); остальное — синглтон `DataCache` |
-| Сеть | `http` (основной), `dio` (скачивание APK на Android) |
-| Локально | `shared_preferences`, `flutter_secure_storage`, `path_provider`, `file_picker` |
-| Уведомления | `flutter_local_notifications`, `timezone`, `flutter_timezone` |
-| Прочее | `url_launcher`, `package_info_plus`, `device_info_plus`, `connectivity_plus`, `vibration`, `fluttertoast`, `open_filex`, `flutter_native_splash`, `linked_scroll_controller` |
+| State | `provider` — theme only (`ThemeNotifier`); everything else is the `DataCache` singleton |
+| Network | `http` (primary), `dio` (APK download on Android) |
+| Local | `shared_preferences`, `flutter_secure_storage`, `path_provider`, `file_picker` |
+| Notifications | `flutter_local_notifications`, `timezone`, `flutter_timezone` |
+| Other | `url_launcher`, `package_info_plus`, `device_info_plus`, `connectivity_plus`, `vibration`, `fluttertoast`, `open_filex`, `flutter_native_splash`, `linked_scroll_controller` |
 | Android-only | `in_app_update` (Play), `AppUpdater` (GitHub APK) |
-| Навигация | **без named routes**: `Navigator.push` + индекс нижней панели |
+| Navigation | **No named routes**: `Navigator.push` + bottom-nav index |
 
-Отдельного сервера приложения **нет**. Все учебные данные идут на инстанс Neptun выбранного вуза. Языки / темы / список вузов — raw GitHub этого репо.
+There is **no** app backend. Academic data comes from the selected institute’s Neptun. Languages / themes / institute list come from this repo’s GitHub raw files.
 
 ---
 
-## 4. Архитектура и поток запросов
+## 4. Architecture and request flow
 
 ```
-Устройство (Android / iOS)
+Device (Android / iOS)
    │
    ├─ Flutter UI (lib/Pages, lib/*Elements)
    │       │
@@ -132,95 +134,95 @@ Neptun-Mobile-fork/
               Themes/supportedThemes.json
 ```
 
-**Инварианты:**
+**Invariants:**
 
-1. Нет своего бэкенда и нет push-сервера. Уведомления **локальные**.
-2. Modern vs old API определяется URL (`.aspx` → old; иначе modern) и флагом `DataCache.getIsModernApi()`.
-3. `Provider` не несёт учебные данные.
-4. TLS: `NeptunCerts.badCertificateCallback` принимает **любой** сертификат (`lib/API/api_coms.dart`). Нужно вузам с кривым TLS; это сознательный риск.
-5. Список вузов в приложении читается с **`main` на GitHub**. Локальный JSON в checkout **не** используется, пока не запушен.
-
----
-
-## 5. Экраны
-
-Навигация: `MaterialPageRoute`, без `routes:` map.
-
-| Виджет / файл | Назначение |
-|---------------|------------|
-| `Splitter` (`lib/Pages/startup_page.dart`) | Сплэш: грузит кэш, тему, языки; ветка login / home |
-| `SetupPageLoginTypeSelection` (`setup_page.dart`) | Выбор: список вузов **или** ручной URL |
-| `SetupPageInstitudeSelection` | Поиск института |
-| `SetupPageURLInput` | Ручной Neptun URL |
-| `SetupPageLogin` | Neptun-код + пароль |
-| `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с первого экрана не открывается**) |
-| `HomePage` (`lib/Pages/main_page.dart`) | 5 вкладок после входа |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Семестр, баланс, настройки, апдейт (Android), выход |
-| `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
+1. No first-party backend, no push server. Notifications are **local**.
+2. Modern vs old API is chosen from the URL (`.aspx` → old; otherwise modern) plus `DataCache.getIsModernApi()`.
+3. `Provider` does not hold academic data.
+4. TLS: `NeptunCerts.badCertificateCallback` accepts **any** certificate (`lib/API/api_coms.dart`). Needed for broken campus TLS; MITM risk is accepted.
+5. The in-app institute list is fetched from **`main` on GitHub**. Local JSON in a checkout is unused until it is pushed.
 
 ---
 
-## 6. Setup / вход
+## 5. Screens
 
-Порядок:
+Navigation: `MaterialPageRoute`, no `routes:` map.
 
-1. `Splitter` → если `getHasLogin()` → `HomePage`, иначе setup.
-2. Тип входа: список институтов **или** URL.
-3. Логин: код (в API уходит `toUpperCase()`) + пароль.
-4. Демо: `DEMO` / `DEMO` → фейковые данные, без сети.
-
-### Коды `InstitutesRequest.validateLoginCredentialsUrl`
-
-| Код | Константа | UI |
-|-----|-----------|-----|
-| `1` | `loginOk` | Вход на Home |
-| `2` | `loginNeeds2fa` | Popup mode 9 (6 цифр) |
-| `0` | `loginInvalidCredentials` | Красные поля, «Invalid username or password!» |
-| `3` | `loginServerBusy` | Snackbar «Neptun servers are having a hard time...» — **не** неверный пароль |
-
-Таймаут modern login: **20 с** на кандидата URL. Пустой ответ / 5xx / timeout / HTML → `loginServerBusy`.
-
-### Нормализация URL
-
-`normalizeModernApiBaseUrl` снимает `/login`, `/MobileService.svc`, хвост `/Account`.
-
-Для **ELTE** (`*.elte.hu` и путь пустой или `/Account`) базой становится `https://neptun.elte.hu/ujhallgato`.
-
-Кандидаты modern login (`_modernLoginBaseCandidates`): primary → для ELTE ещё `/ujhallgato`, `/hallgato`, root. Первый **чёткий** invalid credentials останавливает перебор; busy пробует следующий.
-
-**Не проверено живым ELTE-аккаунтом** (веб был «student web is full»). Предупреждение UI про 2FA **пока оставлено**.
-
-После успеха **не** перезаписывать `instituteUrl` сырым URL из списка (иначе снова `/Account`). Пишется база, которую выставил логин.
+| Widget / file | Role |
+|---------------|------|
+| `Splitter` (`lib/Pages/startup_page.dart`) | Splash: load cache, theme, languages; login vs home |
+| `SetupPageLoginTypeSelection` (`setup_page.dart`) | Institute list **or** custom URL |
+| `SetupPageInstitudeSelection` | Institute search |
+| `SetupPageURLInput` | Manual Neptun URL |
+| `SetupPageLogin` | Neptun code + password |
+| `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the first screen**) |
+| `HomePage` (`lib/Pages/main_page.dart`) | 5 tabs after login |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Term, balance, settings, update (Android), logout |
+| `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
 ---
 
-## 7. Home tabs (5 вкладок)
+## 6. Setup / login
 
-`HomePageState` + `BottomNavigatorWidget`. Свайп влево/вправо. **Named routes нет.**
+Flow:
 
-| Index | Иконка | Содержание |
-|-------|--------|------------|
-| 0 | calendar | Недельное расписание, пары/экзамены |
-| 1 | backpack | Зачётка: кредиты, средний, ghost grade |
-| 2 | price_change | Начисления, дедлайны; в drawer — баланс |
-| 3 | timer | Периоды (регистрация, экзамены, запись) |
-| 4 | email | Входящие, непрочитанные, mark read |
+1. `Splitter` → if `getHasLogin()` then `HomePage`, else setup.
+2. Login type: institute list **or** URL.
+3. Credentials: code (sent `toUpperCase()`) + password.
+4. Demo: `DEMO` / `DEMO` → fake data, no network.
 
-Семестр: `getSelectedTermId()` / `getSelectedTermName()`, список терминов кэшируется.
+### `InstitutesRequest.validateLoginCredentialsUrl` codes
+
+| Code | Constant | UI |
+|------|----------|-----|
+| `1` | `loginOk` | Enter Home |
+| `2` | `loginNeeds2fa` | Popup mode 9 (6 digits) |
+| `0` | `loginInvalidCredentials` | Red fields, “Invalid username or password!” |
+| `3` | `loginServerBusy` | Snackbar “Neptun servers are having a hard time...” — **not** a bad password |
+
+Modern login timeout: **20 s** per URL candidate. Empty body / 5xx / timeout / HTML → `loginServerBusy`.
+
+### URL normalization
+
+`normalizeModernApiBaseUrl` strips `/login`, `/MobileService.svc`, and a trailing `/Account`.
+
+For **ELTE** (`*.elte.hu` with empty path or `/Account`) the base becomes `https://neptun.elte.hu/ujhallgato`.
+
+Modern candidates (`_modernLoginBaseCandidates`): primary, then for ELTE also `/ujhallgato`, `/hallgato`, root. The first **clear** invalid-credentials response stops the loop; busy tries the next.
+
+**Not verified on a live ELTE account** (web was “student web is full”). The UI 2FA warning is **kept for now**.
+
+On success, **do not** overwrite `instituteUrl` with the raw list URL (that puts `/Account` back). Persist the base that login selected.
 
 ---
 
-## 8. API Neptun
+## 7. Home tabs (5)
 
-Два семейства в `lib/API/api_coms.dart`.
+`HomePageState` + `BottomNavigatorWidget`. Swipe left/right. **No named routes.**
+
+| Index | Icon | Content |
+|-------|------|---------|
+| 0 | calendar | Week timetable, classes/exams |
+| 1 | backpack | Markbook: credits, average, ghost grade |
+| 2 | price_change | Fees and deadlines; drawer shows balance |
+| 3 | timer | Periods (registration, exams, subject signup) |
+| 4 | email | Inbox, unread, mark read |
+
+Term: `getSelectedTermId()` / `getSelectedTermName()`, term list is cached.
+
+---
+
+## 8. Neptun APIs
+
+Two families in `lib/API/api_coms.dart`.
 
 ### Old (`*.aspx` / `MobileService.svc`)
 
-База: `{host}/…/MobileService.svc`.
+Base: `{host}/…/MobileService.svc`.
 
-| Константа `URLs` | Путь |
-|------------------|------|
+| `URLs` constant | Path |
+|-----------------|------|
 | `TRAININGS_URL` | `/api/GetTrainings` |
 | `CALENDAR_URL` | `/api/GetCalendarData` |
 | `MARKBOOK_URL` | `/api/GetMarkbookData` |
@@ -229,30 +231,30 @@ Neptun-Mobile-fork/
 | `MESSAGES_URL` | `/api/GetMessages` |
 | `MESSAGE_SET_READ` | `/api/SetReadedMessage` |
 
-`URLs.INSTITUTIONS_URL` (cloudapp) **не вызывается**. Живой список вузов — GitHub JSON.
+`URLs.INSTITUTIONS_URL` (cloudapp) is **not** called. The live institute list is the GitHub JSON.
 
-**2FA на old API нет.**
+**No 2FA on the old API.**
 
 ### Modern (JWT)
 
-База: `{institute без /Account}` + `/api/...`.
+Base: `{institute without /Account}` + `/api/...`.
 
-| Назначение | Путь (примеры) |
-|------------|----------------|
-| Логин / 2FA | `POST /api/Account/Authenticate` |
+| Purpose | Path (examples) |
+|---------|-----------------|
+| Login / 2FA | `POST /api/Account/Authenticate` |
 | Refresh | `POST /api/Account/GetNewTokens` |
-| Тренинги | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
-| Календарь | `/api/Calendar/GetCalendarEvents` |
-| Детали пары | `/api/Calendar/GetCourseDetails` |
-| Задания | `/api/Tasks/GetTaskDetail` |
-| Предметы | `/api/TakenSubjects`, `/api/RegisteredCourses/GetRegisteredCourses` |
-| Термины | `/api/RegisteredCourses/GetTerms`, `/api/TakenSubjects/Terms`, `/api/Periods/GetTerms` |
-| Платежи | `/api/Transactions/GetStudentPreviousTransactions` |
-| Баланс | `/api/FinancialDataDashboard/GetCollectiveInvoices` |
-| Периоды | `/api/Periods/GetPeriods` |
-| Почта | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
+| Trainings | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
+| Calendar | `/api/Calendar/GetCalendarEvents` |
+| Class details | `/api/Calendar/GetCourseDetails` |
+| Tasks | `/api/Tasks/GetTaskDetail` |
+| Subjects | `/api/TakenSubjects`, `/api/RegisteredCourses/GetRegisteredCourses` |
+| Terms | `/api/RegisteredCourses/GetTerms`, `/api/TakenSubjects/Terms`, `/api/Periods/GetTerms` |
+| Payments | `/api/Transactions/GetStudentPreviousTransactions` |
+| Balance | `/api/FinancialDataDashboard/GetCollectiveInvoices` |
+| Periods | `/api/Periods/GetPeriods` |
+| Mail | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
 
-Тело логина:
+Login body:
 
 ```json
 {
@@ -265,193 +267,193 @@ Neptun-Mobile-fork/
 }
 ```
 
-При 2FA повтор с `token` = код; опционально `Authorization: Bearer` от `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
+For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / повторный логин при 401 — в `_APIRequest`.
-
----
-
-## 9. Auth, 2FA, токены
-
-| Что | Где |
-|-----|-----|
-| Пароль, JWT access/refresh, device cookie | `flutter_secure_storage` (`DataCache`) |
-| Username, URL института, флаги кэша, настройки | `shared_preferences` |
-| Демо | `setIsDemoAccount(1)` |
-
-**2FA (modern):** ответ с `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → `submitTwoFactorCode`.
-
-**2FA (old):** не поддерживается → обычно `0`.
-
-Плашка на логине (`loginPage_setupPage_2faWarning`) всё ещё говорит, что с 2FA войти нельзя. Текст **устарел относительно кода**. **Не удалять**, пока ELTE не проверен на живом аккаунте.
+Refresh / re-login on 401 lives in `_APIRequest`.
 
 ---
 
-## 10. Доменные возможности
+## 9. Auth, 2FA, tokens
 
-### 10.1 Расписание
+| What | Where |
+|------|-------|
+| Password, JWT access/refresh, device cookie | `flutter_secure_storage` (`DataCache`) |
+| Username, institute URL, cache flags, settings | `shared_preferences` |
+| Demo | `setIsDemoAccount(1)` |
 
-Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()`. Modern: `GetCalendarEvents` + детали курса.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → `submitTwoFactorCode`.
 
-### 10.2 Зачётка
+**2FA (old):** unsupported → usually `0`.
 
-Предметы, кредиты, средний, ghost grade (popup 0), конфетти.
+The login banner (`loginPage_setupPage_2faWarning`) still says 2FA cannot log in. That text is **stale vs the code**. **Do not remove** until ELTE is verified on a live account.
 
-### 10.3 Платежи / периоды / почта
+---
 
-Начисления и дедлайны; периоды с таймерами; входящие + mark read.
+## 10. Domain features
 
-### 10.4 Настройки
+### 10.1 Timetable
 
-Тема, язык, шрифт 80–140%, уведомления (4 типа), family-friendly тексты загрузки, вибрация, сдвиг недели, проверка обновлений (Android).
+Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()`. Modern: `GetCalendarEvents` + course details.
 
-### 10.5 Темы
+### 10.2 Markbook
 
-Вшитые (`lib/colors.dart`): Light, Dark, AMOLED Black, Midnight Ocean, Emerald Forest, плюс ещё две встроенные тёмные палитры.
+Subjects, credits, average, ghost grade (popup 0), confetti.
+
+### 10.3 Payments / periods / mail
+
+Charges and deadlines; periods with timers; inbox + mark read.
+
+### 10.4 Settings
+
+Theme, language, font 80–140%, four notification types, family-friendly loading copy, haptics, week offset, update check (Android).
+
+### 10.5 Themes
+
+Built-in (`lib/colors.dart`): Light, Dark, AMOLED Black, Midnight Ocean, Emerald Forest, plus two more built-in dark palettes.
 
 Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 
-### 10.6 Языки
+### 10.6 Languages
 
-| Код | Откуда |
-|-----|--------|
+| Code | Source |
+|------|--------|
 | `en` | `lib/language.dart` — **default** |
 | `hu` | `lib/language.dart` |
-| `ru`, `tr` | `Languages/LangExtentions/*.json` через `supportedLanguages.json` |
+| `ru`, `tr` | `Languages/LangExtentions/*.json` via `supportedLanguages.json` |
 
-Другие паки (DE, RO, UA, AR, ES, ZH, Pirate) **удалены**.
+Other packs (DE, RO, UA, AR, ES, ZH, Pirate) were **removed**.
 
-Тексты каналов уведомлений и часть заголовков настроек всё ещё **захардкожены по-венгерски**.
+Notification channel names and some settings headers are still **hardcoded Hungarian**.
 
 ### 10.7 ICS
 
-`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`, `file_picker`. С экрана выбора входа **кнопки нет**. Код живой, если в кэше `getHasICSFile()`.
+`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`, `file_picker`. **No button** on the first setup screen. Code still runs if `getHasICSFile()` is set.
 
 ---
 
-## 11. Честность: full vs thin
+## 11. Honesty: full vs thin
 
-| Область | Уровень | Комментарий |
-|---------|---------|-------------|
-| Android клиент (логин, 5 вкладок, кэш) | **Full / mid-beta** | Реальный API, не каркас |
-| iOS симулятор + release на устройстве | **Working** | Bundle без `_`; signing Automatic |
+| Area | Level | Notes |
+|------|-------|-------|
+| Android client (login, 5 tabs, cache) | **Full / mid-beta** | Real API, not a stub |
+| iOS simulator + device release | **Working** | Bundle without `_`; Automatic signing |
 | Modern JWT + refresh | **Solid** | |
-| 2FA modern | **Код есть, live ELTE не подтверждён** | Плашка «не работает» оставлена |
-| Old API 2FA | **Нет** | |
-| Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
-| ICS | **Dead UI** | Класс есть, входа с setup нет |
-| Homescreen widget | **Удалён** | Был заглушкой |
-| APK / Play update | **Android only** | На iOS скрыто |
-| Тесты | **Нет** | Папки `test/` нет |
-| App Store / Play production | **Не цель текущего состояния** | |
+| Modern 2FA | **Code present, live ELTE unconfirmed** | “Doesn’t work” banner kept |
+| Old API 2FA | **None** | |
+| Local iOS notifications | **Working MVP** | No Android-style exact alarm |
+| ICS | **Dead UI** | Class exists, no setup entry |
+| Homescreen widget | **Removed** | Was a stub |
+| APK / Play update | **Android only** | Hidden on iOS |
+| Tests | **None** | No `test/` folder |
+| App Store / Play production | **Not the current goal** | |
 
-Монолит: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — по ~1400–2600 строк. **Не дробить**, пока цель — iOS/логин, не рефакторинг.
-
----
-
-## 12. Слой данных
-
-`DataCache` (`lib/storage.dart`) — единственный слой.
-
-Кэш флагов: календарь, зачётка, платежи, периоды, почта, первая неделя, список терминов. При потере сети UI читает кэш. Это **не** полноценный offline-продукт.
-
-Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences).
-
-`dataWipe` — выход.
-
-Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
+Monoliths: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — ~1400–2600 lines each. **Do not split** while the goal is iOS/login, not a rewrite.
 
 ---
 
-## 13. Уведомления
+## 12. Data layer
 
-`lib/notifications.dart` — **не** remote push.
+`DataCache` (`lib/storage.dart`) is the only layer.
 
-| Тип | Когда (логика) |
-|-----|----------------|
-| Пары | за 10 мин, 5 мин, в начале |
-| Экзамены | за ~2 недели |
-| Платежи | ежедневно, пока не оплачено |
-| Периоды | за день и в день старта |
+Cache flags: calendar, markbook, payments, periods, mail, first week, term list. Offline UI reads cache. This is **not** a full offline product.
 
-- Android: каналы + exact alarm permission.  
+Secrets: username/password/JWT/device cookie in secure storage (migrated from older SharedPreferences).
+
+`dataWipe` = logout.
+
+No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
+
+---
+
+## 13. Notifications
+
+`lib/notifications.dart` — **not** remote push.
+
+| Type | When |
+|------|------|
+| Classes | 10 min, 5 min, at start |
+| Exams | ~2 weeks ahead |
+| Payments | daily until paid |
+| Periods | day before and start day |
+
+- Android: channels + exact-alarm permission.  
 - iOS: `DarwinInitializationSettings`, `requestPermissions`.  
-- Имена каналов — венгерский хардкод.  
-- На симуляторе iOS уведомления врут; проверять на устройстве.
+- Channel names: hardcoded Hungarian.  
+- iOS Simulator lies; test on a device.
 
 ---
 
 ## 14. iOS
 
-### Идентичность
+### Identity
 
-| Поле | Значение |
-|------|----------|
+| Field | Value |
+|-------|-------|
 | Display name | `Neptun Mobile` (`CFBundleDisplayName`) |
-| `CFBundleName` | `NeptunMobile` (без пробела — имя нативного таргета) |
+| `CFBundleName` | `NeptunMobile` (no space — native target name) |
 | Bundle ID | **`com.nanda070.neptunmobile`** |
 | Tests | `com.nanda070.neptunmobile.RunnerTests` |
-| Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
-| `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
+| Team (local) | `48FW5533N7` (Automatic signing) |
+| `PRODUCT_NAME` | `Runner` (do not change — breaks Flutter) |
 
-**Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
+**Why no underscore in the Bundle ID:** Automatic Signing names the profile `XC com nanda070 neptun_mobile app`. Underscores in that name are invalid → `The attribute 'name' is invalid` / no profiles.
 
-Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Так и задумано после фикса Xcode.
+Android `applicationId` is **different**: `com.nanda070.neptun_mobile.app`. Intentional after the Xcode fix.
 
 ### Debug vs release
 
-На **iOS 14+** debug-сборку **нельзя** открыть с иконки — только из Flutter / Xcode. Для домашнего экрана: `flutter run --release` / `flutter build ios --release`.
+On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon — only from Flutter / Xcode. For the icon: `flutter run --release` / `flutter build ios --release`.
 
-### Signing / устройство
+### Signing / device
 
 1. `open ios/Runner.xcworkspace`  
 2. Runner → Signing & Capabilities → Automatically manage signing → Team.  
-3. iPhone: **Settings → General → VPN & Device Management** → доверить Apple Development.  
-4. Установка: `flutter run --release -d Nanda` или `xcrun devicectl device install app`.
+3. iPhone: **Settings → General → VPN & Device Management** → trust Apple Development.  
+4. Install: `flutter run --release -d Nanda` or `xcrun devicectl device install app`.
 
-### Info.plist (важное)
+### Info.plist (important)
 
 - `NSUserNotificationsUsageDescription`
 - `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`
 
-### Известные iOS-дыры vs Android-only
+### iOS vs Android-only
 
-| Фича | iOS |
-|------|-----|
-| Ссылки (`url_launcher`) | Должны работать (Android-gate снят) |
+| Feature | iOS |
+|---------|-----|
+| Links (`url_launcher`) | Should work (Android-only gate removed) |
 | Haptics | `HapticFeedback` |
-| APK updater / Play IAU | Скрыто / не вызывать |
-| Fluttertoast | Часто не виден; есть `custom_snackbar.dart` |
-| SPM warning | `flutter_secure_storage`, `open_filex` — пока не блокер |
+| APK updater / Play IAU | Hidden / do not call |
+| Fluttertoast | Often invisible; `custom_snackbar.dart` exists |
+| SPM warning | `flutter_secure_storage`, `open_filex` — not a blocker yet |
 
-### Команды
+### Commands
 
 ```bash
 cd /path/to/Neptun-Mobile-fork
 flutter pub get
 cd ios && pod install && cd ..
 
-# Симулятор
+# Simulator
 flutter run -d "iPhone 17 Pro"
 
-# Телефон, иконка с домашнего экрана
+# Phone, home-screen icon
 flutter run --release -d Nanda
 ```
 
-Пересоздать оболочку (не трёт `lib/`):
+Regenerate the shell (does not wipe `lib/`):
 
 ```bash
 flutter create --platforms=ios --org com.nanda070 --project-name neptun2 .
 ```
 
-После create проверить Bundle ID = `com.nanda070.neptunmobile` (не `neptun_mobile`).
+After create, confirm Bundle ID is `com.nanda070.neptunmobile` (not `neptun_mobile`).
 
 ---
 
 ## 15. Android
 
-| Поле | Значение |
-|------|----------|
+| Field | Value |
+|-------|-------|
 | `applicationId` / namespace | `com.nanda070.neptun_mobile.app` |
 | `compileSdk` | 36 |
 | Java / Kotlin | 17 |
@@ -463,51 +465,51 @@ flutter run -d android
 flutter build apk --debug
 ```
 
-Play: `in_app_update`, если `installerStore == com.android.vending`. Иначе GitHub APK (`lib/Misc/auto_updater.dart`) — **только Android**.
+Play: `in_app_update` if `installerStore == com.android.vending`. Otherwise GitHub APK (`lib/Misc/auto_updater.dart`) — **Android only**.
 
-CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK, **без** analyze/test/iOS.
-
----
-
-## 16. Отключённые / удалённые функции
-
-| Функция | Состояние |
-|---------|-----------|
-| Donate / Buy Me a Coffee | Удалено из UI |
-| zoligamer branding | Вычищен (пакеты, funding, URL тем/языков) |
-| Pirate + DE/RO/UA/AR/ES/ZH | Удалены из каталога языков |
-| `linux/` | Удалён |
-| Homescreen widget stub | Удалён |
-| `AppUpdateHelper` / `appMinimumAllowedVersion.json` | Удалены (мёртвый version-gate) |
-| `cupertino_icons`, `change_app_package_name` | Убраны из pubspec |
-| ICS с первого экрана | Не подключён |
-| Popup mode 1 (старые настройки) | Мёртвый дубль `settings_page.dart` |
-| Popup 2 / 6 / 7 | По сути без caller (рейтинг Play / logout unavailable / old version) |
-| Аналитика | Файла в git нет |
-| App Store | Не настроено |
-| Remote institutes URL (cloudapp) | Константа есть, не вызывается |
+CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK, **no** analyze/test/iOS.
 
 ---
 
-## 17. Переменные окружения
+## 16. Removed / disabled
 
-Секретов и `.env` у клиента **нет**.
+| Feature | State |
+|---------|-------|
+| Donate / Buy Me a Coffee | Removed from UI |
+| zoligamer branding | Stripped (packages, funding, theme/language URLs) |
+| Pirate + DE/RO/UA/AR/ES/ZH | Removed from language catalog |
+| `linux/` | Removed |
+| Homescreen widget stub | Removed |
+| `AppUpdateHelper` / `appMinimumAllowedVersion.json` | Removed (dead version-gate) |
+| `cupertino_icons`, `change_app_package_name` | Dropped from pubspec |
+| ICS from first setup screen | Not wired |
+| Popup mode 1 (old settings) | Dead duplicate of `settings_page.dart` |
+| Popup 2 / 6 / 7 | Essentially no callers |
+| Analytics | File not in git |
+| App Store | Not set up |
+| Remote institutes URL (cloudapp) | Constant exists, unused |
 
-Конфиги «снаружи» — JSON на GitHub `main`:
+---
+
+## 17. Environment
+
+The client has **no** secrets and **no** `.env`.
+
+External config is JSON on GitHub `main`:
 
 - `universityNameUrlPairs.json`
 - `Languages/supportedLanguages.json`
 - `Themes/supportedThemes.json`
 
-Android release signing: локальный `key.properties` (не в git).
+Android release signing: local `key.properties` (not in git).
 
-iOS: Team / профиль в Xcode, не в репо.
+iOS: Team / profile in Xcode, not in the repo.
 
 ---
 
-## 18. Сборка, CI, запуск
+## 18. Build, CI, run
 
-### Локально
+### Local
 
 ```bash
 flutter pub get
@@ -515,23 +517,23 @@ flutter devices
 flutter run -d <device-id>
 ```
 
-Release на iPhone: `--release` (см. §14).
+iPhone release: `--release` (see §14).
 
 ### CI
 
-Только `flutter build apk --debug --no-shrink` на `ubuntu-latest`. iOS job **нет**.
+Only `flutter build apk --debug --no-shrink` on `ubuntu-latest`. **No** iOS job.
 
 ### GitHub raw
 
-Пока изменения JSON не в `main` на `Nanda070/Neptun-Mobile-fork`, приложение у пользователей качает **старый** список вузов/языков.
+Until JSON changes are on `main` at `Nanda070/Neptun-Mobile-fork`, installed apps keep fetching the **old** institute/language lists.
 
 ---
 
-## 19. История и контакты
+## 19. History and contacts
 
-Проект независимый под **Nanda070**. Не позиционировать как «форк zoligamer» в продуктовой идентичности.
+Independent project under **Nanda070**. Do not brand it as “the zoligamer fork”.
 
-Исторически работали над связанным кодом: **domedav** (Neptun 2), **zoligamer** (предыдущий форк).
+Earlier related work: **domedav** (Neptun 2), **zoligamer** (previous fork).
 
 | | |
 |--|--|
@@ -543,60 +545,61 @@ Release на iPhone: `--release` (см. §14).
 
 Issues: https://github.com/Nanda070/Neptun-Mobile-fork/issues
 
-Лицензия: MIT (`LICENSE`).
+License: MIT (`LICENSE`).
 
 ---
 
-## 20. Ключевые решения «почему так»
+## 20. Why we chose this
 
-| Решение | Почему |
-|---------|--------|
-| Два Bundle ID (iOS без `_`) | Xcode Automatic Signing ломается на `neptun_mobile` в имени профиля |
-| Не дробить монолиты сейчас | Нет тестов; цель — платформа и логин, не Clean Architecture |
-| EN default, только EN/HU/RU/TR | Запрос владельца; меньше мёртвых паков |
-| GitHub raw для вузов/языков/тем | Обновление без релиза APK/IPA |
-| `badCertificateCallback => true` | Вузы с кривыми сертификатами; риск MITM принят |
-| 2FA-плашку не удалять | Live ELTE не подтверждён; веб был full |
-| `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
-| ELTE → `/ujhallgato` | `/Account` — SPA, не REST; путь из документации neptun-api, **не** из live capture |
-| ICS оставить в коде | Может быть у старых юзеров; UI не рекламировать |
-| Release на iOS для иконки | Системное ограничение debug с iOS 14 |
-| Нет своего backend | Клиент ходит в вуз напрямую |
-| `Provider` только для темы | Исторический монолит; не вводить Bloc «на всякий» |
+| Decision | Why |
+|----------|-----|
+| Two bundle IDs (iOS without `_`) | Xcode Automatic Signing breaks on `neptun_mobile` in the profile name |
+| Don’t split monoliths yet | No tests; goal is platform + login, not Clean Architecture |
+| EN default, only EN/HU/RU/TR | Owner request; fewer dead packs |
+| GitHub raw for institutes/languages/themes | Update without an APK/IPA release |
+| `badCertificateCallback => true` | Broken campus certs; MITM risk accepted |
+| Keep the 2FA banner | Live ELTE unconfirmed; web was full |
+| `loginServerBusy` ≠ invalid password | Neptun overload was shown as a bad password |
+| ELTE → `/ujhallgato` | `/Account` is the SPA, not REST; path from neptun-api docs, **not** a live capture |
+| Keep ICS in code | Old users may still have a file; don’t advertise the UI |
+| iOS release for the icon | iOS 14+ debug restriction |
+| No first-party backend | Client talks to the institute directly |
+| `Provider` for theme only | Historical monolith; don’t add Bloc “just in case” |
 
 ---
 
-## 21. Карта важных файлов
+## 21. Important files
 
-| Файл | Зачем |
-|------|-------|
-| `README.md` / `README.ru.md` | Пользовательский обзор |
-| `docs/TECHNICAL.md` | Этот документ |
-| `docs/DEVELOPER.md` | Короткая iOS-шпаргалка |
-| `pubspec.yaml` | Версия, зависимости |
-| `lib/main.dart` | `MaterialApp`, тема, `Splitter` |
-| `lib/Pages/startup_page.dart` | Ветка login / home |
-| `lib/Pages/setup_page.dart` | Вход, URL, 2FA callback, ICS-класс |
-| `lib/Pages/main_page.dart` | Home + 5 вкладок |
-| `lib/Pages/settings_page.dart` | Живые настройки |
-| `lib/API/api_coms.dart` | Весь HTTP, логин, нормализация URL |
-| `lib/API/ics_calendar.dart` | Парсер ICS |
+| File | Why |
+|------|-----|
+| `README.md` / `README.ru.md` | Product overview |
+| `docs/TECHNICAL.md` | This document (EN) |
+| `docs/TECHNICAL.ru.md` | Russian version |
+| `docs/DEVELOPER.md` | Short iOS cheatsheet |
+| `pubspec.yaml` | Version, dependencies |
+| `lib/main.dart` | `MaterialApp`, theme, `Splitter` |
+| `lib/Pages/startup_page.dart` | Login / home branch |
+| `lib/Pages/setup_page.dart` | Login, URL, 2FA callback, ICS class |
+| `lib/Pages/main_page.dart` | Home + 5 tabs |
+| `lib/Pages/settings_page.dart` | Live settings |
+| `lib/API/api_coms.dart` | All HTTP, login, URL normalize |
+| `lib/API/ics_calendar.dart` | ICS parser |
 | `lib/storage.dart` | `DataCache` |
-| `lib/language.dart` | EN/HU + загрузка RU/TR |
-| `lib/colors.dart` | Палитры |
-| `lib/notifications.dart` | Локальные нотификации |
+| `lib/language.dart` | EN/HU + RU/TR download |
+| `lib/colors.dart` | Palettes |
+| `lib/notifications.dart` | Local notifications |
 | `lib/haptics.dart` | Android vibration / iOS `HapticFeedback` |
-| `lib/Misc/popup.dart` | Режимы 0–9 (9 = 2FA) |
+| `lib/Misc/popup.dart` | Modes 0–9 (9 = 2FA) |
 | `lib/Misc/app_drawer.dart` | Drawer |
 | `lib/Misc/auto_updater.dart` | GitHub APK, Android-only |
-| `universityNameUrlPairs.json` | Вузы (ELTE: `…/ujhallgato`) |
-| `Languages/supportedLanguages.json` | Каталог RU/TR |
-| `Themes/supportedThemes.json` | Remote-темы |
-| `ios/Runner/Info.plist` | Display name, нотификации, URL schemes |
+| `universityNameUrlPairs.json` | Institutes (ELTE: `…/ujhallgato`) |
+| `Languages/supportedLanguages.json` | RU/TR catalog |
+| `Themes/supportedThemes.json` | Remote themes |
+| `ios/Runner/Info.plist` | Display name, notifications, URL schemes |
 | `ios/Runner.xcodeproj/project.pbxproj` | Bundle ID, Team |
 | `android/app/build.gradle` | `applicationId` |
 | `.github/workflows/betabuild.yml` | Android CI |
 
 ---
 
-*Конец документа. При расхождении с кодом приоритет у кода и свежего `git log`.*
+*End of document. If this disagrees with the code, the code and a fresh `git log` win.*

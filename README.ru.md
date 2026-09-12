@@ -8,7 +8,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
 [![Issues](https://img.shields.io/badge/Баг-репорты-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
 
-> 🇬🇧 [English README](README.md) · 📘 [Техническая документация](docs/TECHNICAL.md) · [iOS-шпаргалка](docs/DEVELOPER.md)
+> 🇬🇧 [English README](README.md) · 📘 [Техническая документация](docs/TECHNICAL.ru.md) · [EN](docs/TECHNICAL.md) · [iOS-шпаргалка](docs/DEVELOPER.md)
 
 ---
 
@@ -84,7 +84,8 @@ flutter run -d <ios-device-or-simulator-id>
 ## Документация
 
 - [README (English)](README.md)
-- [Техническая документация](docs/TECHNICAL.md) — архитектура, API, iOS/Android, auth
+- [Техническая документация (RU)](docs/TECHNICAL.ru.md) — архитектура, API, iOS/Android, auth
+- [Technical documentation (EN)](docs/TECHNICAL.md)
 - [iOS-шпаргалка](docs/DEVELOPER.md)
 
 ---

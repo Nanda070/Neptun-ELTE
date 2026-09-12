@@ -1,6 +1,6 @@
 # Developer notes — Neptun Mobile
 
-Полная техническая документация: **[`docs/TECHNICAL.md`](TECHNICAL.md)**.
+Full technical docs: **[`docs/TECHNICAL.md`](TECHNICAL.md)** (EN) · **[`docs/TECHNICAL.ru.md`](TECHNICAL.ru.md)** (RU).
 
 Ниже — только быстрый iOS-чеклист. Идентичность, API, 2FA, кэш, языки — в TECHNICAL.
 
