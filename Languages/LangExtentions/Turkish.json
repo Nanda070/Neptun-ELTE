@@ -1,8 +1,8 @@
 {
   "language_flag": "🇹🇷",
-  "rootpage_setupPage_SelectLoginTypeHeader": "Giriş yöntemini seçin",
-  "rootpage_setupPage_InstitutesSelection": "Enstitü seçimi",
-  "rootpage_setupPage_InstitutesSelectionDescription": "Bu en basit yöntemdir. Üniversitenizi arayabileceğiniz bir liste, ancak tüm enstitüler burada bulunmayabilir!",
+  "rootpage_setupPage_SelectLoginTypeHeader": "ELTE Neptun hub — yalnızca Eötvös Loránd Üniversitesi",
+  "rootpage_setupPage_InstitutesSelection": "ELTE Neptun ile giriş",
+  "rootpage_setupPage_InstitutesSelectionDescription": "Neptun kodu ve şifre. ELTE'de şifreden sonra iki adımlı doğrulama zorunludur.",
   "rootpage_setupPage_UrlLogin": "Neptun URL\\si",
   "rootpage_setupPage_UrlLoginDescription": "Üniversitenizi listede bulamazsanız, okulunuzun Neptun URL\\sini girebilirsiniz. Bu, tüm üniversitelerle çalışmayabilir!",
   "rootpage_setupPage_AppProblemReporting": "Uygulamada bir sorun mu var?\nBana söyle! 👉",

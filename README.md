@@ -1,7 +1,8 @@
 # Neptun Mobile
 
-A modern mobile client for the Hungarian university **Neptun** system — timetable, grades, messages, payments, and periods in one place.
+A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — timetable, grades, messages, payments, and periods.
 
+**Hub:** ELTE only (`https://neptun.elte.hu`) — no multi-university list  
 **Platforms:** Android · iOS  
 **Languages:** English (default) · Hungarian · Russian · Turkish
 
@@ -14,13 +15,15 @@ A modern mobile client for the Hungarian university **Neptun** system — timeta
 
 ## Features
 
+- **ELTE-only hub** — one-tap sign-in to central ELTE Neptun (not Obuda/BME `/ujhallgato`)  
 - **Timetable** — week view with class and exam reminders  
 - **Markbook** — subjects and grades  
 - **Messages** — Neptun inbox  
 - **Payments** — fees and due dates  
 - **Periods** — registration and study periods  
 - **Themes & languages** — custom palettes; EN / HU built-in, RU / TR downloadable  
-- **Notifications** — class, exam, payment, and period alerts (Android & iOS)
+- **Notifications** — class, exam, payment, and period alerts (Android & iOS)  
+- **2FA UI** — modern JWT path can prompt for a code (ELTE requires 2FA; live check pending; in-app warning kept)
 
 ---
 

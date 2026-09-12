@@ -400,7 +400,11 @@ import '../storage.dart';
     static const int loginInvalidCredentials = 0;
     static const int loginServerBusy = 3;
 
-    /// Modern Neptun API root (…/ujhallgato), not the Angular /Account SPA route.
+    /// Hub is ELTE-only. Central Neptun (not Obuda/BME-style `/ujhallgato`).
+    static const String elteInstituteName = 'Eötvös Loránd Tudományegyetem (ELTE)';
+    static const String elteNeptunBaseUrl = 'https://neptun.elte.hu';
+
+    /// Modern Neptun API root — strip SPA login routes (`/Account`, `/login`), not REST prefixes.
     static String normalizeModernApiBaseUrl(String rawUrl) {
       var url = rawUrl.trim();
       if (url.endsWith('/')) {
@@ -408,21 +412,8 @@ import '../storage.dart';
       }
       url = url.replaceAll(RegExp(r'/login(\.aspx)?$', caseSensitive: false), '');
       url = url.replaceAll(RegExp(r'/MobileService\.svc$', caseSensitive: false), '');
-      // /Account is the web login page, not the REST API prefix
-      url = url.replaceAll(RegExp(r'/Account/?$', caseSensitive: false), '');
-
-      final uri = Uri.tryParse(url);
-      if (uri == null || uri.host.isEmpty) {
-        return url;
-      }
-
-      final host = uri.host.toLowerCase();
-      final path = uri.path.replaceAll(RegExp(r'/+$'), '');
-      // ELTE student API lives under /ujhallgato (list used to ship …/Account)
-      if (host.contains('elte.hu') &&
-          (path.isEmpty || path == '/' || path.toLowerCase() == '/account')) {
-        return uri.replace(path: '/ujhallgato').toString().replaceAll(RegExp(r'/+$'), '');
-      }
+      // /Account and /Account/Login are the web login SPA, not the REST API prefix
+      url = url.replaceAll(RegExp(r'/Account(/Login)?/?$', caseSensitive: false), '');
       return url.replaceAll(RegExp(r'/+$'), '');
     }
 
@@ -436,11 +427,10 @@ import '../storage.dart';
       }
 
       add(primary);
-      final uri = Uri.tryParse(primary);
+      final uri = Uri.tryParse(primary.isEmpty ? elteNeptunBaseUrl : primary);
       if (uri != null && uri.host.toLowerCase().contains('elte.hu')) {
-        // Order: documented student API first, then older aliases.
-        add(uri.replace(path: '/ujhallgato').toString());
-        add(uri.replace(path: '/hallgato').toString());
+        // ELTE: one central host (neptun.elte.hu). No /ujhallgato (that is Obuda/BME-style).
+        add(elteNeptunBaseUrl);
         add(uri.replace(path: '').toString());
       }
       return out;

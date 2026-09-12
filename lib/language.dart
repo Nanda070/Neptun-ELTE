@@ -25,9 +25,9 @@ class AppStrings{
     _defaultLocale = Platform.localeName.split('_')[0].toLowerCase();
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
       language_flag: '🇭🇺',
-      rootpage_setupPage_SelectLoginTypeHeader: 'Válassz bejelentkezési módot',
-      rootpage_setupPage_InstitutesSelection: 'Intézmény választás',
-      rootpage_setupPage_InstitutesSelectionDescription: 'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
+      rootpage_setupPage_SelectLoginTypeHeader: 'ELTE Neptun hub — csak az Eötvös Loránd Tudományegyetem',
+      rootpage_setupPage_InstitutesSelection: 'Belépés az ELTE Neptunba',
+      rootpage_setupPage_InstitutesSelectionDescription: 'Neptun-kód és jelszó. Az ELTE-n a jelszó után kétlépcsős azonosítás kötelező.',
       rootpage_setupPage_UrlLogin: 'Neptun URL',
       rootpage_setupPage_UrlLoginDescription: 'Ha nincs az iskolád a listában, akkor az egyetemed neptun URL-jét használva is be tudsz lépni. Nem minden egyetemmel működik!',
       rootpage_setupPage_AppProblemReporting: 'Probléma van az appal?\nÍrd meg nekem! 👉',
@@ -218,9 +218,9 @@ class AppStrings{
     //---
     _languages.addAll({_supportedLanguages[0]: LanguagePack(
       language_flag: '🇺🇸/🇬🇧',
-      rootpage_setupPage_SelectLoginTypeHeader: 'Select login method',
-      rootpage_setupPage_InstitutesSelection: 'Institute selection',
-      rootpage_setupPage_InstitutesSelectionDescription: 'This is the simplest way. It is a list where you can search for your university, however, not all institutes can be found here!',
+      rootpage_setupPage_SelectLoginTypeHeader: 'ELTE Neptun hub — only Eötvös Loránd University',
+      rootpage_setupPage_InstitutesSelection: 'Sign in with ELTE Neptun',
+      rootpage_setupPage_InstitutesSelectionDescription: 'Use your Neptun code and password. ELTE requires two-factor authentication after password.',
       rootpage_setupPage_UrlLogin: 'Neptun URL',
       rootpage_setupPage_UrlLoginDescription: 'If you can\'t find your university in the list, you can enter the Neptun URL of your school to log in. This might not work with all universities!',
       rootpage_setupPage_AppProblemReporting: 'Is there a problem with the app?\nTell me! 👉',

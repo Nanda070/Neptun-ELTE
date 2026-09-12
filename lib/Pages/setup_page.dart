@@ -122,12 +122,22 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                   children: [
                     const SizedBox(height: 40),
                     Text(
+                      'ELTE Neptun',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.getTheme().textColor
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
                       AppStrings.getLanguagePack().rootpage_setupPage_SelectLoginTypeHeader,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.getTheme().textColor
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.getTheme().textColor.withValues(alpha: .7)
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -139,7 +149,18 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                         GestureDetector(
                           onTap: (){
                             AppHaptics.lightImpact();
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageInstitudeSelection(fetchData: _obtainFreshData, callback: changeFreshDataVal)));
+                            // ELTE-only hub: skip institute list / custom URL
+                            PageDTO.validatedURL = false;
+                            PageDTO.selected = api.InstitutesRequest.elteInstituteName;
+                            PageDTO.institutes = [
+                              api.Institute(
+                                api.InstitutesRequest.elteInstituteName,
+                                api.InstitutesRequest.elteNeptunBaseUrl,
+                              ),
+                            ];
+                            PageDTO.username = storage.DataCache.getUsername() ?? '';
+                            PageDTO.password = storage.DataCache.getPassword() ?? '';
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageLogin()));
                           },
                           child: Container(
                             padding: const EdgeInsets.all(20),
@@ -162,7 +183,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Icon(
-                                      Icons.list_rounded,
+                                      Icons.school_rounded,
                                       color: AppColors.getTheme().textColor,
                                       size: 40,
                                     ),
@@ -193,63 +214,6 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: (){
-                            AppHaptics.lightImpact();
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageURLInput()));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            margin: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: AppColors.getTheme().rootBackground,
-                                borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                    color: AppColors.getTheme().textColor.withValues(alpha: .3),
-                                    width: 1
-                                )
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Icon(
-                                      Icons.link_rounded,
-                                      color: AppColors.getTheme().textColor,
-                                      size: 40,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        AppStrings.getLanguagePack().rootpage_setupPage_UrlLogin,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: AppColors.getTheme().textColor,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  AppStrings.getLanguagePack().rootpage_setupPage_UrlLoginDescription,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: AppColors.getTheme().textColor.withValues(alpha: .6),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -1282,7 +1246,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       if(value == 1){ // 1: SIKERES BELÉPÉS
         storage.DataCache.setUsername(_username.toUpperCase());
         storage.DataCache.setPassword(_password);
-        // Prefer API base set by login (e.g. ELTE /ujhallgato), not raw list URL (/Account)
+        // Prefer API base set by login (ELTE root), not a stale list URL
         final apiBase = storage.DataCache.getInstituteUrl();
         if (apiBase == null || apiBase.isEmpty) {
           storage.DataCache.setInstituteUrl(

@@ -1,8 +1,8 @@
 {
   "language_flag": "🇷🇺",
-  "rootpage_setupPage_SelectLoginTypeHeader": "Выберите способ входа",
-  "rootpage_setupPage_InstitutesSelection": "Выбор института",
-  "rootpage_setupPage_InstitutesSelectionDescription": "Это самый простой способ. Это список, в котором вы можете найти свой университет, однако не все институты могут быть найдены здесь!",
+  "rootpage_setupPage_SelectLoginTypeHeader": "ELTE Neptun hub — только Университет Этвёша Лоранда",
+  "rootpage_setupPage_InstitutesSelection": "Войти в ELTE Neptun",
+  "rootpage_setupPage_InstitutesSelectionDescription": "Neptun-код и пароль. В ELTE после пароля обязательна двухфакторная аутентификация.",
   "rootpage_setupPage_UrlLogin": "URL Neptun",
   "rootpage_setupPage_UrlLoginDescription": "Если вы не можете найти свой университет в списке, вы можете ввести URL Neptun вашей школы для входа. Это может не работать со всеми университетами!",
   "rootpage_setupPage_AppProblemReporting": "Есть проблемы с приложением?\nСообщите мне! 👉",

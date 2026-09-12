@@ -13,6 +13,7 @@ Full technical docs: **[`docs/TECHNICAL.md`](TECHNICAL.md)** (EN) · **[`docs/TE
 | Android `applicationId` | `com.nanda070.neptun_mobile.app` |
 | Dart package | `neptun2` |
 | Default language | English |
+| Scope | **ELTE only** (`https://neptun.elte.hu`) |
 
 ## iOS — запуск
 
