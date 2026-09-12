@@ -65,7 +65,7 @@ class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
     }
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Neptun Mobile',
+      title: 'Neptun ELTE',
       theme: themeNotifier._themeData,
       home: const Splitter(),
     );

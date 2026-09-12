@@ -1,14 +1,14 @@
-# Developer notes — Neptun Mobile
+# Developer notes — Neptun ELTE
 
 Full technical docs: **[`docs/TECHNICAL.md`](TECHNICAL.md)** (EN) · **[`docs/TECHNICAL.ru.md`](TECHNICAL.ru.md)** (RU).
 
-Ниже — только быстрый iOS-чеклист. Идентичность, API, 2FA, кэш, языки — в TECHNICAL.
+Short iOS checklist. Identity, API, 2FA, cache, languages — in TECHNICAL.
 
 ## Identity (кратко)
 
 | Item | Value |
 |------|--------|
-| Display name | Neptun Mobile |
+| Display name | **Neptun ELTE** |
 | iOS Bundle ID | `com.nanda070.neptunmobile` (без `_` — иначе Xcode ломает provisioning) |
 | Android `applicationId` | `com.nanda070.neptun_mobile.app` |
 | Dart package | `neptun2` |

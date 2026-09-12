@@ -1,13 +1,14 @@
-# Neptun Mobile
+# Neptun ELTE
 
 A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — timetable, grades, messages, payments, and periods.
 
 **Hub:** ELTE only (`https://neptun.elte.hu`) — no multi-university list  
+**Display name:** Neptun ELTE  
 **Platforms:** Android · iOS  
 **Languages:** English (default) · Hungarian · Russian · Turkish
 
-[![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
-[![Issues](https://img.shields.io/badge/Bug%20reports-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
+[![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
+[![Issues](https://img.shields.io/badge/Bug%20reports-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE/issues/new/choose)
 
 > 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical docs](docs/TECHNICAL.md) · [RU](docs/TECHNICAL.ru.md) · [iOS cheatsheet](docs/DEVELOPER.md)
 
@@ -15,7 +16,8 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 
 ## Features
 
-- **ELTE-only hub** — one-tap sign-in to central ELTE Neptun (not Obuda/BME `/ujhallgato`)  
+- **ELTE-only hub** — sign-in to central ELTE Neptun (portal at `neptun.elte.hu`, not Obuda/BME `/ujhallgato`)  
+- **Login like the website** — Neptun ID + password → 2FA (authenticator **or** email code) → student data APIs (mobile stand-in for “Open Student web”)  
 - **Timetable** — week view with class and exam reminders  
 - **Markbook** — subjects and grades  
 - **Messages** — Neptun inbox  
@@ -23,7 +25,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Periods** — registration and study periods  
 - **Themes & languages** — custom palettes; EN / HU built-in, RU / TR downloadable  
 - **Notifications** — class, exam, payment, and period alerts (Android & iOS)  
-- **2FA UI** — modern JWT path can prompt for a code (ELTE requires 2FA; live check pending; in-app warning kept)
+- **2FA warning banner** — kept until a live ELTE login is confirmed
 
 ---
 
@@ -36,8 +38,8 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - For iOS: macOS + Xcode + CocoaPods
 
 ```bash
-git clone https://github.com/Nanda070/Neptun-Mobile-fork.git
-cd Neptun-Mobile-fork
+git clone https://github.com/Nanda070/Neptun-ELTE.git
+cd Neptun-ELTE
 flutter pub get
 ```
 
@@ -54,7 +56,7 @@ flutter build apk
 
 ```bash
 # Generate/refresh iOS folder if needed (does not wipe lib/):
-flutter create --platforms=ios --org com.nanda070 --project-name neptun_mobile .
+flutter create --platforms=ios --org com.nanda070 --project-name neptun2 .
 
 flutter pub get
 cd ios && pod install && cd ..
@@ -64,7 +66,7 @@ flutter run -d <ios-device-or-simulator-id>
 
 **iOS Bundle ID:** `com.nanda070.neptunmobile`  
 **Android applicationId:** `com.nanda070.neptun_mobile.app`  
-**Display name:** Neptun Mobile
+**Display name:** Neptun ELTE
 
 Physical device: open `ios/Runner.xcworkspace` in Xcode, select your Team (Apple ID), then run again. Trust the developer profile on the phone if prompted.
 
@@ -80,7 +82,7 @@ Physical device: open `ios/Runner.xcworkspace` in Xcode, select your Team (Apple
 | **Email** | [adnan.huseynli1@gmail.com](mailto:adnan.huseynli1@gmail.com) |
 | **Web** | [nanda.is-a.dev](https://nanda.is-a.dev/) · [cheterin.online](https://cheterin.online) · [chetmedia.com](https://chetmedia.com) |
 
-Bug reports & ideas: [GitHub Issues](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
+Bug reports & ideas: [GitHub Issues](https://github.com/Nanda070/Neptun-ELTE/issues/new/choose)
 
 ---
 
@@ -100,7 +102,7 @@ People who previously worked on related code (historical, not product identity):
 - **domedav** — original Neptun 2 foundations  
 - **zoligamer** — earlier fork work  
 
-Neptun Mobile is an independent project by **Nanda070**.
+Neptun ELTE is an independent project by **Nanda070**.
 
 ---
 

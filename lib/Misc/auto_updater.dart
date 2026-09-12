@@ -16,7 +16,7 @@ import '../colors.dart';
 
 class AppUpdater {
   static const String repoOwner = "Nanda070";
-  static const String repoName = "Neptun-Mobile-fork";
+  static const String repoName = "Neptun-ELTE";
 
   /// Fő belépési pont. APK updater — Android only.
   static Future<void> checkAndInstallUpdate(BuildContext? context, {bool force = false}) async {

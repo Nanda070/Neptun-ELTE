@@ -3,13 +3,13 @@
     {
       "langName":"Русский",
       "langId":"ru",
-      "langURL":"https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Languages/LangExtentions/Russian.json",
+      "langURL":"https://raw.githubusercontent.com/Nanda070/Neptun-ELTE/refs/heads/main/Languages/LangExtentions/Russian.json",
       "langFlag":"🇷🇺"
     },
     {
       "langName":"Türkçe",
       "langId":"tr",
-      "langURL":"https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Languages/LangExtentions/Turkish.json",
+      "langURL":"https://raw.githubusercontent.com/Nanda070/Neptun-ELTE/refs/heads/main/Languages/LangExtentions/Turkish.json",
       "langFlag":"🇹🇷"
     }
   ]

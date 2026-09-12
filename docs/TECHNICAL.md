@@ -1,4 +1,4 @@
-# Neptun Mobile — technical documentation
+# Neptun ELTE — technical documentation
 
 > 🇷🇺 [Русская версия](TECHNICAL.ru.md)
 
@@ -6,7 +6,7 @@
 > Git-only (`docs/TECHNICAL.md`). **Not** published as a website, **no** public route.  
 > Code identifiers, paths, packages, and API routes stay in English, as in the repo.
 
-Last sync with the codebase: **September 2026** (ELTE-only hub, no `/ujhallgato` for ELTE, languages EN/HU/RU/TR, modern API login + 2FA code path, “invalid password” vs “server busy”). Sources: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
+Last sync with the codebase: **September 2026** (repo **Neptun-ELTE**, display name Neptun ELTE, ELTE-only hub, no `/ujhallgato` for ELTE, languages EN/HU/RU/TR, modern API login + 2FA code path, “invalid password” vs “server busy”). Sources: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
 
 Short iOS cheatsheet: [`docs/DEVELOPER.md`](DEVELOPER.md). Product overview: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
 
@@ -40,27 +40,27 @@ Short iOS cheatsheet: [`docs/DEVELOPER.md`](DEVELOPER.md). Product overview: [`R
 
 ## 1. Product overview
 
-**Neptun Mobile** is an unofficial mobile client for **ELTE** (Eötvös Loránd University) **Neptun** (SDA Informatika): timetable, markbook, payments, periods, messages.
+**Neptun ELTE** is an unofficial mobile client for **ELTE** (Eötvös Loránd University) **Neptun** (SDA Informatika): timetable, markbook, payments, periods, messages.
 
 - **Scope:** ELTE only. Not a multi-university picker.
 - Institute list file still exists as `universityNameUrlPairs.json` but contains **a single entry**: ELTE → `https://neptun.elte.hu`.
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** Neptun host (`neptun.elte.hu` / `Account/Login`). It does **not** use Obuda/BME-style `/ujhallgato`. After web login, students open **Hallgatói web (HWEB)** in the top menu; the mobile client talks to the modern JWT API on the same host.
-- Display name: **Neptun Mobile**.
+- Display name: **Neptun ELTE**.
 - Version (`pubspec.yaml`): **1.0.5+18**.
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
 - This is **not** an official SDA/ELTE app and **not** an App Store / Play production brand.
 
-Repo: [Nanda070/Neptun-Mobile-fork](https://github.com/Nanda070/Neptun-Mobile-fork). Independent product; earlier authors are credits only.
+Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independent product; earlier authors are credits only.
 
 ---
 
 ## 2. Repository
 
 ```
-Neptun-Mobile-fork/
+Neptun-ELTE/
 ├── lib/                      # Entire product (Dart)
 │   ├── main.dart
 │   ├── storage.dart          # DataCache singleton
@@ -130,7 +130,7 @@ Device (Android / iOS)
    ├─ HTTP → {instituteBase}/api/...     modern JWT Neptun
    │         {instituteBase}/MobileService.svc/api/...   old API
    │
-   └─ HTTP → raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork
+   └─ HTTP → raw.githubusercontent.com/Nanda070/Neptun-ELTE
               universityNameUrlPairs.json
               Languages/supportedLanguages.json
               Themes/supportedThemes.json
@@ -167,12 +167,33 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 
 ## 6. Setup / login
 
-Flow:
+### How ELTE web works (official)
 
-1. `Splitter` → if `getHasLogin()` then `HomePage`, else ELTE hub.
-2. Hub sets `PageDTO` to `InstitutesRequest.elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) and opens `SetupPageLogin`.
-3. Credentials: code (sent `toUpperCase()`) + password.
-4. Demo: `DEMO` / `DEMO` → fake data, no network.
+User flow on `neptun.elte.hu` ([ELTE guide](https://www.elte.hu/en/neptun-administration-of-progress)):
+
+1. Open central portal → **Log in** (Neptun ID 6 chars + password).
+2. **Two-step authentication** — code from authenticator app **or** primary Neptun email.
+3. After auth, click **Student web** / Open student web (HWEB) in the top menu.
+
+There is **no** separate `/ujhallgato` for ELTE (unlike Óbuda/BME). One central host; HWEB is a post-login destination in the portal UI.
+
+### How this app maps that flow
+
+| Web step | App |
+|----------|-----|
+| Portal login | `POST https://neptun.elte.hu/api/Account/Authenticate` |
+| 2FA (app or email code) | Same endpoint again with `token` = 6-digit code → popup mode 9 |
+| Open Student web | **No browser button** — after JWT `accessToken`, student data APIs are called directly (calendar, subjects, …). That is the mobile equivalent of being inside Student web. |
+
+App setup UI:
+
+1. `Splitter` → if `getHasLogin()` then `HomePage`, else ELTE hub (**display name: Neptun ELTE**).
+2. Hub sets `PageDTO` to `elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) → `SetupPageLogin`.
+3. Credentials: Neptun code (`toUpperCase()`) + password.
+4. If API returns 2FA → enter 6-digit code (authenticator **or** email OTP).
+5. Demo: `DEMO` / `DEMO`.
+
+**Honesty:** Live ELTE login still depends on Neptun availability. Email 2FA on the website may include a “send code” choice before the digits appear; the app currently accepts the **same 6-digit `token` field** used by the modern Neptun JWT client (as in other universities). If ELTE requires an extra “send email OTP” API call before the code works, that still needs a live Network capture to wire. The in-app 2FA warning banner is **kept** until a live check succeeds.
 
 Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -181,7 +202,7 @@ Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 | Code | Constant | UI |
 |------|----------|-----|
 | `1` | `loginOk` | Enter Home |
-| `2` | `loginNeeds2fa` | Popup mode 9 (6 digits) |
+| `2` | `loginNeeds2fa` | Popup mode 9 (6 digits — app or email) |
 | `0` | `loginInvalidCredentials` | Red fields, “Invalid username or password!” |
 | `3` | `loginServerBusy` | Snackbar “Neptun servers are having a hard time...” — **not** a bad password |
 
@@ -191,13 +212,11 @@ Modern login timeout: **20 s** per URL candidate. Empty body / 5xx / timeout / H
 
 `normalizeModernApiBaseUrl` strips `/login`, `/MobileService.svc`, `/Account`, `/Account/Login`.
 
-For ELTE the API base is the **central host** `https://neptun.elte.hu` — **not** `/ujhallgato` (that pattern is Obuda/BME; ELTE docs confirm a single portal + HWEB after login).
+API base: **`https://neptun.elte.hu`** — not `/ujhallgato`.
 
-Candidates (`_modernLoginBaseCandidates`): primary + ELTE root aliases. **No** `/ujhallgato` / `/hallgato` for ELTE.
+Candidates: primary + ELTE root aliases only.
 
-**Not verified on a live ELTE account** (web was “student web is full”). The UI 2FA warning is **kept for now**. ELTE officially requires 2FA.
-
-On success, **do not** overwrite `instituteUrl` with a stale list URL. Persist the base that login selected.
+On success, persist the API base login selected (do not overwrite with a stale list URL).
 
 ---
 
@@ -393,8 +412,8 @@ No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
 | Field | Value |
 |-------|-------|
-| Display name | `Neptun Mobile` (`CFBundleDisplayName`) |
-| `CFBundleName` | `NeptunMobile` (no space — native target name) |
+| Display name | `Neptun ELTE` (`CFBundleDisplayName` / Android `android:label`) |
+| `CFBundleName` | `NeptunELTE` |
 | Bundle ID | **`com.nanda070.neptunmobile`** |
 | Tests | `com.nanda070.neptunmobile.RunnerTests` |
 | Team (local) | `48FW5533N7` (Automatic signing) |
@@ -433,7 +452,7 @@ On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon �
 ### Commands
 
 ```bash
-cd /path/to/Neptun-Mobile-fork
+cd /path/to/Neptun-ELTE
 flutter pub get
 cd ios && pod install && cd ..
 
@@ -529,7 +548,7 @@ Only `flutter build apk --debug --no-shrink` on `ubuntu-latest`. **No** iOS job.
 
 ### GitHub raw
 
-Until JSON changes are on `main` at `Nanda070/Neptun-Mobile-fork`, installed apps keep fetching the **old** institute/language lists.
+Until JSON changes are on `main` at `Nanda070/Neptun-ELTE`, installed apps keep fetching the **old** institute/language lists.
 
 ---
 
@@ -547,7 +566,7 @@ Earlier related work: **domedav** (Neptun 2), **zoligamer** (previous fork).
 | Email | adnan.huseynli1@gmail.com |
 | Web | https://nanda.is-a.dev/ · cheterin.online · chetmedia.com |
 
-Issues: https://github.com/Nanda070/Neptun-Mobile-fork/issues
+Issues: https://github.com/Nanda070/Neptun-ELTE/issues
 
 License: MIT (`LICENSE`).
 

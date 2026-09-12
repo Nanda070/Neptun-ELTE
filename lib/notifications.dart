@@ -99,11 +99,11 @@ class AppNotifications{
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
           '0',
-          'Neptun Mobile Időzített',
+          'Neptun ELTE Időzített',
           channelDescription: 'Olyan értesítések csatornája, amelyeket időzítetten, azaz a nap folyamán valamikor akar az applikáció megjeleníteni neked.',
           importance: Importance.high,
           priority: Priority.high,
-          ticker: 'Neptun Mobile Időzített Értesítés',
+          ticker: 'Neptun ELTE Időzített Értesítés',
           styleInformation: BigTextStyleInformation(content, contentTitle: title)
       ),
       iOS: DarwinNotificationDetails(
@@ -139,11 +139,11 @@ class AppNotifications{
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
           '1',
-          'Neptun Mobile Azonnali',
+          'Neptun ELTE Azonnali',
           channelDescription: 'Olyan értesítések csatornája, amelyeket azonnal akar az applikáció megjeleníteni neked.',
           importance: Importance.high,
           priority: Priority.high,
-          ticker: 'Neptun Mobile Azonnali Értesítés',
+          ticker: 'Neptun ELTE Azonnali Értesítés',
           styleInformation: BigTextStyleInformation(desc, contentTitle: title)
       ),
       iOS: DarwinNotificationDetails(

@@ -1274,7 +1274,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             )
         );
         list.add(const SizedBox(height: 6));
-        final pinfo = widget.pinfo ?? PackageInfo(appName: 'Neptun Mobile', packageName: 'com.nanda070.neptun_mobile.app', version: '1.0.5', buildNumber: '18', buildSignature: '');
+        final pinfo = widget.pinfo ?? PackageInfo(appName: 'Neptun ELTE', packageName: 'com.nanda070.neptun_mobile.app', version: '1.0.5', buildNumber: '18', buildSignature: '');
         list.add(Container(
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
@@ -1952,10 +1952,14 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ),
         ));
         return list;
-      case 9: // 2FA Mód
-        list.add(Text("Kétlépcsős azonosítás", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
+      case 9: // 2FA — ELTE: authenticator app OR email OTP (same 6-digit token field)
+        list.add(Text("Two-step authentication", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
         list.add(const SizedBox(height: 10));
-        list.add(Text("Add meg a(z) Hitelesítő alkalmazásban generált 6 jegyű kódot!", textAlign: TextAlign.center, style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.7))));
+        list.add(Text(
+          "Enter the 6-digit code from your authenticator app, or the code from your Neptun email (same as on neptun.elte.hu).",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.7)),
+        ));
         list.add(const SizedBox(height: 25));
         list.add(TextField(
           autofocus: true,
@@ -1970,7 +1974,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ),
           onChanged: (val) {
             if (val.length == 6) {
-              PopupWidgetHandler._instance!.callback(val); // Amint beírta a 6. számot, visszaküldi a loginnak!
+              PopupWidgetHandler._instance!.callback(val);
             }
           },
         ));

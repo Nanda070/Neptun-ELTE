@@ -1,4 +1,4 @@
-# Neptun Mobile — техническая документация
+# Neptun ELTE — техническая документация
 
 > 🇬🇧 [English](TECHNICAL.md)
 
@@ -6,7 +6,7 @@
 > Файл только в git (`docs/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
 > Идентификаторы кода, пути, пакеты и API-маршруты — на английском, как в репозитории.
 
-Последняя сверка с кодовой базой: **сентябрь 2026** (хаб только ELTE, без `/ujhallgato` для ELTE, языки EN/HU/RU/TR, логин modern API + 2FA-код, «неверный пароль» vs «сервер занят»). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
+Последняя сверка с кодовой базой: **сентябрь 2026** (репо **Neptun-ELTE**, display name Neptun ELTE, хаб только ELTE, без `/ujhallgato` для ELTE, языки EN/HU/RU/TR, логин modern API + 2FA-код, «неверный пароль» vs «сервер занят»). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
 
 Короткий iOS-шпаргалка: [`docs/DEVELOPER.md`](DEVELOPER.md). Продуктовый обзор: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
 
@@ -40,27 +40,27 @@
 
 ## 1. Обзор продукта
 
-**Neptun Mobile** — неофициальный мобильный клиент **ELTE** (Eötvös Loránd Tudományegyetem) **Neptun** (SDA Informatika): расписание, зачётка, платежи, периоды, сообщения.
+**Neptun ELTE** — неофициальный мобильный клиент **ELTE** (Eötvös Loránd Tudományegyetem) **Neptun** (SDA Informatika): расписание, зачётка, платежи, периоды, сообщения.
 
 - **Скоуп:** только ELTE. Не мульти-вузовский пикер.
 - Файл `universityNameUrlPairs.json` остаётся, но содержит **одну** запись: ELTE → `https://neptun.elte.hu`.
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** хост (`neptun.elte.hu` / `Account/Login`). **Нет** `/ujhallgato` как у Óbuda/BME. После веб-логина студенты открывают **Hallgatói web (HWEB)** в верхнем меню; мобильный клиент ходит в modern JWT API на том же хосте.
-- Display name: **Neptun Mobile**.
+- Display name: **Neptun ELTE**.
 - Версия (`pubspec.yaml`): **1.0.5+18**.
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
 - Это **не** официальное приложение SDA/ELTE и **не** App Store / Play production-бренд.
 
-Репозиторий: [Nanda070/Neptun-Mobile-fork](https://github.com/Nanda070/Neptun-Mobile-fork). Продукт независимый; прошлые авторы указаны только в credits.
+Репозиторий: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Продукт независимый; прошлые авторы указаны только в credits.
 
 ---
 
 ## 2. Репозиторий
 
 ```
-Neptun-Mobile-fork/
+Neptun-ELTE/
 ├── lib/                      # Весь продукт (Dart)
 │   ├── main.dart
 │   ├── storage.dart          # DataCache singleton
@@ -130,7 +130,7 @@ Neptun-Mobile-fork/
    ├─ HTTP → {instituteBase}/api/...     modern JWT Neptun
    │         {instituteBase}/MobileService.svc/api/...   old API
    │
-   └─ HTTP → raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork
+   └─ HTTP → raw.githubusercontent.com/Nanda070/Neptun-ELTE
               universityNameUrlPairs.json
               Languages/supportedLanguages.json
               Themes/supportedThemes.json
@@ -167,12 +167,33 @@ Neptun-Mobile-fork/
 
 ## 6. Setup / вход
 
-Порядок:
+### Как устроен веб ELTE (официально)
 
-1. `Splitter` → если `getHasLogin()` → `HomePage`, иначе хаб ELTE.
-2. Хаб пишет в `PageDTO` `InstitutesRequest.elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) и открывает `SetupPageLogin`.
-3. Логин: код (в API уходит `toUpperCase()`) + пароль.
-4. Демо: `DEMO` / `DEMO` → фейковые данные, без сети.
+Поток на `neptun.elte.hu` ([гайд ELTE](https://www.elte.hu/en/neptun-administration-of-progress)):
+
+1. Центральный портал → **Log in** (Neptun ID 6 символов + пароль).
+2. **Двухфакторная аутентификация** — код из authenticator **или** с основной почты Neptun.
+3. После входа — **Student web** / Open student web (HWEB) в верхнем меню.
+
+Отдельного `/ujhallgato` у ELTE **нет** (в отличие от Óbuda/BME). Один хост; HWEB — пункт меню после логина.
+
+### Как это отражено в приложении
+
+| Шаг на сайте | Приложение |
+|--------------|------------|
+| Логин на портале | `POST https://neptun.elte.hu/api/Account/Authenticate` |
+| 2FA (приложение или почта) | Тот же endpoint с `token` = 6 цифр → popup mode 9 |
+| Open Student web | **Нет кнопки браузера** — после JWT `accessToken` сразу student API (календарь, предметы…). Это мобильный аналог нахождения в Student web. |
+
+UI setup:
+
+1. `Splitter` → если `getHasLogin()` → `HomePage`, иначе хаб (**имя на экране: Neptun ELTE**).
+2. Хаб → `elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) → `SetupPageLogin`.
+3. Код + пароль.
+4. При 2FA — 6 цифр (authenticator **или** email OTP).
+5. Демо: `DEMO` / `DEMO`.
+
+**Честность:** live-логин ELTE зависит от доступности Neptun. На сайте выбор «почта» может сначала отправить код; приложение сейчас принимает тот же 6-значный `token`, что modern JWT-клиенты. Если нужен отдельный API «выслать OTP на почту» — это выяснится только live Network capture. Плашка 2FA в UI **оставлена**, пока live-проверка не пройдёт.
 
 Константы: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -181,23 +202,21 @@ Neptun-Mobile-fork/
 | Код | Константа | UI |
 |-----|-----------|-----|
 | `1` | `loginOk` | Вход на Home |
-| `2` | `loginNeeds2fa` | Popup mode 9 (6 цифр) |
+| `2` | `loginNeeds2fa` | Popup mode 9 (6 цифр — app или email) |
 | `0` | `loginInvalidCredentials` | Красные поля, «Invalid username or password!» |
 | `3` | `loginServerBusy` | Snackbar «Neptun servers are having a hard time...» — **не** неверный пароль |
 
-Таймаут modern login: **20 с** на кандидата URL. Пустой ответ / 5xx / timeout / HTML → `loginServerBusy`.
+Таймаут modern login: **20 с** на кандидата. Пустой ответ / 5xx / timeout / HTML → `loginServerBusy`.
 
 ### Нормализация URL (ELTE)
 
 `normalizeModernApiBaseUrl` снимает `/login`, `/MobileService.svc`, `/Account`, `/Account/Login`.
 
-Для ELTE база API — **центральный хост** `https://neptun.elte.hu` — **не** `/ujhallgato` (это паттерн Óbuda/BME; у ELTE один портал + HWEB после входа).
+База API: **`https://neptun.elte.hu`** — не `/ujhallgato`.
 
-Кандидаты (`_modernLoginBaseCandidates`): primary + root ELTE. **Без** `/ujhallgato` / `/hallgato` для ELTE.
+Кандидаты: primary + root ELTE.
 
-**Не проверено живым ELTE-аккаунтом** (веб был «student web is full»). Предупреждение UI про 2FA **пока оставлено**. В ELTE 2FA официально обязательна.
-
-После успеха **не** перезаписывать `instituteUrl` сырым URL из списка. Пишется база, которую выставил логин.
+После успеха сохраняется база, выбранная логином.
 
 ---
 
@@ -393,8 +412,8 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 
 | Поле | Значение |
 |------|----------|
-| Display name | `Neptun Mobile` (`CFBundleDisplayName`) |
-| `CFBundleName` | `NeptunMobile` (без пробела — имя нативного таргета) |
+| Display name | `Neptun ELTE` (`CFBundleDisplayName` / Android `android:label`) |
+| `CFBundleName` | `NeptunELTE` |
 | Bundle ID | **`com.nanda070.neptunmobile`** |
 | Tests | `com.nanda070.neptunmobile.RunnerTests` |
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
@@ -433,7 +452,7 @@ Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Та
 ### Команды
 
 ```bash
-cd /path/to/Neptun-Mobile-fork
+cd /path/to/Neptun-ELTE
 flutter pub get
 cd ios && pod install && cd ..
 
@@ -529,7 +548,7 @@ Release на iPhone: `--release` (см. §14).
 
 ### GitHub raw
 
-Пока изменения JSON не в `main` на `Nanda070/Neptun-Mobile-fork`, приложение у пользователей качает **старый** список вузов/языков.
+Пока изменения JSON не в `main` на `Nanda070/Neptun-ELTE`, приложение у пользователей качает **старый** список вузов/языков.
 
 ---
 
@@ -547,7 +566,7 @@ Release на iPhone: `--release` (см. §14).
 | Email | adnan.huseynli1@gmail.com |
 | Web | https://nanda.is-a.dev/ · cheterin.online · chetmedia.com |
 
-Issues: https://github.com/Nanda070/Neptun-Mobile-fork/issues
+Issues: https://github.com/Nanda070/Neptun-ELTE/issues
 
 Лицензия: MIT (`LICENSE`).
 

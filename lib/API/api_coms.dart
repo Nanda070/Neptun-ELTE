@@ -366,7 +366,7 @@ import '../storage.dart';
     }
 
     static Future<List<dynamic>?> getRawJsonWithNameUrlPairs() async{
-      final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/universityNameUrlPairs.json');
+      final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-ELTE/refs/heads/main/universityNameUrlPairs.json');
       final response = await http.get(url);
 
       if (response.statusCode != 200) {
@@ -2535,7 +2535,7 @@ class CashinEntry{
         return _langMapCache;
       }
       try {
-        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Languages/supportedLanguages.json');
+        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-ELTE/refs/heads/main/Languages/supportedLanguages.json');
         final response = await http.get(url);
 
         if (response.statusCode != 200) {
@@ -2581,7 +2581,7 @@ class CashinEntry{
         return _themeMapCache;
       }
       try {
-        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-Mobile-fork/refs/heads/main/Themes/supportedThemes.json');
+        final url = Uri.parse('https://raw.githubusercontent.com/Nanda070/Neptun-ELTE/refs/heads/main/Themes/supportedThemes.json');
         final response = await http.get(url);
 
         if (response.statusCode != 200) {

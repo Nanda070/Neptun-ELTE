@@ -122,7 +122,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                   children: [
                     const SizedBox(height: 40),
                     Text(
-                      'ELTE Neptun',
+                      'Neptun ELTE',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 28,
@@ -248,7 +248,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                               ),
                               child: IconButton(
                                 onPressed: (){
-                                  final url = Uri.parse('https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose');
+                                  final url = Uri.parse('https://github.com/Nanda070/Neptun-ELTE/issues/new/choose');
                                   launchUrl(url, mode: LaunchMode.externalApplication);
                                 },
                                 icon: Icon(

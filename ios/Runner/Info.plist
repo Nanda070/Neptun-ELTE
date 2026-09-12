@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Neptun Mobile</string>
+	<string>Neptun ELTE</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>NeptunMobile</string>
+	<string>NeptunELTE</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>Neptun Mobile uses notifications to remind you about classes, exams, payments, and periods.</string>
+	<string>Neptun ELTE uses notifications to remind you about classes, exams, payments, and periods.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>

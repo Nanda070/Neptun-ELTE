@@ -443,7 +443,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         AppHaptics.lightImpact();
                         Navigator.pop(context);
                         launchUrl(
-                          Uri.parse('https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose'),
+                          Uri.parse('https://github.com/Nanda070/Neptun-ELTE/issues/new/choose'),
                           mode: LaunchMode.externalApplication,
                         );
                       },
