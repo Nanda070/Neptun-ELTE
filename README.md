@@ -8,7 +8,7 @@ A modern mobile client for the Hungarian university **Neptun** system — timeta
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
 [![Issues](https://img.shields.io/badge/Bug%20reports-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
 
-> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Developer docs](docs/DEVELOPER.md)
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical docs](docs/TECHNICAL.md) · [iOS cheatsheet](docs/DEVELOPER.md)
 
 ---
 
@@ -59,7 +59,8 @@ flutter devices
 flutter run -d <ios-device-or-simulator-id>
 ```
 
-**Bundle ID:** `com.nanda070.neptun_mobile.app`  
+**iOS Bundle ID:** `com.nanda070.neptunmobile`  
+**Android applicationId:** `com.nanda070.neptun_mobile.app`  
 **Display name:** Neptun Mobile
 
 Physical device: open `ios/Runner.xcworkspace` in Xcode, select your Team (Apple ID), then run again. Trust the developer profile on the phone if prompted.
@@ -83,7 +84,8 @@ Bug reports & ideas: [GitHub Issues](https://github.com/Nanda070/Neptun-Mobile-f
 ## Docs
 
 - [README (Russian)](README.ru.md)
-- [Developer / technical notes](docs/DEVELOPER.md) — iOS setup, signing, notifications, Android-only bits
+- [Technical documentation](docs/TECHNICAL.md) — architecture, APIs, iOS/Android, auth
+- [iOS cheatsheet](docs/DEVELOPER.md)
 
 ---
 

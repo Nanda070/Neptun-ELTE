@@ -8,7 +8,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork)
 [![Issues](https://img.shields.io/badge/Баг-репорты-Issues-d73a4a?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-Mobile-fork/issues/new/choose)
 
-> 🇬🇧 [English README](README.md) · 📘 [Документация для разработчиков](docs/DEVELOPER.md)
+> 🇬🇧 [English README](README.md) · 📘 [Техническая документация](docs/TECHNICAL.md) · [iOS-шпаргалка](docs/DEVELOPER.md)
 
 ---
 
@@ -59,7 +59,8 @@ flutter devices
 flutter run -d <ios-device-or-simulator-id>
 ```
 
-**Bundle ID:** `com.nanda070.neptun_mobile.app`  
+**iOS Bundle ID:** `com.nanda070.neptunmobile`  
+**Android applicationId:** `com.nanda070.neptun_mobile.app`  
 **Имя на экране:** Neptun Mobile
 
 На физическом устройстве: откройте `ios/Runner.xcworkspace` в Xcode, выберите Team (Apple ID), затем запустите снова. При необходимости доверьте профиль разработчика на телефоне.
@@ -83,7 +84,8 @@ flutter run -d <ios-device-or-simulator-id>
 ## Документация
 
 - [README (English)](README.md)
-- [Заметки для разработчиков](docs/DEVELOPER.md) — iOS, подпись, уведомления, Android-only
+- [Техническая документация](docs/TECHNICAL.md) — архитектура, API, iOS/Android, auth
+- [iOS-шпаргалка](docs/DEVELOPER.md)
 
 ---
 
