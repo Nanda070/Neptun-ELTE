@@ -12,7 +12,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 | | |
 |--|--|
 | **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3 shipped** (Sep 2026). Items **4–14** still backlog |
-| **Release** | Shipping this foundation + nav IA + polish batch as product **1.1** (`pubspec` **1.1.0+19**). GitHub published baseline remains **1.0** until this line is tagged/pushed. Patches → **1.1.x**; next big features → **1.2+**. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Release** | Current marketing version **1.3.1** (`pubspec` **1.3.1+1**). Feature line **3** = plan items **1–3** done; patch **1** = auth / 2FA / Student-web-full messaging. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
 | **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
@@ -64,7 +64,7 @@ Document what the code **actually** does.
 |---------|------|
 | Bottom nav | **4 tabs:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Left drawer | Profile, balance, training, **Payments** (above Settings), Settings, … |
-| Settings | … existing toggles; **Contacts** sheet + version label (`1.1.0+build`) at bottom |
+| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.3.1`, no `+build`) at bottom |
 
 Do not re-add Payments to the bottom bar.
 

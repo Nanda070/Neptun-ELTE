@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.1.0+19** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.3.1+1** — user-facing / Settings / docs = **1.3.1** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -65,17 +65,21 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 ### Versioning
 
-Owner policy (**Nanda**). Flutter form is `x.y.z+build` in `pubspec.yaml` (`build-name` + `build-number`). Android `versionName` / iOS `CFBundleShortVersionString` follow `build-name`; store build numbers follow `build-number` (+N, increment every shippable build).
+Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
+
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.1`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+
+Scheme: **`1.<feature-line>.<patch>`**
 
 | Line | Meaning |
 |------|---------|
-| **1.0** | What is on GitHub as the published baseline (user statement of the current public line before this update). Older trees / tags may still show **1.0.5+18** until this bump is committed and shipped. |
-| **1.1.0** | **This** update: foundation **1a** / **1b**, nav IA **1c** (4 bottom tabs + Payments in drawer; Contacts + version in Settings), and the polish batch when shipped. |
-| **1.1.x** | Bugfixes / small tweaks on the 1.1 line (e.g. **1.1.1**). |
-| **1.2**, **1.3**, … | Next **big** feature releases. |
-| **1.2.1**, **1.2.2**, … | Patch fixes within that major.minor line. |
+| **1.x.y** | Pre-final product line only. Feature line `x` advances when a planned foundation/feature block ships; patch `y` for bugfixes / auth / small tweaks within that line. |
+| **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
+| **1.3.1** | **Current.** Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
+| **1.4.0**, **1.4.1**, … | Next big feature block (e.g. mail search / ICS / maps), then patches. |
+| **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
-Bump `pubspec.yaml` (and mirrored iOS `MARKETING_VERSION` / Android fallbacks when present) when releasing. Do not invent a parallel scheme in UI strings.
+Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
 
 ---
 
@@ -188,7 +192,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + app version (`package_info_plus`, e.g. `1.1.0+19`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.1` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 

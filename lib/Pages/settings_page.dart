@@ -50,12 +50,13 @@ class _SettingsPageState extends State<SettingsPage> {
       final info = await PackageInfo.fromPlatform();
       if (!mounted) return;
       setState(() {
-        _appVersionLabel = '${info.version}+${info.buildNumber}';
+        // User-facing marketing version only (1.x.y) — do not show +build.
+        _appVersionLabel = info.version;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _appVersionLabel = '1.1.0';
+        _appVersionLabel = '1.3.1';
       });
     }
   }
