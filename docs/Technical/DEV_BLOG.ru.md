@@ -171,6 +171,10 @@
 
 - **Политика версий пересмотрена:** больше не рассказывать пользователю историю через `+N` build. Маркетинг / Settings / docs = только **`1.x.y`**. Схема `1.<feature-line>.<patch>`; **2.0** = финальная / RC линия. Сейчас **`1.3.1`** (`pubspec` **1.3.1+1**): линия **3** = пункты плана **1–3**; патч **1** = auth/2FA/Student-web-full. Следующий крупный блок → **1.4.0**. Settings показывает `info.version` без `+build`. Синхронизированы TECHNICAL / README / IMPLEMENTATION_PLAN EN+RU + `.cursor/rules/versioning.mdc`. Владелец **Nanda**.
 
+**[2026-09-13, ~16:00]**
+
+- **iOS IPA через Actions:** добавлен `.github/workflows/ios-ipa.yml` — macOS unsigned release IPA (`--no-codesign`), артефакт + прикрепление к GitHub Release (напр. **v1.3.1**). Секретов Apple signing в репо пока нет; друзья ставят через **Sideloadly** + свой Apple ID. Docs EN+RU. Владелец **Nanda**.
+
 ---
 
 ## В работе / запланировано (честно)

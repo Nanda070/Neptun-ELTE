@@ -1,0 +1,103 @@
+name: iOS IPA
+
+# Builds an unsigned release IPA for Sideloadly (friends resign with their Apple ID).
+# No Apple signing secrets are configured in this repo yet — signed/TestFlight
+# would need BUILD_CERTIFICATE_BASE64, P12_PASSWORD, BUILD_PROVISION_PROFILE_BASE64
+# (and optionally KEYCHAIN_PASSWORD / APPLE_TEAM_ID).
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "GitHub release tag to attach the IPA to (empty = artifact only)"
+        required: false
+        default: "v1.3.1"
+  release:
+    types: [published]
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build_ipa:
+    runs-on: macos-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned IPA
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -n 's/^version: *\([0-9][0-9.]*\).*/\1/p' pubspec.yaml | head -1)"
+          APP_PATH="$(find build/ios/iphoneos -maxdepth 1 -name '*.app' -print -quit)"
+          if [ -z "${APP_PATH}" ] || [ ! -d "${APP_PATH}" ]; then
+            echo "Runner.app not found under build/ios/iphoneos"
+            find build/ios -maxdepth 3 -type d -name '*.app' || true
+            exit 1
+          fi
+          OUT_DIR="${GITHUB_WORKSPACE}/dist"
+          STAGING="$(mktemp -d)"
+          mkdir -p "${STAGING}/Payload" "${OUT_DIR}"
+          cp -R "${APP_PATH}" "${STAGING}/Payload/"
+          IPA_NAME="Neptun-ELTE-${VERSION}-unsigned.ipa"
+          (
+            cd "${STAGING}"
+            zip -qr "${OUT_DIR}/${IPA_NAME}" Payload
+          )
+          ls -lh "${OUT_DIR}/${IPA_NAME}"
+          echo "IPA_PATH=${OUT_DIR}/${IPA_NAME}" >> "${GITHUB_ENV}"
+          echo "IPA_NAME=${IPA_NAME}" >> "${GITHUB_ENV}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptun-elte-ios-ipa
+          path: dist/*.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          set -euo pipefail
+          TAG=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.release_tag }}"
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved tag: '${TAG}'"
+
+      - name: Attach IPA to GitHub Release
+        if: steps.tag.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "${TAG}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release ${TAG} does not exist — skipping upload (artifact still available)."
+            exit 0
+          fi
+          gh release upload "${TAG}" "${IPA_PATH}" --clobber --repo "${{ github.repository }}"
+          echo "Uploaded ${IPA_NAME} to https://github.com/${{ github.repository }}/releases/tag/${TAG}"

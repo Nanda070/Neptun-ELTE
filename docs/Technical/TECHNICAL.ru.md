@@ -110,7 +110,7 @@ Neptun-ELTE/
 │   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
-├── .github/workflows/        # Только Android debug APK
+├── .github/workflows/        # Android debug APK + unsigned iOS IPA
 ├── pubspec.yaml
 ├── README.md                 # Короткий указатель → docs/
 └── LICENSE                   # Идентичная копия docs/LICENSE (для GitHub)
@@ -127,6 +127,7 @@ Neptun-ELTE/
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
+| `.github/workflows/ios-ipa.yml` | CI: unsigned iOS IPA → артефакт / GitHub Release |
 
 **Нет:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, backend этого приложения.
 
@@ -596,7 +597,7 @@ flutter build apk --debug
 
 Play: `in_app_update`, если `installerStore == com.android.vending`. Иначе GitHub APK (`lib/Misc/auto_updater.dart`) — **только Android**.
 
-CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK, **без** analyze/test/iOS.
+CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK. `.github/workflows/ios-ipa.yml` — macOS, unsigned IPA для Sideloadly (секретов Apple signing в репо пока нет).
 
 ---
 
@@ -650,7 +651,9 @@ Release на iPhone: `--release` (см. §14).
 
 ### CI
 
-Только `flutter build apk --debug --no-shrink` на `ubuntu-latest`. iOS job **нет**.
+- **Android:** `betabuild.yml` — `flutter build apk --debug --no-shrink` на `ubuntu-latest`.
+- **iOS IPA:** `ios-ipa.yml` — `flutter build ios --release --no-codesign` на `macos-latest`, упаковывает `Neptun-ELTE-<version>-unsigned.ipa`, кладёт как workflow artifact и (если задан тег релиза) прикрепляет к GitHub Release. Триггеры: `workflow_dispatch`, `release` published, push тегов `v*`.
+- **Подписанный IPA / TestFlight:** в CI пока нет. Нужны секреты репо вроде `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64` (опционально `KEYCHAIN_PASSWORD`, `APPLE_TEAM_ID`). Пока — установка через **Sideloadly** (или аналог) со своим Apple ID.
 
 ### GitHub raw
 
@@ -737,6 +740,7 @@ Release на iPhone: `--release` (см. §14).
 | `ios/Runner.xcodeproj/project.pbxproj` | Bundle ID, Team |
 | `android/app/build.gradle` | `applicationId` |
 | `.github/workflows/betabuild.yml` | Android CI |
+| `.github/workflows/ios-ipa.yml` | Unsigned iOS IPA → Release / artifact |
 
 ---
 

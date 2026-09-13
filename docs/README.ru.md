@@ -106,6 +106,8 @@ flutter run --release -d <device>
 
 Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team. При необходимости доверьте профиль разработчика на телефоне.
 
+**IPA с GitHub Release:** в [Releases](https://github.com/Nanda070/Neptun-ELTE/releases) может быть **неподписанный** `.ipa` из Actions (`ios-ipa.yml`). Ставьте через **Sideloadly** (или аналог) со своим Apple ID — это не App Store / TestFlight.
+
 iOS-шпаргалка — в Technical §14 (отдельного `DEVELOPER.md` нет).
 
 ---

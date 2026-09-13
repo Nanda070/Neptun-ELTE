@@ -110,7 +110,7 @@ Neptun-ELTE/
 │   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
-├── .github/workflows/        # Android debug APK only
+├── .github/workflows/        # Android debug APK + unsigned iOS IPA
 ├── pubspec.yaml
 ├── README.md                 # Short pointer → docs/
 └── LICENSE                   # Identical copy of docs/LICENSE (GitHub)
@@ -127,6 +127,7 @@ Neptun-ELTE/
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
+| `.github/workflows/ios-ipa.yml` | CI: unsigned iOS IPA → artifact / GitHub Release |
 
 **Missing:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, and any first-party backend.
 
@@ -595,7 +596,7 @@ flutter build apk --debug
 
 Play: `in_app_update` if `installerStore == com.android.vending`. Otherwise GitHub APK (`lib/Misc/auto_updater.dart`) — **Android only**.
 
-CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK, **no** analyze/test/iOS.
+CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK. `.github/workflows/ios-ipa.yml` — macOS, unsigned IPA for Sideloadly (no Apple signing secrets in repo yet).
 
 ---
 
@@ -649,7 +650,9 @@ iPhone release: `--release` (see §14).
 
 ### CI
 
-Only `flutter build apk --debug --no-shrink` on `ubuntu-latest`. **No** iOS job.
+- **Android:** `betabuild.yml` — `flutter build apk --debug --no-shrink` on `ubuntu-latest`.
+- **iOS IPA:** `ios-ipa.yml` — `flutter build ios --release --no-codesign` on `macos-latest`, packages `Neptun-ELTE-<version>-unsigned.ipa`, uploads as a workflow artifact, and (when a release tag is set) attaches it to that GitHub Release. Trigger: `workflow_dispatch`, `release` published, or push of `v*` tags.
+- **Signed IPA / TestFlight:** not in CI yet. Would need repo secrets such as `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64` (optional `KEYCHAIN_PASSWORD`, `APPLE_TEAM_ID`). Until then, install via **Sideloadly** (or similar) with the user’s own Apple ID.
 
 ### GitHub raw
 
@@ -736,6 +739,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `ios/Runner.xcodeproj/project.pbxproj` | Bundle ID, Team |
 | `android/app/build.gradle` | `applicationId` |
 | `.github/workflows/betabuild.yml` | Android CI |
+| `.github/workflows/ios-ipa.yml` | Unsigned iOS IPA → Release / artifact |
 
 ---
 

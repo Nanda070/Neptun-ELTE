@@ -107,6 +107,8 @@ flutter run --release -d <device>
 
 Signing: open `ios/Runner.xcworkspace` → Automatically manage signing → Team. Trust the developer profile on the phone if prompted.
 
+**GitHub Release IPA:** [Releases](https://github.com/Nanda070/Neptun-ELTE/releases) may include an **unsigned** `.ipa` from Actions (`ios-ipa.yml`). Install with **Sideloadly** (or similar) using your own Apple ID — it is not App Store / TestFlight signed.
+
 iOS checklist lives in Technical §14 (not a separate developer file).
 
 ---
