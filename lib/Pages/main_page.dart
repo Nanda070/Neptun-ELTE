@@ -11,6 +11,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/API/ics_calendar.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
+import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/notifications.dart';
@@ -201,13 +202,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     api.SessionGuard.registerNavigator((message) async {
       if (!mounted) return;
       await AppNotifications.cancelScheduledNotifs();
-      if (!mounted) return;
-      Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-      if (!mounted) return;
-      await Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const root_page.Splitter()),
-      );
+      // Replace-all — never popUntil the only Home route into a blank stack.
+      navigateToLoginRoot();
     });
     // Participant session entry: 10-minute wall-clock auto-logout (not JWT-401-only).
     api.SessionGuard.startSessionWallClock();
@@ -2215,6 +2211,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    if (identical(_instance, this)) {
+      _instance = null;
+    }
     _connectivitySubscription?.cancel();
     _calendarTimer?.cancel();
     super.dispose();

@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.3.1+1** — user-facing / Settings / docs = **1.3.1** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.3.2+1** — user-facing / Settings / docs = **1.3.2** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.1`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.2`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -75,7 +75,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 |------|---------|
 | **1.x.y** | Pre-final product line only. Feature line `x` advances when a planned foundation/feature block ships; patch `y` for bugfixes / auth / small tweaks within that line. |
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
-| **1.3.1** | **Current.** Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
+| **1.3.2** | **Current.** Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
+| **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
 | **1.4.0**, **1.4.1**, … | Next big feature block (e.g. mail search / ICS / maps), then patches. |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
@@ -193,7 +194,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.1` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.2` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -348,7 +349,7 @@ Login body:
 
 For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes **auth only** via `DataCache.sessionWipeKeepCache()` (password / JWT / refresh / device cookie / `HasLogin`; **keeps username + academic cache**), navigates to login, and shows `auth_sessionExpired_PleaseSignIn`. Manual / expired logout share that wipe. Portal leftovers: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, tighten `_looksLikeInvalidCredentials` (no bare `invalid` on HTML `is-invalid`) so same-process re-login is not stuck on false “invalid credentials” (**1a**). Full `dataWipe()` (prefs.clear including cache) remains available for hard reset — not used on normal logout.
+Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes **auth only** via `DataCache.sessionWipeKeepCache()` (password / JWT / refresh / device cookie / `HasLogin`; **keeps username + academic cache**), navigates to login via `navigateToLoginRoot()` (root `pushAndRemoveUntil(Splitter)` — **not** `popUntil` on a sole Home route, which could empty the navigator into a black screen), and shows `auth_sessionExpired_PleaseSignIn`. Manual / expired logout share that wipe. Portal leftovers: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, tighten `_looksLikeInvalidCredentials` (no bare `invalid` on HTML `is-invalid`) so same-process re-login is not stuck on false “invalid credentials” (**1a**). Full `dataWipe()` (prefs.clear including cache) remains available for hard reset — not used on normal logout.
 
 **App session wall clock (user-visible):** On entering `HomePage` (successful login or cold start into a stored session), `SessionGuard.startSessionWallClock()` stores `SESSION_StartedAtMs` and arms a **10-minute** `Timer` for the remaining time. When it fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). Manual logout cancels the timer; a new login / new `HomePage` entry restarts it. Token refresh does **not** extend the wall clock. This is intentional alignment with short-lived Neptun access JWTs (~10–15 min from issue): the UI logs out on a fixed wall clock from **session entry**, not only after the next 401.
 
@@ -368,7 +369,7 @@ Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `G
 
 **JWT lifetime:** Access tokens are short-lived (~10–15 min in practice on Neptun). Refresh may issue a new access token, but the app still force-logs out after **10 minutes from Home entry** (see wall clock above). Without a working refresh token, a 401 also forces logout rather than showing empty “logged in” screens.
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`. After success, setup closes the 2FA popup **before** navigating to `HomePage` (`pushAndRemoveUntil`) so a delayed pop cannot blank the screen.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`. Popup closes **before** the HWEB bridge; on success setup calls `navigateToHomeRoot()` (`lib/app_navigator.dart` → root `pushAndRemoveUntil(HomePage)`), not a page-local `BuildContext`, so a disposed login route / delayed popup pop cannot leave a **black screen**.
 
 **2FA (old):** unsupported → usually `0`.
 
@@ -716,7 +717,8 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (canonical); root `LICENSE` mirrors it |
 | `pubspec.yaml` | Version, dependencies |
-| `lib/main.dart` | `MaterialApp`, theme, `Splitter` |
+| `lib/main.dart` | `MaterialApp`, theme, registers login/home roots |
+| `lib/app_navigator.dart` | Root `appNavigatorKey`; `navigateToHomeRoot` / `navigateToLoginRoot` |
 | `lib/Pages/startup_page.dart` | Login / home branch |
 | `lib/Pages/setup_page.dart` | Login, URL, 2FA callback, ICS class |
 | `lib/Pages/main_page.dart` | Home + **4** bottom tabs + drawer Payments (**1c**) |

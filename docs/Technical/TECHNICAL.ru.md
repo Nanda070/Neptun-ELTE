@@ -55,7 +55,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Мобильный клиент логинится и зовёт modern JWT API на **`https://neptun.elte.hu`**, не конкретный `hallgatoN`.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.3.1+1** — для пользователя / Settings / docs = **1.3.1** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.3.2+1** — для пользователя / Settings / docs = **1.3.2** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -67,7 +67,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.3.1`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.3.2`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -75,7 +75,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 |-------|--------|
 | **1.x.y** | Только до финальной линии. Feature-line `x` растёт, когда отгружается запланированный блок foundation/фич; patch `y` — багфиксы / auth / мелкие правки внутри линии. |
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
-| **1.3.1** | **Текущая.** Линия 3 + патч auth / 2FA / messaging Student-web-full. |
+| **1.3.2** | **Текущая.** Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
+| **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
 | **1.4.0**, **1.4.1**, … | Следующий крупный блок (напр. поиск почты / ICS / maps), затем патчи. |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
@@ -193,7 +194,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.3.1` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.3.2` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -348,7 +349,7 @@ UI setup:
 
 При 2FA повтор с `token` = код; опционально `Authorization: Bearer` от `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа и показывает `auth_sessionExpired_PleaseSignIn`. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
+Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
 
 **Wall-clock сессии приложения (видимо пользователю):** При входе на `HomePage` `SessionGuard.startSessionWallClock()` сохраняет `SESSION_StartedAtMs` и ставит **`Timer` на оставшиеся до 10 минут**. По срабатыванию — тот же путь `forceExpiredLogout` (токены стираются, логин + учебный кэш остаются). Ручной выход отменяет таймер; новый логин / новый вход на `HomePage` перезапускает. Refresh JWT **не** продлевает wall-clock.
 
@@ -368,7 +369,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 **Срок JWT:** access-токены короткоживущие (~10–15 мин на практике в Neptun). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после входа на Home** (см. wall-clock выше). Без рабочего refresh token 401 тоже форсирует logout, а не пустые экраны «как будто вошёл».
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. После успеха setup **сначала закрывает** popup 2FA, затем переходит на `HomePage` (`pushAndRemoveUntil`), чтобы отложенный `pop` не дал чёрный экран.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. Popup закрывается **до** HWEB-моста; при успехе setup вызывает `navigateToHomeRoot()` (`lib/app_navigator.dart` → корневой `pushAndRemoveUntil(HomePage)`), а не через локальный `BuildContext` логина — чтобы disposed route / отложенный `pop` popup не оставляли **чёрный экран**.
 
 **2FA (old):** не поддерживается → обычно `0`.
 
@@ -717,7 +718,8 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (канон); корневой `LICENSE` зеркалирует |
 | `pubspec.yaml` | Версия, зависимости |
-| `lib/main.dart` | `MaterialApp`, тема, `Splitter` |
+| `lib/main.dart` | `MaterialApp`, тема, регистрация login/home roots |
+| `lib/app_navigator.dart` | Корневой `appNavigatorKey`; `navigateToHomeRoot` / `navigateToLoginRoot` |
 | `lib/Pages/startup_page.dart` | Ветка login / home |
 | `lib/Pages/setup_page.dart` | Вход, URL, 2FA callback, ICS-класс |
 | `lib/Pages/main_page.dart` | Home + **4** нижние вкладки + drawer Payments (**1c**) |

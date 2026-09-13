@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:neptun2/API/ics_calendar.dart';
+import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/local_file_actions.dart';
@@ -19,6 +20,9 @@ import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
 import '../Misc/popup.dart';
+
+/// Replace the entire nav stack with Home after login/2FA.
+void _navigateToHomeAfterLogin() => navigateToHomeRoot();
 
 class SetupPageLoginTypeSelection extends StatefulWidget{
   const SetupPageLoginTypeSelection({super.key});
@@ -1283,10 +1287,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const main_page.HomePage()),
-          (route) => false,
-        );
+        _navigateToHomeAfterLogin();
         return;
       }
       else if(value == 2){ // 2: 2FA SZÜKSÉGES
@@ -1347,15 +1348,14 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
               );
             }
             await storage.DataCache.setHasLogin(1);
-            if (!mounted) return;
-            setState(() {
-              _isLoading = false;
-              _loadingTitleOverride = null;
-            });
-            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const main_page.HomePage()),
-              (route) => false,
-            );
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+                _loadingTitleOverride = null;
+              });
+            }
+            // Always navigate via root key — even if this State unmounted during HWEB wait.
+            _navigateToHomeAfterLogin();
             return;
           }
 
@@ -1401,7 +1401,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
               }
             },
           );
-          PopupWidgetHandler.doPopup(context);
+          // Login has no Home blur layer — avoid touching a disposed HomePageState.
+          PopupWidgetHandler.doPopup(context, blur: () {}, closeBlur: () {});
         }
 
         PopupWidgetHandler(
@@ -1416,7 +1417,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             }
           },
         );
-        PopupWidgetHandler.doPopup(context);
+        PopupWidgetHandler.doPopup(context, blur: () {}, closeBlur: () {});
         return;
       }
       else if(value == api.InstitutesRequest.loginStudentWebFull){

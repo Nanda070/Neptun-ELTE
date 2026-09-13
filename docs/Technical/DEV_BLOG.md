@@ -175,6 +175,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **iOS IPA via Actions:** added `.github/workflows/ios-ipa.yml` — macOS unsigned release IPA (`--no-codesign`), artifact + attach to GitHub Release (e.g. **v1.3.1**). No Apple signing secrets in the repo yet; friends install with **Sideloadly** + their Apple ID. Docs EN+RU updated. Owner **Nanda**.
 
+**[2026-09-13, ~17:35]**
+
+- **Bugfix — black screen after 2FA:** post-login navigation now uses `lib/app_navigator.dart` (`navigateToHomeRoot` / `navigateToLoginRoot` via root `pushAndRemoveUntil`). Avoids empty navigator when a delayed popup pop or `popUntil` hit the sole Home route. 2FA popup opens without Home blur. Session wall-clock logout on reopen **unchanged** (by design). Owner **Nanda**.
+
+**[2026-09-13, ~17:45]**
+
+- **Release 1.3.2** (`pubspec` **1.3.2+1**): ships the post-2FA black-screen fix + root navigator helpers. GitHub Release **v1.3.2** + unsigned IPA via Actions. Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)

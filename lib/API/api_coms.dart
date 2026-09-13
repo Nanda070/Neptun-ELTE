@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neptun2/API/ics_calendar.dart';
 import 'package:neptun2/Misc/clickable_text_span.dart';
+import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
 import '../storage.dart' as storage;
@@ -142,9 +143,15 @@ class SessionGuard {
       debug.log('forceExpiredLogout wipe error: $e');
     }
     try {
-      final nav = _onNavigateToLogin;
-      if (nav != null) {
-        await nav(msg);
+      // Prefer root key + replace-all so we never pop the sole Home route into an
+      // empty navigator (permanent black screen after login/2FA).
+      if (appNavigatorKey.currentState != null) {
+        navigateToLoginRoot();
+      } else {
+        final registered = _onNavigateToLogin;
+        if (registered != null) {
+          await registered(msg);
+        }
       }
     } catch (e) {
       debug.log('forceExpiredLogout navigate error: $e');

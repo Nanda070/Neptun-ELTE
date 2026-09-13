@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/storage.dart';
 import 'package:provider/provider.dart';
+import 'Pages/main_page.dart';
 import 'Pages/startup_page.dart';
 import 'language.dart';
 
@@ -14,6 +16,10 @@ void main() {
     AppColors.initialize();
     await AppStrings.loadBundledLanguagePacks();
     AppStrings.initialize();
+    registerAppRoots(
+      loginRoot: (_) => const Splitter(),
+      homeRoot: (_) => const HomePage(),
+    );
     final app = const NeptunApp();
     final themeNotifier = ThemeNotifier(ThemeNotifier._initialTheme(AppColors.getTheme().basedOnDark));
     runApp(
@@ -26,7 +32,6 @@ void main() {
   });
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
   const NeptunApp({super.key});
 
@@ -50,15 +55,15 @@ class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
           userTheme = 'Dark';
           await DataCache.setPreferredAppTheme(userTheme);
         }
-        if (navigatorKey.currentContext != null) {
-          AppColors.setUserThemeByName(userTheme, navigatorKey.currentContext!);
+        if (appNavigatorKey.currentContext != null) {
+          AppColors.setUserThemeByName(userTheme, appNavigatorKey.currentContext!);
           AppColors.refreshThemeIndexing();
           AppColors.setCurrentSystemTheme(AppColors.getTheme().basedOnDark);
         }
       });
     }
     return MaterialApp(
-      navigatorKey: navigatorKey,
+      navigatorKey: appNavigatorKey,
       title: 'Neptun ELTE',
       theme: themeNotifier._themeData,
       home: const Splitter(),

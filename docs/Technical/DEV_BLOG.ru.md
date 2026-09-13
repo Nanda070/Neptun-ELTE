@@ -175,6 +175,14 @@
 
 - **iOS IPA через Actions:** добавлен `.github/workflows/ios-ipa.yml` — macOS unsigned release IPA (`--no-codesign`), артефакт + прикрепление к GitHub Release (напр. **v1.3.1**). Секретов Apple signing в репо пока нет; друзья ставят через **Sideloadly** + свой Apple ID. Docs EN+RU. Владелец **Nanda**.
 
+**[2026-09-13, ~17:35]**
+
+- **Багфикс — чёрный экран после 2FA:** навигация после логина через `lib/app_navigator.dart` (`navigateToHomeRoot` / `navigateToLoginRoot`, корневой `pushAndRemoveUntil`). Не даёт пустой навигатор при отложенном `pop` popup или `popUntil` единственного Home. Popup 2FA без Home blur. Logout по wall-clock при перезаходе **без изменений** (как задумано). Владелец **Nanda**.
+
+**[2026-09-13, ~17:45]**
+
+- **Релиз 1.3.2** (`pubspec` **1.3.2+1**): фикс чёрного экрана после 2FA + корневой navigator. GitHub Release **v1.3.2** + unsigned IPA через Actions. Владелец **Nanda**.
+
 ---
 
 ## В работе / запланировано (честно)
