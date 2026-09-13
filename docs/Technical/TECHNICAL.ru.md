@@ -1,14 +1,19 @@
 # Neptun ELTE — техническая документация
 
-> 🇬🇧 [English](TECHNICAL.md)
+> 🇬🇧 [English](TECHNICAL.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
 
 > **Аудитория:** разработчики и люди с доступом к репозиторию.  
-> Файл только в git (`docs/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
+> Файл только в git (`docs/Technical/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
 > Идентификаторы кода, пути, пакеты и API-маршруты — на английском, как в репозитории.
 
 Последняя сверка с кодовой базой: **сентябрь 2026** (репо **Neptun-ELTE**, display name Neptun ELTE, хаб только ELTE, без `/ujhallgato` для ELTE, языки EN/HU/RU/TR, логин modern API + 2FA-код, «неверный пароль» vs «сервер занят»). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
 
-Короткий iOS-шпаргалка: [`docs/DEVELOPER.md`](DEVELOPER.md). Продуктовый обзор: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
+**Владелец и разработчик:** **Nanda** (полное юридическое имя — только в Legal).
+
+Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
+Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
+Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
+Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.
 
 ---
 
@@ -78,11 +83,16 @@ Neptun-ELTE/
 ├── Languages/                # supportedLanguages.json + JSON-паки
 ├── Themes/                   # supportedThemes.json + JSON-палитры
 ├── universityNameUrlPairs.json
-├── docs/                     # TECHNICAL.md (EN), TECHNICAL.ru.md, DEVELOPER.md
+├── docs/
+│   ├── README.md / README.ru.md   # Полный продуктовый README
+│   ├── LICENSE                    # Канонический LGPL-3.0-only
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
+│   └── …
 ├── .github/workflows/        # Только Android debug APK
 ├── pubspec.yaml
-├── README.md                 # EN, пользовательский
-└── README.ru.md
+├── README.md                 # Короткий указатель → docs/
+└── LICENSE                   # Идентичная копия docs/LICENSE (для GitHub)
 ```
 
 | Путь | Назначение |
@@ -92,7 +102,9 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/` | Документация для разработчиков |
+| `docs/Technical/` | Полная техническая документация + Dev Blog (EN + RU) |
+| `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
+| `docs/README*.md` | Полный продуктовый README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
 
 **Нет:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, backend этого приложения.
@@ -160,7 +172,7 @@ Neptun-ELTE/
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | 5 вкладок после входа |
 | `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Семестр, баланс, настройки, апдейт (Android), выход |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); аватар — инициалы (фото API нет); семестр, баланс, переключатель training, настройки, апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
 ---
@@ -294,13 +306,15 @@ UI setup:
   "captcha": "",
   "captchaIdentifier": "",
   "token": "",
-  "LCID": 1038
+  "LCID": 1033
 }
 ```
 
+`LCID` следует языку приложения (`AppStrings.getNeptunLcid()`): EN `1033`, HU `1038`, RU `1049`, TR `1055`. GET также шлёт `Accept-Language`. Полная смена языка API для периодов/предметов после смены языка может потребовать повторного входа.
+
 При 2FA повтор с `token` = код; опционально `Authorization: Bearer` от `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / повторный логин при 401 — в `_APIRequest`.
+Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` сбрасывает сессию (логин сохраняется), открывает экран входа и показывает `auth_sessionExpired_PleaseSignIn`. Ручной выход очищает cookie jar портала ELTE, чтобы сразу после выхода повторный логин не ловил «invalid credentials».
 
 ---
 
@@ -312,7 +326,9 @@ Refresh / повторный логин при 401 — в `_APIRequest`.
 | Username, URL института, флаги кэша, настройки | `shared_preferences` |
 | Демо | `setIsDemoAccount(1)` |
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`.
+**Срок JWT:** access-токены короткоживущие. Без рабочего refresh token приложение принудительно разлогинивает, а не показывает пустые экраны «как будто вошёл».
+
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. После успеха setup **сначала закрывает** popup 2FA, затем переходит на `HomePage` (`pushAndRemoveUntil`), чтобы отложенный `pop` не дал чёрный экран.
 
 **2FA (old):** не поддерживается → обычно `0`.
 
@@ -324,25 +340,25 @@ Refresh / повторный логин при 401 — в `_APIRequest`.
 
 ### 10.1 Расписание
 
-Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()`. Modern: `GetCalendarEvents` + детали курса.
+Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI: ближайшие 48 ч, задания/ZH, экзамены, баннеры периодов (`typeId == 6`). Переключатель обучения в drawer, если известно несколько training.
 
 ### 10.2 Зачётка
 
-Предметы, кредиты, средний, ghost grade (popup 0), конфетти.
+Вкладка «Предметы» = зачётка: взятые предметы (с кодами), кредиты, оценки, средний, ghost grade (popup 0), конфетти. Также **Мои курсы** (`GetRegisteredCourses`) и компактная **история оценок** по недавним семестрам.
 
 ### 10.3 Платежи / периоды / почта
 
-Начисления и дедлайны; периоды с таймерами; входящие + mark read.
+Начисления и дедлайны; список **collective invoices** + баланс; периоды с таймерами; входящие + mark read; полная цепочка постов письма. В карточке письма: опциональный машинный перевод HU→EN/RU (`MessageTranslator`); при первом использовании на устройстве показывается 5‑секундный snackbar о возможной неточности (`hasSeenMailTranslateDisclaimer`).
+
+**Chrome UI платежей** (заголовок вкладки, пустое состояние, дедлайны, символ валюты, тексты уведомлений, баланс в drawer) идёт через `LanguagePack` (EN/HU встроены; RU/TR JSON). **Названия транзакций/счетов и статусы из Neptun** (`transactionPayingType`, `transactionStatus`, подписи collective invoice) обычно остаются **на венгерском** — это язык ответа сервера, а не пропущенная строка приложения.
 
 ### 10.4 Настройки
 
-Тема, язык, шрифт 80–140%, уведомления (4 типа), family-friendly тексты загрузки, вибрация, сдвиг недели, проверка обновлений (Android).
+Тема, язык, шрифт 80–140%, уведомления (4 типа), family-friendly тексты загрузки, вибрация, сдвиг недели, фильтры календаря, проверка обновлений (Android).
 
 ### 10.5 Темы
 
-Вшитые (`lib/colors.dart`): Light, Dark, AMOLED Black, Midnight Ocean, Emerald Forest, плюс ещё две встроенные тёмные палитры.
-
-Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
+Встроенный выбор (`lib/colors.dart`): только **Light** и **Dark**. Предпочтение хранится в `THEME_AppTheme` и применяется при старте; яркость системы **не** перезаписывает его. Remote-пакеты из `Themes/supportedThemes.json` в UI больше не предлагаются.
 
 ### 10.6 Языки
 
@@ -354,7 +370,7 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 
 Другие паки (DE, RO, UA, AR, ES, ZH, Pirate) **удалены**.
 
-Тексты каналов уведомлений и часть заголовков настроек всё ещё **захардкожены по-венгерски**.
+Пункт drawer **Contacts** — ключ `topmenu_buttons_Contacts`. Тела уведомлений о платежах — `notif_payment_Body*`. Уже скачанные RU/TR на устройстве могут потребовать повторной загрузки языка после обновления JSON на GitHub.
 
 ### 10.7 ICS
 
@@ -377,8 +393,11 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **Удалён** | Был заглушкой |
 | APK / Play update | **Android only** | На iOS скрыто |
+| Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
 | Тесты | **Нет** | Папки `test/` нет |
 | App Store / Play production | **Не цель текущего состояния** | |
+| Фото в drawer | **Нет** | В существующих HAR нет подтверждённого URL/байтов фото на `/api/UserInfo` (и рядом); drawer показывает только **инициалы** — не выдумывать image-эндпоинты |
+| Строка training ID в drawer | **Убрана** | Сырой `studentTrainingId` / GUID не показывается под именем; человекочитаемые подписи — только в dropdown при нескольких training |
 
 Монолит: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — по ~1400–2600 строк. **Не дробить**, пока цель — iOS/логин, не рефакторинг.
 
@@ -392,7 +411,7 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 
 Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences).
 
-`dataWipe` — выход.
+`dataWipe` — выход: очищает пароль/токены/кэш, **сохраняет username** для префилла логина. Аватар в drawer — **инициалы** из имени / кода Neptun; фото не подключается, пока HAR не подтвердит endpoint.
 
 Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -417,6 +436,36 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 ---
 
 ## 14. iOS
+
+### Краткая шпаргалка
+
+Идентичность, API, 2FA, кэш и языки — в этом файле. Чеклист на каждый день:
+
+| Пункт | Значение |
+|------|--------|
+| Display name | **Neptun ELTE** |
+| iOS Bundle ID | `com.nanda070.neptunmobile` (без `_` — иначе Xcode ломает provisioning) |
+| Android `applicationId` | `com.nanda070.neptun_mobile.app` |
+| Dart-пакет | `neptun2` |
+| Язык по умолчанию | English |
+| Темы | только Light / Dark (сохраняются; системная яркость не перезаписывает) |
+| Баг-репорты | https://nanda.is-a.dev |
+| Скоуп | **только ELTE** — портал `https://neptun.elte.hu`; HWEB SPA `hallgatoN.neptun.elte.hu` |
+
+```bash
+flutter pub get
+cd ios && pod install && cd ..
+flutter devices
+
+# Симулятор
+flutter run -d "iPhone 17 Pro"
+
+# Телефон: с иконки нужен release (iOS 14+ debug так не открывается)
+flutter run --release -d Nanda
+```
+
+Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.  
+На телефоне: **Settings → General → VPN & Device Management** → доверить разработчику.
 
 ### Идентичность
 
@@ -576,9 +625,9 @@ Release на iPhone: `--release` (см. §14).
 | Email | adnan.huseynli1@gmail.com |
 | Web | https://nanda.is-a.dev/ · cheterin.online · chetmedia.com |
 
-Issues: https://github.com/Nanda070/Neptun-ELTE/issues
+Баг-репорты: https://nanda.is-a.dev (ссылки в приложении; не форма GitHub Issues)
 
-Лицензия: MIT (`LICENSE`).
+Лицензия: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); корневой `LICENSE` — идентичная копия для GitHub).
 
 ---
 
@@ -608,10 +657,12 @@ Issues: https://github.com/Nanda070/Neptun-ELTE/issues
 
 | Файл | Зачем |
 |------|-------|
-| `README.md` / `README.ru.md` | Пользовательский обзор |
-| `docs/TECHNICAL.md` | Этот документ (EN) |
-| `docs/TECHNICAL.ru.md` | Русская версия |
-| `docs/DEVELOPER.md` | Короткая iOS-шпаргалка |
+| `docs/README.md` / `docs/README.ru.md` | Пользовательский обзор |
+| `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
+| `docs/Technical/TECHNICAL.ru.md` | Русская версия |
+| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog |
+| `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
+| `docs/LICENSE` | LGPL-3.0-only (канон); корневой `LICENSE` зеркалирует |
 | `pubspec.yaml` | Версия, зависимости |
 | `lib/main.dart` | `MaterialApp`, тема, `Splitter` |
 | `lib/Pages/startup_page.dart` | Ветка login / home |

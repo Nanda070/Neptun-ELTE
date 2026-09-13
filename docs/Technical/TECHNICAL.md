@@ -1,14 +1,19 @@
 # Neptun ELTE — technical documentation
 
-> 🇷🇺 [Русская версия](TECHNICAL.ru.md)
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
 
 > **Audience:** developers and anyone with repo access.  
-> Git-only (`docs/TECHNICAL.md`). **Not** published as a website, **no** public route.  
+> Git-only (`docs/Technical/TECHNICAL.md`). **Not** published as a website, **no** public route.  
 > Code identifiers, paths, packages, and API routes stay in English, as in the repo.
 
 Last sync with the codebase: **September 2026** (repo **Neptun-ELTE**, display name Neptun ELTE, ELTE-only hub, no `/ujhallgato` for ELTE, languages EN/HU/RU/TR, modern API login + 2FA code path, “invalid password” vs “server busy”). Sources: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
 
-Short iOS cheatsheet: [`docs/DEVELOPER.md`](DEVELOPER.md). Product overview: [`README.md`](../README.md) / [`README.ru.md`](../README.ru.md).
+**Owner / developer:** **Nanda** (full legal name only in Legal docs).
+
+Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
+Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
+Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
+iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.
 
 ---
 
@@ -78,11 +83,16 @@ Neptun-ELTE/
 ├── Languages/                # supportedLanguages.json + JSON packs
 ├── Themes/                   # supportedThemes.json + palettes
 ├── universityNameUrlPairs.json
-├── docs/                     # TECHNICAL.md (EN), TECHNICAL.ru.md, DEVELOPER.md
+├── docs/
+│   ├── README.md / README.ru.md   # Product README (full)
+│   ├── LICENSE                    # Canonical LGPL-3.0-only text
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
+│   └── …
 ├── .github/workflows/        # Android debug APK only
 ├── pubspec.yaml
-├── README.md                 # EN product README
-└── README.ru.md
+├── README.md                 # Short pointer → docs/
+└── LICENSE                   # Identical copy of docs/LICENSE (GitHub)
 ```
 
 | Path | Role |
@@ -92,7 +102,9 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/` | Developer documentation |
+| `docs/Technical/` | Full technical documentation + Dev Blog (EN + RU) |
+| `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
+| `docs/README*.md` | Full product README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
 
 **Missing:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, and any first-party backend.
@@ -160,7 +172,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | 5 tabs after login |
 | `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Term, balance, settings, update (Android), logout |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); initials avatar (no photo API); term, balance, multi-training switcher, settings, update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
 ---
@@ -294,13 +306,15 @@ Login body:
   "captcha": "",
   "captchaIdentifier": "",
   "token": "",
-  "LCID": 1038
+  "LCID": 1033
 }
 ```
 
+`LCID` follows the app language (`AppStrings.getNeptunLcid()`): EN `1033`, HU `1038`, RU `1049`, TR `1055`. GET requests also send `Accept-Language`. Full API locale for periods/subjects may require re-login after a language change.
+
 For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / re-login on 401 lives in `_APIRequest`.
+Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes the session (keeps username), navigates to login, and shows `auth_sessionExpired_PleaseSignIn`. Manual logout clears the ELTE portal cookie jar so immediate re-login is not stuck on “invalid credentials”.
 
 ---
 
@@ -312,7 +326,9 @@ Refresh / re-login on 401 lives in `_APIRequest`.
 | Username, institute URL, cache flags, settings | `shared_preferences` |
 | Demo | `setIsDemoAccount(1)` |
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`.
+**JWT lifetime:** Access tokens are short-lived. Without a working refresh token, the app forces logout rather than showing empty “logged in” screens.
+
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`. After success, setup closes the 2FA popup **before** navigating to `HomePage` (`pushAndRemoveUntil`) so a delayed pop cannot blank the screen.
 
 **2FA (old):** unsupported → usually `0`.
 
@@ -324,25 +340,25 @@ Refresh / re-login on 401 lives in `_APIRequest`.
 
 ### 10.1 Timetable
 
-Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()`. Modern: `GetCalendarEvents` + course details.
+Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `getFirstStudyweek()`. Anchor is the Monday of the semester season week (autumn: week containing **1 Sep**; spring: week containing **1 Feb**) when the teaching/`szorgalmi` period starts within that fortnight — **not** subject-registration or login windows (those previously produced inflated weeks ~36 then ~16). Education week = whole weeks from that Monday to *this* Monday + `currentWeekOffset` (1 = current calendar page). Example ELTE autumn 2026: **1–7 Sep → week 1**, **7–14 Sep → week 2**. Online home open always recomputes and overwrites the cached epoch. Modern: `GetCalendarEvents` with **Mon–Sun** `endDate` (not next Monday — that wrongly pulled next week’s Monday classes, causing a ~163h fake “break” and duplicate lessons). Events outside the requested window are dropped. Same-day gap chips only (5 min–12 h), localized break strings. Course details + Calendar Settings filters (`isClassesVisible` / exams / periods). UI strips: next 48h, tasks/ZH, exams, period banners (`typeId == 6`). Drawer training switcher when multiple trainings are known.
 
 ### 10.2 Markbook
 
-Subjects, credits, average, ghost grade (popup 0), confetti.
+Subjects tab = markbook: taken subjects (with subject codes), credits, grades, average, ghost grade (popup 0), confetti. Also lists **My courses** (`GetRegisteredCourses`) and a compact **grade history** across recent terms.
 
 ### 10.3 Payments / periods / mail
 
-Charges and deadlines; periods with timers; inbox + mark read.
+Charges and deadlines; **collective invoices** list + balance; periods with timers; inbox + mark read; full mail thread posts. Message detail: optional HU→EN/RU machine translate (`MessageTranslator`); first use on a device shows a 5s inaccuracy disclaimer snackbar (`hasSeenMailTranslateDisclaimer`).
+
+**Payments UI chrome** (tab title, empty state, deadlines, currency symbol, notification bodies, drawer balance label) uses `LanguagePack` (EN/HU built-in; RU/TR JSON). **Transaction / invoice titles and statuses from Neptun** (`transactionPayingType`, `transactionStatus`, collective-invoice labels) usually remain **Hungarian** — that is server payload language, not a missing app string.
 
 ### 10.4 Settings
 
-Theme, language, font 80–140%, four notification types, family-friendly loading copy, haptics, week offset, update check (Android).
+Theme, language, font 80–140%, four notification types, family-friendly loading copy, haptics, week offset, calendar display filters, update check (Android).
 
 ### 10.5 Themes
 
-Built-in (`lib/colors.dart`): Light, Dark, AMOLED Black, Midnight Ocean, Emerald Forest, plus two more built-in dark palettes.
-
-Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
+Built-in picker (`lib/colors.dart`): **Light** and **Dark** only. Preference is stored in `THEME_AppTheme` and applied on startup; system brightness does **not** overwrite it. Remote `Themes/supportedThemes.json` packs are no longer offered in the UI.
 
 ### 10.6 Languages
 
@@ -354,7 +370,7 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 
 Other packs (DE, RO, UA, AR, ES, ZH, Pirate) were **removed**.
 
-Notification channel names and some settings headers are still **hardcoded Hungarian**.
+Drawer **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notification bodies use `notif_payment_Body*`. Cached RU/TR packs on devices may need a language re-download after JSON updates on GitHub.
 
 ### 10.7 ICS
 
@@ -377,8 +393,10 @@ Notification channel names and some settings headers are still **hardcoded Hunga
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **Removed** | Was a stub |
 | APK / Play update | **Android only** | Hidden on iOS |
-| Tests | **None** | No `test/` folder |
+| Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
 | App Store / Play production | **Not the current goal** | |
+| Drawer profile photo | **Not available** | No confirmed photo URL/bytes on `/api/UserInfo` (or related) in existing HARs; drawer uses **initials** only — do not invent image endpoints |
+| Drawer training ID line | **Removed** | Raw `studentTrainingId` / GUID must not show under the name; human labels only in the multi-training dropdown |
 
 Monoliths: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — ~1400–2600 lines each. **Do not split** while the goal is iOS/login, not a rewrite.
 
@@ -392,7 +410,7 @@ Cache flags: calendar, markbook, payments, periods, mail, first week, term list.
 
 Secrets: username/password/JWT/device cookie in secure storage (migrated from older SharedPreferences).
 
-`dataWipe` = logout.
+`dataWipe` = logout: clears password/tokens/cache, **keeps username** for login prefill. Drawer avatar stays **initials** from display name / Neptun code — no photo wire-up until a HAR proves a photo endpoint.
 
 No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -417,6 +435,36 @@ No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 ---
 
 ## 14. iOS
+
+### Quick cheatsheet
+
+Identity, API, 2FA, cache, and languages are documented in this file. Day-to-day iOS checklist:
+
+| Item | Value |
+|------|--------|
+| Display name | **Neptun ELTE** |
+| iOS Bundle ID | `com.nanda070.neptunmobile` (no `_` — otherwise Xcode breaks provisioning) |
+| Android `applicationId` | `com.nanda070.neptun_mobile.app` |
+| Dart package | `neptun2` |
+| Default language | English |
+| Themes | Light / Dark only (persisted; system brightness does not override) |
+| Bug reports | https://nanda.is-a.dev |
+| Scope | **ELTE only** — portal `https://neptun.elte.hu`; HWEB SPA `hallgatoN.neptun.elte.hu` |
+
+```bash
+flutter pub get
+cd ios && pod install && cd ..
+flutter devices
+
+# Simulator
+flutter run -d "iPhone 17 Pro"
+
+# Phone: home-screen icon needs release (iOS 14+ debug will not open from the icon)
+flutter run --release -d Nanda
+```
+
+Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.  
+On the phone: **Settings → General → VPN & Device Management** → trust the developer.
 
 ### Identity
 
@@ -576,9 +624,9 @@ Earlier related work: **domedav** (Neptun 2), **zoligamer** (previous fork).
 | Email | adnan.huseynli1@gmail.com |
 | Web | https://nanda.is-a.dev/ · cheterin.online · chetmedia.com |
 
-Issues: https://github.com/Nanda070/Neptun-ELTE/issues
+Bug reports: https://nanda.is-a.dev (in-app links; not the GitHub Issues form)
 
-License: MIT (`LICENSE`).
+License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an identical copy for GitHub).
 
 ---
 
@@ -608,10 +656,12 @@ License: MIT (`LICENSE`).
 
 | File | Why |
 |------|-----|
-| `README.md` / `README.ru.md` | Product overview |
-| `docs/TECHNICAL.md` | This document (EN) |
-| `docs/TECHNICAL.ru.md` | Russian version |
-| `docs/DEVELOPER.md` | Short iOS cheatsheet |
+| `docs/README.md` / `docs/README.ru.md` | Product overview |
+| `docs/Technical/TECHNICAL.md` | This document (EN) |
+| `docs/Technical/TECHNICAL.ru.md` | Russian version |
+| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary |
+| `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
+| `docs/LICENSE` | LGPL-3.0-only (canonical); root `LICENSE` mirrors it |
 | `pubspec.yaml` | Version, dependencies |
 | `lib/main.dart` | `MaterialApp`, theme, `Splitter` |
 | `lib/Pages/startup_page.dart` | Login / home branch |
