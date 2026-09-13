@@ -167,6 +167,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **UX:** After TOTP succeeds, show **“Connecting to Student web…”** and retry HWEB bridge ~**7 s** (success → Home immediately; failure → honest full/busy snackbar, not invalid password). Owner **Nanda**.
 
+**[2026-09-13, ~15:15]**
+
+- **Versioning policy revised:** stop meaningful `+N` build bumps as the user-facing story. Marketing / Settings / docs = **`1.x.y` only**. Scheme `1.<feature-line>.<patch>`; **2.0** = final / RC line. Current **`1.3.1`** (`pubspec` **1.3.1+1**): feature line **3** = plan items **1–3**; patch **1** = auth/2FA/Student-web-full fixes. Next big block → **1.4.0**. Settings shows `info.version` without `+build`. Synced TECHNICAL / README / IMPLEMENTATION_PLAN EN+RU + `.cursor/rules/versioning.mdc`. Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)

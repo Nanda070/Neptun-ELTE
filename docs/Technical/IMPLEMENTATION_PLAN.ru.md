@@ -72,7 +72,7 @@
 |-------------|-----|
 | Нижний nav | **4 вкладки:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Левый drawer | Профиль, баланс, training, **Payments** (над Settings), Settings, … |
-| Settings | … существующие переключатели; **Contacts** + версия (`1.1.0+build`) внизу |
+| Settings | … существующие переключатели; **Contacts** + маркетинговая версия (`1.3.1`, без `+build`) внизу |
 
 Не возвращать Payments на нижнюю панель.
 
