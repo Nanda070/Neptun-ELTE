@@ -430,11 +430,422 @@ import '../storage.dart';
       add(primary);
       final uri = Uri.tryParse(primary.isEmpty ? elteNeptunBaseUrl : primary);
       if (uri != null && uri.host.toLowerCase().contains('elte.hu')) {
-        // ELTE: one central host (neptun.elte.hu). No /ujhallgato (that is Obuda/BME-style).
+        // ELTE JWT Authenticate on portal returns empty 400; HWEB nodes redirect to portal.
+        // ELTE uses portal form login + OuterLogin (see _tryEltePortalLogin).
         add(elteNeptunBaseUrl);
         add(uri.replace(path: '').toString());
       }
       return out;
+    }
+
+    static bool _isElteUrl(String rawUrl) {
+      final host = Uri.tryParse(normalizeModernApiBaseUrl(rawUrl))?.host.toLowerCase() ?? '';
+      return host.contains('elte.hu') || rawUrl.toLowerCase().contains('elte');
+    }
+
+    // --- ELTE portal (Potlap) → Student web OuterLogin (from live HAR Sep 2026) ---
+    static final Map<String, String> _elteCookies = {};
+    static bool _eltePortal2faPending = false;
+    static String? _elte2faKey;
+    static String? _elte2faNeptunCode;
+    static String? _elteAntiforgery;
+    static String? _elte2faRendered;
+    static bool _elteHasTotp = true;
+    static bool _elteHasEmail = true;
+    static String? _elteEmailCodePrefix;
+
+    static void _elteClearPortal2fa() {
+      _eltePortal2faPending = false;
+      _elte2faKey = null;
+      _elte2faNeptunCode = null;
+      _elteAntiforgery = null;
+      _elte2faRendered = null;
+      _elteEmailCodePrefix = null;
+    }
+
+    static String _elteCookieHeader() =>
+        _elteCookies.entries.map((e) => '${e.key}=${e.value}').join('; ');
+
+    static void _elteAbsorbSetCookies(HttpClientResponse response) {
+      for (final c in response.cookies) {
+        if (c.value.isEmpty || c.expires?.isBefore(DateTime.now()) == true) {
+          _elteCookies.remove(c.name);
+        } else {
+          _elteCookies[c.name] = c.value;
+        }
+      }
+      // Some IIS responses only put Set-Cookie in headers
+      final raw = response.headers[HttpHeaders.setCookieHeader];
+      if (raw != null) {
+        for (final line in raw) {
+          final part = line.split(';').first;
+          final eq = part.indexOf('=');
+          if (eq > 0) {
+            final name = part.substring(0, eq).trim();
+            final value = part.substring(eq + 1).trim();
+            if (name.isNotEmpty) {
+              if (value.isEmpty) {
+                _elteCookies.remove(name);
+              } else {
+                _elteCookies[name] = value;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    static String _elteFormEncode(Map<String, String> fields) {
+      return fields.entries
+          .map((e) =>
+              '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}')
+          .join('&');
+    }
+
+    static String? _elteExtractAntiforgery(String html) {
+      final m = RegExp(
+        r'name="__RequestVerificationToken"[^>]*value="([^"]+)"',
+        caseSensitive: false,
+      ).firstMatch(html);
+      return m?.group(1);
+    }
+
+    static Future<({int status, String location, String body})> _elteSend(
+      String method,
+      Uri uri, {
+      String? body,
+      String? contentType,
+      bool followRedirects = false,
+    }) async {
+      HttpOverrides.global = NeptunCerts.getCerts();
+      final client = HttpClient();
+      client.connectionTimeout = const Duration(seconds: 25);
+      try {
+        final req = await client.openUrl(method, uri);
+        req.followRedirects = followRedirects;
+        req.maxRedirects = 0;
+        req.headers.set(HttpHeaders.userAgentHeader,
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36');
+        req.headers.set(HttpHeaders.acceptHeader,
+            'text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8');
+        req.headers.set('Origin', elteNeptunBaseUrl);
+        if (uri.path.contains('Login2FA')) {
+          req.headers.set('Referer',
+              '$elteNeptunBaseUrl/Account/Login2FA?NeptunCode=${_elte2faNeptunCode ?? ''}&Key=${_elte2faKey ?? ''}');
+        } else if (uri.path.contains('ToNeptun')) {
+          req.headers.set('Referer', '$elteNeptunBaseUrl/ToNeptunWeb/ToNeptunHWeb');
+        } else {
+          req.headers.set('Referer', '$elteNeptunBaseUrl/Account/Login');
+        }
+        if (_elteCookies.isNotEmpty) {
+          req.headers.set(HttpHeaders.cookieHeader, _elteCookieHeader());
+        }
+        if (body != null) {
+          final bytes = conv.utf8.encode(body);
+          req.headers.set(HttpHeaders.contentTypeHeader,
+              contentType ?? 'application/x-www-form-urlencoded');
+          req.contentLength = bytes.length;
+          req.add(bytes);
+        }
+        final res = await req.close().timeout(const Duration(seconds: 35));
+        _elteAbsorbSetCookies(res);
+        final status = res.statusCode;
+        final location = res.headers.value(HttpHeaders.locationHeader) ?? '';
+        final responseBody = conv.utf8.decode(
+          await res.expand((c) => c).toList(),
+          allowMalformed: true,
+        );
+        debug.log('ELTE $method ${uri.path} -> $status loc=${location.length > 80 ? location.substring(0, 80) : location} body=${responseBody.length}');
+        // ignore: avoid_print
+        print('ELTE $method ${uri.path} -> $status loc=$location bodyLen=${responseBody.length}');
+        return (status: status, location: location, body: responseBody);
+      } finally {
+        client.close(force: true);
+      }
+    }
+
+    /// ELTE AD institute: portal form login (not JWT Authenticate on neptun.elte.hu).
+    static Future<int> _tryEltePortalLogin(String username, String password) async {
+      try {
+        _elteCookies.clear();
+        _elteClearPortal2fa();
+
+        final loginGet = await _elteSend('GET', Uri.parse('$elteNeptunBaseUrl/Account/Login'));
+        if (loginGet.status >= 500) return loginServerBusy;
+        final antiforgery = _elteExtractAntiforgery(loginGet.body);
+        if (antiforgery == null || antiforgery.isEmpty) {
+          debug.log('ELTE portal: no antiforgery on Login page');
+          // ignore: avoid_print
+          print('ELTE portal: no antiforgery');
+          return loginServerBusy;
+        }
+
+        final postBody = _elteFormEncode({
+          'LoginName': username,
+          'Password': password,
+          'ReturnUrl': '',
+          '__RequestVerificationToken': antiforgery,
+        });
+        final loginPost = await _elteSend(
+          'POST',
+          Uri.parse('$elteNeptunBaseUrl/Account/Login'),
+          body: postBody,
+        );
+        final loc = loginPost.location;
+
+        if (loginPost.status == 302 && loc.contains('Login2FA')) {
+          final redirect = Uri.parse(loc.startsWith('http') ? loc : '$elteNeptunBaseUrl$loc');
+          _elte2faNeptunCode = redirect.queryParameters['NeptunCode'] ?? username;
+          _elte2faKey = redirect.queryParameters['Key'];
+          if (_elte2faKey == null || _elte2faKey!.isEmpty) {
+            // ignore: avoid_print
+            print('ELTE portal: Login2FA redirect missing Key');
+            return loginServerBusy;
+          }
+
+          final twoFaGet = await _elteSend('GET', redirect);
+          final twoFaHtml = twoFaGet.body;
+          _elteAntiforgery = _elteExtractAntiforgery(twoFaHtml) ?? antiforgery;
+          final rendered = RegExp(r'name="Rendered"[^>]*value="([^"]*)"', caseSensitive: false)
+              .firstMatch(twoFaHtml)
+              ?.group(1);
+          _elte2faRendered = (rendered != null && rendered.isNotEmpty)
+              ? rendered
+              : DateTime.now().toIso8601String();
+          _elteHasTotp = true;
+          _elteHasEmail = true;
+          if (twoFaHtml.contains('name="HasTOTP"')) {
+            _elteHasTotp = RegExp(r'name="HasTOTP"[^>]*value="True"', caseSensitive: false)
+                .hasMatch(twoFaHtml);
+          }
+          if (twoFaHtml.contains('name="HasEmail"')) {
+            _elteHasEmail = RegExp(r'name="HasEmail"[^>]*value="True"', caseSensitive: false)
+                .hasMatch(twoFaHtml);
+          }
+          _eltePortal2faPending = true;
+          await storage.DataCache.setInstituteUrl(elteNeptunBaseUrl);
+          // ignore: avoid_print
+          print('ELTE portal: needs 2FA');
+          return loginNeeds2fa;
+        }
+
+        if (loginPost.status == 302 &&
+            (loc == '/' || loc.isEmpty || loc == elteNeptunBaseUrl || loc.endsWith('neptun.elte.hu/'))) {
+          final bridged = await _elteBridgeToHweb();
+          return bridged ? loginOk : loginServerBusy;
+        }
+
+        if (loginPost.status == 200) {
+          if (_looksLikeInvalidCredentials(loginPost.body, 200) ||
+              loginPost.body.contains('LoginName') ||
+              loginPost.body.contains('field-validation')) {
+            return loginInvalidCredentials;
+          }
+          return loginServerBusy;
+        }
+        if (loginPost.status >= 500 || loginPost.status == 0) {
+          return loginServerBusy;
+        }
+        // ignore: avoid_print
+        print('ELTE portal login unexpected status=${loginPost.status} loc=$loc');
+        return loginServerBusy;
+      } on TimeoutException {
+        // ignore: avoid_print
+        print('ELTE portal login timeout');
+        return loginServerBusy;
+      } catch (e) {
+        debug.log('ELTE portal login error: $e');
+        // ignore: avoid_print
+        print('ELTE portal login error: $e');
+        return loginServerBusy;
+      }
+    }
+
+    /// After portal session: POST ToNeptunHWeb → hallgatoN/outerlogin?GUID= → OuterLogin JWT.
+    static Future<bool> _elteBridgeToHweb() async {
+      try {
+        final page = await _elteSend('GET', Uri.parse('$elteNeptunBaseUrl/ToNeptunWeb/ToNeptunHWeb'));
+        final html = page.body;
+        if (html.toLowerCase().contains('student web is full') ||
+            html.toLowerCase().contains('hallgatói web megtelt') ||
+            html.toLowerCase().contains('neptun student web is full')) {
+          debug.log('ELTE HWEB bridge: student web is full');
+          // ignore: avoid_print
+          print('ELTE HWEB bridge: student web is full');
+          return false;
+        }
+        final token = _elteExtractAntiforgery(html);
+        if (token == null) return false;
+
+        final post = await _elteSend(
+          'POST',
+          Uri.parse('$elteNeptunBaseUrl/ToNeptunWeb/ToNeptunHWeb'),
+          body: _elteFormEncode({
+            'NeptunWebType': 'HWeb',
+            'NeptunWebIndex': '',
+            '__RequestVerificationToken': token,
+          }),
+        );
+        final loc = post.location;
+        if (post.status != 302 || !loc.contains('outerlogin')) {
+          debug.log('ELTE HWEB bridge: unexpected status=${post.status} loc=$loc');
+          // ignore: avoid_print
+          print('ELTE HWEB bridge: unexpected status=${post.status} loc=$loc');
+          return false;
+        }
+        final outer = Uri.parse(loc);
+        final guid = outer.queryParameters['GUID'] ?? outer.queryParameters['guid'];
+        if (guid == null || guid.isEmpty) return false;
+        final lcid = int.tryParse(outer.queryParameters['languageid'] ?? '') ?? 1033;
+        final hwebBase = '${outer.scheme}://${outer.host}';
+
+        await _elteSend('GET', outer);
+
+        final outerLoginUri = Uri.parse('$hwebBase/api/Account/OuterLogin');
+        final jsonBody = conv.jsonEncode({'guid': guid, 'lcid': lcid});
+        HttpOverrides.global = NeptunCerts.getCerts();
+        final client = HttpClient();
+        try {
+          final req = await client.postUrl(outerLoginUri);
+          req.followRedirects = false;
+          req.headers.set(HttpHeaders.contentTypeHeader, 'application/json; charset=utf-8');
+          req.headers.set(HttpHeaders.acceptHeader, 'application/json, text/plain, */*');
+          req.headers.set('Origin', hwebBase);
+          req.headers.set('Referer', outer.toString());
+          if (_elteCookies.isNotEmpty) {
+            req.headers.set(HttpHeaders.cookieHeader, _elteCookieHeader());
+          }
+          req.add(conv.utf8.encode(jsonBody));
+          final res = await req.close().timeout(const Duration(seconds: 35));
+          _elteAbsorbSetCookies(res);
+          final raw = conv.utf8.decode(await res.expand((c) => c).toList(), allowMalformed: true);
+          if (res.statusCode != 200) {
+            debug.log('OuterLogin status=${res.statusCode} body=${raw.substring(0, raw.length.clamp(0, 200))}');
+            // ignore: avoid_print
+            print('OuterLogin status=${res.statusCode}');
+            return false;
+          }
+          final decoded = conv.jsonDecode(raw);
+          final data = decoded is Map ? decoded['data'] : null;
+          final access = data is Map ? data['accessToken']?.toString() : null;
+          if (access == null || access.isEmpty) return false;
+          await storage.DataCache.setAccessToken(access);
+          await storage.DataCache.setIsModernApi(true);
+          await storage.DataCache.setInstituteUrl(hwebBase);
+          _elteClearPortal2fa();
+          // ignore: avoid_print
+          print('ELTE OuterLogin OK host=$hwebBase');
+          return true;
+        } finally {
+          client.close(force: true);
+        }
+      } catch (e) {
+        debug.log('ELTE HWEB bridge error: $e');
+        // ignore: avoid_print
+        print('ELTE HWEB bridge error: $e');
+        return false;
+      }
+    }
+
+    static Future<bool> _submitEltePortal2fa(String code) async {
+      try {
+        if (!_eltePortal2faPending ||
+            _elte2faKey == null ||
+            _elte2faNeptunCode == null ||
+            _elteAntiforgery == null) {
+          return false;
+        }
+        final trimmed = code.trim();
+        final rendered = _elte2faRendered ?? DateTime.now().toIso8601String();
+        final fields = <String, String>{
+          'NeptunCode': _elte2faNeptunCode!,
+          'Key': _elte2faKey!,
+          'ReturnUrl': '',
+          'HasTOTP': _elteHasTotp ? 'True' : 'False',
+          'HasEmail': _elteHasEmail ? 'True' : 'False',
+          'Rendered': rendered,
+          '__RequestVerificationToken': _elteAntiforgery!,
+        };
+
+        if (_elteEmailCodePrefix != null && _elteEmailCodePrefix!.isNotEmpty) {
+          fields['Phase'] = 'RequestEmailCode';
+          fields['CodePrefix'] = _elteEmailCodePrefix!;
+          fields['EmailCode'] = trimmed;
+        } else {
+          fields['Phase'] = 'RequestTOTP';
+          fields['CodePrefix'] = '';
+          fields['TOTPCode'] = trimmed;
+        }
+
+        final post = await _elteSend(
+          'POST',
+          Uri.parse('$elteNeptunBaseUrl/Account/Login2FA'),
+          body: _elteFormEncode(fields),
+        );
+        final loc = post.location;
+        final body = post.body;
+
+        if (post.status == 302 && (loc == '/' || loc.endsWith('/') || loc.isEmpty)) {
+          return await _elteBridgeToHweb();
+        }
+
+        if (post.status == 200) {
+          final prefix = RegExp(r'name="CodePrefix"[^>]*value="([^"]*)"', caseSensitive: false)
+              .firstMatch(body)
+              ?.group(1);
+          if (prefix != null && prefix.isNotEmpty) {
+            _elteEmailCodePrefix = prefix;
+          }
+          final token = _elteExtractAntiforgery(body);
+          if (token != null) _elteAntiforgery = token;
+          return false;
+        }
+        return false;
+      } catch (e) {
+        debug.log('ELTE portal 2FA error: $e');
+        // ignore: avoid_print
+        print('ELTE portal 2FA error: $e');
+        return false;
+      }
+    }
+
+    /// Request email OTP (portal Login2FA GetEmail=true). Call before submitting EmailCode.
+    static Future<String?> elteRequestEmailOtp() async {
+      if (!_eltePortal2faPending || _elte2faKey == null || _elteAntiforgery == null) {
+        return null;
+      }
+      try {
+        final fields = <String, String>{
+          'Phase': 'RequestTOTP',
+          'Rendered': _elte2faRendered ?? DateTime.now().toIso8601String(),
+          'NeptunCode': _elte2faNeptunCode ?? '',
+          'Key': _elte2faKey!,
+          'ReturnUrl': '',
+          'HasTOTP': _elteHasTotp ? 'True' : 'False',
+          'HasEmail': 'True',
+          'CodePrefix': '',
+          'TOTPCode': '',
+          'GetEmail': 'true',
+          '__RequestVerificationToken': _elteAntiforgery!,
+        };
+        final post = await _elteSend(
+          'POST',
+          Uri.parse('$elteNeptunBaseUrl/Account/Login2FA'),
+          body: _elteFormEncode(fields),
+        );
+        final body = post.body;
+        final token = _elteExtractAntiforgery(body);
+        if (token != null) _elteAntiforgery = token;
+        final prefix = RegExp(r'name="CodePrefix"[^>]*value="([^"]*)"', caseSensitive: false)
+            .firstMatch(body)
+            ?.group(1);
+        final visible = RegExp(r'CodePrefix["\s:=\-]+(\d{3})').firstMatch(body)?.group(1);
+        _elteEmailCodePrefix = (prefix != null && prefix.isNotEmpty) ? prefix : visible;
+        return _elteEmailCodePrefix;
+      } catch (e) {
+        debug.log('ELTE request email OTP error: $e');
+        return null;
+      }
     }
 
     //
@@ -455,6 +866,18 @@ import '../storage.dart';
       if (containsAspx) {
         bool success = await _tryOldLogin(baseUrl, username, password);
         return success ? loginOk : loginInvalidCredentials;
+      }
+
+      // ELTE: portal Potlap login + HWEB OuterLogin (JWT Authenticate on portal is dead)
+      if (_isElteUrl(rawUrl) || _isElteUrl(elteNeptunBaseUrl)) {
+        final elteResult = await _tryEltePortalLogin(username, password);
+        if (elteResult == loginOk || elteResult == loginNeeds2fa || elteResult == loginInvalidCredentials) {
+          return elteResult;
+        }
+        // Fall through only on busy — still prefer honest busy over broken JWT 400
+        if (elteResult == loginServerBusy) {
+          return loginServerBusy;
+        }
       }
 
       var sawServerBusy = false;
@@ -600,6 +1023,9 @@ import '../storage.dart';
 
 
     static Future<bool> submitTwoFactorCode(String username, String password, String code) async {
+      if (_eltePortal2faPending) {
+        return _submitEltePortal2fa(code);
+      }
       try {
         String baseUrl = normalizeModernApiBaseUrl(storage.DataCache.getInstituteUrl() ?? '');
         if (baseUrl.isEmpty) return false;

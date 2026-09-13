@@ -172,35 +172,36 @@ Neptun-ELTE/
 Поток на `neptun.elte.hu` ([гайд ELTE](https://www.elte.hu/en/neptun-administration-of-progress)):
 
 1. Центральный портал → **Log in** (Neptun ID 6 символов + пароль).
-2. **Двухфакторная аутентификация** (live UI ELTE, сент. 2026):
-   - **Основной — TOTP:** поле «TOTP code» + Log in. Пользователь вводит **6 цифр** из Microsoft Authenticator (или аналога). Опционально «New TOTP pairing».
-   - **Запасной — E-mail:** серая кнопка **E-mail** запрашивает одноразовый код. На сайте показывается **префикс из 3 цифр + `-`**; в письме полный `XXX-XXXXXX` (напр. `436-491445`, `676-863806`); пользователь вводит **только часть после `-`** (6 цифр). Префикс ставит Neptun, его не набирают.
-3. После входа **Student web** идёт через `https://neptun.elte.hu/ToNeptunWeb/ToNeptunHWeb` и попадает на балансированный узел HWEB, напр. **`https://hallgato4.neptun.elte.hu/`**. При пиках (предметы / экзамены) портал может писать **«Neptun student web is full»**, либо HWEB вечно крутит **«Betöltés folyamatban»**.
+2. **Двухфакторная аутентификация** (live UI + HAR, сент. 2026):
+   - **Основной — TOTP:** поле «TOTP code» + Log in. **6 цифр** из Microsoft Authenticator.
+   - **Запасной — E-mail:** `POST /Account/Login2FA` с `Phase=RequestTOTP&GetEmail=true`, затем `Phase=RequestEmailCode` с `CodePrefix` (3 цифры) + `EmailCode` (6 цифр после `-`). Пример из HAR: `154-855139`.
+3. После входа **Student web:** `POST /ToNeptunWeb/ToNeptunHWeb` (`NeptunWebType=HWeb`) → **302** на `https://hallgatoN.neptun.elte.hu/outerlogin?GUID=…&languageid=1033` → `POST /api/Account/OuterLogin` `{"guid":"…","lcid":1033}` → **JWT `accessToken`**. При нагрузке — **«Neptun student web is full»**.
 
-**`hallgatoN` = какой сервер:** у ELTE несколько одинаковых машин студенческого веба (`hallgato1`, `hallgato2`, `hallgato3`, `hallgato4`, …). Цифра — **номер узла балансировки нагрузки**: один сервер не выдержит массовый Tárgyfelvétel / запись на экзамены. Портал сам назначает узел при открытии Student web. Раньше студенты вручную угадывали «быстрый» номер — сейчас это не нужно: заходить через `neptun.elte.hu`.
+**`hallgatoN` = какой сервер:** `hallgato1…N` — балансировка. В live HAR — **`hallgato3`** (`ELTE_HW3`). Портал сам назначает узел.
 
-Наблюдаемые пути HWEB (тот же назначенный узел, после сессии): `/dashboard`, `/calendar/institutional-calendar`, `/studies`, `/messages`, `/administrations`, `/administrations/student-card`, `/login-task/system-messages`, `/outerlogin?GUID=…`, `/error/5001`, …
+Наблюдаемые пути HWEB после OuterLogin: `/dashboard`, `/calendar/…`, `/studies`, `/messages`, `/administrations`, `/user-data`, …
 
-Портал (`neptun.elte.hu`) ≠ HWEB SPA (`hallgatoN.neptun.elte.hu`). База логина/API приложения остаётся **`https://neptun.elte.hu`**. **Не** хардкодить `hallgato4` (или любой `N`) в хаб — это один перегруженный Angular-узел, не точка Authenticate.
+Портал (`neptun.elte.hu` Potlap) ≠ API-хост HWEB (`hallgatoN`). **`POST https://neptun.elte.hu/api/Account/Authenticate` → пустой HTTP 400** — это не путь ELTE. На hallgato `Authenticate` при AD **302 → портал**.
 
 ### Как это отражено в приложении
 
 | Шаг на сайте | Приложение |
 |--------------|------------|
-| Логин на портале | `POST https://neptun.elte.hu/api/Account/Authenticate` |
-| 2FA TOTP | Тот же endpoint с `token` = 6 цифр TOTP → popup mode 9 |
-| 2FA E-mail (`XXX-XXXXXX`) | **Не реализовано** — нужен API «выслать OTP» + UX префикса из Network capture |
-| Student web → SPA `hallgatoN…` | **Без браузера** — после JWT student REST на `neptun.elte.hu` (календарь, предметы…). Обходит full/залипший UI HWEB. |
+| `POST /Account/Login` | Та же форма (`LoginName`/`Password` + antiforgery) |
+| 2FA TOTP / email | `POST /Account/Login2FA` → popup mode 9 |
+| `ToNeptunHWeb` → `outerlogin?GUID=` | App постит HWeb, следует 302 |
+| `POST /api/Account/OuterLogin` | Сохраняет JWT; institute URL = **`https://hallgatoN.neptun.elte.hu`** |
+| Student REST | Bearer JWT на этом hallgato |
 
 UI setup:
 
 1. `Splitter` → если `getHasLogin()` → `HomePage`, иначе хаб (**имя на экране: Neptun ELTE**).
 2. Хаб → `elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) → `SetupPageLogin`.
 3. Код + пароль.
-4. При 2FA — **6 цифр TOTP** (Authenticator).
+4. При 2FA — **6 цифр TOTP**, затем OuterLogin на hallgato.
 5. Демо: `DEMO` / `DEMO`.
 
-**Честность:** 2FA в приложении — только TOTP (6 цифр, без выбора метода, без deep-link в Authenticator). Email-бэкап (`XXX-XXXXXX`, префикс на сайте, суффикс вручную) описан по live UI, но **не** подключён — нужен capture кнопки E-mail и формата `token` для Authenticate. Когда Neptun перегружен — `loginServerBusy` / таймауты; это соответствует «full» / медленному Student web.
+**Честность:** ELTE-логин = **портал Potlap + OuterLogin**, не JWT Authenticate на `neptun.elte.hu`. Email OTP известен по HAR; в UI пока акцент на TOTP. Если Student web **full** — мост после 2FA не пройдёт.
 
 Константы: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -368,8 +369,9 @@ Remote (`Themes/supportedThemes.json`): E-Ink, Gum, Forest, Blu.
 | Android клиент (логин, 5 вкладок, кэш) | **Full / mid-beta** | Реальный API, не каркас |
 | iOS симулятор + release на устройстве | **Working** | Bundle без `_`; signing Automatic |
 | Modern JWT + refresh | **Solid** | |
-| 2FA modern TOTP | **Working MVP (ручной)** | Пользователь вводит 6 цифр из Authenticator |
-| 2FA modern email | **Не реализовано** | Сайт: префикс `XXX-` + суффикс; нужен send-OTP API |
+| 2FA modern TOTP (портал ELTE) | **Working MVP** | Login2FA + OuterLogin JWT на hallgatoN |
+| 2FA modern email | **HAR известен; UI тонкий** | `RequestEmailCode` + CodePrefix |
+| JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |

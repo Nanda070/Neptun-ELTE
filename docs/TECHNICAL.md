@@ -172,35 +172,36 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 User flow on `neptun.elte.hu` ([ELTE guide](https://www.elte.hu/en/neptun-administration-of-progress)):
 
 1. Open central portal → **Log in** (Neptun ID 6 chars + password).
-2. **Two-step authentication** (observed on live ELTE UI, Sep 2026):
+2. **Two-step authentication** (observed on live ELTE UI + HAR, Sep 2026):
    - **Primary — TOTP:** field “TOTP code” + Log in. User types **6 digits** from Microsoft Authenticator (or similar). Optional “New TOTP pairing”.
-   - **Backup — E-mail:** grey **E-mail** button requests a one-time code. Web UI shows a **3-digit prefix + `-`**; the mail contains the full `XXX-XXXXXX` (e.g. `436-491445`, `676-863806`); the user types **only the part after `-`** (6 digits). Prefix is shown by Neptun, not typed.
-3. After auth, **Student web** goes through `https://neptun.elte.hu/ToNeptunWeb/ToNeptunHWeb` and lands on a load-balanced HWEB node, e.g. **`https://hallgato4.neptun.elte.hu/`**. Under load (course registration / exams) the portal may say **“Neptun student web is full”**, or HWEB sticks on **“Betöltés folyamatban”**.
+   - **Backup — E-mail:** grey **E-mail** → portal `POST /Account/Login2FA` with `Phase=RequestTOTP&GetEmail=true`, then `Phase=RequestEmailCode` with `CodePrefix` (3 digits shown) + `EmailCode` (6 digits after `-`). Examples: `154-855139`.
+3. After auth, **Student web** `POST /ToNeptunWeb/ToNeptunHWeb` (`NeptunWebType=HWeb`) → **302** to `https://hallgatoN.neptun.elte.hu/outerlogin?GUID=…&languageid=1033` → SPA calls `POST /api/Account/OuterLogin` `{"guid":"…","lcid":1033}` → **JWT `accessToken`**. Under load the portal may say **“Neptun student web is full”**.
 
-**`hallgatoN` = which server:** ELTE runs many identical student-web machines (`hallgato1`, `hallgato2`, `hallgato3`, `hallgato4`, …). The digit is the **node index for load balancing** — one box cannot handle peak Tárgyfelvétel / exam traffic. The portal assigns a node automatically when you open Student web. Students used to pick a number by hand hoping for a “faster” host; that is obsolete — go via `neptun.elte.hu`.
+**`hallgatoN` = which server:** ELTE runs many identical student-web machines (`hallgato1`, `hallgato2`, `hallgato3`, `hallgato4`, …). The digit is the **node index for load balancing**. Live HAR landed on **`hallgato3`** (`serverName: ELTE_HW3`). The portal assigns a node automatically. Do not hardcode `N`.
 
-Observed HWEB paths (same assigned node, after session): `/dashboard`, `/calendar/institutional-calendar`, `/studies`, `/messages`, `/administrations`, `/administrations/student-card`, `/login-task/system-messages`, `/outerlogin?GUID=…`, `/error/5001`, …
+Observed HWEB paths (same assigned node, after OuterLogin): `/dashboard`, `/calendar/institutional-calendar`, `/studies`, `/messages`, `/administrations`, `/user-data`, …
 
-Portal (`neptun.elte.hu`) ≠ HWEB SPA (`hallgatoN.neptun.elte.hu`). App login/API base stays **`https://neptun.elte.hu`**. Do **not** hardcode `hallgato4` (or any `N`) as the hub — that is one overloaded Angular node, not the Authenticate entry we use.
+Portal (`neptun.elte.hu` Potlap cookies) ≠ HWEB API host (`hallgatoN`). **`POST https://neptun.elte.hu/api/Account/Authenticate` returns empty HTTP 400** — not the ELTE login path. HWEB `Authenticate` **302 → portal** when `isADAuthenticationInInstitute` is true.
 
 ### How this app maps that flow
 
 | Web step | App |
 |----------|-----|
-| Portal login | `POST https://neptun.elte.hu/api/Account/Authenticate` |
-| 2FA TOTP | Same endpoint again with `token` = 6-digit TOTP → popup mode 9 |
-| 2FA E-mail (`XXX-XXXXXX`) | **Not implemented** — needs “send email OTP” API + prefix UX from Network capture |
-| Student web → `hallgatoN…` HWEB SPA | **No browser** — after JWT, student REST on `neptun.elte.hu` (calendar, subjects, …). Avoids the full/stuck HWEB UI. |
+| Portal `POST /Account/Login` | Same form post (`LoginName`/`Password` + antiforgery) |
+| 2FA TOTP / email | `POST /Account/Login2FA` (`Phase=RequestTOTP` + `TOTPCode`, or email phases) → popup mode 9 |
+| `ToNeptunHWeb` → `outerlogin?GUID=` | App posts HWeb form, follows 302 |
+| `POST /api/Account/OuterLogin` | Saves JWT; sets institute URL to **`https://hallgatoN.neptun.elte.hu`** |
+| Student REST | Bearer JWT on that hallgato host (`/api/UserInfo`, calendar, …) |
 
 App setup UI:
 
 1. `Splitter` → if `getHasLogin()` then `HomePage`, else ELTE hub (**display name: Neptun ELTE**).
 2. Hub sets `PageDTO` to `elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) → `SetupPageLogin`.
 3. Credentials: Neptun code (`toUpperCase()`) + password.
-4. If API returns 2FA → enter **6-digit TOTP** (Authenticator).
+4. If API returns 2FA → enter **6-digit TOTP** (Authenticator), then app bridges to hallgato via OuterLogin.
 5. Demo: `DEMO` / `DEMO`.
 
-**Honesty:** App 2FA UI is TOTP-only (6 digits, no method picker, no Authenticator deep-link). Email backup (`XXX-XXXXXX`, prefix shown on web, user enters suffix) is documented from the live site but **not** wired — needs capture of the E-mail request + what `token` format Authenticate expects. When Neptun is overloaded, expect `loginServerBusy` / timeouts; that matches web “full” / slow Student web.
+**Honesty:** ELTE login is **portal Potlap + OuterLogin**, not `neptun.elte.hu/api/Account/Authenticate` (that returns empty 400). App implements Login → Login2FA (TOTP) → ToNeptunHWeb → OuterLogin JWT on whichever `hallgatoN` the portal assigns. Email OTP (`RequestEmailCode` / `CodePrefix`) is captured in HAR; UI still focuses on TOTP (helper `elteRequestEmailOtp` exists). If Student web is **full**, bridge fails even after correct 2FA.
 
 Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -368,8 +369,9 @@ Notification channel names and some settings headers are still **hardcoded Hunga
 | Android client (login, 5 tabs, cache) | **Full / mid-beta** | Real API, not a stub |
 | iOS simulator + device release | **Working** | Bundle without `_`; Automatic signing |
 | Modern JWT + refresh | **Solid** | |
-| Modern 2FA TOTP | **Working MVP (manual)** | User types 6 digits from Authenticator |
-| Modern 2FA email | **Not implemented** | Web: prefix `XXX-` + user suffix; needs send-OTP API |
+| Modern 2FA TOTP (ELTE portal) | **Working MVP** | Portal Login2FA + OuterLogin JWT on hallgatoN |
+| Modern 2FA email | **HAR known; UI thin** | `RequestEmailCode` + CodePrefix; prefer TOTP in app |
+| JWT Authenticate on neptun.elte.hu | **Dead for ELTE** | Empty HTTP 400; AD institute uses portal |
 | Old API 2FA | **None** | |
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |

@@ -1956,7 +1956,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
         list.add(Text("Two-step authentication", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
         list.add(const SizedBox(height: 10));
         list.add(Text(
-          "Enter the 6-digit TOTP from Microsoft Authenticator (or any TOTP app). Email backup (XXX-XXXXXX after pressing E-mail on the website) is not in this app yet.",
+          "Enter the 6-digit TOTP from Microsoft Authenticator. After that the app opens Student web (hallgato) via OuterLogin — same path as the browser.",
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.7)),
         ));
