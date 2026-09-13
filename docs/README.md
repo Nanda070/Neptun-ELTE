@@ -7,6 +7,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 | **Owner / Developer** | **Nanda** |
 | **Hub** | ELTE only (`https://neptun.elte.hu`) — no multi-university list |
 | **Display name** | Neptun ELTE |
+| **Version** | **1.1.0+19** — GitHub baseline **1.0**; this foundation/nav/polish line is **1.1**; patches **1.1.x**; next big features **1.2+** ([full policy](Technical/TECHNICAL.md#versioning)) |
 | **Platforms** | Android · iOS |
 | **Languages** | English (default) · Hungarian · Russian · Turkish |
 | **Repo** | [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE) |
@@ -14,7 +15,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Bug%20reports-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · ⚖️ [Legal](#legal)
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📋 [Implementation plan](Technical/IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · 🎨 [UI mockups (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal)
 
 ---
 
@@ -35,14 +36,15 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 
 - **ELTE-only hub** — sign-in to portal `neptun.elte.hu` (HWEB SPA is `hallgatoN.neptun.elte.hu` after Student web; not Obuda/BME `/ujhallgato`)
 - **Login like the website** — Neptun ID + password → 2FA (authenticator TOTP; email OTP on web may be thinner in-app) → student data APIs
-- **Timetable** — week view (Mon–Sun only; no next-Monday bleed); same-day break chips localized; next-48h / tasks / exams / period-banner strips; calendar filters in Settings; training switcher when multiple trainings exist
-- **Markbook (Subjects)** — taken subjects with codes, credits, grades; my courses + grade history across terms
+- **Timetable** — week view (Mon–Sun only; no next-Monday bleed); same-day break chips localized; next-48h = classes+exams only; upcoming tasks/ZH and exams sorted from now; period banners only in the period strip; calendar filters in Settings; training switcher when multiple trainings exist
+- **Markbook (Subjects)** — taken subjects with codes, credits, grades; **átlag** (credit-weighted) and **/30** (same numerator÷30, not átlag÷30); this-term + accumulated completed credits; app-computed honesty note; my courses + grade history across terms
 - **Messages** — Neptun inbox; full thread; optional HU→EN/RU machine translate (may be inaccurate)
-- **Payments** — fees, due dates, collective invoices / balance (UI chrome localized; some server titles may stay Hungarian)
-- **Periods** — registration and study periods
+- **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)
+- **Periods** — registration and study periods (bottom tab)
+- **Navigation** — Bottom tabs: **Calendar \| Markbook \| Periods \| Mail**. **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (plan **1c**). Figma mockups may still show 5 tabs — app IA is **4** bottom + Payments in drawer.
 - **Themes & languages** — Light / Dark; EN / HU built-in, RU / TR downloadable from GitHub
 - **Notifications** — local class, exam, payment, and period alerts (Android & iOS; no creator push server)
-- **Session** — **10-minute** wall-clock auto-logout after entering the main (participant) session, plus JWT expiry / failed refresh → force logout + re-login prompt (keeps username; no silent ELTE portal re-auth; refresh may still run until the wall clock fires)
+- **Session** — **10-minute** wall-clock auto-logout after entering the main (participant) session (foreground `Timer` + persisted timestamp on `AppLifecycleState.resumed` so background ≥10 min also kicks — **1b**), plus JWT expiry / failed refresh → force logout + re-login (keeps username; **keeps academic cache** so tabs paint instantly — **1**; banner “from cache” when serving stale/offline). No silent ELTE portal re-auth. Same-process logout → valid-password re-login works without killing the app (**1a**).
 - **Drawer profile** — greets with full name from `UserInfo` + Neptun code; **profile photo** from `userAvatar` / `GetUserAvatar` (base64 JPEG, cached locally; initials if missing/fail); no training ID under the name; training switcher when multiple trainings exist
 - **No first-party backend** — device talks to Neptun (+ optional GitHub raw for language/config JSON)
 
@@ -53,6 +55,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 1. Portal login on `https://neptun.elte.hu` (credentials stay on device in secure storage after login).
 2. 2FA when required (TOTP field in app).
 3. Bridge via Student web / OuterLogin → JWT on the assigned `hallgatoN` host.
+4. If Student web is **full**, login stops after 2FA with an honest “full / try later” message — **not** “invalid password”.
 4. REST calls for calendar, subjects, messages, payments, periods; responses may be cached locally.
 
 Full honesty table and API map: [Technical documentation](Technical/TECHNICAL.md).
@@ -116,8 +119,13 @@ iOS checklist lives in Technical §14 (not a separate developer file).
 | README (RU) | [`docs/README.ru.md`](README.ru.md) |
 | Technical (EN) | [`docs/Technical/TECHNICAL.md`](Technical/TECHNICAL.md) |
 | Technical (RU) | [`docs/Technical/TECHNICAL.ru.md`](Technical/TECHNICAL.ru.md) |
+| iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
+| iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
+| Implementation plan (EN) | [`docs/Technical/IMPLEMENTATION_PLAN.md`](Technical/IMPLEMENTATION_PLAN.md) |
+| Implementation plan (RU) | [`docs/Technical/IMPLEMENTATION_PLAN.ru.md`](Technical/IMPLEMENTATION_PLAN.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
+| UI mockups (Figma) | [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — Figma only (not Flutter). Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer. Android = polished target; iOS = current shell + additive polish. Owner **Nanda** |
 | License (canonical) | [`docs/LICENSE`](LICENSE) |
 | Short root pointer | [`README.md`](../README.md) at repo root |
 

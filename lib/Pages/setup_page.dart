@@ -1170,6 +1170,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
   //bool _canGoBack = true;
 
   bool _isLoading = false;
+  /// Override for the loading overlay title (e.g. Connecting to Student web…).
+  String? _loadingTitleOverride;
 
   bool _paintRed = false;
 
@@ -1239,12 +1241,18 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       _canProceed = false;
       //_canGoBack = false;
       _isLoading = true;
+      _loadingTitleOverride = null;
       _showNeptunServerError = false;
     });
 
     // Fresh portal login after logout/session expiry — never reuse stale HWEB JWT path.
     api.InstitutesRequest.resetEltePortalState();
+    api.CalendarRequest.clearTrainingIdCache();
     api.SessionGuard.clearAuthBlock();
+    // Drop stale device cookie for this user before POST Login (same-process re-login).
+    if (_username.isNotEmpty) {
+      storage.DataCache.setDeviceCookie(_username, null);
+    }
 
     _loadingTimer?.cancel();
 
@@ -1300,18 +1308,31 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
           if (mounted) {
             setState(() {
               _isLoading = true;
+              _loadingTitleOverride = null;
               _showNeptunServerError = false;
             });
           }
           bool isOk = false;
+          int twoFaResult = api.InstitutesRequest.loginInvalidCredentials;
           try {
-            isOk = await api.InstitutesRequest.submitTwoFactorCode(
+            twoFaResult = await api.InstitutesRequest.submitTwoFactorCode(
               _username,
               _password,
               kod.toString(),
+              onBridging: () {
+                if (!mounted) return;
+                setState(() {
+                  _isLoading = true;
+                  _loadingTitleOverride =
+                      AppStrings.getLanguagePack().loginPage_setupPage_ConnectingStudentWeb;
+                  _showNeptunServerError = false;
+                });
+              },
             );
+            isOk = twoFaResult == api.InstitutesRequest.loginOk;
           } catch (_) {
             isOk = false;
+            twoFaResult = api.InstitutesRequest.loginServerBusy;
           }
           if (!mounted) return;
 
@@ -1329,6 +1350,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             if (!mounted) return;
             setState(() {
               _isLoading = false;
+              _loadingTitleOverride = null;
             });
             Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const main_page.HomePage()),
@@ -1337,14 +1359,36 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             return;
           }
 
+          // Student web full / busy after correct TOTP — NOT invalid username/password.
+          // Bridge already retried ~7s under the connecting spinner before this shows.
+          if (twoFaResult == api.InstitutesRequest.loginStudentWebFull ||
+              twoFaResult == api.InstitutesRequest.loginServerBusy) {
+            AppHaptics.attentionLightImpact();
+            setState(() {
+              _paintRed = false;
+              _canProceed = true;
+              _isLoading = false;
+              _loadingTitleOverride = null;
+              _showNeptunServerError = false;
+            });
+            final msg = twoFaResult == api.InstitutesRequest.loginStudentWebFull
+                ? AppStrings.getLanguagePack().loginPage_setupPage_StudentWebFull
+                : AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgressSlow;
+            _showSnackbar(msg, 8);
+            return;
+          }
+
+          // Wrong / expired TOTP — reopen 2FA; do not paint password fields as invalid login.
           AppHaptics.attentionLightImpact();
           setState(() {
-            _paintRed = true;
+            _paintRed = false;
             _canProceed = true;
             _isLoading = false;
+            _loadingTitleOverride = null;
             _showNeptunServerError = false;
           });
           if (!mounted) return;
+          _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_2faInvalidCode, 5);
           PopupWidgetHandler(
             mode: 9,
             callback: on2faCode,
@@ -1374,6 +1418,16 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
         );
         PopupWidgetHandler.doPopup(context);
         return;
+      }
+      else if(value == api.InstitutesRequest.loginStudentWebFull){
+        AppHaptics.attentionLightImpact();
+        setState(() {
+          _paintRed = false;
+          _canProceed = true;
+          _isLoading = false;
+          _showNeptunServerError = false;
+        });
+        _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_StudentWebFull, 8);
       }
       else if(value == api.InstitutesRequest.loginServerBusy){
         // Overloaded Neptun / timeout — not wrong password
@@ -1719,7 +1773,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgress,
+                              _loadingTitleOverride ??
+                                  AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgress,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: AppColors.getTheme().textColor,

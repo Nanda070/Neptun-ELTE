@@ -1,6 +1,6 @@
 # Neptun ELTE — technical documentation
 
-> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📋 [Implementation plan (EN)](IMPLEMENTATION_PLAN.md) · [RU](IMPLEMENTATION_PLAN.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
 
 > **Audience:** developers and anyone with repo access.  
 > Git-only (`docs/Technical/TECHNICAL.md`). **Not** published as a website, **no** public route.  
@@ -11,21 +11,24 @@ Last sync with the codebase: **September 2026** (repo **Neptun-ELTE**, display n
 **Owner / developer:** **Nanda** (full legal name only in Legal docs).
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
+Implementation backlog (not shipped): [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) / [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md).  
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
-iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.
+iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
+Platform matrix (what each OS has/lacks): [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) / [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md).  
+UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = polished target; **iOS** = current Flutter shell + additive plan fields. Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer above Settings (plan **1c**). Owner **Nanda**.
 
 ---
 
 ## Contents
 
-1. [Product overview](#1-product-overview)
+1. [Product overview](#1-product-overview) — [Versioning](#versioning)
 2. [Repository](#2-repository)
 3. [Stack](#3-stack)
 4. [Architecture and request flow](#4-architecture-and-request-flow)
 5. [Screens](#5-screens)
 6. [Setup / login](#6-setup--login)
-7. [Home tabs (5)](#7-home-tabs-5)
+7. [Home tabs (5 today; planned 3 + drawer)](#7-home-tabs-5-today-planned-3--drawer)
 8. [Neptun APIs](#8-neptun-apis)
 9. [Auth, 2FA, tokens](#9-auth-2fa-tokens)
 10. [Domain features](#10-domain-features)
@@ -52,13 +55,27 @@ iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.0.5+18**.
+- Version (`pubspec.yaml`): **1.1.0+19** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
 - This is **not** an official SDA/ELTE app and **not** an App Store / Play production brand.
 
 Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independent product; earlier authors are credits only.
+
+### Versioning
+
+Owner policy (**Nanda**). Flutter form is `x.y.z+build` in `pubspec.yaml` (`build-name` + `build-number`). Android `versionName` / iOS `CFBundleShortVersionString` follow `build-name`; store build numbers follow `build-number` (+N, increment every shippable build).
+
+| Line | Meaning |
+|------|---------|
+| **1.0** | What is on GitHub as the published baseline (user statement of the current public line before this update). Older trees / tags may still show **1.0.5+18** until this bump is committed and shipped. |
+| **1.1.0** | **This** update: foundation **1a** / **1b**, nav IA **1c** (4 bottom tabs + Payments in drawer; Contacts + version in Settings), and the polish batch when shipped. |
+| **1.1.x** | Bugfixes / small tweaks on the 1.1 line (e.g. **1.1.1**). |
+| **1.2**, **1.3**, … | Next **big** feature releases. |
+| **1.2.1**, **1.2.2**, … | Patch fixes within that major.minor line. |
+
+Bump `pubspec.yaml` (and mirrored iOS `MARKETING_VERSION` / Android fallbacks when present) when releasing. Do not invent a parallel scheme in UI strings.
 
 ---
 
@@ -86,7 +103,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Product README (full)
 │   ├── LICENSE                    # Canonical LGPL-3.0-only text
-│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK only
@@ -102,7 +119,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | Full technical documentation + Dev Blog (EN + RU) |
+| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
@@ -170,10 +187,12 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageURLInput` | Legacy custom URL (not shown on hub) |
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
-| `HomePage` (`lib/Pages/main_page.dart`) | 5 tabs after login |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher, settings, update (Android), logout |
+| `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + app version (`package_info_plus`, e.g. `1.1.0+19`) at bottom |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
+
+**Design mockups (Figma only — no Flutter change from this file):** [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Pages: `Android — polished target` and `iOS — current + polish`. Mockups may still show **5-tab** icon nav; **app IA** is bottom **Calendar \| Markbook \| Periods \| Mail** + Payments in drawer above Settings (plan **1c**).
 
 ---
 
@@ -213,7 +232,7 @@ App setup UI:
 4. If API returns 2FA → enter **6-digit TOTP** (Authenticator), then app bridges to hallgato via OuterLogin.
 5. Demo: `DEMO` / `DEMO`.
 
-**Honesty:** ELTE login is **portal Potlap + OuterLogin**, not `neptun.elte.hu/api/Account/Authenticate` (that returns empty 400). App implements Login → Login2FA (TOTP) → ToNeptunHWeb → OuterLogin JWT on whichever `hallgatoN` the portal assigns. Email OTP (`RequestEmailCode` / `CodePrefix`) is captured in HAR; UI still focuses on TOTP (helper `elteRequestEmailOtp` exists). If Student web is **full**, bridge fails even after correct 2FA.
+**Honesty:** ELTE login is **portal Potlap + OuterLogin**, not `neptun.elte.hu/api/Account/Authenticate` (that returns empty 400). App implements Login → Login2FA (TOTP) → ToNeptunHWeb → OuterLogin JWT on whichever `hallgatoN` the portal assigns. Email OTP (`RequestEmailCode` / `CodePrefix`) is captured in HAR; UI still focuses on TOTP (helper `elteRequestEmailOtp` exists). If Student web is **full**, bridge fails even after correct 2FA — UI must show `loginStudentWebFull`, **not** invalid credentials.
 
 Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -225,8 +244,11 @@ Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 | `2` | `loginNeeds2fa` | Popup mode 9 (6-digit TOTP) |
 | `0` | `loginInvalidCredentials` | Red fields, “Invalid username or password!” |
 | `3` | `loginServerBusy` | Snackbar “Neptun servers are having a hard time...” — **not** a bad password |
+| `4` | `loginStudentWebFull` | Snackbar “Student web is full. Please try again later.” — **not** a bad password / TOTP |
 
 Modern login timeout: **20 s** per URL candidate. Empty body / 5xx / timeout / HTML → `loginServerBusy`.
+
+**Honesty — Student web full after 2FA:** Correct password + correct TOTP can still fail at `ToNeptunHWeb` / OuterLogin when ELTE HWEB capacity is exhausted (“Neptun student web is full” / HU megtelt / “nincs szabad”). That used to surface as **invalid username or password** because `submitTwoFactorCode` returned a bare `false` and setup painted `_paintRed`. Now: after TOTP succeeds the UI shows **“Connecting to Student web…”** and retries the bridge for ~**7 s**; success navigates to Home immediately; persistent full/busy shows `loginStudentWebFull` / busy snackbar — credentials stay valid.
 
 ### URL normalization (ELTE)
 
@@ -240,17 +262,21 @@ On success, persist the API base login selected (do not overwrite with a stale l
 
 ---
 
-## 7. Home tabs (5)
+## 7. Home tabs (4 bottom + Payments drawer)
 
-`HomePageState` + `BottomNavigatorWidget`. Swipe left/right. **No named routes.**
+`HomePageState` + `BottomNavigatorWidget`. Swipe left/right among bottom tabs (`maxBottomNavWidgets = 4`). **No named routes.**
 
-| Index | Icon | Content |
-|-------|------|---------|
-| 0 | calendar | Week timetable, classes/exams |
-| 1 | backpack | Markbook: credits, average, ghost grade |
-| 2 | price_change | Fees and deadlines; drawer shows balance |
-| 3 | timer | Periods (registration, exams, subject signup) |
-| 4 | email | Inbox, unread, mark read |
+**Code today:**
+
+| Index | Surface | Content |
+|-------|---------|---------|
+| 0 | bottom | Calendar — week timetable, classes/exams |
+| 1 | bottom | Markbook (Subjects) — credits, average, ghost grade |
+| 2 | bottom | Periods — registration, exams, subject signup |
+| 3 | bottom | Mail / Messages — inbox, unread, mark read |
+| 4 | drawer only | Payments — fees and deadlines; drawer also shows balance |
+
+**Nav IA (plan 1c):** bottom = **Calendar \| Markbook \| Periods \| Mail**; **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (not in the drawer).
 
 Term: `getSelectedTermId()` / `getSelectedTermName()`, term list is cached.
 
@@ -287,7 +313,7 @@ Base: `{institute without /Account}` + `/api/...`.
 | Login / 2FA | `POST /api/Account/Authenticate` |
 | Refresh | `POST /api/Account/GetNewTokens` |
 | Trainings | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
-| Avatar | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG); `/api/General/GetUserAvatar?imageSizeType=Normal` (larger base64 JPEG) |
+| Avatar | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG) + `data.userAvatar.printName`; display name is `data.name` (not top-level `printName`); `/api/General/GetUserAvatar?imageSizeType=Normal` (larger base64 JPEG) |
 | Calendar | `/api/Calendar/GetCalendarEvents` |
 | Class details | `/api/Calendar/GetCourseDetails` |
 | Tasks | `/api/Tasks/GetTaskDetail` |
@@ -297,6 +323,8 @@ Base: `{institute without /Account}` + `/api/...`.
 | Balance | `/api/FinancialDataDashboard/GetCollectiveInvoices` |
 | Periods | `/api/Periods/GetPeriods` |
 | Mail | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
+
+Unused HWEB paths seen in Sep 2026 captures (not called by the app) live in [`IMPLEMENTATION_PLAN.md` §4.2](IMPLEMENTATION_PLAN.md#42-captured-inventory-incomplete--2026-09-13) — coverage incomplete; HARs are not in git.
 
 Login body:
 
@@ -315,9 +343,13 @@ Login body:
 
 For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes the session (keeps username), navigates to login, and shows `auth_sessionExpired_PleaseSignIn`. Manual logout clears the ELTE portal cookie jar so immediate re-login is not stuck on “invalid credentials”.
+Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes **auth only** via `DataCache.sessionWipeKeepCache()` (password / JWT / refresh / device cookie / `HasLogin`; **keeps username + academic cache**), navigates to login, and shows `auth_sessionExpired_PleaseSignIn`. Manual / expired logout share that wipe. Portal leftovers: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, tighten `_looksLikeInvalidCredentials` (no bare `invalid` on HTML `is-invalid`) so same-process re-login is not stuck on false “invalid credentials” (**1a**). Full `dataWipe()` (prefs.clear including cache) remains available for hard reset — not used on normal logout.
 
-**App session wall clock (user-visible):** On entering `HomePage` (successful login or cold start into a stored session), `SessionGuard.startSessionWallClock()` starts a **10-minute** timer. When it fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username, snackbar, navigate to login). Manual logout cancels the timer; a new login / new `HomePage` entry restarts it. Token refresh does **not** extend the wall clock. This is intentional alignment with short-lived Neptun access JWTs (~10–15 min from issue): the UI logs out on a fixed wall clock from **session entry**, not only after the next 401.
+**App session wall clock (user-visible):** On entering `HomePage` (successful login or cold start into a stored session), `SessionGuard.startSessionWallClock()` stores `SESSION_StartedAtMs` and arms a **10-minute** `Timer` for the remaining time. When it fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). Manual logout cancels the timer; a new login / new `HomePage` entry restarts it. Token refresh does **not** extend the wall clock. This is intentional alignment with short-lived Neptun access JWTs (~10–15 min from issue): the UI logs out on a fixed wall clock from **session entry**, not only after the next 401.
+
+**Background wall clock (plan 1b shipped):** `HomePage` is a `WidgetsBindingObserver`. On `AppLifecycleState.resumed`, `SessionGuard.checkSessionWallClockOnResume()` compares `now` to the persisted session start; if `>= 10 min` → `forceExpiredLogout`; else re-arms the foreground `Timer` for the remaining duration. Do not rely on an in-memory `Timer` alone while the process is suspended. Foreground continuous 10 min still kicks as before.
+
+**Cache honesty (plan item 1 shipped):** Every home surface (calendar / markbook / periods / mail / payments) paints from `HasCached*` lists first when present; network refresh is silent. On dead session / offline / failed refresh, lists are **not** replaced with an empty spinner. UI may show `cache_showingFromCache` banner. Empty calendar weeks are cached as `len == 0` so freedays render without a loading spinner. Multi-term markbook walks skip when `SessionGuard.isAuthBlocked`.
 
 ---
 
@@ -343,11 +375,11 @@ Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `G
 
 ### 10.1 Timetable
 
-Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `getFirstStudyweek()`. Anchor is the Monday of the semester season week (autumn: week containing **1 Sep**; spring: week containing **1 Feb**) when the teaching/`szorgalmi` period starts within that fortnight — **not** subject-registration or login windows (those previously produced inflated weeks ~36 then ~16). Education week = whole weeks from that Monday to *this* Monday + `currentWeekOffset` (1 = current calendar page). Example ELTE autumn 2026: **1–7 Sep → week 1**, **7–14 Sep → week 2**. Online home open always recomputes and overwrites the cached epoch. Modern: `GetCalendarEvents` with **Mon–Sun** `endDate` (not next Monday — that wrongly pulled next week’s Monday classes, causing a ~163h fake “break” and duplicate lessons). Events outside the requested window are dropped. Same-day gap chips only (5 min–12 h), localized break strings. Course details + Calendar Settings filters (`isClassesVisible` / exams / periods). UI strips: next 48h, tasks/ZH, exams, period banners (`typeId == 6`). Drawer training switcher when multiple trainings are known. **Room codes** matching `Campus-Floor-Room[-Stream][-Group]` (e.g. `LD-0-805` or `LD-0-805-01-11`) are tappable in the timetable list, class dialog, and exam/legacy popups: tap toggles compact code ↔ localized summary (`Southern Building, Floor: 0, Room: 805, …`). Mapped prefixes: **LD** Southern / Déli, **LE**/LÉ Northern / Északi, **LK** Chemistry block (Northern); unknown prefix kept as-is. Stream/Group only shown when present in the code (`lib/Misc/elte_room_code.dart`).
+Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `getFirstStudyweek()`. Anchor is the Monday of the semester season week (autumn: week containing **1 Sep**; spring: week containing **1 Feb**) when the teaching/`szorgalmi` period starts within that fortnight — **not** subject-registration or login windows (those previously produced inflated weeks ~36 then ~16). Education week = whole weeks from that Monday to *this* Monday + `currentWeekOffset` (1 = current calendar page). Example ELTE autumn 2026: **1–7 Sep → week 1**, **7–14 Sep → week 2**. Online home open always recomputes and overwrites the cached epoch. Modern: `GetCalendarEvents` with **Mon–Sun** `endDate` (not next Monday — that wrongly pulled next week’s Monday classes, causing a ~163h fake “break” and duplicate lessons). Events outside the requested window are dropped. Same-day gap chips only (5 min–12 h), localized break strings. Course details + Calendar Settings filters (`isClassesVisible` / exams / periods). UI strips (plan item **3**): next 48h = **classes + exams** only (sorted by `startEpoch`); tasks/ZH and exams = upcoming from now (not “first 8 in week” including past); period banners (`typeId == 6`) **only** in the period strip, never as day-list classes. Pull-to-refresh keeps cached week painted. Drawer training switcher when multiple trainings are known. **Room codes** matching `Campus-Floor-Room[-Stream][-Group]` (e.g. `LD-0-805` or `LD-0-805-01-11`) are tappable in the timetable list, class dialog, and exam/legacy popups: tap toggles compact code ↔ localized summary (`Southern Building, Floor: 0, Room: 805, …`). Mapped prefixes: **LD** Southern / Déli, **LE**/LÉ Northern / Északi, **LK** Chemistry block (Northern); unknown prefix kept as-is. Stream/Group only shown when present in the code (`lib/Misc/elte_room_code.dart`).
 
 ### 10.2 Markbook
 
-Subjects tab = markbook: taken subjects (with subject codes), credits, grades, average, ghost grade (popup 0), confetti. Also lists **My courses** (`GetRegisteredCourses`) and a compact **grade history** across recent terms.
+Subjects tab = markbook: taken subjects (with subject codes), credits, grades, ghost grade (popup 0), confetti. Shared math in `lib/Misc/markbook_math.dart` (**plan item 2**): **Átlag / Average** = `Σ(grade × credit) / Σ(credit)` for completed `grade >= 2`; **/30** = `Σ(grade × credit) / 30` (same numerator — **not** átlag÷30). Header shows this-term credits **and** accumulated completed credits (deduped by `subjectCode` across `getGradeHistoryAcrossTerms`). UI labels say `/30` explicitly; note: **app-computed**, not official Neptun KKI/GPA (`GetAverages` was empty in Sep 2026 HAR). Also lists **My courses** (`GetRegisteredCourses`) and a compact **grade history** across recent terms.
 
 ### 10.3 Payments / periods / mail
 
@@ -373,7 +405,7 @@ Built-in picker (`lib/colors.dart`): **Light** and **Dark** only. Preference is 
 
 Other packs (DE, RO, UA, AR, ES, ZH, Pirate) were **removed**.
 
-Drawer **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notification bodies use `notif_payment_Body*`. Missing keys in a downloaded/cached RU/TR pack fall back to EN unless filled by the **bundled** asset merge (`AppStrings.loadBundledLanguagePacks` before `initialize`). GitHub `main` packs should stay in sync with the EN key set so network refresh does not lag.
+Settings **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notification bodies use `notif_payment_Body*`. Missing keys in a downloaded/cached RU/TR pack fall back to EN unless filled by the **bundled** asset merge (`AppStrings.loadBundledLanguagePacks` before `initialize`). GitHub `main` packs should stay in sync with the EN key set so network refresh does not lag.
 
 **Course / subject detail chrome** (calendar class tap dialog + task dialog: Type / Teacher / Room / Close / loading room / missing placeholders) uses `courseDetail_*` + `popup_case4_5_SubjectCode`. **Subject titles, course types (e.g. Előadás), rooms, and teacher names from Neptun** stay in whatever language the API returns — often Hungarian even when the app UI is EN.
 
@@ -389,10 +421,10 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 
 | Area | Level | Notes |
 |------|-------|-------|
-| Android client (login, 5 tabs, cache) | **Full / mid-beta** | Real API, not a stub |
+| Android client (login, 4-tab nav + drawer, cache) | **Full / mid-beta** | Real API, not a stub. Nav IA **1c** |
 | iOS simulator + device release | **Working** | Bundle without `_`; Automatic signing |
 | Modern JWT + refresh | **Solid** | |
-| Modern 2FA TOTP (ELTE portal) | **Working MVP** | Portal Login2FA + OuterLogin JWT on hallgatoN |
+| Modern 2FA TOTP (ELTE portal) | **Working MVP** | Portal Login2FA + OuterLogin JWT on hallgatoN. **Student web full** → `loginStudentWebFull` snackbar (not invalid password) |
 | Modern 2FA email | **HAR known; UI thin** | `RequestEmailCode` + CodePrefix; prefer TOTP in app |
 | JWT Authenticate on neptun.elte.hu | **Dead for ELTE** | Empty HTTP 400; AD institute uses portal |
 | Old API 2FA | **None** | |
@@ -417,7 +449,7 @@ Cache flags: calendar, markbook, payments, periods, mail, first week, term list.
 
 Secrets: username/password/JWT/device cookie in secure storage (migrated from older SharedPreferences).
 
-`dataWipe` = logout: clears password/tokens/cache (including cached avatar base64), **keeps username** for login prefill. Drawer shows HWEB profile photo when available, else **initials** from display name / Neptun code.
+`sessionWipeKeepCache` = normal logout / session expiry: clears password/tokens/device cookie/`HasLogin`, **keeps username + academic cache** (calendar / markbook / payments / periods / mail / terms / avatar). `dataWipe` = full prefs wipe including cache (hard reset only). Drawer shows HWEB profile photo when available, else **initials** from display name / Neptun code.
 
 No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -506,6 +538,8 @@ On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon �
 
 ### iOS vs Android-only
 
+Full side-by-side: [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) (RU: [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md)).
+
 | Feature | iOS |
 |---------|-----|
 | Links (`url_launcher`) | Should work (Android-only gate removed) |
@@ -539,6 +573,8 @@ After create, confirm Bundle ID is `com.nanda070.neptunmobile` (not `neptun_mobi
 ---
 
 ## 15. Android
+
+Compared with iOS: [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md).
 
 | Field | Value |
 |-------|-------|
@@ -650,6 +686,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | No Authenticator deep-link / auto-OTP | TOTP is typed manually; Microsoft Authenticator stays external |
 | No email OTP (`XXX-XXXXXX`) yet | Needs Network capture of E-mail button + Authenticate `token` shape |
 | `loginServerBusy` ≠ invalid password | Neptun overload was shown as a bad password |
+| `loginStudentWebFull` ≠ invalid password | HWEB capacity full after correct 2FA was painted as bad password (`submitTwoFactor` → `false` → `_paintRed`) |
 | ELTE hub → `https://neptun.elte.hu` | Portal + JWT API. HWEB is load-balanced across `hallgato1…N` after `/ToNeptunWeb/ToNeptunHWeb` — never hardcode a single node |
 | Single institute in JSON | Product is ELTE-only; multi-uni picker removed from hub UI |
 | Keep ICS in code | Old users may still have a file; don’t advertise the UI |
@@ -666,6 +703,8 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/README.md` / `docs/README.ru.md` | Product overview |
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
+| `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | iOS vs Android platform matrix |
+| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Prioritized implementation plan (not shipped) |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (canonical); root `LICENSE` mirrors it |
@@ -673,8 +712,8 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `lib/main.dart` | `MaterialApp`, theme, `Splitter` |
 | `lib/Pages/startup_page.dart` | Login / home branch |
 | `lib/Pages/setup_page.dart` | Login, URL, 2FA callback, ICS class |
-| `lib/Pages/main_page.dart` | Home + 5 tabs |
-| `lib/Pages/settings_page.dart` | Live settings |
+| `lib/Pages/main_page.dart` | Home + **4** bottom tabs + drawer Payments (**1c**) |
+| `lib/Pages/settings_page.dart` | Live settings (Contacts + app version at bottom) |
 | `lib/API/api_coms.dart` | All HTTP, login, URL normalize |
 | `lib/API/ics_calendar.dart` | ICS parser |
 | `lib/storage.dart` | `DataCache` |

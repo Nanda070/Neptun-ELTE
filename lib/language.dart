@@ -95,7 +95,11 @@ class AppStrings{
       loginPage_setupPage_LogInButton: 'Belépés',
       loginPage_setupPage_LoginInProgress: 'Bejelentkezés...',
       loginPage_setupPage_LoginInProgressSlow: 'Neptun szervereivel lehet problémák vannak...',
+      loginPage_setupPage_StudentWebFull: 'A hallgatói web tele van. Próbáld újra később.',
+      loginPage_setupPage_2faInvalidCode: 'Hibás vagy lejárt 2FA kód. Próbáld újra.',
+      loginPage_setupPage_ConnectingStudentWeb: 'Csatlakozás a hallgatói webhez…',
       auth_sessionExpired_PleaseSignIn: 'A munkamenet lejárt — jelentkezz be újra',
+      cache_showingFromCache: 'Gyorsítótárból · frissítés függőben',
       api_monthJan_Universal: 'január',
       api_monthFeb_Universal: 'február',
       api_monthMar_Universal: 'március',
@@ -149,6 +153,7 @@ class AppStrings{
       topheader_calendar_greetMessage_17to21: 'Szép estét! 🍻',
       topheader_calendar_greetMessage_21to1: 'Jó éjszakát! 🍹',
       topheader_subjects_CreditsInSemester: 'Kredited ebben a félévben: %0🎖️',
+      topheader_subjects_CreditsHeader: 'Félév: %0 · Összesen (teljesített): %1🎖️',
       topheader_payments_TotalMoneySpent: '%0Ft-ot költöttél az egyetemre 💸',
       topheader_periods_ActiveText: 'Aktuális',
       topheader_periods_ExpiredText: 'Lejárt',
@@ -177,7 +182,8 @@ class AppStrings{
       calendarPage_weekNav_ClassesThisWeekLoading: 'Gondolkodunk... 🤔',
       calendarPage_weekNav_StudyWeek: '%0. oktatási hét',
       markbookPage_AverageDisplay: 'Átlagod: %0 %1',
-      markbookPage_AverageScholarshipDisplay: 'Ösztöndíj indexed: %0 %1',
+      markbookPage_AverageScholarshipDisplay: '/30 (ösztöndíj): %0 %1',
+      markbookPage_AppComputedNote: 'App-számítás — nem hivatalos Neptun KKI/GPA',
       markbookPage_NoGrades: 'nincs jegyed',
       markbookPage_Empty: '🤪Nincs Tantárgyad🤪',
       markbookPage_CompletedLine: 'Elvégezve',
@@ -398,7 +404,11 @@ class AppStrings{
       loginPage_setupPage_LogInButton: 'Login',
       loginPage_setupPage_LoginInProgress: 'Logging in...',
       loginPage_setupPage_LoginInProgressSlow: 'Neptun servers are having a hard time...',
+      loginPage_setupPage_StudentWebFull: 'Student web is full. Please try again later.',
+      loginPage_setupPage_2faInvalidCode: 'Wrong or expired 2FA code. Try again.',
+      loginPage_setupPage_ConnectingStudentWeb: 'Connecting to Student web…',
       auth_sessionExpired_PleaseSignIn: 'Session expired — please sign in again',
+      cache_showingFromCache: 'From cache · refresh pending',
       api_monthJan_Universal: 'january',
       api_monthFeb_Universal: 'february',
       api_monthMar_Universal: 'march',
@@ -452,6 +462,7 @@ class AppStrings{
       topheader_calendar_greetMessage_17to21: 'Good evening! 🍻',
       topheader_calendar_greetMessage_21to1: 'Good night! 🍹',
       topheader_subjects_CreditsInSemester: 'Your credits this semester: %0🎖️',
+      topheader_subjects_CreditsHeader: 'This term: %0 · Accumulated (completed): %1🎖️',
       topheader_payments_TotalMoneySpent: 'You have spent %0Huf on university 💸',
       topheader_periods_ActiveText: 'Active',
       topheader_periods_ExpiredText: 'Expired',
@@ -480,7 +491,8 @@ class AppStrings{
       calendarPage_weekNav_ClassesThisWeekLoading: 'Thinking... 🤔',
       calendarPage_weekNav_StudyWeek: '%0. education week',
       markbookPage_AverageDisplay: 'Average: %0 %1',
-      markbookPage_AverageScholarshipDisplay: 'Scholarship index: %0 %1',
+      markbookPage_AverageScholarshipDisplay: '/30 (scholarship index): %0 %1',
+      markbookPage_AppComputedNote: 'App-computed — not official Neptun KKI/GPA',
       markbookPage_NoGrades: 'You have no grades',
       markbookPage_Empty: '🤪You don\'t have any subjects🤪',
       markbookPage_CompletedLine: 'Completed',
@@ -945,7 +957,11 @@ class LanguagePack{
   final String loginPage_setupPage_LogInButton;
   final String loginPage_setupPage_LoginInProgress;
   final String loginPage_setupPage_LoginInProgressSlow;
+  final String loginPage_setupPage_StudentWebFull;
+  final String loginPage_setupPage_2faInvalidCode;
+  final String loginPage_setupPage_ConnectingStudentWeb;
   final String auth_sessionExpired_PleaseSignIn;
+  final String cache_showingFromCache;
 
   final String api_monthJan_Universal;
   final String api_monthFeb_Universal;
@@ -1009,6 +1025,7 @@ class LanguagePack{
   final String topheader_calendar_greetMessage_21to1;
 
   final String topheader_subjects_CreditsInSemester;
+  final String topheader_subjects_CreditsHeader;
 
   final String topheader_payments_TotalMoneySpent;
 
@@ -1044,6 +1061,7 @@ class LanguagePack{
 
   final String markbookPage_AverageDisplay;
   final String markbookPage_AverageScholarshipDisplay;
+  final String markbookPage_AppComputedNote;
   final String markbookPage_NoGrades;
   final String markbookPage_Empty;
   final String markbookPage_CompletedLine;
@@ -1269,7 +1287,11 @@ class LanguagePack{
     required this.loginPage_setupPage_LogInButton,
     required this.loginPage_setupPage_LoginInProgress,
     required this.loginPage_setupPage_LoginInProgressSlow,
+    required this.loginPage_setupPage_StudentWebFull,
+    required this.loginPage_setupPage_2faInvalidCode,
+    required this.loginPage_setupPage_ConnectingStudentWeb,
     required this.auth_sessionExpired_PleaseSignIn,
+    required this.cache_showingFromCache,
     required this.api_monthJan_Universal,
     required this.api_monthFeb_Universal,
     required this.api_monthMar_Universal,
@@ -1323,6 +1345,7 @@ class LanguagePack{
     required this.topheader_calendar_greetMessage_17to21,
     required this.topheader_calendar_greetMessage_21to1,
     required this.topheader_subjects_CreditsInSemester,
+    required this.topheader_subjects_CreditsHeader,
     required this.topheader_payments_TotalMoneySpent,
     required this.topheader_periods_ActiveText,
     required this.topheader_periods_ExpiredText,
@@ -1345,6 +1368,7 @@ class LanguagePack{
     required this.calendarPage_weekNav_ClassesThisWeekLoading,
     required this.markbookPage_AverageDisplay,
     required this.markbookPage_AverageScholarshipDisplay,
+    required this.markbookPage_AppComputedNote,
     required this.markbookPage_NoGrades,
     required this.markbookPage_Empty,
     required this.markbookPage_CompletedLine,
@@ -1596,7 +1620,11 @@ class LanguagePack{
         loginPage_setupPage_LogInButton: getStr('loginPage_setupPage_LogInButton', en.loginPage_setupPage_LogInButton),
         loginPage_setupPage_LoginInProgress: getStr('loginPage_setupPage_LoginInProgress', en.loginPage_setupPage_LoginInProgress),
         loginPage_setupPage_LoginInProgressSlow: getStr('loginPage_setupPage_LoginInProgressSlow', en.loginPage_setupPage_LoginInProgressSlow),
+        loginPage_setupPage_StudentWebFull: getStr('loginPage_setupPage_StudentWebFull', en.loginPage_setupPage_StudentWebFull),
+        loginPage_setupPage_2faInvalidCode: getStr('loginPage_setupPage_2faInvalidCode', en.loginPage_setupPage_2faInvalidCode),
+        loginPage_setupPage_ConnectingStudentWeb: getStr('loginPage_setupPage_ConnectingStudentWeb', en.loginPage_setupPage_ConnectingStudentWeb),
         auth_sessionExpired_PleaseSignIn: getStr('auth_sessionExpired_PleaseSignIn', en.auth_sessionExpired_PleaseSignIn),
+        cache_showingFromCache: getStr('cache_showingFromCache', en.cache_showingFromCache),
         api_monthJan_Universal: getStr('api_monthJan_Universal', en.api_monthJan_Universal),
         api_monthFeb_Universal: getStr('api_monthFeb_Universal', en.api_monthFeb_Universal),
         api_monthMar_Universal: getStr('api_monthMar_Universal', en.api_monthMar_Universal),
@@ -1650,6 +1678,7 @@ class LanguagePack{
         topheader_calendar_greetMessage_17to21: getStr('topheader_calendar_greetMessage_17to21', en.topheader_calendar_greetMessage_17to21),
         topheader_calendar_greetMessage_21to1: getStr('topheader_calendar_greetMessage_21to1', en.topheader_calendar_greetMessage_21to1),
         topheader_subjects_CreditsInSemester: getStr('topheader_subjects_CreditsInSemester', en.topheader_subjects_CreditsInSemester),
+        topheader_subjects_CreditsHeader: getStr('topheader_subjects_CreditsHeader', en.topheader_subjects_CreditsHeader),
         topheader_payments_TotalMoneySpent: getStr('topheader_payments_TotalMoneySpent', en.topheader_payments_TotalMoneySpent),
         topheader_periods_ActiveText: getStr('topheader_periods_ActiveText', en.topheader_periods_ActiveText),
         topheader_periods_ExpiredText: getStr('topheader_periods_ExpiredText', en.topheader_periods_ExpiredText),
@@ -1672,6 +1701,7 @@ class LanguagePack{
         calendarPage_weekNav_ClassesThisWeekLoading: getStr('calendarPage_weekNav_ClassesThisWeekLoading', en.calendarPage_weekNav_ClassesThisWeekLoading),
         markbookPage_AverageDisplay: getStr('markbookPage_AverageDisplay', en.markbookPage_AverageDisplay),
         markbookPage_AverageScholarshipDisplay: getStr('markbookPage_AverageScholarshipDisplay', en.markbookPage_AverageScholarshipDisplay),
+        markbookPage_AppComputedNote: getStr('markbookPage_AppComputedNote', en.markbookPage_AppComputedNote),
         markbookPage_NoGrades: getStr('markbookPage_NoGrades', en.markbookPage_NoGrades),
         markbookPage_Empty: getStr('markbookPage_Empty', en.markbookPage_Empty),
         markbookPage_CompletedLine: getStr('markbookPage_CompletedLine', en.markbookPage_CompletedLine),
@@ -1915,7 +1945,11 @@ class LanguagePack{
       'loginPage_setupPage_LogInButton':lang.loginPage_setupPage_LogInButton,
       'loginPage_setupPage_LoginInProgress':lang.loginPage_setupPage_LoginInProgress,
       'loginPage_setupPage_LoginInProgressSlow':lang.loginPage_setupPage_LoginInProgressSlow,
+      'loginPage_setupPage_StudentWebFull':lang.loginPage_setupPage_StudentWebFull,
+      'loginPage_setupPage_2faInvalidCode':lang.loginPage_setupPage_2faInvalidCode,
+      'loginPage_setupPage_ConnectingStudentWeb':lang.loginPage_setupPage_ConnectingStudentWeb,
       'auth_sessionExpired_PleaseSignIn':lang.auth_sessionExpired_PleaseSignIn,
+      'cache_showingFromCache':lang.cache_showingFromCache,
       'api_monthJan_Universal':lang.api_monthJan_Universal,
       'api_monthFeb_Universal':lang.api_monthFeb_Universal,
       'api_monthMar_Universal':lang.api_monthMar_Universal,
@@ -1969,6 +2003,7 @@ class LanguagePack{
       'topheader_calendar_greetMessage_17to21':lang.topheader_calendar_greetMessage_17to21,
       'topheader_calendar_greetMessage_21to1':lang.topheader_calendar_greetMessage_21to1,
       'topheader_subjects_CreditsInSemester':lang.topheader_subjects_CreditsInSemester,
+      'topheader_subjects_CreditsHeader':lang.topheader_subjects_CreditsHeader,
       'topheader_payments_TotalMoneySpent':lang.topheader_payments_TotalMoneySpent,
       'topheader_periods_ActiveText':lang.topheader_periods_ActiveText,
       'topheader_periods_ExpiredText':lang.topheader_periods_ExpiredText,
@@ -1998,6 +2033,7 @@ class LanguagePack{
       'calendarPage_weekNav_ClassesThisWeekLoading':lang.calendarPage_weekNav_ClassesThisWeekLoading,
       'markbookPage_AverageDisplay':lang.markbookPage_AverageDisplay,
       'markbookPage_AverageScholarshipDisplay':lang.markbookPage_AverageScholarshipDisplay,
+      'markbookPage_AppComputedNote':lang.markbookPage_AppComputedNote,
       'markbookPage_NoGrades':lang.markbookPage_NoGrades,
       'markbookPage_Empty':lang.markbookPage_Empty,
       'markbookPage_CompletedLine':lang.markbookPage_CompletedLine,

@@ -30,6 +30,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../Pages/startup_page.dart' as root_page;
 import '../Misc/app_drawer.dart';
+import '../Misc/markbook_math.dart';
 
 class HomePage extends StatefulWidget{
   const HomePage({super.key});
@@ -38,7 +39,7 @@ class HomePage extends StatefulWidget{
   State<HomePage> createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> with TickerProviderStateMixin{
+class HomePageState extends State<HomePage> with TickerProviderStateMixin, WidgetsBindingObserver{
 
   final List<Widget> _confettiList = [];
   final List<ConfettiHelper> _confettiHelperList = [];
@@ -67,9 +68,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _instance?.setBlurComplex(b);
   }
 
+  /// Bottom tabs: 0 Calendar, 1 Markbook, 2 Periods, 3 Mail.
+  /// Drawer-only: [viewPayments]=4.
   static void navigateToView(int to) {
     _instance?.switchView(to);
   }
+
+  /// Page indices (bottom 0–3; Payments drawer-only).
+  static const int viewPeriods = 2;
+  static const int viewMail = 3;
+  static const int viewPayments = 4;
 
   bool _showBlur = false;
   void setBlur(bool state){
@@ -146,9 +154,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   String calendarGreetText = "";
 
   int totalCredits = 0;
+  /// Completed credits across terms (deduped) — app-computed, not official diploma.
+  int accumulatedCredits = 0;
   int totalMoney = 0;
   double totalAvg = 0;
   double totalAvg30 = 0;
+
+  /// True when at least one home surface is painting from cache without a fresh network paint.
+  bool showingCachedData = false;
 
   int currentSemester = -1;
   int countActivePeriods = 0;
@@ -161,7 +174,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   double bottomNavSwitchValue = 0.0;
   bool bottomNavCanNavigate = true;
-  static const int maxBottomNavWidgets = 5;
+  /// Bottom bar cycles Calendar | Markbook | Periods | Mail (Payments via drawer).
+  static const int maxBottomNavWidgets = 4;
 
   double calendarWeekSwitchValue = 0.0;
   bool calendarWeekCanNavigate = true;
@@ -169,6 +183,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     FlutterNativeSplash.remove();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -375,6 +390,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       Future.microtask(() async {
         await fetchMarkbook();
         setupMarkbook();
+        await _refreshAccumulatedCredits();
       });
 
       Future.microtask(() async {
@@ -1176,46 +1192,100 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(markbookEntries.isEmpty){
       return;
     }
-    var currCredits = 0;
-    for(var item in markbookEntries){
-      if (!item.completed) {
-        continue;
-      }
-      if (item.grade >= 2) {
-        currCredits += item.credit;
-        totalAvg += item.grade * item.credit;
-      }
+    final grades = <int>[];
+    final credits = <int>[];
+    for (final item in markbookEntries) {
+      if (!item.completed) continue;
+      grades.add(item.grade);
+      credits.add(item.credit);
     }
-    totalAvg30 = totalAvg / 30;
-    totalAvg /= currCredits;
+    final r = MarkbookMath.fromCompleted(grades: grades, credits: credits);
+    totalAvg = r.average;
+    totalAvg30 = r.per30;
   }
 
   void _markbookCalcGhostAvg(){
     if(markbookEntries.isEmpty){
       return;
     }
-    var currCredits = 0;
-    totalAvg = 0;
-    totalAvg30 = 0;
-    for(var item in markbookList){
-      try{
+    final grades = <int>[];
+    final credits = <int>[];
+    for (final item in markbookList) {
+      try {
         final itm = item as mbook.MarkbookElementWidget;
-        if(!itm.completed && itm.ghostGrade == -1){
+        if (!itm.completed && itm.ghostGrade == -1) {
           continue;
         }
-        if (item.grade >= 2) {
-          currCredits += item.credit;
-          totalAvg += item.grade * item.credit;
+        if (itm.completed && itm.grade >= 2) {
+          grades.add(itm.grade);
+          credits.add(itm.credit);
+        } else if (itm.ghostGrade != -1) {
+          grades.add(itm.ghostGrade);
+          credits.add(itm.credit);
         }
-        else if(item.ghostGrade != -1){
-          currCredits += item.credit;
-          totalAvg += item.ghostGrade * item.credit;
-        }
-      }
-      catch(_){}
+      } catch (_) {}
     }
-    totalAvg30 = totalAvg / 30;
-    totalAvg /= currCredits;
+    final r = MarkbookMath.fromEffectiveGrades(effectiveGrades: grades, credits: credits);
+    totalAvg = r.average;
+    totalAvg30 = r.per30;
+  }
+
+  Future<void> _refreshAccumulatedCredits() async {
+    final cached = await storage.getInt('CachedAccumulatedCredits');
+    if (cached != null && cached > 0 && accumulatedCredits == 0) {
+      if (mounted) setState(() => accumulatedCredits = cached);
+    }
+    if (api.SessionGuard.isAuthBlocked || !storage.DataCache.getHasNetwork()) {
+      return;
+    }
+    try {
+      final hist = await api.MarkbookRequest.getGradeHistoryAcrossTerms(maxTerms: 8);
+      final rows = hist.map((h) => (
+            subjectCode: h.subject.subjectCode,
+            name: h.subject.name,
+            credit: h.subject.credit,
+            completed: h.subject.completed || h.subject.grade >= 2,
+            grade: h.subject.grade,
+          ));
+      final sum = MarkbookMath.accumulatedCompletedCredits(rows);
+      await storage.saveInt('CachedAccumulatedCredits', sum);
+      if (mounted) setState(() => accumulatedCredits = sum);
+    } catch (e) {
+      debugPrint('accumulated credits: $e');
+    }
+  }
+
+  /// Thin honesty banner when UI is serving cached academic data.
+  Widget buildCacheHonestyBanner() {
+    if (!showingCachedData) return const SizedBox.shrink();
+    final lang = AppStrings.getLanguagePack();
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.getTheme().textColor.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        lang.cache_showingFromCache,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.getTheme().onPrimaryContainer.withValues(alpha: 0.75),
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  void _setShowingCached(bool value) {
+    if (showingCachedData == value) return;
+    if (mounted) {
+      setState(() => showingCachedData = value);
+    } else {
+      showingCachedData = value;
+    }
   }
 
   void _setupPayments(){
@@ -1570,8 +1640,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final activeTerm = storage.DataCache.getSelectedTermId() ?? '';
     final cachedTerm = await storage.getString('CalendarCacheTermId');
     final bool hasNetwork = storage.DataCache.getHasNetwork();
+    bool paintedFromCache = false;
 
-    // 1. Helyi tárolóból betöltés offline használathoz és azonnali megjelenítéshez
+    // 1. Cache first (including empty weeks — len==0 means loaded-empty, not missing).
     if (allowCache) {
       final weekKey = 'CachedCalendar_w$currentWeekOffset';
       int? len = await storage.getInt('${weekKey}_len');
@@ -1579,7 +1650,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         len = await storage.getInt('CachedCalendarLength');
       }
 
-      if (len != null && len > 0 && (cachedTerm == activeTerm || activeTerm.isEmpty || !hasNetwork)) {
+      if (len != null && (cachedTerm == activeTerm || activeTerm.isEmpty || !hasNetwork || cachedTerm == null)) {
         final List<api.CalendarEntry> cached = [];
         for (int i = 0; i < len; i++) {
           final calEntry = await storage.getString('${weekKey}_$i') ?? (currentWeekOffset == 1 ? await storage.getString('CachedCalendar_$i') : null);
@@ -1587,33 +1658,34 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             cached.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry));
           }
         }
+        // Accept empty cache (honest free week) as well as non-empty.
+        calendarEntries = cached;
+        paintedFromCache = true;
+        storage.DataCache.setHasCachedFirstWeekEpoch(1);
         if (cached.isNotEmpty) {
-          calendarEntries = cached;
-          storage.DataCache.setHasCachedFirstWeekEpoch(1);
           api.CalendarRequest.fillMissingDetails(calendarEntries, () {
             if (mounted) setState(() {});
           });
+        }
 
-          if (currentWeekOffset == 1) {
-            Future.delayed(Duration.zero, () async {
-              await _setupClassesNotifications(_classesNotificationList);
-            });
-          }
+        if (currentWeekOffset == 1 && cached.isNotEmpty) {
+          Future.delayed(Duration.zero, () async {
+            await _setupClassesNotifications(_classesNotificationList);
+          });
+        }
 
-          // Ha offline vagy nem kérünk csendes frissítést, kész vagyunk
-          if (!hasNetwork || !silentRefreshIfOnline) {
-            return;
-          }
+        if (!hasNetwork || !silentRefreshIfOnline || api.SessionGuard.isAuthBlocked) {
+          _setShowingCached(paintedFromCache && (!hasNetwork || api.SessionGuard.isAuthBlocked));
+          return;
         }
       }
     }
 
-    // 2. Ha nincs internet kapcsolat
-    if (!hasNetwork) {
+    if (!hasNetwork || api.SessionGuard.isAuthBlocked) {
+      _setShowingCached(paintedFromCache);
       return;
     }
 
-    // 3. Friss adatok lekérése a hálózatról
     try {
       final request = await api.CalendarRequest.makeCalendarRequest(
         api.CalendarRequest.getCalendarOneWeekJSON(
@@ -1624,6 +1696,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       );
       final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
 
+      // Replace only when we got a real response (empty week OK if request body present).
       if (list.isNotEmpty || request.isNotEmpty) {
         calendarEntries = list;
 
@@ -1631,7 +1704,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           if (mounted) setState(() {});
         });
 
-        // Mentés offline tárba az adott hétre
         final weekKey = 'CachedCalendar_w$currentWeekOffset';
         await storage.saveInt('${weekKey}_len', calendarEntries.length);
         for (int i = 0; i < calendarEntries.length; i++) {
@@ -1651,152 +1723,217 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             await _setupClassesNotifications(_classesNotificationList);
           });
         }
+        _setShowingCached(false);
+      } else if (paintedFromCache) {
+        _setShowingCached(true);
       }
     } catch (e) {
       debugPrint("Hiba a naptár hálózati lekérésekor: $e");
+      _setShowingCached(paintedFromCache);
     }
+  }
+
+  Future<bool> _loadMarkbookFromCache() async {
+    final len = await storage.getInt('CachedMarkbookLength');
+    if (len == null || len <= 0) return false;
+    final loaded = <api.Subject>[];
+    for (int i = 0; i < len; i++) {
+      final calEntry = await storage.getString('CachedMarkbook_$i');
+      if (calEntry != null) {
+        loaded.add(api.Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(calEntry));
+      }
+    }
+    if (loaded.isEmpty) return false;
+    markbookEntries = loaded;
+    return true;
   }
 
   Future<void> fetchMarkbook() async{
-    markbookEntries.clear();
-    bool hasCachedMarkbook= storage.DataCache.getHasCachedMarkbook() ?? false;
     final cacheTime = await storage.getString('MarkbookCacheTime');
     final cachedTerm = await storage.getString('MarkbookCacheTermId');
     final currentTerm = storage.DataCache.getSelectedTermId() ?? '';
+    final hasCached = storage.DataCache.getHasCachedMarkbook() ?? false;
+    final cacheFresh = hasCached &&
+        (cachedTerm == currentTerm || currentTerm.isEmpty) &&
+        cacheTime != null &&
+        (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) <
+            const Duration(hours: 24).inMilliseconds;
 
-    if(!hasCachedMarkbook && !storage.DataCache.getHasNetwork()){
+    bool paintedFromCache = false;
+    if (hasCached && (cachedTerm == currentTerm || currentTerm.isEmpty || !storage.DataCache.getHasNetwork())) {
+      paintedFromCache = await _loadMarkbookFromCache();
+    }
+
+    if (cacheFresh && paintedFromCache) {
+      _setShowingCached(false);
       return;
     }
 
-    // if we had a save, and the cached value is not older than a day, and term matches, we can load that up
-    if(hasCachedMarkbook && (cachedTerm == currentTerm || currentTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
-      final len = await storage.getInt('CachedMarkbookLength');
-      if (len != null && len > 0) {
-        for(int i = 0; i < len; i++){
-          final calEntry = await storage.getString('CachedMarkbook_$i');
-          if (calEntry != null) {
-            markbookEntries.add(api.Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(calEntry));
-          }
-        }
-        if (markbookEntries.isNotEmpty) {
-          return;
-        }
+    if (!storage.DataCache.getHasNetwork() || api.SessionGuard.isAuthBlocked) {
+      if (!paintedFromCache) {
+        // Do not leave a cleared list if we somehow wiped first.
+        paintedFromCache = await _loadMarkbookFromCache();
       }
-    }
-
-    //otherwise, just fetch again
-    final request = await api.MarkbookRequest.getMarkbookSubjects(termId: currentTerm.isNotEmpty ? currentTerm : null);
-    if(request == null || request.isEmpty){
-      markbookEntries = [];
+      _setShowingCached(paintedFromCache);
       return;
     }
-    markbookEntries = request;
 
-    if (markbookEntries.isNotEmpty) {
-      storage.saveInt('CachedMarkbookLength', markbookEntries.length);
-      for (int i = 0; i < markbookEntries.length; i++) {
-        storage.saveString('CachedMarkbook_$i', markbookEntries[i].toString());
+    try {
+      final request = await api.MarkbookRequest.getMarkbookSubjects(termId: currentTerm.isNotEmpty ? currentTerm : null);
+      if (request != null) {
+        markbookEntries = request;
+        storage.saveInt('CachedMarkbookLength', markbookEntries.length);
+        for (int i = 0; i < markbookEntries.length; i++) {
+          storage.saveString('CachedMarkbook_$i', markbookEntries[i].toString());
+        }
+        storage.saveString('MarkbookCacheTime', DateTime.now().toString());
+        storage.saveString('MarkbookCacheTermId', currentTerm);
+        storage.DataCache.setHasCachedMarkbook(1);
+        _setShowingCached(false);
+      } else if (!paintedFromCache) {
+        markbookEntries = [];
+      } else {
+        _setShowingCached(true);
       }
-      storage.saveString('MarkbookCacheTime', DateTime.now().toString());
-      storage.saveString('MarkbookCacheTermId', currentTerm);
-      storage.DataCache.setHasCachedMarkbook(1);
+    } catch (e) {
+      debugPrint('fetchMarkbook network: $e');
+      if (!paintedFromCache) {
+        paintedFromCache = await _loadMarkbookFromCache();
+      }
+      _setShowingCached(paintedFromCache);
     }
+  }
+
+  Future<bool> _loadPaymentsFromCache() async {
+    final len = await storage.getInt('CachedPaymentsLength');
+    if (len == null || len <= 0) return false;
+    final loaded = <api.CashinEntry>[];
+    for (int i = 0; i < len; i++) {
+      final calEntry = await storage.getString('CachedPayments_$i');
+      if (calEntry != null) {
+        loaded.add(api.CashinEntry(0, 0, "ERROR", "ERROR", "").fillWithExisting(calEntry));
+      }
+    }
+    if (loaded.isEmpty) return false;
+    paymentsEntries = loaded;
+    return true;
   }
 
   Future<void> fetchPayments() async{
-    paymentsEntries.clear();
-    invoiceEntries.clear();
-    bool hasCachedPayments = storage.DataCache.getHasCachedPayments() ?? false;
-
     final cacheTime = await storage.getString('PaymentsCacheTime');
+    final hasCached = storage.DataCache.getHasCachedPayments() ?? false;
+    final cacheFresh = hasCached &&
+        cacheTime != null &&
+        (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) <
+            const Duration(hours: 24).inMilliseconds;
 
-    if(!hasCachedPayments && !storage.DataCache.getHasNetwork()){
+    bool paintedFromCache = false;
+    if (hasCached) {
+      paintedFromCache = await _loadPaymentsFromCache();
+    }
+
+    if (cacheFresh && paintedFromCache) {
+      try {
+        invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
+      } catch (_) {}
+      _setShowingCached(false);
       return;
     }
 
-    // if we had a save, and the cached value is not older than a day, we can load that up
-    if(hasCachedPayments && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
-      final len = await storage.getInt('CachedPaymentsLength');
-      if (len != null && len > 0) {
-        for(int i = 0; i < len; i++){
-          final calEntry = await storage.getString('CachedPayments_$i');
-          if (calEntry != null) {
-            final entry = api.CashinEntry(0, 0, "ERROR", "ERROR", "").fillWithExisting(calEntry);
-            paymentsEntries.add(entry);
-          }
-        }
-        if (paymentsEntries.isNotEmpty) {
-          invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
-          return;
-        }
-      }
-    }
-
-    //otherwise, just fetch again
-    final request = await api.CashinRequest.getAllCashins();
-    invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
-    await api.CashinRequest.getCollectiveInvoiceBalance();
-    if(request == null || request.isEmpty){
-      paymentsEntries = [];
+    if (!storage.DataCache.getHasNetwork() || api.SessionGuard.isAuthBlocked) {
+      if (!paintedFromCache) paintedFromCache = await _loadPaymentsFromCache();
+      _setShowingCached(paintedFromCache);
       return;
     }
-    paymentsEntries = request;
 
-    if (paymentsEntries.isNotEmpty) {
-      storage.saveInt('CachedPaymentsLength', paymentsEntries.length);
-      for (int i = 0; i < paymentsEntries.length; i++) {
-        storage.saveString('CachedPayments_$i', paymentsEntries[i].toString());
+    try {
+      final request = await api.CashinRequest.getAllCashins();
+      invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
+      await api.CashinRequest.getCollectiveInvoiceBalance();
+      if (request != null) {
+        paymentsEntries = request;
+        storage.saveInt('CachedPaymentsLength', paymentsEntries.length);
+        for (int i = 0; i < paymentsEntries.length; i++) {
+          storage.saveString('CachedPayments_$i', paymentsEntries[i].toString());
+        }
+        storage.saveString('PaymentsCacheTime', DateTime.now().toString());
+        storage.DataCache.setHasCachedPayments(1);
+        _setShowingCached(false);
+      } else if (!paintedFromCache) {
+        paymentsEntries = [];
+      } else {
+        _setShowingCached(true);
       }
-      storage.saveString('PaymentsCacheTime', DateTime.now().toString());
-      storage.DataCache.setHasCachedPayments(1);
+    } catch (e) {
+      debugPrint('fetchPayments network: $e');
+      if (!paintedFromCache) paintedFromCache = await _loadPaymentsFromCache();
+      _setShowingCached(paintedFromCache);
     }
   }
 
-  Future<void> fetchPeriods() async{
-    periodEntries.clear();
-    bool hasCachedPeriods = storage.DataCache.getHasCachedPeriods() ?? false;
+  Future<bool> _loadPeriodsFromCache() async {
+    final len = await storage.getInt('CachedPeriodsLength');
+    if (len == null || len <= 0) return false;
+    final loaded = <api.PeriodEntry>[];
+    for (int i = 0; i < len; i++) {
+      final calEntry = await storage.getString('CachedPeriods_$i');
+      if (calEntry != null) {
+        loaded.add(api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry));
+      }
+    }
+    if (loaded.isEmpty) return false;
+    periodEntries = loaded;
+    return true;
+  }
 
+  Future<void> fetchPeriods() async{
     final cacheTime = await storage.getString('PeriodsCacheTime');
     final cachedTerm = await storage.getString('PeriodsCacheTermId');
     final currentTerm = storage.DataCache.getSelectedTermId() ?? '';
+    final hasCached = storage.DataCache.getHasCachedPeriods() ?? false;
+    final cacheFresh = hasCached &&
+        (cachedTerm == currentTerm || currentTerm.isEmpty) &&
+        cacheTime != null &&
+        (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) <
+            const Duration(hours: 24).inMilliseconds;
 
-    if(!hasCachedPeriods && !storage.DataCache.getHasNetwork()){
+    bool paintedFromCache = false;
+    if (hasCached && (cachedTerm == currentTerm || currentTerm.isEmpty || !storage.DataCache.getHasNetwork())) {
+      paintedFromCache = await _loadPeriodsFromCache();
+    }
+
+    if (cacheFresh && paintedFromCache) {
+      _setShowingCached(false);
       return;
     }
 
-    // if we had a save, and the cached value is not older than a day, and term matches, we can load that up
-    if(hasCachedPeriods && (cachedTerm == currentTerm || currentTerm.isEmpty) && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
-      final len = await storage.getInt('CachedPeriodsLength');
-      if (len != null && len > 0) {
-        for(int i = 0; i < len; i++){
-          final calEntry = await storage.getString('CachedPeriods_$i');
-          if (calEntry != null) {
-            final entry = api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry);
-            periodEntries.add(entry);
-          }
-        }
-        if (periodEntries.isNotEmpty) {
-          return;
-        }
-      }
-    }
-
-    //otherwise, just fetch again
-    final request = await api.PeriodsRequest.getPeriods(termId: currentTerm.isNotEmpty ? currentTerm : null);
-    if(request == null || request.isEmpty){
-      periodEntries = [];
+    if (!storage.DataCache.getHasNetwork() || api.SessionGuard.isAuthBlocked) {
+      if (!paintedFromCache) paintedFromCache = await _loadPeriodsFromCache();
+      _setShowingCached(paintedFromCache);
       return;
     }
-    periodEntries = request;
 
-    if (periodEntries.isNotEmpty) {
-      storage.saveInt('CachedPeriodsLength', periodEntries.length);
-      for (int i = 0; i < periodEntries.length; i++) {
-        storage.saveString('CachedPeriods_$i', periodEntries[i].toString());
+    try {
+      final request = await api.PeriodsRequest.getPeriods(termId: currentTerm.isNotEmpty ? currentTerm : null);
+      if (request != null) {
+        periodEntries = request;
+        storage.saveInt('CachedPeriodsLength', periodEntries.length);
+        for (int i = 0; i < periodEntries.length; i++) {
+          storage.saveString('CachedPeriods_$i', periodEntries[i].toString());
+        }
+        storage.saveString('PeriodsCacheTime', DateTime.now().toString());
+        storage.saveString('PeriodsCacheTermId', currentTerm);
+        storage.DataCache.setHasCachedPeriods(1);
+        _setShowingCached(false);
+      } else if (!paintedFromCache) {
+        periodEntries = [];
+      } else {
+        _setShowingCached(true);
       }
-      storage.saveString('PeriodsCacheTime', DateTime.now().toString());
-      storage.saveString('PeriodsCacheTermId', currentTerm);
-      storage.DataCache.setHasCachedPeriods(1);
+    } catch (e) {
+      debugPrint('fetchPeriods network: $e');
+      if (!paintedFromCache) paintedFromCache = await _loadPeriodsFromCache();
+      _setShowingCached(paintedFromCache);
     }
   }
 
@@ -1804,50 +1941,89 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   bool currentMailLoadingDebounce = false;
   late ScrollController currentMailPageController;
   Future<void> fetchMails({bool force = false})async{
-    bool hasCachedMails = storage.DataCache.getHasCachedMail() ?? false;
-
+    final hasCachedMails = storage.DataCache.getHasCachedMail() ?? false;
     final cacheTime = await storage.getString('MailCacheTime');
+    final cacheFresh = !force &&
+        hasCachedMails &&
+        cacheTime != null &&
+        (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) <
+            const Duration(hours: 24).inMilliseconds;
 
-    if(!hasCachedMails && !storage.DataCache.getHasNetwork() && !force){
-      return;
-    }
-
-    if(!force && hasCachedMails && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+    Future<bool> loadMailCache() async {
       final len = await storage.getInt('CachedMailsLength');
+      if (len == null || len < 0) return false;
       unreadMailCount = (await storage.getInt('CachedMailsUnread')) ?? 0;
       totalMailCount = (await storage.getInt('CachedMailsTotal')) ?? 0;
-      for(int i = 0; i < len!; i++){
+      final loaded = <api.MailEntry>[];
+      for (int i = 0; i < len; i++) {
         final calEntry = await storage.getString('CachedMails_$i');
-        mailEntries.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false,"").fillWithExisting(calEntry!));
+        if (calEntry != null) {
+          loaded.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false,"").fillWithExisting(calEntry));
+        }
       }
+      if (loaded.isEmpty && len > 0) return false;
+      if (!force) {
+        mailEntries = loaded;
+      }
+      return hasCachedMails;
+    }
+
+    bool paintedFromCache = false;
+    if (hasCachedMails && (cacheFresh || !storage.DataCache.getHasNetwork() || api.SessionGuard.isAuthBlocked)) {
+      paintedFromCache = await loadMailCache();
+      if (cacheFresh && paintedFromCache) {
+        _setShowingCached(false);
+        return;
+      }
+      if (!storage.DataCache.getHasNetwork() || api.SessionGuard.isAuthBlocked) {
+        _setShowingCached(paintedFromCache);
+        return;
+      }
+    }
+
+    if (!storage.DataCache.getHasNetwork() && !force) {
+      if (!paintedFromCache) paintedFromCache = await loadMailCache();
+      _setShowingCached(paintedFromCache);
       return;
     }
 
-    final request = await api.MailRequest.getMails(currentMailPage);
-    if(request == null || request.isEmpty){
+    if (api.SessionGuard.isAuthBlocked) {
+      if (!paintedFromCache) paintedFromCache = await loadMailCache();
+      _setShowingCached(paintedFromCache);
       return;
     }
-    mailEntries = request;
-    //debug.log(request!.toString());
 
-    if(force){
-      return;
+    try {
+      final request = await api.MailRequest.getMails(currentMailPage);
+      if (request == null || request.isEmpty) {
+        if (!paintedFromCache) paintedFromCache = await loadMailCache();
+        _setShowingCached(paintedFromCache);
+        return;
+      }
+      mailEntries = request;
+
+      if (force) {
+        return;
+      }
+
+      final nums = await api.MailRequest.getUnreadMessagesAndAllMessages();
+      unreadMailCount = nums[0];
+      totalMailCount = nums[1];
+
+      storage.saveInt('CachedMailsLength', mailEntries.length);
+      storage.saveInt('CachedMailsUnread', nums[0]);
+      storage.saveInt('CachedMailsTotal', nums[1]);
+      for (int i = 0; i < mailEntries.length; i++) {
+        storage.saveString('CachedMails_$i', mailEntries[i].toString());
+      }
+      storage.saveString('MailCacheTime', DateTime.now().toString());
+      storage.DataCache.setHasCachedMail(1);
+      _setShowingCached(false);
+    } catch (e) {
+      debugPrint('fetchMails network: $e');
+      if (!paintedFromCache) paintedFromCache = await loadMailCache();
+      _setShowingCached(paintedFromCache);
     }
-    
-    final nums = await api.MailRequest.getUnreadMessagesAndAllMessages();
-    unreadMailCount = nums[0];
-    totalMailCount = nums[1];
-
-    storage.saveInt('CachedMailsLength', mailEntries.length);
-    storage.saveInt('CachedMailsUnread', nums[0]);
-    storage.saveInt('CachedMailsTotal', nums[1]);
-    //cache calendar
-    for (int i = 0; i < mailEntries.length; i++) {
-      storage.saveString('CachedMails_$i', mailEntries[i].toString());
-    }
-    storage.saveString('MailCacheTime', DateTime.now().toString());
-
-    storage.DataCache.setHasCachedMail(1);
   }
 
   Timer? _calendarTimer;
@@ -1871,6 +2047,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _calendarTimer?.cancel();
     _calendarDebounce = true;
     keepHomeButtonHidden = false;
+    // Keep existing day lists painted; only show week-nav loading hint.
     setState(() {
       weeksSinceStart = calcPassedWeeks();
       canDoCalendarPaging = false;
@@ -1878,7 +2055,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
 
     try {
-      await fetchCalendar(allowCache: false, silentRefreshIfOnline: true);
+      // Prefer cache paint first so pull-to-refresh never blanks the week.
+      await fetchCalendar(allowCache: true, silentRefreshIfOnline: true);
       setupCalendar(false);
     } catch (e) {
       debugPrint("Hiba az onCalendarRefresh során: $e");
@@ -2027,7 +2205,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Wall-clock across background: Timer often pauses while suspended.
+      api.SessionGuard.checkSessionWallClockOnResume();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _connectivitySubscription?.cancel();
     _calendarTimer?.cancel();
     super.dispose();
@@ -2074,6 +2261,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void switchView(int to){
+    // 0–3 bottom tabs; 4 Payments from drawer.
+    if (to < 0 || to > 4) return;
     if(currentView == to){
       return;
     }
@@ -2104,16 +2293,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               child: MarkbookPageWidget(homePage: this, totalCredits: totalCredits, totalAvg: totalAvg, totalAvg30: totalAvg30,)
           ),
           Visibility(
-              visible: currentView == 2,
-              child: PaymentsPageWidget(homePage: this, totalMoney: totalMoney)
-          ),
-          Visibility(
-            visible: currentView == 3,
+            visible: currentView == 2,
             child: PeriodsPageWidget(homePage: this, currentSemester: currentSemester),
           ),
           Visibility(
-            visible: currentView == 4,
+            visible: currentView == 3,
             child: MailsPageWidget(homePage: this),
+          ),
+          Visibility(
+              visible: currentView == 4,
+              child: PaymentsPageWidget(homePage: this, totalMoney: totalMoney)
           ),
           Visibility(
             visible: currentView == 0 && currentWeekOffset != 1 && canDoCalendarPaging && !keepHomeButtonHidden,
@@ -2259,13 +2448,28 @@ class CalendarPageWidget extends StatelessWidget{
     final lang = AppStrings.getLanguagePack();
     final now = DateTime.now().millisecondsSinceEpoch;
     final until = now + const Duration(hours: 48).inMilliseconds;
-    final next48 = homePage.calendarEntries
-        .where((e) => e.startEpoch >= now && e.startEpoch <= until && !e.isPeriodBanner)
-        .take(6)
-        .toList();
-    final tasks = homePage.calendarEntries.where((e) => e.isTask).take(8).toList();
-    final exams = homePage.calendarEntries.where((e) => e.isExam).take(8).toList();
-    final banners = homePage.calendarEntries.where((e) => e.isPeriodBanner).take(8).toList();
+
+    List<api.CalendarEntry> sorted(Iterable<api.CalendarEntry> src) {
+      final list = src.toList()..sort((a, b) => a.startEpoch.compareTo(b.startEpoch));
+      return list;
+    }
+
+    // Next 48h: classes + exams only (no period banners, no ZH/tasks).
+    final next48 = sorted(homePage.calendarEntries.where((e) =>
+        e.startEpoch >= now &&
+        e.startEpoch <= until &&
+        !e.isPeriodBanner &&
+        !e.isTask)).take(6).toList();
+
+    // Upcoming tasks/ZH from now (not “first 8 in week” regardless of past).
+    final tasks = sorted(homePage.calendarEntries.where((e) => e.isTask && e.startEpoch >= now)).take(8).toList();
+
+    // Upcoming exams from now.
+    final exams = sorted(homePage.calendarEntries.where((e) => e.isExam && e.startEpoch >= now)).take(8).toList();
+
+    // Period banners only in this strip.
+    final banners = sorted(homePage.calendarEntries.where((e) => e.isPeriodBanner)).take(8).toList();
+
     final out = <Widget>[];
     if (next48.isNotEmpty) {
       out.add(_sectionHeader(lang.calendar_next48h_Header));
@@ -2303,6 +2507,7 @@ class CalendarPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              homePage.buildCacheHonestyBanner(),
               ..._extraCalendarSections(),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
@@ -2447,7 +2652,17 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Subjects, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_subjects_CreditsInSemester, [totalCredits]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(
+                homePage: homePage,
+                displayString: AppStrings.getLanguagePack().view_header_Subjects,
+                smallHintText: AppStrings.getStringWithParams(
+                  AppStrings.getLanguagePack().topheader_subjects_CreditsHeader,
+                  [totalCredits, homePage.accumulatedCredits],
+                ),
+                loggedInUsername: storage.DataCache.getUsername()!,
+                loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", ''),
+              ),
+              homePage.buildCacheHonestyBanner(),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -2500,6 +2715,18 @@ class MarkbookPageWidget extends StatelessWidget{
                                           color: AppColors.getTheme().onPrimaryContainer,
                                           fontSize: 14.0,
                                           fontFamily: "Noto Color Emoji"
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        AppStrings.getLanguagePack().markbookPage_AppComputedNote,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: AppColors.getTheme().onPrimaryContainer.withValues(alpha: 0.55),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10.0,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -2659,6 +2886,7 @@ class PaymentsPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Payments, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_payments_TotalMoneySpent, [totalMoney]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              homePage.buildCacheHonestyBanner(),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -2737,6 +2965,7 @@ class PeriodsPageWidget extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Periods, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_periods_MainHeader, [homePage.countActivePeriods, AppStrings.getLanguagePack().topheader_periods_ActiveText, homePage.countFuturePeriods, AppStrings.getLanguagePack().topheader_periods_FutureText, homePage.countExpiredPeriods, AppStrings.getLanguagePack().topheader_periods_ExpiredText]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                homePage.buildCacheHonestyBanner(),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(
@@ -2814,6 +3043,7 @@ class MailsPageWidget extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Messages, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_messages_UnreadMessages, [homePage.unreadMailCount]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                homePage.buildCacheHonestyBanner(),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(

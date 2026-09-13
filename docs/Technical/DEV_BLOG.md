@@ -115,15 +115,68 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - Finished remaining Language Pack audit leftovers in `api_coms`: transport `ErrorMessage` (invalid URL/HTML, network), session-expired JSON via `auth_sessionExpired_PleaseSignIn`, mail preview tap-to-load body, empty Neptun / download-network mail errors (`api_error_*`, `mail_preview_TapToLoadBody` HU/EN + RU/TR). Protocol-matching payment status tokens (`aktív` / `teljesített`) left as API match keys (not UI chrome).
 
+**[2026-09-13, ~08:58]**
+
+- Wrote a prioritized **implementation plan** (docs only, no feature code): [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) / [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md). Order: session+cache → honest markbook → calendar polish → mail search/unread → then parallel (ghost, today/ZH/ICS export/class notif granularity, payments, maps, What’s Changed, semester compare). HAR-gated: academic progress, student card. Widgets last. Indexed from README + TECHNICAL.
+
+**[2026-09-13, ~09:05]**
+
+- Implementation plan: added **1a** (Foundation / session+cache, before item 1 UX polish) — after logout, same-process login can show **false invalid credentials** until the app is killed. Code already clears the in-memory portal jar + `dataWipe`; remaining leftover to verify (device cookie, training-id cache, no portal Logout POST, `_looksLikeInvalidCredentials` matching `invalid` in HTML). Docs only; no Dart fix yet.
+
+**[2026-09-13, ~09:10]**
+
+- Implementation plan: **removed** exam / course registration (vizsgajelentkezés / tárgyjelentkezés) from the backlog. Not planned; do not add signup UI or a HAR walkthrough back. HAR-gated remains academic progress + student card. Former items 13–15 renumbered to 12–14. Docs only; no Dart change.
+
+**[2026-09-13, ~09:20]**
+
+- Inventoried 8 user HARs (not copied into git; secrets redacted) into [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) §4.2 / RU twin. **Bank + profile + student-card claim (NEK/FIR)** field names are now known. **No QR / card number / expiry.** **No tanterv graph** (`taken courses.har` was `RegisteredCourses`; `GetAverages` items empty). Mail extras (archive/sent/settings); finance extras (unpaid list empty, transaction detail); calendar official ICS/webcal URL. Signup XHRs seen in `finances.har` — **seen but not planned**. User did not click every control; missing POSTs expected. Docs only; no Dart.
+
+**[2026-09-13, ~09:30]**
+
+- Live walk of logged-in Chrome HWEB (Apple Events JS; no HAR copied). Confirmed: `/api/GetCurriculums` **404**; Advancement APIs; official average **field names** on `RegistrySheet/GetStudentTrainingTermData`; `TakenSubjects/Terms`; Student Card page has **no QR**; `GetLinksForCalendarExport`. Hard nav to registry-sheet **5002**, recovered via portal Student web. Docs only; no Dart.
+
+**[2026-09-13, ~09:50]**
+
+- Published **Figma UI mockups only** (not Flutter/Android/iOS code): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Page **Android — polished target** = planned polish; page **iOS — current + polish** = today’s TopNavigator + 5-icon BottomNavigator shell with additive strips/labels/search/banner. Owner **Nanda**. Linked from README + TECHNICAL. Docs only.
+
+**[2026-09-13, ~10:00]**
+
+- Product decision (docs/plan only, **no Dart**): **Nav IA** — bottom **Calendar \| Markbook \| Mail**; **Payments** + **Periods** move to left drawer **above Settings**. Code **still has 5 tabs**; Figma may still show 5 — target is 3 + drawer (plan **1c**). **Session 1b:** background ≥10 min must `forceExpiredLogout` on resume — Flutter `Timer` pauses while suspended; store timestamp + check on `AppLifecycleState.resumed`. Synced README / TECHNICAL / IOS_VS_ANDROID / IMPLEMENTATION_PLAN EN+RU. Owner **Nanda**.
+
+**[2026-09-13, ~10:10]**
+
+- **Foundation slice shipped as app version 1.1.0+19** (GitHub baseline was **1.0**; later bugfixes → **1.1.x**, big features → **1.2+**). Dart + docs: **1a** same-process logout → re-login (portal Logout best-effort, wipe `devicecookie_*` + training-id cache, tighten `_looksLikeInvalidCredentials` so HTML `is-invalid` is not “wrong password”). **1b** persisted `SESSION_StartedAtMs` + `HomePage` `WidgetsBindingObserver` resume check → `forceExpiredLogout` if ≥10 min away; re-arm remaining Timer. **1c** bottom = Calendar \| Markbook \| Mail; Payments + Periods drawer entries above Settings (indices 3/4). Owner **Nanda**.
+
+**[2026-09-13, ~10:16]**
+
+- Documented versioning policy EN+RU (TECHNICAL § Versioning, README identity row, IMPLEMENTATION_PLAN release note). `pubspec` **1.1.0+19** (+1 build from **1.0.5+18**); iOS `MARKETING_VERSION` / Android fallback mirrored. Honesty: GitHub “1.0” is the published baseline statement; older checkouts may still show **1.0.x** until this bump lands. Owner **Nanda**.
+
+**[2026-09-13, ~10:20]**
+
+- **Nav IA revised (1c):** bottom = **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** stays drawer-only above Settings. **Contacts** moved from drawer into Settings (bottom); app version via `package_info_plus` shown under Contacts. Synced README / TECHNICAL / IMPLEMENTATION_PLAN / IOS_VS_ANDROID EN+RU. Session **1a**/**1b** unchanged. Owner **Nanda**.
+
+**[2026-09-13, ~10:45]**
+
+- **Foundation items 1–3 shipped:** (1) `sessionWipeKeepCache` on logout/expiry — academic cache kept; all home tabs cache-first + `cache_showingFromCache` banner; no empty-spinner wipe on dead session. (2) `MarkbookMath` — átlag vs **/30** labels; this-term + accumulated completed credits; app-computed note. (3) Calendar strips sorted; next-48h = classes+exams; upcoming tasks/exams from now; period banners strip-only; empty weeks cached. Docs EN+RU + plan status updated. Nav **1c** left intact. Owner **Nanda**.
+
+**[2026-09-13, ~15:00]**
+
+- **Bugfix:** After correct TOTP, ELTE **Student web full** (HWEB capacity) made `submitTwoFactorCode` return bare `false` → setup painted **“Invalid username or password!”**. Fixed: bridge returns `loginStudentWebFull` / `loginServerBusy`; snackbars `loginPage_setupPage_StudentWebFull` / busy; wrong TOTP uses `loginPage_setupPage_2faInvalidCode` without painting password fields. Wrong password still `loginInvalidCredentials`. Docs EN+RU honesty updated. Owner **Nanda**.
+
+**[2026-09-13, ~15:05]**
+
+- **UX:** After TOTP succeeds, show **“Connecting to Student web…”** and retry HWEB bridge ~**7 s** (success → Home immediately; failure → honest full/busy snackbar, not invalid password). Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username, show sign-in again. Still watch edge cases after portal cookie wipe.
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** foundation shipped; next backlog starts at mail item **4**.
+- **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
-- **Large features** (student card, full profile+bank, exam/course registration) — need HAR; not built.
+- **Large features:** student card is **claim-only** (no QR/wallet on `/administrations/student-card`). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Bank + profile fields already captured. Exam / course registration — **not built, not planned**.
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
 
 ---

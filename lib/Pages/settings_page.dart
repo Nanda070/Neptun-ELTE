@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:neptun2/Pages/main_page.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart';
 import '../colors.dart';
 import '../haptics.dart';
@@ -23,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late String _themesCurrSelect;
   late double _currentFontScale;
   List<LangPackMap> _availableLanguages = Language.getAllLanguagesWithNative();
+  String _appVersionLabel = '';
 
   @override
   void initState() {
@@ -39,6 +42,59 @@ class _SettingsPageState extends State<SettingsPage> {
 
     _initLanguageSelection();
     _loadOnlineLanguages();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() {
+        _appVersionLabel = '${info.version}+${info.buildNumber}';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _appVersionLabel = '1.1.0';
+      });
+    }
+  }
+
+  void _showContactsSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.getTheme().rootBackground,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        Widget contactTile(IconData icon, String label, String url) {
+          return ListTile(
+            leading: Icon(icon, color: AppColors.getTheme().textColor),
+            title: Text(label, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            onTap: () {
+              AppHaptics.lightImpact();
+              launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+            },
+          );
+        }
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              contactTile(Icons.code_rounded, 'GitHub: Nanda070', 'https://github.com/Nanda070'),
+              contactTile(Icons.chat_rounded, 'Discord: nandak070', 'https://discord.com/users/nandak070'),
+              contactTile(Icons.send_rounded, 'Telegram: nanda070', 'https://t.me/nanda070'),
+              contactTile(Icons.email_rounded, 'Email', 'mailto:adnan.huseynli1@gmail.com'),
+              contactTile(Icons.language_rounded, 'nanda.is-a.dev', 'https://nanda.is-a.dev/'),
+              contactTile(Icons.language_rounded, 'cheterin.online', 'https://cheterin.online'),
+              contactTile(Icons.language_rounded, 'chetmedia.com', 'https://chetmedia.com'),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _initLanguageSelection() {
@@ -417,6 +473,30 @@ class _SettingsPageState extends State<SettingsPage> {
                 AppHaptics.lightImpact();
                 AppUpdater.checkAndInstallUpdate(context, force: true);
               },
+            ),
+
+          // --- Contacts + app version (bottom of Settings) ---
+          ListTile(
+            leading: Icon(Icons.link_rounded, color: AppColors.getTheme().textColor),
+            title: Text(AppStrings.getLanguagePack().topmenu_buttons_Contacts, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            trailing: Icon(Icons.chevron_right_rounded, color: AppColors.getTheme().textColor.withValues(alpha: 0.4)),
+            onTap: () {
+              AppHaptics.lightImpact();
+              _showContactsSheet();
+            },
+          ),
+          if (_appVersionLabel.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+              child: Text(
+                _appVersionLabel,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.getTheme().textColor.withValues(alpha: 0.45),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
             ),
           const SizedBox(height: 40),
         ],

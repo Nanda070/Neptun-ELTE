@@ -31,16 +31,19 @@ class TopNavigatorWidget extends StatelessWidget{
           if(!homePage.bottomNavCanNavigate){
             return;
           }
+          final base = homePage.currentView < HomePageState.maxBottomNavWidgets
+              ? homePage.currentView
+              : 0;
           if(homePage.bottomNavSwitchValue < -50){
             homePage.bottomNavCanNavigate = false;
-            final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
+            final val = base + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : base + 1;
             homePage.switchView(val);
             AppHaptics.lightImpact();
             return;
           }
           else if(homePage.bottomNavSwitchValue > 50){
             homePage.bottomNavCanNavigate = false;
-            final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
+            final val = base - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : base - 1;
             homePage.switchView(val);
             AppHaptics.lightImpact();
             return;

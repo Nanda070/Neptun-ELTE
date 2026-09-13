@@ -60,9 +60,43 @@ class DataCache{
     await _secureStorage.delete(key: 'neptun_password');
     await _secureStorage.delete(key: 'neptun_jwt_token');
     await _secureStorage.delete(key: 'neptun_refresh_token');
+    // Leftover device cookie can poison same-process re-login (false invalid credentials).
+    if (keepUsername.isNotEmpty) {
+      await setDeviceCookie(keepUsername, null);
+    }
     _instance._localWipe();
     _instance._password = '';
     if (keepUsername.isNotEmpty) {
+      await setUsername(keepUsername);
+    }
+  }
+
+  /// Session expiry / logout: wipe auth only, **keep academic cache** so tabs
+  /// can paint instantly after re-login (plan item 1). Prefer this over [dataWipe]
+  /// unless a full reset is required.
+  static Future<void> sessionWipeKeepCache() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final keepUsername = (_instance._username != null && _instance._username!.isNotEmpty)
+        ? _instance._username!
+        : (await getString('Username') ?? '');
+
+    await _secureStorage.delete(key: 'neptun_password');
+    await _secureStorage.delete(key: 'neptun_jwt_token');
+    await _secureStorage.delete(key: 'neptun_refresh_token');
+    await prefs.remove('Password');
+    await prefs.remove('AccessToken');
+    await prefs.setInt('HasLogin', 0);
+    await prefs.setInt('SESSION_StartedAtMs', 0);
+    if (keepUsername.isNotEmpty) {
+      await setDeviceCookie(keepUsername, null);
+    }
+
+    _instance._password = '';
+    _instance._accessToken = '';
+    _instance._refreshToken = '';
+    _instance._hasLogin = false;
+    if (keepUsername.isNotEmpty) {
+      _instance._username = keepUsername;
       await setUsername(keepUsername);
     }
   }

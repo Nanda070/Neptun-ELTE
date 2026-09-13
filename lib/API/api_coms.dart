@@ -19,6 +19,9 @@ class SessionGuard {
   /// Independent of JWT refresh — aligns roughly with short-lived Neptun access tokens (~10–15 min).
   static const Duration sessionWallClockLimit = Duration(minutes: 10);
 
+  /// Persisted epoch ms so background suspend (paused Timer) still counts as wall clock.
+  static const String _sessionStartedAtPrefsKey = 'SESSION_StartedAtMs';
+
   static bool _authBlocked = false;
   static bool _handlingExpired = false;
   static String? _pendingUserMessage;
@@ -44,13 +47,29 @@ class SessionGuard {
 
   /// Start / restart the 10-minute wall clock from main-session entry (after login or cold start into Home).
   /// Does **not** restart on token refresh — only on a new participant session.
+  /// Stores wall-clock timestamp so background time still counts (Timer alone pauses while suspended).
   static void startSessionWallClock() {
     cancelSessionWallClock();
     _sessionStartedAt = DateTime.now();
-    final remaining = sessionWallClockLimit;
+    // Fire-and-forget persist; Timer uses in-memory stamp.
+    storage.saveInt(_sessionStartedAtPrefsKey, _sessionStartedAt!.millisecondsSinceEpoch);
+    _armSessionWallTimer();
+  }
+
+  static void _armSessionWallTimer() {
+    _sessionWallTimer?.cancel();
+    _sessionWallTimer = null;
+    final started = _sessionStartedAt;
+    if (started == null) return;
+    final remaining = sessionWallClockLimit - DateTime.now().difference(started);
+    if (remaining <= Duration.zero) {
+      debug.log('SessionGuard: wall-clock already expired — forceExpiredLogout');
+      forceExpiredLogout();
+      return;
+    }
     debug.log(
-      'SessionGuard: wall-clock logout in ${remaining.inMinutes} min '
-      '(from $_sessionStartedAt)',
+      'SessionGuard: wall-clock logout in ${remaining.inSeconds}s '
+      '(from $started)',
     );
     _sessionWallTimer = Timer(remaining, () {
       debug.log('SessionGuard: wall-clock expired — forceExpiredLogout');
@@ -62,15 +81,50 @@ class SessionGuard {
     _sessionWallTimer?.cancel();
     _sessionWallTimer = null;
     _sessionStartedAt = null;
+    storage.saveInt(_sessionStartedAtPrefsKey, 0);
+  }
+
+  /// Call on [AppLifecycleState.resumed]. If background/suspend time pushed the
+  /// session past 10 minutes, force logout; otherwise re-arm the foreground Timer
+  /// for the remaining wall-clock time (Timers often pause while backgrounded).
+  static Future<void> checkSessionWallClockOnResume() async {
+    if (_handlingExpired || _authBlocked) return;
+    DateTime? started = _sessionStartedAt;
+    if (started == null) {
+      final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+      if (ms != null && ms > 0) {
+        started = DateTime.fromMillisecondsSinceEpoch(ms);
+        _sessionStartedAt = started;
+      }
+    }
+    if (started == null) return;
+    final elapsed = DateTime.now().difference(started);
+    if (elapsed >= sessionWallClockLimit) {
+      debug.log(
+        'SessionGuard: resume after ${elapsed.inMinutes} min — forceExpiredLogout',
+      );
+      await forceExpiredLogout();
+      return;
+    }
+    _armSessionWallTimer();
+  }
+
+  /// Full auth leftover wipe shared by manual + expired logout (and login start).
+  /// Keeps academic cache (calendar / markbook / mail / payments / periods / terms)
+  /// so home surfaces can show last data after re-login (plan item 1).
+  static Future<void> _wipeAuthLeftovers() async {
+    _APIRequest.resetRefreshLock();
+    await InstitutesRequest.eltePortalLogoutBestEffort();
+    InstitutesRequest.resetEltePortalState();
+    CalendarRequest.clearTrainingIdCache();
+    await storage.DataCache.sessionWipeKeepCache();
   }
 
   /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
   static Future<void> userInitiatedLogout() async {
     cancelSessionWallClock();
     _authBlocked = true;
-    _APIRequest.resetRefreshLock();
-    InstitutesRequest.resetEltePortalState();
-    await storage.DataCache.dataWipe();
+    await _wipeAuthLeftovers();
   }
 
   /// Access token dead and refresh/silent re-auth cannot restore session,
@@ -80,12 +134,10 @@ class SessionGuard {
     _handlingExpired = true;
     cancelSessionWallClock();
     _authBlocked = true;
-    _APIRequest.resetRefreshLock();
-    InstitutesRequest.resetEltePortalState();
     final msg = AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
     _pendingUserMessage = msg;
     try {
-      await storage.DataCache.dataWipe();
+      await _wipeAuthLeftovers();
     } catch (e) {
       debug.log('forceExpiredLogout wipe error: $e');
     }
@@ -555,11 +607,13 @@ class SessionGuard {
     }
 
     /// Login result codes for modern/old auth.
-    /// 1 = success, 2 = 2FA required, 0 = invalid credentials, 3 = server/network busy.
+    /// 1 = success, 2 = 2FA required, 0 = invalid credentials, 3 = server/network busy,
+    /// 4 = Student web (HWEB) capacity full — not a bad password / TOTP.
     static const int loginOk = 1;
     static const int loginNeeds2fa = 2;
     static const int loginInvalidCredentials = 0;
     static const int loginServerBusy = 3;
+    static const int loginStudentWebFull = 4;
 
     /// Hub is ELTE-only. Portal + JWT API base (not Obuda/BME `/ujhallgato`).
     /// HWEB SPA is load-balanced across hallgato1…N.neptun.elte.hu — never hardcode a node as login base.
@@ -613,6 +667,25 @@ class SessionGuard {
       _elteClearPortal2fa();
       _elteHasTotp = true;
       _elteHasEmail = true;
+    }
+
+    /// Best-effort portal Logout so the server session dies before jar wipe.
+    /// Failures are ignored — local wipe still proceeds.
+    static Future<void> eltePortalLogoutBestEffort() async {
+      if (_elteCookies.isEmpty) return;
+      try {
+        final get = await _elteSend('GET', Uri.parse('$elteNeptunBaseUrl/Account/Logout'));
+        final token = _elteExtractAntiforgery(get.body);
+        if (token != null && token.isNotEmpty) {
+          await _elteSend(
+            'POST',
+            Uri.parse('$elteNeptunBaseUrl/Account/Logout'),
+            body: _elteFormEncode({'__RequestVerificationToken': token}),
+          );
+        }
+      } catch (e) {
+        debug.log('ELTE portal logout best-effort: $e');
+      }
     }
 
     // --- ELTE portal (Potlap) → Student web OuterLogin (from live HAR Sep 2026) ---
@@ -803,8 +876,7 @@ class SessionGuard {
 
         if (loginPost.status == 302 &&
             (loc == '/' || loc.isEmpty || loc == elteNeptunBaseUrl || loc.endsWith('neptun.elte.hu/'))) {
-          final bridged = await _elteBridgeToHweb();
-          return bridged ? loginOk : loginServerBusy;
+          return await _elteBridgeToHwebWithRetry();
         }
 
         if (loginPost.status == 200) {
@@ -815,10 +887,20 @@ class SessionGuard {
             return loginInvalidCredentials;
           }
           final lower = loginPost.body.toLowerCase();
-          if (lower.contains('field-validation-error') ||
-              lower.contains('validation-summary-errors') ||
-              lower.contains('login was unsuccessful') ||
-              lower.contains('sikertelen')) {
+          if (lower.contains('login was unsuccessful') ||
+              lower.contains('sikertelen bejelentkez')) {
+            return loginInvalidCredentials;
+          }
+          // Validation summary only counts if it mentions credentials / password.
+          if ((lower.contains('field-validation-error') ||
+                  lower.contains('validation-summary-errors')) &&
+              (lower.contains('password') ||
+                  lower.contains('jelszó') ||
+                  lower.contains('jelszo') ||
+                  lower.contains('felhasználó') ||
+                  lower.contains('felhasznalo') ||
+                  lower.contains('loginname') ||
+                  lower.contains('credentials'))) {
             return loginInvalidCredentials;
           }
           return loginServerBusy;
@@ -841,21 +923,38 @@ class SessionGuard {
       }
     }
 
+    /// Portal / HWEB HTML that means capacity full (not bad password).
+    static bool _elteLooksLikeStudentWebFull(String html) {
+      final lower = html.toLowerCase();
+      return lower.contains('student web is full') ||
+          lower.contains('neptun student web is full') ||
+          lower.contains('hallgatói web megtelt') ||
+          lower.contains('hallgatoi web megtelt') ||
+          lower.contains('nincs szabad') ||
+          lower.contains('web megtelt') ||
+          (lower.contains('megtelt') && lower.contains('web')) ||
+          (lower.contains('capacity') && lower.contains('full'));
+    }
+
     /// After portal session: POST ToNeptunHWeb → hallgatoN/outerlogin?GUID= → OuterLogin JWT.
-    static Future<bool> _elteBridgeToHweb() async {
+    /// Returns [loginOk], [loginStudentWebFull], or [loginServerBusy] — never invalid credentials.
+    static Future<int> _elteBridgeToHweb() async {
       try {
         final page = await _elteSend('GET', Uri.parse('$elteNeptunBaseUrl/ToNeptunWeb/ToNeptunHWeb'));
         final html = page.body;
-        if (html.toLowerCase().contains('student web is full') ||
-            html.toLowerCase().contains('hallgatói web megtelt') ||
-            html.toLowerCase().contains('neptun student web is full')) {
+        if (_elteLooksLikeStudentWebFull(html)) {
           debug.log('ELTE HWEB bridge: student web is full');
           // ignore: avoid_print
           print('ELTE HWEB bridge: student web is full');
-          return false;
+          return loginStudentWebFull;
         }
         final token = _elteExtractAntiforgery(html);
-        if (token == null) return false;
+        if (token == null) {
+          // ignore: avoid_print
+          print('ELTE HWEB bridge: no antiforgery (status=${page.status} bodyLen=${html.length})');
+          if (_elteLooksLikeStudentWebFull(html)) return loginStudentWebFull;
+          return loginServerBusy;
+        }
 
         final post = await _elteSend(
           'POST',
@@ -867,15 +966,20 @@ class SessionGuard {
           }),
         );
         final loc = post.location;
+        if (_elteLooksLikeStudentWebFull(post.body)) {
+          // ignore: avoid_print
+          print('ELTE HWEB bridge POST: student web is full');
+          return loginStudentWebFull;
+        }
         if (post.status != 302 || !loc.contains('outerlogin')) {
           debug.log('ELTE HWEB bridge: unexpected status=${post.status} loc=$loc');
           // ignore: avoid_print
           print('ELTE HWEB bridge: unexpected status=${post.status} loc=$loc');
-          return false;
+          return loginServerBusy;
         }
         final outer = Uri.parse(loc);
         final guid = outer.queryParameters['GUID'] ?? outer.queryParameters['guid'];
-        if (guid == null || guid.isEmpty) return false;
+        if (guid == null || guid.isEmpty) return loginServerBusy;
         final lcid = AppStrings.getNeptunLcid();
         final hwebBase = '${outer.scheme}://${outer.host}';
 
@@ -903,12 +1007,13 @@ class SessionGuard {
             debug.log('OuterLogin status=${res.statusCode} body=${raw.substring(0, raw.length.clamp(0, 200))}');
             // ignore: avoid_print
             print('OuterLogin status=${res.statusCode}');
-            return false;
+            if (_elteLooksLikeStudentWebFull(raw)) return loginStudentWebFull;
+            return loginServerBusy;
           }
           final decoded = conv.jsonDecode(raw);
           final data = decoded is Map ? decoded['data'] : null;
           final access = data is Map ? data['accessToken']?.toString() : null;
-          if (access == null || access.isEmpty) return false;
+          if (access == null || access.isEmpty) return loginServerBusy;
           await storage.DataCache.setAccessToken(access);
           // Persist refresh JWT if OuterLogin returns it or sets it via Set-Cookie
           final refreshFromBody = data is Map ? data['refreshToken']?.toString() : null;
@@ -929,7 +1034,7 @@ class SessionGuard {
           SessionGuard.clearAuthBlock();
           // ignore: avoid_print
           print('ELTE OuterLogin OK host=$hwebBase');
-          return true;
+          return loginOk;
         } finally {
           client.close(force: true);
         }
@@ -937,17 +1042,53 @@ class SessionGuard {
         debug.log('ELTE HWEB bridge error: $e');
         // ignore: avoid_print
         print('ELTE HWEB bridge error: $e');
-        return false;
+        return loginServerBusy;
       }
     }
 
-    static Future<bool> _submitEltePortal2fa(String code) async {
+    /// Retry ToNeptunHWeb / OuterLogin for ~[window] while Student web is full/flaky.
+    /// Returns [loginOk] as soon as JWT is obtained (no forced wait). On persistent
+    /// failure returns [loginStudentWebFull] if any attempt saw capacity full,
+    /// otherwise [loginServerBusy].
+    static Future<int> _elteBridgeToHwebWithRetry({
+      Duration window = const Duration(seconds: 7),
+      Duration pauseBetween = const Duration(milliseconds: 1500),
+    }) async {
+      final deadline = DateTime.now().add(window);
+      var last = loginServerBusy;
+      var sawFull = false;
+      var attempt = 0;
+      while (true) {
+        attempt++;
+        last = await _elteBridgeToHweb();
+        // ignore: avoid_print
+        print('ELTE HWEB bridge attempt=$attempt result=$last');
+        if (last == loginOk) return loginOk;
+        if (last == loginStudentWebFull) sawFull = true;
+        final remaining = deadline.difference(DateTime.now());
+        if (remaining <= Duration.zero) break;
+        final sleep = pauseBetween < remaining ? pauseBetween : remaining;
+        if (sleep <= Duration.zero) break;
+        await Future.delayed(sleep);
+      }
+      return sawFull ? loginStudentWebFull : last;
+    }
+
+    /// Portal Login2FA → bridge. Returns loginOk / loginInvalidCredentials (bad TOTP) /
+    /// loginStudentWebFull / loginServerBusy — never conflates full with bad password.
+    /// [onBridging] fires after TOTP succeeds and before the HWEB retry window.
+    static Future<int> _submitEltePortal2fa(
+      String code, {
+      void Function()? onBridging,
+    }) async {
       try {
         if (!_eltePortal2faPending ||
             _elte2faKey == null ||
             _elte2faNeptunCode == null ||
             _elteAntiforgery == null) {
-          return false;
+          // ignore: avoid_print
+          print('ELTE 2FA submit: missing pending state');
+          return loginServerBusy;
         }
         final trimmed = code.trim();
         final rendered = _elte2faRendered ?? DateTime.now().toIso8601String();
@@ -978,9 +1119,25 @@ class SessionGuard {
         );
         final loc = post.location;
         final body = post.body;
+        // ignore: avoid_print
+        print('ELTE 2FA POST status=${post.status} loc=$loc cookies=${_elteCookies.length}');
 
-        if (post.status == 302 && (loc == '/' || loc.endsWith('/') || loc.isEmpty)) {
-          return await _elteBridgeToHweb();
+        if (_elteLooksLikeStudentWebFull(body)) {
+          onBridging?.call();
+          return await _elteBridgeToHwebWithRetry();
+        }
+
+        // Success: portal home (same shapes as password-only login redirect).
+        final authOk = post.status == 302 &&
+            (loc == '/' ||
+                loc.isEmpty ||
+                loc == elteNeptunBaseUrl ||
+                loc.endsWith('/') ||
+                loc.toLowerCase().endsWith('neptun.elte.hu') ||
+                loc.toLowerCase().endsWith('neptun.elte.hu/'));
+        if (authOk) {
+          onBridging?.call();
+          return await _elteBridgeToHwebWithRetry();
         }
 
         if (post.status == 200) {
@@ -992,14 +1149,15 @@ class SessionGuard {
           }
           final token = _elteExtractAntiforgery(body);
           if (token != null) _elteAntiforgery = token;
-          return false;
+          // Form redisplay → wrong / expired TOTP (not username/password).
+          return loginInvalidCredentials;
         }
-        return false;
+        return loginServerBusy;
       } catch (e) {
         debug.log('ELTE portal 2FA error: $e');
         // ignore: avoid_print
         print('ELTE portal 2FA error: $e');
-        return false;
+        return loginServerBusy;
       }
     }
 
@@ -1105,13 +1263,46 @@ class SessionGuard {
       return statusCode == 202 && data['twoFactorLoginToken'] != null;
     }
 
+    /// True only when the portal/API actually reports a wrong password.
+    /// Do **not** match bare substring `invalid` on full login HTML (`is-invalid` CSS, scripts).
     static bool _looksLikeInvalidCredentials(String body, int statusCode) {
       if (statusCode == 401 || statusCode == 403) return true;
       final lower = body.toLowerCase();
+
+      // Explicit wrong-password / failed-login phrases (EN + HU).
+      if (lower.contains('wrong password') ||
+          lower.contains('invalid username') ||
+          lower.contains('invalid password') ||
+          lower.contains('invalid credentials') ||
+          lower.contains('invalid user') ||
+          lower.contains('username or password') ||
+          lower.contains('login was unsuccessful') ||
+          lower.contains('sikertelen bejelentkez') ||
+          lower.contains('hibás felhasználó') ||
+          lower.contains('hibas felhasznalo') ||
+          lower.contains('hibás jelszó') ||
+          lower.contains('hibas jelszo') ||
+          lower.contains('érvénytelen felhasználó') ||
+          lower.contains('ervenytelen felhasznalo') ||
+          lower.contains('érvénytelen jelszó') ||
+          lower.contains('ervenytelen jelszo') ||
+          lower.contains('érvénytelen bejelentkez') ||
+          lower.contains('ervenytelen bejelentkez')) {
+        return true;
+      }
+
+      // Short JSON / plain error bodies may still say "invalid" / "hibás".
+      // Full HTML login pages must not — `is-invalid` / scripts cause false positives.
+      final looksLikeHtml = lower.contains('<html') ||
+          lower.contains('<!doctype') ||
+          lower.contains('name="loginname"') ||
+          lower.contains("name='loginname'") ||
+          lower.contains('__requestverificationtoken');
+      if (looksLikeHtml) return false;
+
       return lower.contains('érvénytelen') ||
           lower.contains('ervenytelen') ||
           lower.contains('invalid') ||
-          lower.contains('wrong password') ||
           lower.contains('hibás') ||
           lower.contains('hibas');
     }
@@ -1216,13 +1407,18 @@ class SessionGuard {
     }
 
 
-    static Future<bool> submitTwoFactorCode(String username, String password, String code) async {
+    static Future<int> submitTwoFactorCode(
+      String username,
+      String password,
+      String code, {
+      void Function()? onBridging,
+    }) async {
       if (_eltePortal2faPending) {
-        return _submitEltePortal2fa(code);
+        return _submitEltePortal2fa(code, onBridging: onBridging);
       }
       try {
         String baseUrl = normalizeModernApiBaseUrl(storage.DataCache.getInstituteUrl() ?? '');
-        if (baseUrl.isEmpty) return false;
+        if (baseUrl.isEmpty) return loginServerBusy;
 
         final url = Uri.parse("$baseUrl/api/Account/Authenticate");
         final body = conv.jsonEncode({
@@ -1253,7 +1449,7 @@ class SessionGuard {
           timeout: const Duration(seconds: 35),
         );
         final rawBody = responseRaw.body.trim();
-        if (rawBody.isEmpty) return false;
+        if (rawBody.isEmpty) return loginServerBusy;
 
         final response = conv.jsonDecode(rawBody);
 
@@ -1264,10 +1460,13 @@ class SessionGuard {
           await storage.DataCache.setAccessToken(response["data"]["accessToken"]);
           await storage.DataCache.setIsModernApi(true);
           await storage.DataCache.setInstituteUrl(baseUrl);
-          return true;
+          return loginOk;
+        }
+        if (_looksLikeInvalidCredentials(rawBody, responseRaw.statusCode)) {
+          return loginInvalidCredentials;
         }
       } catch (e) { }
-      return false;
+      return loginServerBusy;
     }
     static Future<bool> _tryOldLogin(String baseUrl, String username, String password) async {
       try {
@@ -2334,11 +2533,16 @@ class MarkbookRequest{
   }
 
   /// Grade history: TakenSubjects for every known term (capped).
+  /// Skips the walk when session is blocked (plan item 1 — no multi-term fetch on dead JWT).
   static Future<List<({String termName, Subject subject})>> getGradeHistoryAcrossTerms({int maxTerms = 8}) async {
+    if (SessionGuard.isAuthBlocked || !storage.DataCache.getHasNetwork()) {
+      return [];
+    }
     final terms = await TermsRequest.getTerms();
     final out = <({String termName, Subject subject})>[];
     final slice = terms.length > maxTerms ? terms.sublist(terms.length - maxTerms) : terms;
     for (final t in slice.reversed) {
+      if (SessionGuard.isAuthBlocked) break;
       final list = await getMarkbookSubjects(termId: t.id);
       if (list == null) continue;
       for (final s in list) {

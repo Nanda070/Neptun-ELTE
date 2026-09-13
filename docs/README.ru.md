@@ -7,6 +7,7 @@
 | **Владелец и разработчик** | **Nanda** |
 | **Хаб** | только ELTE (`https://neptun.elte.hu`) — без списка вузов |
 | **Имя на экране** | Neptun ELTE |
+| **Версия** | **1.1.0+19** — базовая линия GitHub **1.0**; эта линия foundation/nav/polish — **1.1**; патчи **1.1.x**; следующие крупные фичи **1.2+** ([полная политика](Technical/TECHNICAL.ru.md#версионирование)) |
 | **Платформы** | Android · iOS |
 | **Языки** | английский (по умолчанию) · венгерский · русский · турецкий |
 | **Репозиторий** | [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE) |
@@ -14,7 +15,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Баг--репорты-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · ⚖️ [Legal](#legal--юридические-документы)
+> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📋 [План реализации](Technical/IMPLEMENTATION_PLAN.ru.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · 🎨 [UI-макеты (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal--юридические-документы)
 
 ---
 
@@ -35,14 +36,15 @@
 
 - **Хаб только ELTE** — вход на портал `neptun.elte.hu` (HWEB SPA — `hallgatoN.neptun.elte.hu` после Student web; не `/ujhallgato` как у Óbuda/BME)
 - **Логин как на сайте** — Neptun ID + пароль → 2FA (TOTP; email OTP на сайте может быть тоньше в приложении) → student API
-- **Расписание** — неделя **пн–вс** (без «протекания» следующего понедельника); локализованные чипы перерыва в тот же день; полосы ближайшие 48 ч / задания / экзамены / баннеры периодов; фильтры календаря в настройках; переключатель обучения при нескольких training
-- **Зачётная книжка (Предметы)** — взятые предметы с кодами, кредиты и оценки; мои курсы + история оценок по семестрам
+- **Расписание** — неделя **пн–вс** (без «протекания» следующего понедельника); локализованные чипы перерыва в тот же день; полоса 48 ч = пары+экзамены; ZH и экзамены — ближайшие от сейчас; баннеры периодов только в полосе периодов; фильтры календаря в настройках; переключатель обучения при нескольких training
+- **Зачётная книжка (Предметы)** — взятые предметы с кодами, кредиты и оценки; **átlag** (взвешенный кредитами) и **/30** (тот же числитель÷30, не átlag÷30); кредиты семестра + накопленные сданные; пометка «счёт приложения»; мои курсы + история оценок по семестрам
 - **Сообщения** — входящие Neptun; полная ветка; опциональный машинный перевод HU→EN/RU (может быть неточным)
-- **Платежи** — оплаты, сроки, collective invoices / баланс (UI локализован; часть серверных названий может оставаться на венгерском)
-- **Периоды** — регистрация и учебные периоды
+- **Платежи** — оплаты, сроки, collective invoices / баланс (drawer над Settings; UI локализован; часть серверных названий может оставаться на венгерском)
+- **Периоды** — регистрация и учебные периоды (нижняя вкладка)
+- **Навигация** — снизу **Calendar \| Markbook \| Periods \| Mail**. **Payments** в левом drawer **над Settings**. Contacts + версия приложения — внизу Settings (п. **1c**). Макеты Figma могут ещё показывать 5 вкладок — в приложении IA: **4** снизу + Payments в drawer.
 - **Темы и языки** — Light / Dark; EN / HU встроены, RU / TR скачиваются с GitHub
 - **Уведомления** — локальные (занятия, экзамены, платежи, периоды); без push-сервера автора
-- **Сессия** — автовыход по **10-минутному** wall-clock после входа в основную (participant) сессию, плюс истечение JWT / провал refresh → принудительный выход + повторный вход (логин сохраняется; без тихого portal re-auth; refresh может работать до срабатывания таймера)
+- **Сессия** — автовыход по **10-минутному** wall-clock после входа в основную (participant) сессию (foreground `Timer` + сохранённый timestamp на `AppLifecycleState.resumed`, фон ≥10 мин тоже выкидывает — **1b**), плюс истечение JWT / провал refresh → принудительный выход + повторный вход (логин сохраняется; **учебный кэш сохраняется** — вкладки сразу из кэша — **1**; баннер «из кэша» при stale/offline). Без тихого portal re-auth. Logout → повторный вход с верным паролем в том же процессе без убийства приложения (**1a**).
 - **Профиль в drawer** — приветствие с полным именем из `UserInfo` + код Neptun; **фото профиля** из `userAvatar` / `GetUserAvatar` (base64 JPEG, локальный кэш; инициалы при отсутствии/ошибке); без training ID под именем; переключатель обучения при нескольких training
 - **Без собственного бэкенда** — устройство говорит с Neptun (+ опционально GitHub raw для языков/конфига)
 
@@ -116,8 +118,13 @@ iOS-шпаргалка — в Technical §14 (отдельного `DEVELOPER.md
 | README (EN) | [`docs/README.md`](README.md) |
 | Техническая (RU) | [`docs/Technical/TECHNICAL.ru.md`](Technical/TECHNICAL.ru.md) |
 | Technical (EN) | [`docs/Technical/TECHNICAL.md`](Technical/TECHNICAL.md) |
+| iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
+| iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
+| План реализации (RU) | [`docs/Technical/IMPLEMENTATION_PLAN.ru.md`](Technical/IMPLEMENTATION_PLAN.ru.md) |
+| Implementation plan (EN) | [`docs/Technical/IMPLEMENTATION_PLAN.md`](Technical/IMPLEMENTATION_PLAN.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
+| UI-макеты (Figma) | [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — только Figma (не Flutter). Макеты могут ещё показывать **5** нижних вкладок; **в приложении IA** — **4** (Calendar \| Markbook \| Periods \| Mail) + Payments в drawer. Android = целевой polish; iOS = текущая оболочка + аддитивные поля. Владелец **Nanda** |
 | Лицензия (канон) | [`docs/LICENSE`](LICENSE) |
 | Короткий указатель в корне | [`README.md`](../README.md) |
 

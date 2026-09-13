@@ -1,6 +1,6 @@
 # Neptun ELTE — техническая документация
 
-> 🇬🇧 [English](TECHNICAL.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
+> 🇬🇧 [English](TECHNICAL.md) · 📋 [План реализации (RU)](IMPLEMENTATION_PLAN.ru.md) · [EN](IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android (RU)](IOS_VS_ANDROID.ru.md) · [EN](IOS_VS_ANDROID.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
 
 > **Аудитория:** разработчики и люди с доступом к репозиторию.  
 > Файл только в git (`docs/Technical/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
@@ -11,21 +11,24 @@
 **Владелец и разработчик:** **Nanda** (полное юридическое имя — только в Legal).
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
+Бэклог реализации (не сделано): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
-Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.
+Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
+Матрица платформ (что есть/нет на каждой ОС): [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md) / [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md).  
+UI-макеты (Figma, не код приложения): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = целевой polish; **iOS** = текущая оболочка Flutter + аддитивные поля из плана. Макеты могут ещё показывать **5** нижних вкладок; **в приложении IA** — **4** (Calendar \| Markbook \| Periods \| Mail) + Payments в drawer над Settings (п. **1c**). Владелец **Nanda**.
 
 ---
 
 ## Оглавление
 
-1. [Обзор продукта](#1-обзор-продукта)
+1. [Обзор продукта](#1-обзор-продукта) — [Версионирование](#версионирование)
 2. [Репозиторий](#2-репозиторий)
 3. [Стек](#3-стек)
 4. [Архитектура и поток запросов](#4-архитектура-и-поток-запросов)
 5. [Экраны](#5-экраны)
 6. [Setup / вход](#6-setup--вход)
-7. [Home tabs (5 вкладок)](#7-home-tabs-5-вкладок)
+7. [Home tabs (5 сегодня; план 3 + drawer)](#7-home-tabs-5-сегодня-план-3--drawer)
 8. [API Neptun](#8-api-neptun)
 9. [Auth, 2FA, токены](#9-auth-2fa-токены)
 10. [Доменные возможности](#10-доменные-возможности)
@@ -52,13 +55,27 @@ Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [У�
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Мобильный клиент логинится и зовёт modern JWT API на **`https://neptun.elte.hu`**, не конкретный `hallgatoN`.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.0.5+18**.
+- Версия (`pubspec.yaml`): **1.1.0+19** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
 - Это **не** официальное приложение SDA/ELTE и **не** App Store / Play production-бренд.
 
 Репозиторий: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Продукт независимый; прошлые авторы указаны только в credits.
+
+### Версионирование
+
+Политика владельца (**Nanda**). Формат Flutter: `x.y.z+build` в `pubspec.yaml` (`build-name` + `build-number`). Android `versionName` / iOS `CFBundleShortVersionString` берут `build-name`; номер сборки магазина — `build-number` (+N, увеличивать на каждый shippable build).
+
+| Линия | Смысл |
+|-------|--------|
+| **1.0** | То, что сейчас на GitHub как опубликованная базовая линия (утверждение пользователя о текущей публичной линии до этого обновления). Старые деревья / теги могут ещё показывать **1.0.5+18**, пока этот bump не закоммичен и не отгружен. |
+| **1.1.0** | **Это** обновление: foundation **1a** / **1b**, nav IA **1c** (4 нижние вкладки + Payments в drawer; Contacts + версия в Settings) и polish-пакет при отгрузке. |
+| **1.1.x** | Багфиксы / мелкие правки на линии 1.1 (напр. **1.1.1**). |
+| **1.2**, **1.3**, … | Следующие **крупные** feature-релизы. |
+| **1.2.1**, **1.2.2**, … | Патчи внутри этой major.minor линии. |
+
+При релизе поднимать `pubspec.yaml` (и зеркала iOS `MARKETING_VERSION` / Android fallback, если есть). Не заводить параллельную схему в UI-строках.
 
 ---
 
@@ -86,7 +103,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Полный продуктовый README
 │   ├── LICENSE                    # Канонический LGPL-3.0-only
-│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Только Android debug APK
@@ -102,7 +119,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | Полная техническая документация + Dev Blog (EN + RU) |
+| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
@@ -170,10 +187,12 @@ Neptun-ELTE/
 | `SetupPageURLInput` | Старый ручной URL (на хабе не показывается) |
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
-| `HomePage` (`lib/Pages/main_page.dart`) | 5 вкладок после входа |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training, настройки, апдейт (Android), выход |
+| `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + версия приложения (`package_info_plus`, напр. `1.1.0+19`) внизу |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
+
+**Макеты в Figma (только дизайн — без правок Flutter из этого файла):** [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Страницы: `Android — polished target` и `iOS — current + polish`. Макеты могут ещё показывать **5-tab** icon nav; **в приложении IA** — снизу **Calendar \| Markbook \| Periods \| Mail** + Payments в drawer над Settings (п. **1c**).
 
 ---
 
@@ -213,7 +232,7 @@ UI setup:
 4. При 2FA — **6 цифр TOTP**, затем OuterLogin на hallgato.
 5. Демо: `DEMO` / `DEMO`.
 
-**Честность:** ELTE-логин = **портал Potlap + OuterLogin**, не JWT Authenticate на `neptun.elte.hu`. Email OTP известен по HAR; в UI пока акцент на TOTP. Если Student web **full** — мост после 2FA не пройдёт.
+**Честность:** ELTE-логин = **портал Potlap + OuterLogin**, не JWT Authenticate на `neptun.elte.hu`. Email OTP известен по HAR; в UI пока акцент на TOTP. Если Student web **full** — мост после 2FA не пройдёт; UI показывает `loginStudentWebFull`, **не** «неверный пароль».
 
 Константы: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -225,8 +244,11 @@ UI setup:
 | `2` | `loginNeeds2fa` | Popup mode 9 (6 цифр TOTP) |
 | `0` | `loginInvalidCredentials` | Красные поля, «Invalid username or password!» |
 | `3` | `loginServerBusy` | Snackbar «Neptun servers are having a hard time...» — **не** неверный пароль |
+| `4` | `loginStudentWebFull` | Snackbar «Студенческий веб переполнен. Попробуйте позже.» — **не** неверный пароль / TOTP |
 
 Таймаут modern login: **20 с** на кандидата. Пустой ответ / 5xx / timeout / HTML → `loginServerBusy`.
+
+**Честность — Student web full после 2FA:** Верный пароль + верный TOTP всё равно могут не пустить на `ToNeptunHWeb` / OuterLogin, когда ёмкость HWEB ELTE исчерпана («Neptun student web is full» / megtelt / «nincs szabad»). Раньше это выглядело как **неверный логин/пароль**, потому что `submitTwoFactorCode` возвращал голый `false`, а setup красил `_paintRed`. Теперь после успеха TOTP UI показывает **«Подключение к студенческому вебу…»** и ~**7 с** ретраит мост; успех → сразу Home; устойчивый full/busy → snackbar `loginStudentWebFull` / busy — учётные данные при этом верные.
 
 ### Нормализация URL (ELTE)
 
@@ -240,17 +262,21 @@ UI setup:
 
 ---
 
-## 7. Home tabs (5 вкладок)
+## 7. Home tabs (4 снизу + Payments в drawer)
 
-`HomePageState` + `BottomNavigatorWidget`. Свайп влево/вправо. **Named routes нет.**
+`HomePageState` + `BottomNavigatorWidget`. Свайп влево/вправо среди нижних вкладок (`maxBottomNavWidgets = 4`). **Named routes нет.**
 
-| Index | Иконка | Содержание |
-|-------|--------|------------|
-| 0 | calendar | Недельное расписание, пары/экзамены |
-| 1 | backpack | Зачётка: кредиты, средний, ghost grade |
-| 2 | price_change | Начисления, дедлайны; в drawer — баланс |
-| 3 | timer | Периоды (регистрация, экзамены, запись) |
-| 4 | email | Входящие, непрочитанные, mark read |
+**Код сегодня:**
+
+| Index | Поверхность | Содержание |
+|-------|-------------|------------|
+| 0 | снизу | Calendar — недельное расписание, пары/экзамены |
+| 1 | снизу | Markbook (Subjects) — кредиты, средний, ghost grade |
+| 2 | снизу | Periods — регистрация, экзамены, запись |
+| 3 | снизу | Mail / Messages — входящие, непрочитанные, mark read |
+| 4 | только drawer | Payments — начисления и дедлайны; в drawer также баланс |
+
+**Nav IA (п. 1c):** снизу **Calendar \| Markbook \| Periods \| Mail**; **Payments** — в левый drawer **над Settings**. Contacts + версия приложения — внизу Settings (не в drawer).
 
 Семестр: `getSelectedTermId()` / `getSelectedTermName()`, список терминов кэшируется.
 
@@ -287,7 +313,7 @@ UI setup:
 | Логин / 2FA | `POST /api/Account/Authenticate` |
 | Refresh | `POST /api/Account/GetNewTokens` |
 | Тренинги | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
-| Аватар | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG); `/api/General/GetUserAvatar?imageSizeType=Normal` (больший base64 JPEG) |
+| Аватар | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG) + `data.userAvatar.printName`; отображаемое имя — `data.name` (не top-level `printName`); `/api/General/GetUserAvatar?imageSizeType=Normal` (больший base64 JPEG) |
 | Календарь | `/api/Calendar/GetCalendarEvents` |
 | Детали пары | `/api/Calendar/GetCourseDetails` |
 | Задания | `/api/Tasks/GetTaskDetail` |
@@ -297,6 +323,8 @@ UI setup:
 | Баланс | `/api/FinancialDataDashboard/GetCollectiveInvoices` |
 | Периоды | `/api/Periods/GetPeriods` |
 | Почта | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
+
+Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) — в [`IMPLEMENTATION_PLAN.ru.md` §4.2](IMPLEMENTATION_PLAN.ru.md#42-снятый-инвентарь-неполно--2026-09-13); покрытие неполное, HAR в git нет.
 
 Тело логина:
 
@@ -315,9 +343,13 @@ UI setup:
 
 При 2FA повтор с `token` = код; опционально `Authorization: Bearer` от `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` сбрасывает сессию (логин сохраняется), открывает экран входа и показывает `auth_sessionExpired_PleaseSignIn`. Ручной выход очищает cookie jar портала ELTE, чтобы сразу после выхода повторный логин не ловил «invalid credentials».
+Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа и показывает `auth_sessionExpired_PleaseSignIn`. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
 
-**Wall-clock сессии приложения (видимо пользователю):** При входе на `HomePage` (успешный логин или cold start с сохранённой сессией) `SessionGuard.startSessionWallClock()` запускает таймер на **10 минут**. По срабатыванию — тот же путь `forceExpiredLogout` (wipe токенов, логин сохраняется, snackbar, экран входа). Ручной выход отменяет таймер; новый логин / новый вход на `HomePage` перезапускает. Refresh JWT **не** продлевает wall-clock. Это намеренное выравнивание с короткоживущими access JWT Neptun (~10–15 мин с выдачи): UI выходит по фиксированным часам от **входа в сессию**, а не только после следующего 401.
+**Wall-clock сессии приложения (видимо пользователю):** При входе на `HomePage` `SessionGuard.startSessionWallClock()` сохраняет `SESSION_StartedAtMs` и ставит **`Timer` на оставшиеся до 10 минут**. По срабатыванию — тот же путь `forceExpiredLogout` (токены стираются, логин + учебный кэш остаются). Ручной выход отменяет таймер; новый логин / новый вход на `HomePage` перезапускает. Refresh JWT **не** продлевает wall-clock.
+
+**Wall-clock в фоне (п. 1b сделан):** `HomePage` — `WidgetsBindingObserver`. На `AppLifecycleState.resumed` `SessionGuard.checkSessionWallClockOnResume()` сравнивает `now` с сохранённым стартом; если `>= 10 мин` → `forceExpiredLogout`, иначе перезаводит Timer на остаток. Не полагаться только на in-memory Timer в suspend. Непрерывный foreground 10 мин по-прежнему выкидывает.
+
+**Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
 ---
 
@@ -343,11 +375,11 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 ### 10.1 Расписание
 
-Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI: ближайшие 48 ч, задания/ZH, экзамены, баннеры периодов (`typeId == 6`). Переключатель обучения в drawer, если известно несколько training. **Коды аудиторий** вида `Кампус-Этаж-Аудитория[-Поток][-Группа]` (напр. `LD-0-805` или `LD-0-805-01-11`) нажимаются в списке расписания, диалоге занятия и popup экзамена/legacy: тап переключает короткий код ↔ локализованную расшифровку. Префиксы: **LD** Южный / Déli, **LE**/LÉ Северный / Északi, **LK** хим. блок (Северный); неизвестный префикс как есть. Поток/Группа только если есть в коде (`lib/Misc/elte_room_code.dart`).
+Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI (п. **3**): 48 ч = **пары + экзамены** (сортировка по `startEpoch`); ZH и экзамены — ближайшие от сейчас; баннеры периодов (`typeId == 6`) **только** в полосе периодов. Pull-to-refresh не обнуляет неделю из кэша. Переключатель обучения в drawer, если известно несколько training. **Коды аудиторий** вида `Кампус-Этаж-Аудитория[-Поток][-Группа]` (напр. `LD-0-805` или `LD-0-805-01-11`) нажимаются в списке расписания, диалоге занятия и popup экзамена/legacy: тап переключает короткий код ↔ локализованную расшифровку. Префиксы: **LD** Южный / Déli, **LE**/LÉ Северный / Északi, **LK** хим. блок (Северный); неизвестный префикс как есть. Поток/Группа только если есть в коде (`lib/Misc/elte_room_code.dart`).
 
 ### 10.2 Зачётка
 
-Вкладка «Предметы» = зачётка: взятые предметы (с кодами), кредиты, оценки, средний, ghost grade (popup 0), конфетти. Также **Мои курсы** (`GetRegisteredCourses`) и компактная **история оценок** по недавним семестрам.
+Вкладка «Предметы» = зачётка: взятые предметы (с кодами), кредиты, оценки, ghost grade (popup 0), конфетти. Общая формула в `lib/Misc/markbook_math.dart` (**п. 2**): **Átlag / Average** = `Σ(оценка × кредит) / Σ(кредит)` для сданных `grade >= 2`; **/30** = `Σ(оценка × кредит) / 30` (тот же числитель — **не** átlag÷30). Шапка: кредиты семестра **и** накопленные сданные (дедуп по `subjectCode` через `getGradeHistoryAcrossTerms`). Подписи явно говорят `/30`; пометка: **счёт приложения**, не официальный KKI/GPA Neptun (`GetAverages` в HAR сент. 2026 был пуст). Также **Мои курсы** (`GetRegisteredCourses`) и компактная **история оценок** по недавним семестрам.
 
 ### 10.3 Платежи / периоды / почта
 
@@ -373,7 +405,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 Другие паки (DE, RO, UA, AR, ES, ZH, Pirate) **удалены**.
 
-Пункт drawer **Contacts** — ключ `topmenu_buttons_Contacts`. Тела уведомлений о платежах — `notif_payment_Body*`. Недостающие ключи в скачанном/кэшированном RU/TR падают в EN, если их не заполнит **bundled**-merge (`AppStrings.loadBundledLanguagePacks` до `initialize`). Пакеты на GitHub `main` должны совпадать с набором ключей EN, чтобы сетевой refresh не отставал.
+Пункт Settings **Contacts** — ключ `topmenu_buttons_Contacts`. Тела уведомлений о платежах — `notif_payment_Body*`. Недостающие ключи в скачанном/кэшированном RU/TR падают в EN, если их не заполнит **bundled**-merge (`AppStrings.loadBundledLanguagePacks` до `initialize`). Пакеты на GitHub `main` должны совпадать с набором ключей EN, чтобы сетевой refresh не отставал.
 
 **Chrome деталей занятия / предмета** (диалог тапа по календарю + задача: Тип / Преподаватель / Аудитория / Закрыть / загрузка аудитории / плейсхолдеры) — `courseDetail_*` + `popup_case4_5_SubjectCode`. **Названия предметов, типы курсов (напр. Előadás), аудитории и ФИО из Neptun** остаются на языке ответа API — часто венгерский даже при EN UI.
 
@@ -389,10 +421,10 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 | Область | Уровень | Комментарий |
 |---------|---------|-------------|
-| Android клиент (логин, 5 вкладок, кэш) | **Full / mid-beta** | Реальный API, не каркас |
+| Android клиент (логин, 4 вкладки + drawer, кэш) | **Full / mid-beta** | Реальный API, не каркас. Nav IA **1c** |
 | iOS симулятор + release на устройстве | **Working** | Bundle без `_`; signing Automatic |
 | Modern JWT + refresh | **Solid** | |
-| 2FA modern TOTP (портал ELTE) | **Working MVP** | Login2FA + OuterLogin JWT на hallgatoN |
+| 2FA modern TOTP (портал ELTE) | **Working MVP** | Login2FA + OuterLogin JWT на hallgatoN. **Student web full** → snackbar `loginStudentWebFull` (не «неверный пароль») |
 | 2FA modern email | **HAR известен; UI тонкий** | `RequestEmailCode` + CodePrefix |
 | JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
 | Old API 2FA | **Нет** | |
@@ -418,7 +450,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences).
 
-`dataWipe` — выход: очищает пароль/токены/кэш (включая base64 аватара), **сохраняет username** для префилла логина. Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
+`sessionWipeKeepCache` — обычный logout / истечение сессии: стирает пароль/токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш** (календарь / зачётка / платежи / периоды / почта / семестры / аватар). `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
 
 Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -507,6 +539,8 @@ Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Та
 
 ### Известные iOS-дыры vs Android-only
 
+Полное сравнение: [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md) (EN: [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md)).
+
 | Фича | iOS |
 |------|-----|
 | Ссылки (`url_launcher`) | Должны работать (Android-gate снят) |
@@ -540,6 +574,8 @@ flutter create --platforms=ios --org com.nanda070 --project-name neptun2 .
 ---
 
 ## 15. Android
+
+Сравнение с iOS: [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md).
 
 | Поле | Значение |
 |------|----------|
@@ -651,6 +687,7 @@ Release на iPhone: `--release` (см. §14).
 | Нет deep-link / auto-OTP из Authenticator | TOTP вводится вручную; Microsoft Authenticator снаружи |
 | Нет email OTP (`XXX-XXXXXX`) пока | Нужен Network capture кнопки E-mail и формата `token` |
 | `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
+| `loginStudentWebFull` ≠ invalid password | Переполнение HWEB после верного 2FA красилось как неверный пароль (`submitTwoFactor` → `false` → `_paintRed`) |
 | Хаб ELTE → `https://neptun.elte.hu` | Портал + JWT API. HWEB балансируется по `hallgato1…N` после `/ToNeptunWeb/ToNeptunHWeb` — один узел не хардкодить |
 | Один вуз в JSON | Продукт только ELTE; мульти-пикер убран с хаба |
 | ICS оставить в коде | Может быть у старых юзеров; UI не рекламировать |
@@ -667,6 +704,8 @@ Release на iPhone: `--release` (см. §14).
 | `docs/README.md` / `docs/README.ru.md` | Пользовательский обзор |
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
+| `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | Матрица iOS vs Android |
+| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Приоритетный план реализации (не сделано) |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (канон); корневой `LICENSE` зеркалирует |
@@ -674,8 +713,8 @@ Release на iPhone: `--release` (см. §14).
 | `lib/main.dart` | `MaterialApp`, тема, `Splitter` |
 | `lib/Pages/startup_page.dart` | Ветка login / home |
 | `lib/Pages/setup_page.dart` | Вход, URL, 2FA callback, ICS-класс |
-| `lib/Pages/main_page.dart` | Home + 5 вкладок |
-| `lib/Pages/settings_page.dart` | Живые настройки |
+| `lib/Pages/main_page.dart` | Home + **4** нижние вкладки + drawer Payments (**1c**) |
+| `lib/Pages/settings_page.dart` | Живые настройки (Contacts + версия внизу) |
 | `lib/API/api_coms.dart` | Весь HTTP, логин, нормализация URL |
 | `lib/API/ics_calendar.dart` | Парсер ICS |
 | `lib/storage.dart` | `DataCache` |

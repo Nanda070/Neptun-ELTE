@@ -30,16 +30,20 @@ class BottomNavigatorWidget extends StatelessWidget {
             if(!homePage.bottomNavCanNavigate){
               return;
             }
+            // Swipe only among bottom tabs (0–3). From drawer pages, jump back into the cycle.
+            final base = homePage.currentView < HomePageState.maxBottomNavWidgets
+                ? homePage.currentView
+                : 0;
             if(homePage.bottomNavSwitchValue < -50){
               homePage.bottomNavCanNavigate = false;
-              final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
+              final val = base + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : base + 1;
               homePage.switchView(val);
               AppHaptics.lightImpact();
               return;
             }
             else if(homePage.bottomNavSwitchValue > 50){
               homePage.bottomNavCanNavigate = false;
-              final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
+              final val = base - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : base - 1;
               homePage.switchView(val);
               AppHaptics.lightImpact();
               return;
@@ -69,9 +73,8 @@ class BottomNavigatorWidget extends StatelessWidget {
                   children: <Widget>[
                     _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
                     _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
-                    _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
-                    _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
-                    _buildNavigationButton(4, Icons.email_rounded, Icons.email_outlined),
+                    _buildNavigationButton(2, Icons.timer_rounded, Icons.timer_outlined),
+                    _buildNavigationButton(3, Icons.email_rounded, Icons.email_outlined),
                   ],
                 ),
               ),
@@ -90,11 +93,11 @@ class BottomNavigatorWidget extends StatelessWidget {
       case 1:
         return AppStrings.getLanguagePack().view_header_Subjects;
       case 2:
-        return AppStrings.getLanguagePack().view_header_Payments;
-      case 3:
         return AppStrings.getLanguagePack().view_header_Periods;
-      case 4:
+      case 3:
         return AppStrings.getLanguagePack().view_header_Messages;
+      case 4:
+        return AppStrings.getLanguagePack().view_header_Payments;
       default:
         return 'Not Impl';
     }

@@ -115,15 +115,68 @@
 
 - Добиты остатки Language Pack аудита в `api_coms`: транспортный `ErrorMessage` (неверный URL/HTML, сеть), JSON истечения сессии через `auth_sessionExpired_PleaseSignIn`, превью письма «нажмите чтобы загрузить», пустой ответ Neptun / сетевая ошибка загрузки (`api_error_*`, `mail_preview_TapToLoadBody` HU/EN + RU/TR). Токены статуса оплаты для matching API (`aktív` / `teljesített`) оставлены как ключи протокола (не UI).
 
+**[2026-09-13, ~08:58]**
+
+- Написан приоритетный **план реализации** (только docs, без кода фич): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md). Порядок: сессия+кэш → честная зачётка → календарь → поиск/unread почты → затем параллельно (ghost, сегодня/ZH/ICS export/гранулярность пар, платежи, карты, «Что изменилось», сравнение семестров). За HAR: academic progress, студенческий. Виджеты последними. Индекс из README + TECHNICAL.
+
+**[2026-09-13, ~09:05]**
+
+- План реализации: добавлен **п. 1a** (фундамент / сессия+кэш, до полировки UX п. 1) — после logout повторный вход в том же процессе может показать **ложные неверные данные**, пока приложение не убьют. Код уже чистит in-memory jar портала + `dataWipe`; что ещё проверить (device cookie, кэш training id, нет POST portal Logout, `_looksLikeInvalidCredentials` ловит `invalid` в HTML). Только docs; фикса в Dart нет.
+
+**[2026-09-13, ~09:10]**
+
+- План реализации: **убрана** запись на экзамен / курс (vizsgajelentkezés / tárgyjelentkezés) из бэклога. Не планируем; UI записи и HAR-гайд не возвращать. За HAR остаются academic progress + студенческий. Бывшие п. 13–15 перенумерованы в 12–14. Только docs; в Dart ничего не меняли.
+
+**[2026-09-13, ~09:20]**
+
+- Разобраны 8 пользовательских HAR (в git не копировали; секреты замазаны) в [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) §4.2 / EN-близнец. Известны имена полей **банка + профиля + заявки на студенческий (NEK/FIR)**. **Нет QR / номера / срока карты.** **Нет графа tanterv** (`taken courses.har` = `RegisteredCourses`; items `GetAverages` пустые). Extras почты (архив/исходящие/настройки); extras финансов (неоплаченные пустые, детали транзакции); официальный ICS/webcal URL календаря. XHR записи в `finances.har` — **видно, но не планируем**. Кликнуты не все кнопки; отсутствующие POST ожидаемы. Только docs; Dart не меняли.
+
+**[2026-09-13, ~09:30]**
+
+- Живой проход залогиненного Chrome HWEB (JS из Apple Events; HAR не копировали). Подтверждено: `/api/GetCurriculums` **404**; API Advancement; официальные *имена* средних на `RegistrySheet/GetStudentTrainingTermData`; `TakenSubjects/Terms`; на странице Student Card **нет QR**; `GetLinksForCalendarExport`. Жёсткий переход на registry-sheet **5002**, вернулись через Student web портала. Только docs; Dart не меняли.
+
+**[2026-09-13, ~09:50]**
+
+- Опубликованы **только Figma UI-макеты** (не код Flutter/Android/iOS): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Страница **Android — polished target** = целевой polish; **iOS — current + polish** = сегодняшний TopNavigator + 5-icon BottomNavigator с аддитивными стрипами/подписями/поиском/баннером. Владелец **Nanda**. Ссылки в README + TECHNICAL. Только docs.
+
+**[2026-09-13, ~10:00]**
+
+- Решение продукта (только docs/план, **без Dart**): **Nav IA** — снизу **Calendar \| Markbook \| Mail**; **Payments** + **Periods** в левый drawer **над Settings**. В коде **по-прежнему 5 вкладок**; Figma может ещё показывать 5 — цель 3 + drawer (п. **1c**). **Сессия 1b:** фон ≥10 мин → на resume `forceExpiredLogout` — Flutter `Timer` замирает в suspend; timestamp + проверка на `AppLifecycleState.resumed`. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / IMPLEMENTATION_PLAN EN+RU. Владелец **Nanda**.
+
+**[2026-09-13, ~10:10]**
+
+- **Foundation slice как релиз приложения 1.1.0+19** (базовая линия GitHub была **1.0**; дальше багфиксы → **1.1.x**, крупные фичи → **1.2+**). Dart + docs: **1a** logout → повторный вход в том же процессе (portal Logout best-effort, wipe `devicecookie_*` + кэш training id, ужесточённый `_looksLikeInvalidCredentials` — HTML `is-invalid` ≠ «неверный пароль»). **1b** сохранённый `SESSION_StartedAtMs` + `WidgetsBindingObserver` на `HomePage` → на resume `forceExpiredLogout` если ≥10 мин вне приложения; иначе перезавести Timer на остаток. **1c** снизу Calendar \| Markbook \| Mail; Payments + Periods в drawer над Settings (индексы 3/4). Владелец **Nanda**.
+
+**[2026-09-13, ~10:16]**
+
+- Задокументирована политика версий EN+RU (TECHNICAL § Версионирование, строка в README, релиз-заметка в IMPLEMENTATION_PLAN). `pubspec` **1.1.0+19** (build +1 от **1.0.5+18**); зеркала iOS `MARKETING_VERSION` / Android fallback. Честно: GitHub «1.0» — утверждение о опубликованной базовой линии; старые checkout’ы могут ещё показывать **1.0.x**, пока этот bump не попадёт в дерево. Владелец **Nanda**.
+
+**[2026-09-13, ~10:20]**
+
+- **Nav IA пересмотрена (1c):** снизу **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** только в drawer над Settings. **Contacts** перенесены из drawer в Settings (внизу); версия приложения через `package_info_plus` под Contacts. Синхронизированы README / TECHNICAL / IMPLEMENTATION_PLAN / IOS_VS_ANDROID EN+RU. Сессия **1a**/**1b** без изменений. Владелец **Nanda**.
+
+**[2026-09-13, ~10:45]**
+
+- **Пункты фундамента 1–3 сделаны:** (1) `sessionWipeKeepCache` при logout/expiry — учебный кэш остаётся; все home-вкладки cache-first + баннер `cache_showingFromCache`. (2) `MarkbookMath` — átlag vs **/30**; кредиты семестра + накопленные сданные; пометка «счёт приложения». (3) Полосы календаря отсортированы; 48 ч = пары+экзамены; ZH/экзамены от сейчас; баннеры периодов только в полосе; пустые недели в кэше. Docs EN+RU + статус плана обновлены. Nav **1c** без отката. Владелец **Nanda**.
+
+**[2026-09-13, ~15:00]**
+
+- **Багфикс:** После верного TOTP переполнение **Student web** (ёмкость HWEB) давало голый `false` из `submitTwoFactorCode` → setup красил **«Invalid username or password!»**. Исправлено: мост возвращает `loginStudentWebFull` / `loginServerBusy`; snackbar `loginPage_setupPage_StudentWebFull` / busy; неверный TOTP — `loginPage_setupPage_2faInvalidCode` без красных полей пароля. Неверный пароль по-прежнему `loginInvalidCredentials`. Docs EN+RU. Владелец **Nanda**.
+
+**[2026-09-13, ~15:05]**
+
+- **UX:** После успеха TOTP — спиннер **«Подключение к студенческому вебу…»** и ретраи HWEB ~**7 с** (успех → сразу Home; провал → честный full/busy, не «неверный пароль»). Владелец **Nanda**.
+
 ---
 
 ## В работе / запланировано (честно)
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин сохраняется, снова экран входа. Следить за краевыми случаями после wipe cookie портала.
+- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1** / **2** / **3** foundation сделаны; дальше бэклог с почты (**4**).
+- **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
 - **Переводчик сообщений** (HU → EN/RU для тел писем) — helper + действия в popup есть; считать **in progress**, пока offline / failure не проверены тщательно.
-- **Крупные фичи** (студенческий, полный профиль+банк, запись на экзамен/курс) — нужен HAR; не сделаны.
+- **Крупные фичи:** студенческий — **только заявка** (нет QR/wallet на `/administrations/student-card`). Меню Tanterv **нет**; Advancement + `RegistrySheet/GetStudentTrainingTermData` дают *схему* официальных средних (в этом семестре значения пустые). Банк + профиль уже сняты. Запись на экзамен / курс — **не сделана, не планируем**.
 - Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — известен по HAR; **не** основной путь (сначала TOTP).
 
 ---
