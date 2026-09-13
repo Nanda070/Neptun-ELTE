@@ -16,7 +16,9 @@ import '../API/api_coms.dart' as api;
 import '../MailElements/mail_element_widget.dart';
 import '../Pages/startup_page.dart';
 import '../TimetableElements/timetable_element_widget.dart';
+import 'elte_room_code.dart';
 import 'emojirich_text.dart';
+import 'message_translator.dart';
 
 typedef Callback = void Function(dynamic);
 
@@ -52,12 +54,15 @@ class PopupWidgetHandler{
 
   bool hasListener = false;
   VoidCallback? _closeBlurCallback;
+  int _closeGeneration = 0;
+  bool _isClosing = false;
 
-  static void doPopup(BuildContext context, {VoidCallback? blur = null, VoidCallback? closeBlur = null}){
-    if(_instance!._inUse || PopupWidgetHandler._hasPopupActive){
+  static void doPopup(BuildContext context, {VoidCallback? blur, VoidCallback? closeBlur}){
+    if(_instance == null || _instance!._inUse || PopupWidgetHandler._hasPopupActive){
       return;
     }
     _instance!._closeBlurCallback = closeBlur;
+    _instance!._isClosing = false;
     PopupWidgetHandler._hasPopupActive = true;
     _instance!._inUse = true;
     _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
@@ -67,6 +72,7 @@ class PopupWidgetHandler{
     _instance!._settingsThemesCurrent = DataCache.getPreferredAppTheme();
 
     if(blur == null){
+      // Only blur Home when it exists; setup/login has no Home blur layer.
       HomePageState.showBlurPopup(true);
     }
     else{
@@ -78,7 +84,11 @@ class PopupWidgetHandler{
       PackageInfo.fromPlatform(),
       Language.getAllLanguages(),
     ]).then((values){
-      Navigator.of(context).push(
+      if (_instance == null || !_instance!._inUse || !context.mounted) {
+        PopupWidgetHandler._hasPopupActive = false;
+        return;
+      }
+      Navigator.of(context, rootNavigator: true).push(
           PageRouteBuilder(
               pageBuilder: (context, anim, anim2) => PopupWidgetState(topPadding: MediaQuery.of(context).padding, mode: _instance!.mode, pinfo: values[0] as PackageInfo),
               opaque: false,
@@ -94,38 +104,72 @@ class PopupWidgetHandler{
     });
   }
 
-  static closePopup(BuildContext context){
-    if(!_instance!._inUse){
+  /// Closes the active popup. Safe to call multiple times. Prefer awaiting before navigation.
+  static Future<void> closePopup(BuildContext context) async {
+    final inst = _instance;
+    if (inst == null) {
+      _hasPopupActive = false;
       return;
     }
-    _instance!._inUse = false;
-    if(_instance!.widgetAnimController != null){
-      _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
-        PopupWidgetHandler._hasPopupActive = false;
-        Future.delayed(Duration.zero, (){
-          Navigator.of(context).pop();
-        });
-        if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious || _instance!._settingsThemesCurrent != _instance!._settingsThemesPrevious){
-          Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Splitter()),
-          );
-        }
-        _instance!.widgetAnimController!.dispose();
-      });
+    if (inst._isClosing || (!inst._inUse && !_hasPopupActive)) {
+      return;
     }
+    inst._isClosing = true;
+    inst._inUse = false;
+    final gen = ++inst._closeGeneration;
+    _hasPopupActive = false;
 
-    if(_instance!._closeBlurCallback == null){
+    if (inst._closeBlurCallback == null) {
       HomePageState.showBlurPopup(false);
-    }
-    else{
-      _instance!._closeBlurCallback!();
+    } else {
+      try {
+        inst._closeBlurCallback!();
+      } catch (_) {}
     }
 
-    if(PopupWidgetHandler._instance!.onCloseCallback != null){
-      PopupWidgetHandler._instance!.onCloseCallback!();
+    if (inst.onCloseCallback != null) {
+      try {
+        inst.onCloseCallback!();
+      } catch (_) {}
     }
+
+    // Settings-only: recreate root if language/theme changed inside settings popup.
+    final shouldRestartForSettings = inst.mode == 1 &&
+        (inst._settingsLanguageCurrent != inst._settingsLanguagePrevious ||
+            inst._settingsThemesCurrent != inst._settingsThemesPrevious);
+
+    try {
+      final ctrl = inst.widgetAnimController;
+      if (ctrl != null) {
+        try {
+          await ctrl.reverse(from: 1).timeout(const Duration(milliseconds: 400));
+        } catch (_) {}
+        try {
+          ctrl.dispose();
+        } catch (_) {}
+        if (identical(_instance, inst)) {
+          inst.widgetAnimController = null;
+        }
+      }
+    } catch (_) {}
+
+    if (gen != inst._closeGeneration) return;
+
+    if (context.mounted) {
+      final nav = Navigator.of(context, rootNavigator: true);
+      if (nav.canPop()) {
+        nav.pop();
+      }
+    }
+
+    if (shouldRestartForSettings && context.mounted) {
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const Splitter()),
+        (route) => false,
+      );
+    }
+
+    inst._isClosing = false;
   }
 }
 
@@ -151,6 +195,11 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
   double _currentFontScale = 1.0; // ITT VAN A HELYES HELYEN
 
+  String? _mailTranslatedBody;
+  bool _mailShowOriginal = true;
+  bool _mailTranslating = false;
+  Future<String>? _mailContentFuture;
+
   @override
   void initState() {
     super.initState();
@@ -161,6 +210,16 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
     ));
 
     _currentFontScale = DataCache.getFontScale();
+
+    _mailTranslatedBody = null;
+    _mailShowOriginal = true;
+    _mailTranslating = false;
+    if (widget.mode == 3) {
+      _mailContentFuture = api.MailRequest.getMailContent(
+        MailPopupDisplayTexts.mailID,
+        MailPopupDisplayTexts.description.map((e) => e.toPlainText()).join(),
+      );
+    }
 
     popupController = AnimationController(
       vsync: this,
@@ -401,7 +460,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: Text(
-                "Betűméret / Font scale",
+                AppStrings.getLanguagePack().settings_fontScale_Label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -1403,32 +1462,94 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           textAlign: TextAlign.start,
         ));
         list.add(const SizedBox(height: 20));
-        list.add(FutureBuilder<String>(
-          future: api.MailRequest.getMailContent(
-              MailPopupDisplayTexts.mailID,
-              MailPopupDisplayTexts.description.map((e) => e.toPlainText()).join()
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SizedBox(
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator())
-              );
-            }
-            if (snapshot.hasError) {
-              return Text("Hiba: ${snapshot.error}", style: TextStyle(color: AppColors.getTheme().errorRed));
-            }
+        list.add(StatefulBuilder(
+          builder: (context, setMailState) {
+            return FutureBuilder<String>(
+              future: _mailContentFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                      height: 100,
+                      child: Center(child: CircularProgressIndicator())
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Text(AppStrings.getStringWithParams(AppStrings.getLanguagePack().mail_error_Prefix, [snapshot.error]), style: TextStyle(color: AppColors.getTheme().errorRed));
+                }
 
-            return SelectableText.rich(
-              TextSpan(
-                children: api.Generic.textToInlineSpan(snapshot.data ?? "Üres üzenet."),
-                style: TextStyle(
-                    color: AppColors.getTheme().textColor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14
-                ),
-              ),
-              textAlign: TextAlign.start,
+                final original = snapshot.data ?? AppStrings.getLanguagePack().mail_error_EmptyMessage;
+                final display = _mailShowOriginal
+                    ? original
+                    : (_mailTranslatedBody ?? original);
+                final lang = AppStrings.getLanguagePack();
+
+                Future<void> runTranslate(String targetLang) async {
+                  AppHaptics.lightImpact();
+                  setMailState(() => _mailTranslating = true);
+                  final t = await MessageTranslator.translateHuTo(text: original, targetLang: targetLang);
+                  if (!mounted) return;
+                  setMailState(() {
+                    _mailTranslating = false;
+                    if (t != null) {
+                      _mailTranslatedBody = t;
+                      _mailShowOriginal = false;
+                    }
+                  });
+                  if (t != null && mounted) {
+                    await _maybeShowMailTranslateDisclaimer();
+                  }
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SelectableText.rich(
+                      TextSpan(
+                        children: api.Generic.textToInlineSpan(display),
+                        style: TextStyle(
+                            color: AppColors.getTheme().textColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14
+                        ),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(height: 12),
+                    if (_mailTranslating)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Center(child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))),
+                      )
+                    else
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () => runTranslate('en'),
+                            child: Text(lang.mail_translate_EN, style: TextStyle(color: AppColors.getTheme().onPrimaryContainer, fontWeight: FontWeight.w700)),
+                          ),
+                          TextButton(
+                            onPressed: () => runTranslate('ru'),
+                            child: Text(lang.mail_translate_RU, style: TextStyle(color: AppColors.getTheme().onPrimaryContainer, fontWeight: FontWeight.w700)),
+                          ),
+                          if (_mailTranslatedBody != null)
+                            TextButton(
+                              onPressed: () {
+                                AppHaptics.lightImpact();
+                                setMailState(() => _mailShowOriginal = !_mailShowOriginal);
+                              },
+                              child: Text(
+                                _mailShowOriginal ? lang.mail_translate_EN : lang.mail_translate_ShowOriginal,
+                                style: TextStyle(color: AppColors.getTheme().secondary, fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                        ],
+                      ),
+                  ],
+                );
+              },
             );
           },
         ));
@@ -1567,7 +1688,17 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
               const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
               Flexible(
-                  child: SelectableText.rich(
+                  child: ElteRoomCode.canDecode(entry.location)
+                      ? DecodableRoomText(
+                          room: entry.location,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: AppColors.getTheme().textColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14
+                          ),
+                        )
+                      : SelectableText.rich(
                     TextSpan(
                       text: entry.location,
                       style: TextStyle(
@@ -1711,7 +1842,17 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
-                child: SelectableText.rich(
+                child: ElteRoomCode.canDecode(entry.location)
+                    ? DecodableRoomText(
+                        room: entry.location,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: AppColors.getTheme().textColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14
+                        ),
+                      )
+                    : SelectableText.rich(
                   TextSpan(
                     text: entry.location,
                     style: TextStyle(
@@ -1952,11 +2093,12 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ),
         ));
         return list;
-      case 9: // 2FA — ELTE web primary path is TOTP (6 digits). Email backup is XXX-XXXXXX after an "E-mail" request (not wired in app yet).
-        list.add(Text("Two-step authentication", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
+      case 9: // 2FA — ELTE web primary path is TOTP (6 digits).
+        final lang2fa = AppStrings.getLanguagePack();
+        list.add(Text(lang2fa.popup_case9_2faHeader, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
         list.add(const SizedBox(height: 10));
         list.add(Text(
-          "Enter the 6-digit TOTP from Microsoft Authenticator. After that the app opens Student web (hallgato) via OuterLogin — same path as the browser.",
+          lang2fa.popup_case9_2faDescription,
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.7)),
         ));
@@ -1966,6 +2108,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           keyboardType: TextInputType.number,
           maxLength: 6,
           textAlign: TextAlign.center,
+          enabled: PopupWidgetHandler._instance?._inUse == true && PopupWidgetHandler._instance?._isClosing != true,
           style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 28, letterSpacing: 8, fontWeight: FontWeight.bold),
           decoration: InputDecoration(
             filled: true,
@@ -1973,9 +2116,16 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
           ),
           onChanged: (val) {
-            if (val.length == 6) {
-              PopupWidgetHandler._instance!.callback(val);
-            }
+            if (val.length != 6) return;
+            final handler = PopupWidgetHandler._instance;
+            if (handler == null || !handler._inUse || handler._isClosing) return;
+            final code = val;
+            // Close popup FIRST (this route's context), then deliver code to login flow.
+            Future.microtask(() async {
+              if (!mounted) return;
+              await PopupWidgetHandler.closePopup(context);
+              handler.callback(code);
+            });
           },
         ));
         return list;
@@ -2037,6 +2187,14 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
       _snackbarMessage = text;
       //_snackbarDelta = 0;
     });
+  }
+
+  /// One-time 5s notice the first time the user machine-translates mail on this device.
+  Future<void> _maybeShowMailTranslateDisclaimer() async {
+    if (DataCache.getHasSeenMailTranslateDisclaimer()) return;
+    await DataCache.setHasSeenMailTranslateDisclaimer(true);
+    if (!mounted) return;
+    _showSnackbar(AppStrings.getLanguagePack().mail_translate_Disclaimer, 5);
   }
 
 

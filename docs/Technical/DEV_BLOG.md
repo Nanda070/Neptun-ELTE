@@ -84,6 +84,37 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - Calendar bug: modern `GetCalendarEvents` used **next Monday 23:59** as `endDate`, so next week’s Monday classes appeared after a fake **~163 h “szünet”** (and HU-hardcoded break UI). Fixed to **Sun end of week**, filter out-of-window events, same-day breaks only (5 min–12 h), localized EN/HU/RU/TR break strings.
 
+**[2026-09-13, 05:14]**
+
+- RU/TR language packs: added **39** keys that were on EN/HU but missing from GitHub-served JSON (font scale, calendar strips/filters/breaks, mail translate, settings section headers, notif titles, markbook/payment headers). Missing keys previously fell back to **English**.
+- Bundled `Languages/LangExtentions/{Russian,Turkish}.json` as Flutter **assets**; `loadBundledLanguagePacks` merges into cached/downloaded packs so devices are not stuck on stale GitHub/cache until push.
+- No calendar UI hardcoding found for TR — strip headers already used `AppStrings`; stale packs were the cause.
+- Deploy to iPhone Nanda **skipped** (another `flutter run --release` active).
+
+**[2026-09-13, ~05:16]**
+
+- **10-minute session wall clock:** `SessionGuard.startSessionWallClock()` on `HomePage` entry → after 10 min calls `forceExpiredLogout` (keep username, snackbar `auth_sessionExpired_PleaseSignIn`, login). Cancel on manual logout; restart on re-login. Does **not** restart on JWT refresh. Aligns UI logout with short-lived Neptun access JWTs (~10–15 min), measured from **session entry**, not only 401.
+
+**[2026-09-13, ~05:20]**
+
+- **Drawer avatar works:** HAR shows photo already on `/api/UserInfo` as `data.userAvatar.image` (base64 JPEG) and larger `/api/General/GetUserAvatar?imageSizeType=Normal`. App caches base64 in `DataCache`, drawer uses `MemoryImage`, initials fallback. Prior “no photo in API” claim was wrong — nested field was missed.
+
+**[2026-09-13, ~05:25]**
+
+- **EN subject-detail chrome:** calendar class / task tap dialogs had HU-hardcoded labels (`Tárgykód`, `Típus`, `Tanár`, `Terem`, `Bezárás`, `Terem betöltése…`, task Subject/Type/Result). Wired to `courseDetail_*` + existing `popup_case4_5_SubjectCode` (EN/HU/RU/TR). App placeholders (`Nincs terem` / …) localize; **Neptun content** (titles, Előadás/Gyakorlat, room names) may stay HU.
+
+**[2026-09-13, ~05:30]**
+
+- **ELTE room-code tap decode:** codes like `LD-0-805` / `LD-0-805-01-11` toggle compact ↔ summary (`Southern Building, Floor: 0, Room: 805[, Stream: 01][, Group: 11]`). Semantics: campus–floor–room–**stream**–**group** (no inventing missing trailing segments). Prefix map LD/LE/LK; unknown prefix kept. `DecodableRoomText` on timetable list, class dialog, exam/legacy popups. Keys `roomCode_*` in HU/EN + RU/TR JSON.
+
+**[2026-09-13, ~05:35]**
+
+- Broader i18n audit fix: class/exam notification bodies, font-scale label, mail error/empty, 2FA popup, Android updater toasts/dialog, API fallbacks + DEMO labels — all via `LanguagePack` (HU/EN + RU/TR JSON). Room-code decode UI preserved.
+
+**[2026-09-13, ~05:40]**
+
+- Finished remaining Language Pack audit leftovers in `api_coms`: transport `ErrorMessage` (invalid URL/HTML, network), session-expired JSON via `auth_sessionExpired_PleaseSignIn`, mail preview tap-to-load body, empty Neptun / download-network mail errors (`api_error_*`, `mail_preview_TapToLoadBody` HU/EN + RU/TR). Protocol-matching payment status tokens (`aktív` / `teljesített`) left as API match keys (not UI chrome).
+
 ---
 
 ## In progress / planned (honest)

@@ -102,6 +102,18 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
     });
 
     FlutterNativeSplash.remove();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pending = api.SessionGuard.consumePendingMessage();
+      if (pending != null && pending.isNotEmpty && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(pending),
+            duration: const Duration(seconds: 6),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -248,7 +260,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                               ),
                               child: IconButton(
                                 onPressed: (){
-                                  final url = Uri.parse('https://github.com/Nanda070/Neptun-ELTE/issues/new/choose');
+                                  final url = Uri.parse('https://nanda.is-a.dev');
                                   launchUrl(url, mode: LaunchMode.externalApplication);
                                 },
                                 icon: Icon(
@@ -1230,6 +1242,10 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       _showNeptunServerError = false;
     });
 
+    // Fresh portal login after logout/session expiry — never reuse stale HWEB JWT path.
+    api.InstitutesRequest.resetEltePortalState();
+    api.SessionGuard.clearAuthBlock();
+
     _loadingTimer?.cancel();
 
     _loadingTimer = Timer(const Duration(seconds: 7), (){
@@ -1244,6 +1260,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
     api.InstitutesRequest.validateLoginCredentials(selected, _username.toUpperCase(), _password).then((value)
     {
       if(value == 1){ // 1: SIKERES BELÉPÉS
+        if (!mounted) return;
+        api.SessionGuard.clearAuthBlock();
         storage.DataCache.setUsername(_username.toUpperCase());
         storage.DataCache.setPassword(_password);
         // Prefer API base set by login (ELTE root), not a stale list URL
@@ -1254,53 +1272,105 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
           );
         }
         storage.DataCache.setHasLogin(1);
-        // proceed logic
-        Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-        Navigator.push(
-          context,
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const main_page.HomePage()),
+          (route) => false,
         );
         return;
       }
       else if(value == 2){ // 2: 2FA SZÜKSÉGES
+        if (!mounted) return;
         setState(() {
-          _isLoading = false; // Kikapcsoljuk a töltőképernyőt a 2FA-hoz!
+          _isLoading = false;
         });
-        PopupWidgetHandler(
+
+        Future<void> on2faCode(dynamic kod) async {
+          if (kod == null) {
+            if (mounted) {
+              setState(() {
+                _canProceed = true;
+                _isLoading = false;
+              });
+            }
+            return;
+          }
+          if (mounted) {
+            setState(() {
+              _isLoading = true;
+              _showNeptunServerError = false;
+            });
+          }
+          bool isOk = false;
+          try {
+            isOk = await api.InstitutesRequest.submitTwoFactorCode(
+              _username,
+              _password,
+              kod.toString(),
+            );
+          } catch (_) {
+            isOk = false;
+          }
+          if (!mounted) return;
+
+          if (isOk) {
+            api.SessionGuard.clearAuthBlock();
+            storage.DataCache.setUsername(_username.toUpperCase());
+            await storage.DataCache.setPassword(_password);
+            final apiBase = storage.DataCache.getInstituteUrl();
+            if (apiBase == null || apiBase.isEmpty) {
+              await storage.DataCache.setInstituteUrl(
+                api.InstitutesRequest.normalizeModernApiBaseUrl(selected.URL),
+              );
+            }
+            await storage.DataCache.setHasLogin(1);
+            if (!mounted) return;
+            setState(() {
+              _isLoading = false;
+            });
+            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const main_page.HomePage()),
+              (route) => false,
+            );
+            return;
+          }
+
+          AppHaptics.attentionLightImpact();
+          setState(() {
+            _paintRed = true;
+            _canProceed = true;
+            _isLoading = false;
+            _showNeptunServerError = false;
+          });
+          if (!mounted) return;
+          PopupWidgetHandler(
             mode: 9,
-            callback: (kod) async {
-              // JAVÍTVA: Hozzáadva az InstitutesRequest és a .toString()
-              bool isOk = await api.InstitutesRequest.submitTwoFactorCode( _username, _password, kod.toString());
-
-              if (isOk) {
-                PopupWidgetHandler.closePopup(context);
-
-                // Mivel jó a kód, elmentjük az adatokat és beléptetjük
-                storage.DataCache.setUsername(_username.toUpperCase());
-                storage.DataCache.setPassword(_password);
-                final apiBase = storage.DataCache.getInstituteUrl();
-                if (apiBase == null || apiBase.isEmpty) {
-                  storage.DataCache.setInstituteUrl(
-                    api.InstitutesRequest.normalizeModernApiBaseUrl(selected.URL),
-                  );
-                }
-                storage.DataCache.setHasLogin(1);
-
-                Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const main_page.HomePage()),
-                );
-              } else {
-                // Rossz 2FA kód esetén pirosra festjük a beviteli mezőket
+            callback: on2faCode,
+            onCloseCallback: () {
+              if (mounted) {
                 setState(() {
-                  _paintRed = true;
                   _canProceed = true;
                   _isLoading = false;
-                  _showNeptunServerError = false;
                 });
               }
+            },
+          );
+          PopupWidgetHandler.doPopup(context);
+        }
+
+        PopupWidgetHandler(
+          mode: 9,
+          callback: on2faCode,
+          onCloseCallback: () {
+            if (mounted) {
+              setState(() {
+                _canProceed = true;
+                _isLoading = false;
+              });
             }
+          },
         );
         PopupWidgetHandler.doPopup(context);
         return;

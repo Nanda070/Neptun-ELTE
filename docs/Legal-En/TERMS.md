@@ -169,7 +169,7 @@ Cookie / local-storage behaviour: [COOKIES.md](COOKIES.md).
 
 ## 14. Updates and changes to the app
 
-Builds may change features, drop platforms, or break when Neptun changes. Optional language packs update from GitHub `main` when fetched — older installed packs may lag until re-download.
+Builds may change features, drop platforms, or break when Neptun changes. Optional language packs update from GitHub `main` when fetched; the app also ships bundled RU/TR JSON and merges missing keys so stale cache/GitHub packs do not leave new strings in English.
 
 ---
 

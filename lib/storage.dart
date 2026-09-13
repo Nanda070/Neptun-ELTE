@@ -50,9 +50,21 @@ Future<List<String>?> getStringList(String key) async {
 class DataCache{
   static Future<void> dataWipe() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Keep Neptun username for login prefill; password must not survive logout.
+    final keepUsername = (_instance._username != null && _instance._username!.isNotEmpty)
+        ? _instance._username!
+        : (await getString('Username') ?? '');
+
     await prefs.clear();
     await prefs.reload();
+    await _secureStorage.delete(key: 'neptun_password');
+    await _secureStorage.delete(key: 'neptun_jwt_token');
+    await _secureStorage.delete(key: 'neptun_refresh_token');
     _instance._localWipe();
+    _instance._password = '';
+    if (keepUsername.isNotEmpty) {
+      await setUsername(keepUsername);
+    }
   }
 
   static Future<void> dataWipeNoKeep()async{
@@ -82,6 +94,10 @@ class DataCache{
     _selectedTermName = null;
     _cachedTermsList = [];
     _studentTrainingId = null;
+    _studentDisplayName = null;
+    _studentTrainingName = null;
+    _studentAvatarBase64 = null;
+    _trainingLabelsJson = null;
     setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
     setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
@@ -96,6 +112,7 @@ class DataCache{
     setDownloadedSupportedLanguagesData(_languageJsonBatch);
     setPreferredAppTheme(_themePreference!);
     setAllDownloadedAppThemes(_themesJsonBatch);
+    setHasSeenMailTranslateDisclaimer(_hasSeenMailTranslateDisclaimer);
   }
 
   static final DataCache _instance = DataCache();
@@ -109,6 +126,10 @@ class DataCache{
   String? _selectedTermName;
   List<String> _cachedTermsList = [];
   String? _studentTrainingId;
+  String? _studentDisplayName;
+  String? _studentTrainingName;
+  String? _studentAvatarBase64;
+  String? _trainingLabelsJson;
   late bool _hasNetwork = false;
   late bool? _hasLogin = false;
   late bool? _hasCachedCalendar = false;
@@ -249,6 +270,7 @@ class DataCache{
     _displayClasses = prefs.getBool('CALENDAR_DisplayClasses') ?? true;
     _displayExams = prefs.getBool('CALENDAR_DisplayExams') ?? true;
     _displayPeriods = prefs.getBool('CALENDAR_DisplayPeriods') ?? true;
+    _hasSeenMailTranslateDisclaimer = prefs.getBool('hasSeenMailTranslateDisclaimer') ?? false;
 
     tmp = await getInt('SETTING_IsFamilyFriendlyLoading');
     _persistentSetting_familyFriendlyLoadingComments = tmp != null && tmp != 0;
@@ -298,6 +320,10 @@ class DataCache{
     _selectedTermName = await getString('SELECTED_TermName');
     _cachedTermsList = await getStringList('CACHED_TermsList') ?? [];
     _studentTrainingId = await getString('STUDENT_TrainingId');
+    _studentDisplayName = await getString('STUDENT_DisplayName');
+    _studentTrainingName = await getString('STUDENT_TrainingName');
+    _studentAvatarBase64 = await getString('STUDENT_AvatarBase64');
+    _trainingLabelsJson = await getString('STUDENT_TrainingLabelsJson') ?? '{}';
 
     tmp = await getInt('CONFIG_IsInstalledFromGPlay');
     _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
@@ -575,6 +601,46 @@ class DataCache{
     }
   }
 
+  static String? getStudentDisplayName() => _instance._studentDisplayName;
+  static Future<void> setStudentDisplayName(String? value) async {
+    _instance._studentDisplayName = value;
+    if (value == null || value.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('STUDENT_DisplayName');
+    } else {
+      await saveString('STUDENT_DisplayName', value);
+    }
+  }
+
+  static String? getStudentTrainingName() => _instance._studentTrainingName;
+  static Future<void> setStudentTrainingName(String? value) async {
+    _instance._studentTrainingName = value;
+    if (value == null || value.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('STUDENT_TrainingName');
+    } else {
+      await saveString('STUDENT_TrainingName', value);
+    }
+  }
+
+  /// Base64 JPEG from HWEB `userAvatar.image` / `GetUserAvatar` (no `data:` URI prefix).
+  static String? getStudentAvatarBase64() => _instance._studentAvatarBase64;
+  static Future<void> setStudentAvatarBase64(String? value) async {
+    _instance._studentAvatarBase64 = value;
+    if (value == null || value.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('STUDENT_AvatarBase64');
+    } else {
+      await saveString('STUDENT_AvatarBase64', value);
+    }
+  }
+
+  static String getTrainingLabelsJson() => _instance._trainingLabelsJson ?? '{}';
+  static Future<void> setTrainingLabelsJson(String? value) async {
+    _instance._trainingLabelsJson = value ?? '{}';
+    await saveString('STUDENT_TrainingLabelsJson', _instance._trainingLabelsJson!);
+  }
+
   static bool? getNeedsHaptics(){return _instance._persistentSetting_needBetterHaptics;}
   static Future<void> setNeedsHaptics(int? value)async{
     _instance._persistentSetting_needBetterHaptics =  value != null && value != 0;
@@ -626,6 +692,7 @@ class DataCache{
   static bool? _displayClasses = true;
   static bool? _displayExams = true;
   static bool? _displayPeriods = true;
+  static bool _hasSeenMailTranslateDisclaimer = false;
 
   static bool? getDisplayClasses() => _displayClasses;
   static Future<void> setDisplayClasses(bool? value) async {
@@ -647,6 +714,14 @@ class DataCache{
     _displayPeriods = value ?? true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('CALENDAR_DisplayPeriods', _displayPeriods!);
+  }
+
+  /// First-time mail machine-translate inaccuracy notice (device-level).
+  static bool getHasSeenMailTranslateDisclaimer() => _hasSeenMailTranslateDisclaimer;
+  static Future<void> setHasSeenMailTranslateDisclaimer(bool value) async {
+    _hasSeenMailTranslateDisclaimer = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenMailTranslateDisclaimer', value);
   }
 
 }

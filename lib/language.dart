@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert' as conv;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:neptun2/storage.dart';
 import 'API/api_coms.dart';
 import 'Misc/popup.dart';
@@ -17,6 +18,42 @@ class AppStrings{
   static List<String> _downloadedSupportedLanguages = [];
   static List<String> _downloadedSupportedLanguagesFlags = [];
   static final Map<String, LanguagePack> _downloadedLanguages = {};
+
+  /// Shipped with the binary so missing keys in GitHub/cache packs do not fall back to EN.
+  static final Map<String, Map<String, dynamic>> _bundledLangJson = {};
+  static const Map<String, String> _bundledLangAssets = {
+    'ru': 'Languages/LangExtentions/Russian.json',
+    'tr': 'Languages/LangExtentions/Turkish.json',
+  };
+
+  /// Call once before [initialize] so cached RU/TR packs can merge in missing keys.
+  static Future<void> loadBundledLanguagePacks() async {
+    for (final entry in _bundledLangAssets.entries) {
+      try {
+        final raw = await rootBundle.loadString(entry.value);
+        final decoded = conv.json.decode(raw);
+        if (decoded is Map) {
+          _bundledLangJson[entry.key] = Map<String, dynamic>.from(decoded);
+        }
+      } catch (_) {
+        // Asset missing or invalid — network/cache packs still work with EN fallback.
+      }
+    }
+  }
+
+  static Map<String, dynamic> _mergeWithBundled(String countryId, Map<String, dynamic> lang) {
+    final bundled = _bundledLangJson[countryId];
+    if (bundled == null || bundled.isEmpty) {
+      return lang;
+    }
+    final merged = Map<String, dynamic>.from(bundled);
+    lang.forEach((key, value) {
+      if (value != null && value.toString().trim().isNotEmpty) {
+        merged[key] = value;
+      }
+    });
+    return merged;
+  }
 
   static void initialize(){
     if(_hasInit){
@@ -58,6 +95,7 @@ class AppStrings{
       loginPage_setupPage_LogInButton: 'Belépés',
       loginPage_setupPage_LoginInProgress: 'Bejelentkezés...',
       loginPage_setupPage_LoginInProgressSlow: 'Neptun szervereivel lehet problémák vannak...',
+      auth_sessionExpired_PleaseSignIn: 'A munkamenet lejárt — jelentkezz be újra',
       api_monthJan_Universal: 'január',
       api_monthFeb_Universal: 'február',
       api_monthMar_Universal: 'március',
@@ -124,6 +162,7 @@ class AppStrings{
       topmenu_buttons_Bugreport: '🐞 Hibabejelentés',
       topmenu_buttons_Logout: '🚪 Kijelentkezés',
       topmenu_buttons_LogoutSuccessToast: 'Sikeresen kijelentkeztél! 🚪',
+      topmenu_buttons_Contacts: 'Kapcsolatok',
       topmenu_SemesterSelectorTitle: 'Félév',
       topmenu_SemesterToast: 'Félév átváltva: %0',
       topmenu_AccountBalance: 'Gyűjtőszámla egyenleg',
@@ -146,6 +185,11 @@ class AppStrings{
       paymentPage_MoneyDisplay: '%0Ft',
       paymentPage_PaymentDeadlineTime: '(%0 nap van hátra)',
       paymentPage_PaymentMissedTime: '(%0 nappal lekésve)',
+      payment_currencyHuf: 'Ft',
+      payment_unknownTransaction: 'Ismeretlen tranzakció',
+      payment_unknownStatus: 'Ismeretlen státusz',
+      notif_payment_BodyNoDeadline: '%0 tartozásod van. Fizesd be! (Nincs határidő)',
+      notif_payment_BodyWithDeadline: '%0 tartozásod van. Fizetési határidő: %1!',
       periodPage_Empty: '🤩Szünet Van🤩',
       periodPage_Expired: 'Lejárt: ',
       periodPage_Starts: 'Kezdődik: ',
@@ -205,6 +249,109 @@ class AppStrings{
       popup_case1_settingOption9_ThemeSwap: 'App téma',
       popup_case1_settingOption9_ThemeSwapDescription: 'Válaszd ki milyen színű legyen az app',
       popup_case1_themeSwap_DownloadingThemeFail : 'Téma letöltése',
+      settings_section_AppearanceLanguage: 'Megjelenés és nyelv',
+      settings_section_FontScale: 'App betűméret skálázás',
+      settings_section_Notifications: 'Értesítések',
+      settings_section_BehaviorOther: 'Működés és egyéb',
+      settings_section_CalendarFilters: 'Naptár szűrők',
+      settings_calendar_ShowClasses: 'Órák megjelenítése',
+      settings_calendar_ShowExams: 'Vizsgák megjelenítése',
+      settings_calendar_ShowPeriods: 'Időszakok megjelenítése',
+      calendar_next48h_Header: 'Következő 48 óra',
+      calendar_tasks_Header: 'Feladatok / ZH',
+      calendar_exams_Header: 'Vizsgák',
+      calendar_periods_Header: 'Időszak bannerek',
+      calendar_break_label: 'szünet',
+      calendar_break_now: 'Szünet most',
+      calendar_break_next: 'Következő: %0',
+      calendar_break_minutes: '%0 perc',
+      calendar_break_hours: '%0 óra',
+      calendar_break_hoursMinutes: '%0 óra %1 perc',
+      markbook_myCourses_Header: 'Felvett kurzusok',
+      markbook_gradeHistory_Header: 'Jegyek más félévekből',
+      payment_invoices_Header: 'Gyűjtőszámlák',
+      mail_translate_EN: 'Fordítás EN',
+      mail_translate_RU: 'Fordítás RU',
+      mail_translate_Disclaimer: 'A fordítás gépi és pontatlan lehet.',
+      mail_translate_ShowOriginal: 'Eredeti',
+      topmenu_TrainingSelectorTitle: 'Képzés',
+      notif_title_Exam: 'Vizsga emlékeztető!',
+      notif_title_Class: 'Óra',
+      notif_title_Payment: 'Befizetés',
+      notif_title_Period: 'Időszak',
+      notif_period_Tomorrow: '"%0" időszak lesz HOLNAP!',
+      notif_period_Today: '"%0" időszak van MA!',
+      courseDetail_Type: 'Típus:',
+      courseDetail_Teacher: 'Tanár:',
+      courseDetail_Room: 'Terem:',
+      courseDetail_Subject: 'Tárgy:',
+      courseDetail_Result: 'Eredmény:',
+      courseDetail_Close: 'Bezárás',
+      courseDetail_Unknown: 'Ismeretlen',
+      courseDetail_NoResultYet: 'Nincs még kiírva',
+      courseDetail_LoadingRoom: '⏳ Terem betöltése...',
+      courseDetail_NoRoom: 'Nincs terem',
+      courseDetail_NoTeacher: 'Nincs tanár',
+      courseDetail_NoInternet: 'Nincs internet',
+      courseDetail_OfflineMode: 'Offline mód',
+      courseDetail_LoadError: 'Hiba a betöltésnél',
+      courseDetail_OldApiUnsupported: 'Nem támogatott (Régi API)',
+      courseDetail_Unsupported: 'Nem támogatott',
+      courseDetail_NotSpecified: 'Nincs megadva',
+      roomCode_Floor: 'Emelet',
+      roomCode_Room: 'Terem',
+      roomCode_Stream: 'Stream',
+      roomCode_Group: 'Csoport',
+      roomCode_Building_LD: 'Déli Tömb',
+      roomCode_Building_LE: 'Északi Tömb',
+      roomCode_Building_LK: 'Kémiai tömb (Északi)',
+      markbook_creditAbbrev: 'kr',
+      notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
+      notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
+      notif_exam_BodyInDays: '"%0" tárgyból vizsgád lesz %1 nap múlva!',
+      notif_class_BodyIn10Min: '"%0" órád lesz itt: "%1" 10 perc múlva!',
+      notif_class_BodyIn5Min: '"%0" órád lesz itt: "%1" 5 perc múlva!',
+      notif_class_BodyNow: '"%0" órád van itt: "%1"!',
+      settings_fontScale_Label: 'Betűméret',
+      mail_error_Prefix: 'Hiba: %0',
+      mail_error_EmptyMessage: 'Üres üzenet.',
+      popup_case9_2faHeader: 'Kétlépcsős azonosítás',
+      popup_case9_2faDescription: 'Add meg a Microsoft Authenticator 6 jegyű TOTP kódját. Ezután az app a hallgatói webre lép OuterLogin-nal — ugyanaz az út, mint a böngészőben.',
+      updater_NoInternet: 'Nincs internetkapcsolat!',
+      updater_Checking: 'Frissítések keresése...',
+      updater_FetchFailed: 'Nem sikerült lekérni a GitHub kiadásokat (%0)',
+      updater_UpToDate: 'Az alkalmazás naprakész! (v%0)',
+      updater_CheckError: 'Hiba történt a frissítés ellenőrzésekor.',
+      updater_DialogTitle: 'Frissítés elérhető!',
+      updater_DialogBody: 'Az alkalmazás új verziója (%0) elérhető. Szeretnéd most letölteni és telepíteni?',
+      updater_Later: 'Később',
+      updater_Yes: 'Igen',
+      updater_NoApk: 'Nem található kompatibilis telepítőcsomag (.apk) a kiadásban.',
+      updater_DownloadError: 'Hiba történt a letöltés során!',
+      updater_Downloading: 'Frissítés letöltése folyamatban...',
+      updater_DontClose: 'Kérlek, ne zárd be az alkalmazást.',
+      api_fallback_NoTitle: 'Nincs cím',
+      api_fallback_Unknown: 'Ismeretlen',
+      api_fallback_UnknownSubject: 'Ismeretlen tárgy',
+      api_fallback_Task: 'Feladat',
+      api_fallback_NoResult: 'Nincs eredmény',
+      api_fallback_UnknownPeriod: 'Ismeretlen időszak',
+      api_fallback_NoTermId: 'Hiba lépett fel!\nNincs term id.',
+      api_demo_Term1: 'DEMO Félév (2025/26/1)',
+      api_demo_Term2: 'DEMO Félév (2025/26/2)',
+      api_demo_Subject1: 'DEMO tantárgy 1',
+      api_demo_GhostGrade: 'DEMO szellemjegy',
+      api_demo_Course: 'DEMO kurzus',
+      api_demo_Payment1: 'DEMO befizetés 1',
+      api_demo_Payment2: 'DEMO befizetés 2',
+      api_demo_MailSubject: 'Tárgy',
+      api_demo_MailBody: 'Szöveg',
+      api_demo_MailSender: 'DEMO feladó',
+      api_error_InvalidUrlOrHtml: 'Hibás URL vagy a Neptun szervere weboldalt küldött válaszként',
+      api_error_Network: 'Hálózati hiba: %0',
+      api_error_EmptyNeptunResponse: 'Üres válasz érkezett a Neptuntól.\n\nSzerver válasza: %0',
+      api_error_DownloadNetwork: 'Hálózati hiba a letöltés során:\n%0',
+      mail_preview_TapToLoadBody: 'A szöveg letöltéséhez kattints ide...',
       rootpage_setupPage_IcsImport: 'Naptár használat',
       rootpage_setupPage_IcsImportDescription: 'Betudod importálni a neptunos órarendedet, viszont ha az órarendedben változás történik, arról te nem fogsz értesülni.\nCsak annak ajánlott, aki semmilyen módon nem tud bejelentkezni!',
       rootpage_setupPage_OtherUsageModes: 'Offline módok',
@@ -251,6 +398,7 @@ class AppStrings{
       loginPage_setupPage_LogInButton: 'Login',
       loginPage_setupPage_LoginInProgress: 'Logging in...',
       loginPage_setupPage_LoginInProgressSlow: 'Neptun servers are having a hard time...',
+      auth_sessionExpired_PleaseSignIn: 'Session expired — please sign in again',
       api_monthJan_Universal: 'january',
       api_monthFeb_Universal: 'february',
       api_monthMar_Universal: 'march',
@@ -317,6 +465,7 @@ class AppStrings{
       topmenu_buttons_Bugreport: '🐞 Bug report',
       topmenu_buttons_Logout: '🚪 Log out',
       topmenu_buttons_LogoutSuccessToast: 'You have logged out successfully! 🚪',
+      topmenu_buttons_Contacts: 'Contacts',
       topmenu_SemesterSelectorTitle: 'Semester',
       topmenu_SemesterToast: 'Semester switched: %0',
       topmenu_AccountBalance: 'Account balance',
@@ -339,6 +488,11 @@ class AppStrings{
       paymentPage_MoneyDisplay: '%0Huf',
       paymentPage_PaymentDeadlineTime: '(%0 days remaining)',
       paymentPage_PaymentMissedTime: '(%0 days since deadline)',
+      payment_currencyHuf: 'HUF',
+      payment_unknownTransaction: 'Unknown transaction',
+      payment_unknownStatus: 'Unknown status',
+      notif_payment_BodyNoDeadline: 'You owe %0. Please pay! (No deadline)',
+      notif_payment_BodyWithDeadline: 'You owe %0. Pay by: %1!',
       periodPage_Empty: '🤩Break time🤩',
       periodPage_Expired: 'Expired: ',
       periodPage_Starts: 'Starts: ',
@@ -398,6 +552,109 @@ class AppStrings{
       popup_case1_settingOption9_ThemeSwap: 'App theme',
       popup_case1_settingOption9_ThemeSwapDescription: 'Select how the app should look like',
       popup_case1_themeSwap_DownloadingThemeFail: 'Downloading theme',
+      settings_section_AppearanceLanguage: 'Appearance & language',
+      settings_section_FontScale: 'App font size scaling',
+      settings_section_Notifications: 'Notifications',
+      settings_section_BehaviorOther: 'Behavior & other',
+      settings_section_CalendarFilters: 'Calendar filters',
+      settings_calendar_ShowClasses: 'Show classes',
+      settings_calendar_ShowExams: 'Show exams',
+      settings_calendar_ShowPeriods: 'Show periods',
+      calendar_next48h_Header: 'Next 48 hours',
+      calendar_tasks_Header: 'Tasks / midterms',
+      calendar_exams_Header: 'Exams',
+      calendar_periods_Header: 'Period banners',
+      calendar_break_label: 'break',
+      calendar_break_now: 'Break now',
+      calendar_break_next: 'Next: %0',
+      calendar_break_minutes: '%0 min',
+      calendar_break_hours: '%0 h',
+      calendar_break_hoursMinutes: '%0 h %1 min',
+      markbook_myCourses_Header: 'My courses',
+      markbook_gradeHistory_Header: 'Grades from other terms',
+      payment_invoices_Header: 'Collective invoices',
+      mail_translate_EN: 'Translate EN',
+      mail_translate_RU: 'Translate RU',
+      mail_translate_Disclaimer: 'Machine translation may be inaccurate.',
+      mail_translate_ShowOriginal: 'Original',
+      topmenu_TrainingSelectorTitle: 'Training',
+      notif_title_Exam: 'Exam reminder!',
+      notif_title_Class: 'Class',
+      notif_title_Payment: 'Payment',
+      notif_title_Period: 'Period',
+      notif_period_Tomorrow: '"%0" period starts TOMORROW!',
+      notif_period_Today: '"%0" period is TODAY!',
+      courseDetail_Type: 'Type:',
+      courseDetail_Teacher: 'Teacher:',
+      courseDetail_Room: 'Room:',
+      courseDetail_Subject: 'Subject:',
+      courseDetail_Result: 'Result:',
+      courseDetail_Close: 'Close',
+      courseDetail_Unknown: 'Unknown',
+      courseDetail_NoResultYet: 'Not posted yet',
+      courseDetail_LoadingRoom: '⏳ Loading room...',
+      courseDetail_NoRoom: 'No room',
+      courseDetail_NoTeacher: 'No teacher',
+      courseDetail_NoInternet: 'No internet',
+      courseDetail_OfflineMode: 'Offline mode',
+      courseDetail_LoadError: 'Failed to load',
+      courseDetail_OldApiUnsupported: 'Not supported (legacy API)',
+      courseDetail_Unsupported: 'Not supported',
+      courseDetail_NotSpecified: 'Not specified',
+      roomCode_Floor: 'Floor',
+      roomCode_Room: 'Room',
+      roomCode_Stream: 'Stream',
+      roomCode_Group: 'Group',
+      roomCode_Building_LD: 'Southern Building',
+      roomCode_Building_LE: 'Northern Building',
+      roomCode_Building_LK: 'Chemistry block (Northern Building)',
+      markbook_creditAbbrev: 'cr',
+      notif_exam_BodyToday: '"%0" exam is TODAY!',
+      notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
+      notif_exam_BodyInDays: '"%0" exam in %1 days!',
+      notif_class_BodyIn10Min: '"%0" class at "%1" in 10 minutes!',
+      notif_class_BodyIn5Min: '"%0" class at "%1" in 5 minutes!',
+      notif_class_BodyNow: '"%0" class now at "%1"!',
+      settings_fontScale_Label: 'Font scale',
+      mail_error_Prefix: 'Error: %0',
+      mail_error_EmptyMessage: 'Empty message.',
+      popup_case9_2faHeader: 'Two-step authentication',
+      popup_case9_2faDescription: 'Enter the 6-digit TOTP from Microsoft Authenticator. After that the app opens Student web (hallgato) via OuterLogin — same path as the browser.',
+      updater_NoInternet: 'No internet connection!',
+      updater_Checking: 'Checking for updates...',
+      updater_FetchFailed: 'Could not fetch GitHub releases (%0)',
+      updater_UpToDate: 'App is up to date! (v%0)',
+      updater_CheckError: 'Error while checking for updates.',
+      updater_DialogTitle: 'Update available!',
+      updater_DialogBody: 'A new version (%0) is available. Download and install now?',
+      updater_Later: 'Later',
+      updater_Yes: 'Yes',
+      updater_NoApk: 'No compatible installer package (.apk) found in the release.',
+      updater_DownloadError: 'Download failed!',
+      updater_Downloading: 'Downloading update...',
+      updater_DontClose: 'Please do not close the app.',
+      api_fallback_NoTitle: 'No title',
+      api_fallback_Unknown: 'Unknown',
+      api_fallback_UnknownSubject: 'Unknown subject',
+      api_fallback_Task: 'Task',
+      api_fallback_NoResult: 'No result',
+      api_fallback_UnknownPeriod: 'Unknown period',
+      api_fallback_NoTermId: 'An error occurred!\nNo term id.',
+      api_demo_Term1: 'DEMO Term (2025/26/1)',
+      api_demo_Term2: 'DEMO Term (2025/26/2)',
+      api_demo_Subject1: 'DEMO subject 1',
+      api_demo_GhostGrade: 'DEMO ghost grade',
+      api_demo_Course: 'DEMO course',
+      api_demo_Payment1: 'DEMO payment 1',
+      api_demo_Payment2: 'DEMO payment 2',
+      api_demo_MailSubject: 'Subject',
+      api_demo_MailBody: 'Body',
+      api_demo_MailSender: 'DEMO sender',
+      api_error_InvalidUrlOrHtml: 'Invalid URL or Neptun returned a web page instead of data',
+      api_error_Network: 'Network error: %0',
+      api_error_EmptyNeptunResponse: 'Empty response from Neptun.\n\nServer response: %0',
+      api_error_DownloadNetwork: 'Network error while downloading:\n%0',
+      mail_preview_TapToLoadBody: 'Tap here to download the message body...',
       rootpage_setupPage_IcsImport: 'Calendar Use',
       rootpage_setupPage_IcsImportDescription: 'You can load your timetable, if it was a calendar, but if the university makes a change with it, you will not have the latest one.\nYou should only use this, if you can not login into the app!',
       rootpage_setupPage_OtherUsageModes: 'Offline modes',
@@ -434,8 +691,94 @@ class AppStrings{
     popupLangPrev_ObtainingLangError = pack.popup_case1_langSwap_DownloadingLangFail;
   }
 
+  static String getCurrentLangCode(){
+    return _getCurrentLang();
+  }
+
+  /// Neptun LCID for API content language (EN/HU/RU/TR).
+  static int getNeptunLcid(){
+    switch (_getCurrentLang()) {
+      case 'hu':
+        return 1038;
+      case 'ru':
+        return 1049;
+      case 'tr':
+        return 1055;
+      case 'en':
+      default:
+        return 1033;
+    }
+  }
+
   static LanguagePack getLanguagePack(){
     return _getLangPack(_getCurrentLang());
+  }
+
+  /// True for empty / legacy HU / localized "no room" placeholders (not real rooms).
+  static bool isMissingRoomValue(String? value) {
+    if (value == null) return true;
+    final v = value.trim();
+    if (v.isEmpty || v == 'NULL') return true;
+    if (v == 'Nincs terem' || v == 'No room' || v == 'Nincs megadva' || v == 'Not specified') return true;
+    try {
+      final lang = getLanguagePack();
+      if (v == lang.courseDetail_NoRoom || v == lang.courseDetail_NotSpecified) return true;
+    } catch (_) {}
+    return false;
+  }
+
+  /// True for empty / legacy HU / localized "no teacher" placeholders.
+  static bool isMissingTeacherValue(String? value) {
+    if (value == null) return true;
+    final v = value.trim();
+    if (v.isEmpty || v == 'NULL') return true;
+    if (v == 'Nincs tanár' || v == 'No teacher' || v == 'Nincs megadva' || v == 'Not specified') return true;
+    try {
+      final lang = getLanguagePack();
+      if (v == lang.courseDetail_NoTeacher || v == lang.courseDetail_NotSpecified) return true;
+    } catch (_) {}
+    return false;
+  }
+
+  /// Maps known app-generated placeholders to the active language; leaves Neptun content as-is.
+  static String localizeCourseDetailValue(String? value, {required String Function(LanguagePack) placeholder}) {
+    if (value == null || value.trim().isEmpty || value == 'NULL') {
+      return placeholder(getLanguagePack());
+    }
+    final mapped = mapKnownCourseDetailPlaceholder(value.trim());
+    if (mapped != null) return mapped;
+    return value.trim();
+  }
+
+  /// Returns localized text for known app placeholders, or null if [value] is real Neptun content.
+  static String? mapKnownCourseDetailPlaceholder(String value) {
+    final v = value.trim();
+    final lang = getLanguagePack();
+    if (v == 'Nincs terem' || v == 'No room' || v == lang.courseDetail_NoRoom) {
+      return lang.courseDetail_NoRoom;
+    }
+    if (v == 'Nincs tanár' || v == 'No teacher' || v == lang.courseDetail_NoTeacher) {
+      return lang.courseDetail_NoTeacher;
+    }
+    if (v == 'Nincs megadva' || v == 'Not specified' || v == lang.courseDetail_NotSpecified) {
+      return lang.courseDetail_NotSpecified;
+    }
+    if (v == 'Nincs internet' || v == 'No internet' || v == lang.courseDetail_NoInternet) {
+      return lang.courseDetail_NoInternet;
+    }
+    if (v == 'Offline mód' || v == 'Offline mode' || v == lang.courseDetail_OfflineMode) {
+      return lang.courseDetail_OfflineMode;
+    }
+    if (v == 'Hiba a betöltésnél' || v == 'Failed to load' || v == lang.courseDetail_LoadError) {
+      return lang.courseDetail_LoadError;
+    }
+    if (v == 'Nem támogatott (Régi API)' || v == 'Not supported (legacy API)' || v == lang.courseDetail_OldApiUnsupported) {
+      return lang.courseDetail_OldApiUnsupported;
+    }
+    if (v == 'Nem támogatott' || v == 'Not supported' || v == lang.courseDetail_Unsupported) {
+      return lang.courseDetail_Unsupported;
+    }
+    return null;
   }
 
   static String _getCurrentLang(){
@@ -602,6 +945,7 @@ class LanguagePack{
   final String loginPage_setupPage_LogInButton;
   final String loginPage_setupPage_LoginInProgress;
   final String loginPage_setupPage_LoginInProgressSlow;
+  final String auth_sessionExpired_PleaseSignIn;
 
   final String api_monthJan_Universal;
   final String api_monthFeb_Universal;
@@ -682,6 +1026,7 @@ class LanguagePack{
   final String topmenu_buttons_Bugreport;
   final String topmenu_buttons_Logout;
   final String topmenu_buttons_LogoutSuccessToast;
+  final String topmenu_buttons_Contacts;
   final String topmenu_SemesterSelectorTitle;
   final String topmenu_SemesterToast;
   final String topmenu_AccountBalance;
@@ -707,6 +1052,11 @@ class LanguagePack{
   final String paymentPage_MoneyDisplay;
   final String paymentPage_PaymentMissedTime;
   final String paymentPage_PaymentDeadlineTime;
+  final String payment_currencyHuf;
+  final String payment_unknownTransaction;
+  final String payment_unknownStatus;
+  final String notif_payment_BodyNoDeadline;
+  final String notif_payment_BodyWithDeadline;
 
   final String periodPage_Empty;
   final String periodPage_Expired;
@@ -778,6 +1128,110 @@ class LanguagePack{
   final String popup_case1_langSwap_DownloadingLangFail;
   final String popup_case1_themeSwap_DownloadingThemeFail;
 
+  final String settings_section_AppearanceLanguage;
+  final String settings_section_FontScale;
+  final String settings_section_Notifications;
+  final String settings_section_BehaviorOther;
+  final String settings_section_CalendarFilters;
+  final String settings_calendar_ShowClasses;
+  final String settings_calendar_ShowExams;
+  final String settings_calendar_ShowPeriods;
+  final String calendar_next48h_Header;
+  final String calendar_tasks_Header;
+  final String calendar_exams_Header;
+  final String calendar_periods_Header;
+  final String calendar_break_label;
+  final String calendar_break_now;
+  final String calendar_break_next;
+  final String calendar_break_minutes;
+  final String calendar_break_hours;
+  final String calendar_break_hoursMinutes;
+  final String markbook_myCourses_Header;
+  final String markbook_gradeHistory_Header;
+  final String payment_invoices_Header;
+  final String mail_translate_EN;
+  final String mail_translate_RU;
+  final String mail_translate_Disclaimer;
+  final String mail_translate_ShowOriginal;
+  final String topmenu_TrainingSelectorTitle;
+  final String notif_title_Exam;
+  final String notif_title_Class;
+  final String notif_title_Payment;
+  final String notif_title_Period;
+  final String notif_period_Tomorrow;
+  final String notif_period_Today;
+  final String courseDetail_Type;
+  final String courseDetail_Teacher;
+  final String courseDetail_Room;
+  final String courseDetail_Subject;
+  final String courseDetail_Result;
+  final String courseDetail_Close;
+  final String courseDetail_Unknown;
+  final String courseDetail_NoResultYet;
+  final String courseDetail_LoadingRoom;
+  final String courseDetail_NoRoom;
+  final String courseDetail_NoTeacher;
+  final String courseDetail_NoInternet;
+  final String courseDetail_OfflineMode;
+  final String courseDetail_LoadError;
+  final String courseDetail_OldApiUnsupported;
+  final String courseDetail_Unsupported;
+  final String courseDetail_NotSpecified;
+  final String roomCode_Floor;
+  final String roomCode_Room;
+  final String roomCode_Stream;
+  final String roomCode_Group;
+  final String roomCode_Building_LD;
+  final String roomCode_Building_LE;
+  final String roomCode_Building_LK;
+  final String markbook_creditAbbrev;
+  final String notif_exam_BodyToday;
+  final String notif_exam_BodyTomorrow;
+  final String notif_exam_BodyInDays;
+  final String notif_class_BodyIn10Min;
+  final String notif_class_BodyIn5Min;
+  final String notif_class_BodyNow;
+  final String settings_fontScale_Label;
+  final String mail_error_Prefix;
+  final String mail_error_EmptyMessage;
+  final String popup_case9_2faHeader;
+  final String popup_case9_2faDescription;
+  final String updater_NoInternet;
+  final String updater_Checking;
+  final String updater_FetchFailed;
+  final String updater_UpToDate;
+  final String updater_CheckError;
+  final String updater_DialogTitle;
+  final String updater_DialogBody;
+  final String updater_Later;
+  final String updater_Yes;
+  final String updater_NoApk;
+  final String updater_DownloadError;
+  final String updater_Downloading;
+  final String updater_DontClose;
+  final String api_fallback_NoTitle;
+  final String api_fallback_Unknown;
+  final String api_fallback_UnknownSubject;
+  final String api_fallback_Task;
+  final String api_fallback_NoResult;
+  final String api_fallback_UnknownPeriod;
+  final String api_fallback_NoTermId;
+  final String api_demo_Term1;
+  final String api_demo_Term2;
+  final String api_demo_Subject1;
+  final String api_demo_GhostGrade;
+  final String api_demo_Course;
+  final String api_demo_Payment1;
+  final String api_demo_Payment2;
+  final String api_demo_MailSubject;
+  final String api_demo_MailBody;
+  final String api_demo_MailSender;
+  final String api_error_InvalidUrlOrHtml;
+  final String api_error_Network;
+  final String api_error_EmptyNeptunResponse;
+  final String api_error_DownloadNetwork;
+  final String mail_preview_TapToLoadBody;
+
   final String popup_caseDefault_InvalidPopupState;
 
   const LanguagePack({
@@ -815,6 +1269,7 @@ class LanguagePack{
     required this.loginPage_setupPage_LogInButton,
     required this.loginPage_setupPage_LoginInProgress,
     required this.loginPage_setupPage_LoginInProgressSlow,
+    required this.auth_sessionExpired_PleaseSignIn,
     required this.api_monthJan_Universal,
     required this.api_monthFeb_Universal,
     required this.api_monthMar_Universal,
@@ -881,6 +1336,7 @@ class LanguagePack{
     required this.topmenu_Greet,
     required this.topmenu_LoginPlace,
     required this.topmenu_buttons_LogoutSuccessToast,
+    required this.topmenu_buttons_Contacts,
     required this.calendarPage_FreeDay,
     required this.calendarPage_weekNav_ClassesThisWeekFull,
     required this.calendarPage_weekNav_ClassesThisWeekOneDay,
@@ -896,6 +1352,11 @@ class LanguagePack{
     required this.paymentPage_MoneyDisplay,
     required this.paymentPage_PaymentDeadlineTime,
     required this.paymentPage_PaymentMissedTime,
+    required this.payment_currencyHuf,
+    required this.payment_unknownTransaction,
+    required this.payment_unknownStatus,
+    required this.notif_payment_BodyNoDeadline,
+    required this.notif_payment_BodyWithDeadline,
     required this.periodPage_ActiveDays,
     required this.periodPage_Empty,
     required this.periodPage_Expired,
@@ -955,6 +1416,109 @@ class LanguagePack{
     required this.popup_case1_settingOption9_ThemeSwap,
     required this.popup_case1_settingOption9_ThemeSwapDescription,
     required this.popup_case1_themeSwap_DownloadingThemeFail,
+    required this.settings_section_AppearanceLanguage,
+    required this.settings_section_FontScale,
+    required this.settings_section_Notifications,
+    required this.settings_section_BehaviorOther,
+    required this.settings_section_CalendarFilters,
+    required this.settings_calendar_ShowClasses,
+    required this.settings_calendar_ShowExams,
+    required this.settings_calendar_ShowPeriods,
+    required this.calendar_next48h_Header,
+    required this.calendar_tasks_Header,
+    required this.calendar_exams_Header,
+    required this.calendar_periods_Header,
+    required this.calendar_break_label,
+    required this.calendar_break_now,
+    required this.calendar_break_next,
+    required this.calendar_break_minutes,
+    required this.calendar_break_hours,
+    required this.calendar_break_hoursMinutes,
+    required this.markbook_myCourses_Header,
+    required this.markbook_gradeHistory_Header,
+    required this.payment_invoices_Header,
+    required this.mail_translate_EN,
+    required this.mail_translate_RU,
+    required this.mail_translate_Disclaimer,
+    required this.mail_translate_ShowOriginal,
+    required this.topmenu_TrainingSelectorTitle,
+    required this.notif_title_Exam,
+    required this.notif_title_Class,
+    required this.notif_title_Payment,
+    required this.notif_title_Period,
+    required this.notif_period_Tomorrow,
+    required this.notif_period_Today,
+    required this.courseDetail_Type,
+    required this.courseDetail_Teacher,
+    required this.courseDetail_Room,
+    required this.courseDetail_Subject,
+    required this.courseDetail_Result,
+    required this.courseDetail_Close,
+    required this.courseDetail_Unknown,
+    required this.courseDetail_NoResultYet,
+    required this.courseDetail_LoadingRoom,
+    required this.courseDetail_NoRoom,
+    required this.courseDetail_NoTeacher,
+    required this.courseDetail_NoInternet,
+    required this.courseDetail_OfflineMode,
+    required this.courseDetail_LoadError,
+    required this.courseDetail_OldApiUnsupported,
+    required this.courseDetail_Unsupported,
+    required this.courseDetail_NotSpecified,
+    this.roomCode_Floor = 'Floor',
+    this.roomCode_Room = 'Room',
+    this.roomCode_Stream = 'Stream',
+    this.roomCode_Group = 'Group',
+    this.roomCode_Building_LD = 'Southern Building',
+    this.roomCode_Building_LE = 'Northern Building',
+    this.roomCode_Building_LK = 'Chemistry block (Northern Building)',
+    required this.markbook_creditAbbrev,
+    required this.notif_exam_BodyToday,
+    required this.notif_exam_BodyTomorrow,
+    required this.notif_exam_BodyInDays,
+    required this.notif_class_BodyIn10Min,
+    required this.notif_class_BodyIn5Min,
+    required this.notif_class_BodyNow,
+    required this.settings_fontScale_Label,
+    required this.mail_error_Prefix,
+    required this.mail_error_EmptyMessage,
+    required this.popup_case9_2faHeader,
+    required this.popup_case9_2faDescription,
+    required this.updater_NoInternet,
+    required this.updater_Checking,
+    required this.updater_FetchFailed,
+    required this.updater_UpToDate,
+    required this.updater_CheckError,
+    required this.updater_DialogTitle,
+    required this.updater_DialogBody,
+    required this.updater_Later,
+    required this.updater_Yes,
+    required this.updater_NoApk,
+    required this.updater_DownloadError,
+    required this.updater_Downloading,
+    required this.updater_DontClose,
+    required this.api_fallback_NoTitle,
+    required this.api_fallback_Unknown,
+    required this.api_fallback_UnknownSubject,
+    required this.api_fallback_Task,
+    required this.api_fallback_NoResult,
+    required this.api_fallback_UnknownPeriod,
+    required this.api_fallback_NoTermId,
+    required this.api_demo_Term1,
+    required this.api_demo_Term2,
+    required this.api_demo_Subject1,
+    required this.api_demo_GhostGrade,
+    required this.api_demo_Course,
+    required this.api_demo_Payment1,
+    required this.api_demo_Payment2,
+    required this.api_demo_MailSubject,
+    required this.api_demo_MailBody,
+    required this.api_demo_MailSender,
+    required this.api_error_InvalidUrlOrHtml,
+    required this.api_error_Network,
+    required this.api_error_EmptyNeptunResponse,
+    required this.api_error_DownloadNetwork,
+    required this.mail_preview_TapToLoadBody,
 
     required this.rootpage_setupPage_IcsImport,
     required this.rootpage_setupPage_IcsImportDescription,
@@ -965,13 +1529,13 @@ class LanguagePack{
     required this.calendarLogin_setupPage_WhereIsICSHelperDescription,
     required this.calendarLogin_setupPage_ImportICSFileHelpText,
     required this.calendarLogin_setupPage_ImportICSFileButton,
-    this.topmenu_SemesterSelectorTitle = 'Félév',
-    this.topmenu_SemesterToast = 'Félév átváltva: %0',
-    this.topmenu_AccountBalance = 'Gyűjtőszámla egyenleg',
-    this.topmenu_UnreadMessagesBadge = '%0 új üzenet',
-    this.topmenu_NoUnreadMessages = 'Nincs új üzenet',
-    this.topmenu_MessagesTitle = 'Üzenetek',
-    this.topmenu_PaymentsTitle = 'Pénzügyek'
+    this.topmenu_SemesterSelectorTitle = 'Semester',
+    this.topmenu_SemesterToast = 'Semester switched: %0',
+    this.topmenu_AccountBalance = 'Account balance',
+    this.topmenu_UnreadMessagesBadge = '%0 new messages',
+    this.topmenu_NoUnreadMessages = 'No new messages',
+    this.topmenu_MessagesTitle = 'Messages',
+    this.topmenu_PaymentsTitle = 'Payments'
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -985,7 +1549,8 @@ class LanguagePack{
     }
     try{
       final dynamic decodedRaw = conv.json.decode(json);
-      final Map<String, dynamic> lang = decodedRaw is Map<String, dynamic> ? decodedRaw : Map<String, dynamic>.from(decodedRaw as Map);
+      Map<String, dynamic> lang = decodedRaw is Map<String, dynamic> ? decodedRaw : Map<String, dynamic>.from(decodedRaw as Map);
+      lang = AppStrings._mergeWithBundled(countryId, lang);
       final en = AppStrings._languages['en'] ?? AppStrings._languages['hu']!;
 
       String getStr(String key, String fallback) {
@@ -1031,6 +1596,7 @@ class LanguagePack{
         loginPage_setupPage_LogInButton: getStr('loginPage_setupPage_LogInButton', en.loginPage_setupPage_LogInButton),
         loginPage_setupPage_LoginInProgress: getStr('loginPage_setupPage_LoginInProgress', en.loginPage_setupPage_LoginInProgress),
         loginPage_setupPage_LoginInProgressSlow: getStr('loginPage_setupPage_LoginInProgressSlow', en.loginPage_setupPage_LoginInProgressSlow),
+        auth_sessionExpired_PleaseSignIn: getStr('auth_sessionExpired_PleaseSignIn', en.auth_sessionExpired_PleaseSignIn),
         api_monthJan_Universal: getStr('api_monthJan_Universal', en.api_monthJan_Universal),
         api_monthFeb_Universal: getStr('api_monthFeb_Universal', en.api_monthFeb_Universal),
         api_monthMar_Universal: getStr('api_monthMar_Universal', en.api_monthMar_Universal),
@@ -1097,6 +1663,7 @@ class LanguagePack{
         topmenu_Greet: getStr('topmenu_Greet', en.topmenu_Greet),
         topmenu_LoginPlace: getStr('topmenu_LoginPlace', en.topmenu_LoginPlace),
         topmenu_buttons_LogoutSuccessToast: getStr('topmenu_buttons_LogoutSuccessToast', en.topmenu_buttons_LogoutSuccessToast),
+        topmenu_buttons_Contacts: getStr('topmenu_buttons_Contacts', en.topmenu_buttons_Contacts),
         calendarPage_FreeDay: getStr('calendarPage_FreeDay', en.calendarPage_FreeDay),
         calendarPage_weekNav_ClassesThisWeekFull: getStr('calendarPage_weekNav_ClassesThisWeekFull', en.calendarPage_weekNav_ClassesThisWeekFull),
         calendarPage_weekNav_ClassesThisWeekOneDay: getStr('calendarPage_weekNav_ClassesThisWeekOneDay', en.calendarPage_weekNav_ClassesThisWeekOneDay),
@@ -1112,6 +1679,11 @@ class LanguagePack{
         paymentPage_MoneyDisplay: getStr('paymentPage_MoneyDisplay', en.paymentPage_MoneyDisplay),
         paymentPage_PaymentDeadlineTime: getStr('paymentPage_PaymentDeadlineTime', en.paymentPage_PaymentDeadlineTime),
         paymentPage_PaymentMissedTime: getStr('paymentPage_PaymentMissedTime', en.paymentPage_PaymentMissedTime),
+        payment_currencyHuf: getStr('payment_currencyHuf', en.payment_currencyHuf),
+        payment_unknownTransaction: getStr('payment_unknownTransaction', en.payment_unknownTransaction),
+        payment_unknownStatus: getStr('payment_unknownStatus', en.payment_unknownStatus),
+        notif_payment_BodyNoDeadline: getStr('notif_payment_BodyNoDeadline', en.notif_payment_BodyNoDeadline),
+        notif_payment_BodyWithDeadline: getStr('notif_payment_BodyWithDeadline', en.notif_payment_BodyWithDeadline),
         periodPage_ActiveDays: getStr('periodPage_ActiveDays', en.periodPage_ActiveDays),
         periodPage_Empty: getStr('periodPage_Empty', en.periodPage_Empty),
         periodPage_Expired: getStr('periodPage_Expired', en.periodPage_Expired),
@@ -1171,6 +1743,109 @@ class LanguagePack{
         popup_case1_settingOption9_ThemeSwap: getStr('popup_case1_settingOption9_ThemeSwap', en.popup_case1_settingOption9_ThemeSwap),
         popup_case1_settingOption9_ThemeSwapDescription: getStr('popup_case1_settingOption9_ThemeSwapDescription', en.popup_case1_settingOption9_ThemeSwapDescription),
         popup_case1_themeSwap_DownloadingThemeFail: getStr('popup_case1_themeSwap_DownloadingThemeFail', en.popup_case1_themeSwap_DownloadingThemeFail),
+        settings_section_AppearanceLanguage: getStr('settings_section_AppearanceLanguage', en.settings_section_AppearanceLanguage),
+        settings_section_FontScale: getStr('settings_section_FontScale', en.settings_section_FontScale),
+        settings_section_Notifications: getStr('settings_section_Notifications', en.settings_section_Notifications),
+        settings_section_BehaviorOther: getStr('settings_section_BehaviorOther', en.settings_section_BehaviorOther),
+        settings_section_CalendarFilters: getStr('settings_section_CalendarFilters', en.settings_section_CalendarFilters),
+        settings_calendar_ShowClasses: getStr('settings_calendar_ShowClasses', en.settings_calendar_ShowClasses),
+        settings_calendar_ShowExams: getStr('settings_calendar_ShowExams', en.settings_calendar_ShowExams),
+        settings_calendar_ShowPeriods: getStr('settings_calendar_ShowPeriods', en.settings_calendar_ShowPeriods),
+        calendar_next48h_Header: getStr('calendar_next48h_Header', en.calendar_next48h_Header),
+        calendar_tasks_Header: getStr('calendar_tasks_Header', en.calendar_tasks_Header),
+        calendar_exams_Header: getStr('calendar_exams_Header', en.calendar_exams_Header),
+        calendar_periods_Header: getStr('calendar_periods_Header', en.calendar_periods_Header),
+        calendar_break_label: getStr('calendar_break_label', en.calendar_break_label),
+        calendar_break_now: getStr('calendar_break_now', en.calendar_break_now),
+        calendar_break_next: getStr('calendar_break_next', en.calendar_break_next),
+        calendar_break_minutes: getStr('calendar_break_minutes', en.calendar_break_minutes),
+        calendar_break_hours: getStr('calendar_break_hours', en.calendar_break_hours),
+        calendar_break_hoursMinutes: getStr('calendar_break_hoursMinutes', en.calendar_break_hoursMinutes),
+        markbook_myCourses_Header: getStr('markbook_myCourses_Header', en.markbook_myCourses_Header),
+        markbook_gradeHistory_Header: getStr('markbook_gradeHistory_Header', en.markbook_gradeHistory_Header),
+        payment_invoices_Header: getStr('payment_invoices_Header', en.payment_invoices_Header),
+        mail_translate_EN: getStr('mail_translate_EN', en.mail_translate_EN),
+        mail_translate_RU: getStr('mail_translate_RU', en.mail_translate_RU),
+        mail_translate_Disclaimer: getStr('mail_translate_Disclaimer', en.mail_translate_Disclaimer),
+        mail_translate_ShowOriginal: getStr('mail_translate_ShowOriginal', en.mail_translate_ShowOriginal),
+        topmenu_TrainingSelectorTitle: getStr('topmenu_TrainingSelectorTitle', en.topmenu_TrainingSelectorTitle),
+        notif_title_Exam: getStr('notif_title_Exam', en.notif_title_Exam),
+        notif_title_Class: getStr('notif_title_Class', en.notif_title_Class),
+        notif_title_Payment: getStr('notif_title_Payment', en.notif_title_Payment),
+        notif_title_Period: getStr('notif_title_Period', en.notif_title_Period),
+        notif_period_Tomorrow: getStr('notif_period_Tomorrow', en.notif_period_Tomorrow),
+        notif_period_Today: getStr('notif_period_Today', en.notif_period_Today),
+        courseDetail_Type: getStr('courseDetail_Type', en.courseDetail_Type),
+        courseDetail_Teacher: getStr('courseDetail_Teacher', en.courseDetail_Teacher),
+        courseDetail_Room: getStr('courseDetail_Room', en.courseDetail_Room),
+        courseDetail_Subject: getStr('courseDetail_Subject', en.courseDetail_Subject),
+        courseDetail_Result: getStr('courseDetail_Result', en.courseDetail_Result),
+        courseDetail_Close: getStr('courseDetail_Close', en.courseDetail_Close),
+        courseDetail_Unknown: getStr('courseDetail_Unknown', en.courseDetail_Unknown),
+        courseDetail_NoResultYet: getStr('courseDetail_NoResultYet', en.courseDetail_NoResultYet),
+        courseDetail_LoadingRoom: getStr('courseDetail_LoadingRoom', en.courseDetail_LoadingRoom),
+        courseDetail_NoRoom: getStr('courseDetail_NoRoom', en.courseDetail_NoRoom),
+        courseDetail_NoTeacher: getStr('courseDetail_NoTeacher', en.courseDetail_NoTeacher),
+        courseDetail_NoInternet: getStr('courseDetail_NoInternet', en.courseDetail_NoInternet),
+        courseDetail_OfflineMode: getStr('courseDetail_OfflineMode', en.courseDetail_OfflineMode),
+        courseDetail_LoadError: getStr('courseDetail_LoadError', en.courseDetail_LoadError),
+        courseDetail_OldApiUnsupported: getStr('courseDetail_OldApiUnsupported', en.courseDetail_OldApiUnsupported),
+        courseDetail_Unsupported: getStr('courseDetail_Unsupported', en.courseDetail_Unsupported),
+        courseDetail_NotSpecified: getStr('courseDetail_NotSpecified', en.courseDetail_NotSpecified),
+        roomCode_Floor: getStr('roomCode_Floor', en.roomCode_Floor),
+        roomCode_Room: getStr('roomCode_Room', en.roomCode_Room),
+        roomCode_Stream: getStr('roomCode_Stream', en.roomCode_Stream),
+        roomCode_Group: getStr('roomCode_Group', en.roomCode_Group),
+        roomCode_Building_LD: getStr('roomCode_Building_LD', en.roomCode_Building_LD),
+        roomCode_Building_LE: getStr('roomCode_Building_LE', en.roomCode_Building_LE),
+        roomCode_Building_LK: getStr('roomCode_Building_LK', en.roomCode_Building_LK),
+        markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
+        notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
+        notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
+        notif_exam_BodyInDays: getStr('notif_exam_BodyInDays', en.notif_exam_BodyInDays),
+        notif_class_BodyIn10Min: getStr('notif_class_BodyIn10Min', en.notif_class_BodyIn10Min),
+        notif_class_BodyIn5Min: getStr('notif_class_BodyIn5Min', en.notif_class_BodyIn5Min),
+        notif_class_BodyNow: getStr('notif_class_BodyNow', en.notif_class_BodyNow),
+        settings_fontScale_Label: getStr('settings_fontScale_Label', en.settings_fontScale_Label),
+        mail_error_Prefix: getStr('mail_error_Prefix', en.mail_error_Prefix),
+        mail_error_EmptyMessage: getStr('mail_error_EmptyMessage', en.mail_error_EmptyMessage),
+        popup_case9_2faHeader: getStr('popup_case9_2faHeader', en.popup_case9_2faHeader),
+        popup_case9_2faDescription: getStr('popup_case9_2faDescription', en.popup_case9_2faDescription),
+        updater_NoInternet: getStr('updater_NoInternet', en.updater_NoInternet),
+        updater_Checking: getStr('updater_Checking', en.updater_Checking),
+        updater_FetchFailed: getStr('updater_FetchFailed', en.updater_FetchFailed),
+        updater_UpToDate: getStr('updater_UpToDate', en.updater_UpToDate),
+        updater_CheckError: getStr('updater_CheckError', en.updater_CheckError),
+        updater_DialogTitle: getStr('updater_DialogTitle', en.updater_DialogTitle),
+        updater_DialogBody: getStr('updater_DialogBody', en.updater_DialogBody),
+        updater_Later: getStr('updater_Later', en.updater_Later),
+        updater_Yes: getStr('updater_Yes', en.updater_Yes),
+        updater_NoApk: getStr('updater_NoApk', en.updater_NoApk),
+        updater_DownloadError: getStr('updater_DownloadError', en.updater_DownloadError),
+        updater_Downloading: getStr('updater_Downloading', en.updater_Downloading),
+        updater_DontClose: getStr('updater_DontClose', en.updater_DontClose),
+        api_fallback_NoTitle: getStr('api_fallback_NoTitle', en.api_fallback_NoTitle),
+        api_fallback_Unknown: getStr('api_fallback_Unknown', en.api_fallback_Unknown),
+        api_fallback_UnknownSubject: getStr('api_fallback_UnknownSubject', en.api_fallback_UnknownSubject),
+        api_fallback_Task: getStr('api_fallback_Task', en.api_fallback_Task),
+        api_fallback_NoResult: getStr('api_fallback_NoResult', en.api_fallback_NoResult),
+        api_fallback_UnknownPeriod: getStr('api_fallback_UnknownPeriod', en.api_fallback_UnknownPeriod),
+        api_fallback_NoTermId: getStr('api_fallback_NoTermId', en.api_fallback_NoTermId),
+        api_demo_Term1: getStr('api_demo_Term1', en.api_demo_Term1),
+        api_demo_Term2: getStr('api_demo_Term2', en.api_demo_Term2),
+        api_demo_Subject1: getStr('api_demo_Subject1', en.api_demo_Subject1),
+        api_demo_GhostGrade: getStr('api_demo_GhostGrade', en.api_demo_GhostGrade),
+        api_demo_Course: getStr('api_demo_Course', en.api_demo_Course),
+        api_demo_Payment1: getStr('api_demo_Payment1', en.api_demo_Payment1),
+        api_demo_Payment2: getStr('api_demo_Payment2', en.api_demo_Payment2),
+        api_demo_MailSubject: getStr('api_demo_MailSubject', en.api_demo_MailSubject),
+        api_demo_MailBody: getStr('api_demo_MailBody', en.api_demo_MailBody),
+        api_demo_MailSender: getStr('api_demo_MailSender', en.api_demo_MailSender),
+        api_error_InvalidUrlOrHtml: getStr('api_error_InvalidUrlOrHtml', en.api_error_InvalidUrlOrHtml),
+        api_error_Network: getStr('api_error_Network', en.api_error_Network),
+        api_error_EmptyNeptunResponse: getStr('api_error_EmptyNeptunResponse', en.api_error_EmptyNeptunResponse),
+        api_error_DownloadNetwork: getStr('api_error_DownloadNetwork', en.api_error_DownloadNetwork),
+        mail_preview_TapToLoadBody: getStr('mail_preview_TapToLoadBody', en.mail_preview_TapToLoadBody),
         rootpage_setupPage_IcsImport: getStr('rootpage_setupPage_IcsImport', en.rootpage_setupPage_IcsImport),
         rootpage_setupPage_IcsImportDescription: getStr('rootpage_setupPage_IcsImportDescription', en.rootpage_setupPage_IcsImportDescription),
         rootpage_setupPage_OtherUsageModes: getStr('rootpage_setupPage_OtherUsageModes', en.rootpage_setupPage_OtherUsageModes),
@@ -1240,6 +1915,7 @@ class LanguagePack{
       'loginPage_setupPage_LogInButton':lang.loginPage_setupPage_LogInButton,
       'loginPage_setupPage_LoginInProgress':lang.loginPage_setupPage_LoginInProgress,
       'loginPage_setupPage_LoginInProgressSlow':lang.loginPage_setupPage_LoginInProgressSlow,
+      'auth_sessionExpired_PleaseSignIn':lang.auth_sessionExpired_PleaseSignIn,
       'api_monthJan_Universal':lang.api_monthJan_Universal,
       'api_monthFeb_Universal':lang.api_monthFeb_Universal,
       'api_monthMar_Universal':lang.api_monthMar_Universal,
@@ -1306,6 +1982,7 @@ class LanguagePack{
       'topmenu_Greet':lang.topmenu_Greet,
       'topmenu_LoginPlace':lang.topmenu_LoginPlace,
       'topmenu_buttons_LogoutSuccessToast':lang.topmenu_buttons_LogoutSuccessToast,
+      'topmenu_buttons_Contacts':lang.topmenu_buttons_Contacts,
       'topmenu_SemesterSelectorTitle':lang.topmenu_SemesterSelectorTitle,
       'topmenu_SemesterToast':lang.topmenu_SemesterToast,
       'topmenu_AccountBalance':lang.topmenu_AccountBalance,
@@ -1328,6 +2005,11 @@ class LanguagePack{
       'paymentPage_MoneyDisplay':lang.paymentPage_MoneyDisplay,
       'paymentPage_PaymentDeadlineTime':lang.paymentPage_PaymentDeadlineTime,
       'paymentPage_PaymentMissedTime':lang.paymentPage_PaymentMissedTime,
+      'payment_currencyHuf':lang.payment_currencyHuf,
+      'payment_unknownTransaction':lang.payment_unknownTransaction,
+      'payment_unknownStatus':lang.payment_unknownStatus,
+      'notif_payment_BodyNoDeadline':lang.notif_payment_BodyNoDeadline,
+      'notif_payment_BodyWithDeadline':lang.notif_payment_BodyWithDeadline,
       'periodPage_ActiveDays':lang.periodPage_ActiveDays,
       'periodPage_Empty':lang.periodPage_Empty,
       'periodPage_Expired':lang.periodPage_Expired,
@@ -1387,6 +2069,109 @@ class LanguagePack{
       'popup_case1_settingOption9_ThemeSwap':lang.popup_case1_settingOption9_ThemeSwap,
       'popup_case1_settingOption9_ThemeSwapDescription':lang.popup_case1_settingOption9_ThemeSwapDescription,
       'popup_case1_themeSwap_DownloadingThemeFail':lang.popup_case1_themeSwap_DownloadingThemeFail,
+      'settings_section_AppearanceLanguage':lang.settings_section_AppearanceLanguage,
+      'settings_section_FontScale':lang.settings_section_FontScale,
+      'settings_section_Notifications':lang.settings_section_Notifications,
+      'settings_section_BehaviorOther':lang.settings_section_BehaviorOther,
+      'settings_section_CalendarFilters':lang.settings_section_CalendarFilters,
+      'settings_calendar_ShowClasses':lang.settings_calendar_ShowClasses,
+      'settings_calendar_ShowExams':lang.settings_calendar_ShowExams,
+      'settings_calendar_ShowPeriods':lang.settings_calendar_ShowPeriods,
+      'calendar_next48h_Header':lang.calendar_next48h_Header,
+      'calendar_tasks_Header':lang.calendar_tasks_Header,
+      'calendar_exams_Header':lang.calendar_exams_Header,
+      'calendar_periods_Header':lang.calendar_periods_Header,
+      'calendar_break_label':lang.calendar_break_label,
+      'calendar_break_now':lang.calendar_break_now,
+      'calendar_break_next':lang.calendar_break_next,
+      'calendar_break_minutes':lang.calendar_break_minutes,
+      'calendar_break_hours':lang.calendar_break_hours,
+      'calendar_break_hoursMinutes':lang.calendar_break_hoursMinutes,
+      'markbook_myCourses_Header':lang.markbook_myCourses_Header,
+      'markbook_gradeHistory_Header':lang.markbook_gradeHistory_Header,
+      'payment_invoices_Header':lang.payment_invoices_Header,
+      'mail_translate_EN':lang.mail_translate_EN,
+      'mail_translate_RU':lang.mail_translate_RU,
+      'mail_translate_Disclaimer':lang.mail_translate_Disclaimer,
+      'mail_translate_ShowOriginal':lang.mail_translate_ShowOriginal,
+      'topmenu_TrainingSelectorTitle':lang.topmenu_TrainingSelectorTitle,
+      'notif_title_Exam':lang.notif_title_Exam,
+      'notif_title_Class':lang.notif_title_Class,
+      'notif_title_Payment':lang.notif_title_Payment,
+      'notif_title_Period':lang.notif_title_Period,
+      'notif_period_Tomorrow':lang.notif_period_Tomorrow,
+      'notif_period_Today':lang.notif_period_Today,
+      'courseDetail_Type':lang.courseDetail_Type,
+      'courseDetail_Teacher':lang.courseDetail_Teacher,
+      'courseDetail_Room':lang.courseDetail_Room,
+      'courseDetail_Subject':lang.courseDetail_Subject,
+      'courseDetail_Result':lang.courseDetail_Result,
+      'courseDetail_Close':lang.courseDetail_Close,
+      'courseDetail_Unknown':lang.courseDetail_Unknown,
+      'courseDetail_NoResultYet':lang.courseDetail_NoResultYet,
+      'courseDetail_LoadingRoom':lang.courseDetail_LoadingRoom,
+      'courseDetail_NoRoom':lang.courseDetail_NoRoom,
+      'courseDetail_NoTeacher':lang.courseDetail_NoTeacher,
+      'courseDetail_NoInternet':lang.courseDetail_NoInternet,
+      'courseDetail_OfflineMode':lang.courseDetail_OfflineMode,
+      'courseDetail_LoadError':lang.courseDetail_LoadError,
+      'courseDetail_OldApiUnsupported':lang.courseDetail_OldApiUnsupported,
+      'courseDetail_Unsupported':lang.courseDetail_Unsupported,
+      'courseDetail_NotSpecified':lang.courseDetail_NotSpecified,
+      'roomCode_Floor':lang.roomCode_Floor,
+      'roomCode_Room':lang.roomCode_Room,
+      'roomCode_Stream':lang.roomCode_Stream,
+      'roomCode_Group':lang.roomCode_Group,
+      'roomCode_Building_LD':lang.roomCode_Building_LD,
+      'roomCode_Building_LE':lang.roomCode_Building_LE,
+      'roomCode_Building_LK':lang.roomCode_Building_LK,
+      'markbook_creditAbbrev':lang.markbook_creditAbbrev,
+      'notif_exam_BodyToday':lang.notif_exam_BodyToday,
+      'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,
+      'notif_exam_BodyInDays':lang.notif_exam_BodyInDays,
+      'notif_class_BodyIn10Min':lang.notif_class_BodyIn10Min,
+      'notif_class_BodyIn5Min':lang.notif_class_BodyIn5Min,
+      'notif_class_BodyNow':lang.notif_class_BodyNow,
+      'settings_fontScale_Label':lang.settings_fontScale_Label,
+      'mail_error_Prefix':lang.mail_error_Prefix,
+      'mail_error_EmptyMessage':lang.mail_error_EmptyMessage,
+      'popup_case9_2faHeader':lang.popup_case9_2faHeader,
+      'popup_case9_2faDescription':lang.popup_case9_2faDescription,
+      'updater_NoInternet':lang.updater_NoInternet,
+      'updater_Checking':lang.updater_Checking,
+      'updater_FetchFailed':lang.updater_FetchFailed,
+      'updater_UpToDate':lang.updater_UpToDate,
+      'updater_CheckError':lang.updater_CheckError,
+      'updater_DialogTitle':lang.updater_DialogTitle,
+      'updater_DialogBody':lang.updater_DialogBody,
+      'updater_Later':lang.updater_Later,
+      'updater_Yes':lang.updater_Yes,
+      'updater_NoApk':lang.updater_NoApk,
+      'updater_DownloadError':lang.updater_DownloadError,
+      'updater_Downloading':lang.updater_Downloading,
+      'updater_DontClose':lang.updater_DontClose,
+      'api_fallback_NoTitle':lang.api_fallback_NoTitle,
+      'api_fallback_Unknown':lang.api_fallback_Unknown,
+      'api_fallback_UnknownSubject':lang.api_fallback_UnknownSubject,
+      'api_fallback_Task':lang.api_fallback_Task,
+      'api_fallback_NoResult':lang.api_fallback_NoResult,
+      'api_fallback_UnknownPeriod':lang.api_fallback_UnknownPeriod,
+      'api_fallback_NoTermId':lang.api_fallback_NoTermId,
+      'api_demo_Term1':lang.api_demo_Term1,
+      'api_demo_Term2':lang.api_demo_Term2,
+      'api_demo_Subject1':lang.api_demo_Subject1,
+      'api_demo_GhostGrade':lang.api_demo_GhostGrade,
+      'api_demo_Course':lang.api_demo_Course,
+      'api_demo_Payment1':lang.api_demo_Payment1,
+      'api_demo_Payment2':lang.api_demo_Payment2,
+      'api_demo_MailSubject':lang.api_demo_MailSubject,
+      'api_demo_MailBody':lang.api_demo_MailBody,
+      'api_demo_MailSender':lang.api_demo_MailSender,
+      'api_error_InvalidUrlOrHtml':lang.api_error_InvalidUrlOrHtml,
+      'api_error_Network':lang.api_error_Network,
+      'api_error_EmptyNeptunResponse':lang.api_error_EmptyNeptunResponse,
+      'api_error_DownloadNetwork':lang.api_error_DownloadNetwork,
+      'mail_preview_TapToLoadBody':lang.mail_preview_TapToLoadBody,
       'rootpage_setupPage_IcsImport':lang.rootpage_setupPage_IcsImport,
       'rootpage_setupPage_IcsImportDescription':lang.rootpage_setupPage_IcsImportDescription,
       'rootpage_setupPage_OtherUsageModes':lang.rootpage_setupPage_OtherUsageModes,

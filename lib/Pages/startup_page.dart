@@ -35,8 +35,10 @@ class _SplitterState extends State<Splitter>{
       if(flag != null && !flag && DataCache.getHasNetwork() && DataCache.getHasLogin()!){
         Future.delayed(Duration.zero, () async{
           final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
-          DataCache.setHasCachedFirstWeekEpoch(1);
-          DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+          if (firstWeekOfSemester != null) {
+            await DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+            DataCache.setHasCachedFirstWeekEpoch(1);
+          }
         });
       }
       else if(flag != null && !flag){

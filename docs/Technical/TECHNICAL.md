@@ -172,7 +172,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | 5 tabs after login |
 | `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); initials avatar (no photo API); term, balance, multi-training switcher, settings, update (Android), logout |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher, settings, update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
 ---
@@ -287,6 +287,7 @@ Base: `{institute without /Account}` + `/api/...`.
 | Login / 2FA | `POST /api/Account/Authenticate` |
 | Refresh | `POST /api/Account/GetNewTokens` |
 | Trainings | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
+| Avatar | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG); `/api/General/GetUserAvatar?imageSizeType=Normal` (larger base64 JPEG) |
 | Calendar | `/api/Calendar/GetCalendarEvents` |
 | Class details | `/api/Calendar/GetCourseDetails` |
 | Tasks | `/api/Tasks/GetTaskDetail` |
@@ -316,6 +317,8 @@ For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `tw
 
 Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes the session (keeps username), navigates to login, and shows `auth_sessionExpired_PleaseSignIn`. Manual logout clears the ELTE portal cookie jar so immediate re-login is not stuck on “invalid credentials”.
 
+**App session wall clock (user-visible):** On entering `HomePage` (successful login or cold start into a stored session), `SessionGuard.startSessionWallClock()` starts a **10-minute** timer. When it fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username, snackbar, navigate to login). Manual logout cancels the timer; a new login / new `HomePage` entry restarts it. Token refresh does **not** extend the wall clock. This is intentional alignment with short-lived Neptun access JWTs (~10–15 min from issue): the UI logs out on a fixed wall clock from **session entry**, not only after the next 401.
+
 ---
 
 ## 9. Auth, 2FA, tokens
@@ -326,7 +329,7 @@ Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `G
 | Username, institute URL, cache flags, settings | `shared_preferences` |
 | Demo | `setIsDemoAccount(1)` |
 
-**JWT lifetime:** Access tokens are short-lived. Without a working refresh token, the app forces logout rather than showing empty “logged in” screens.
+**JWT lifetime:** Access tokens are short-lived (~10–15 min in practice on Neptun). Refresh may issue a new access token, but the app still force-logs out after **10 minutes from Home entry** (see wall clock above). Without a working refresh token, a 401 also forces logout rather than showing empty “logged in” screens.
 
 **2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`. After success, setup closes the 2FA popup **before** navigating to `HomePage` (`pushAndRemoveUntil`) so a delayed pop cannot blank the screen.
 
@@ -340,7 +343,7 @@ Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `G
 
 ### 10.1 Timetable
 
-Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `getFirstStudyweek()`. Anchor is the Monday of the semester season week (autumn: week containing **1 Sep**; spring: week containing **1 Feb**) when the teaching/`szorgalmi` period starts within that fortnight — **not** subject-registration or login windows (those previously produced inflated weeks ~36 then ~16). Education week = whole weeks from that Monday to *this* Monday + `currentWeekOffset` (1 = current calendar page). Example ELTE autumn 2026: **1–7 Sep → week 1**, **7–14 Sep → week 2**. Online home open always recomputes and overwrites the cached epoch. Modern: `GetCalendarEvents` with **Mon–Sun** `endDate` (not next Monday — that wrongly pulled next week’s Monday classes, causing a ~163h fake “break” and duplicate lessons). Events outside the requested window are dropped. Same-day gap chips only (5 min–12 h), localized break strings. Course details + Calendar Settings filters (`isClassesVisible` / exams / periods). UI strips: next 48h, tasks/ZH, exams, period banners (`typeId == 6`). Drawer training switcher when multiple trainings are known.
+Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `getFirstStudyweek()`. Anchor is the Monday of the semester season week (autumn: week containing **1 Sep**; spring: week containing **1 Feb**) when the teaching/`szorgalmi` period starts within that fortnight — **not** subject-registration or login windows (those previously produced inflated weeks ~36 then ~16). Education week = whole weeks from that Monday to *this* Monday + `currentWeekOffset` (1 = current calendar page). Example ELTE autumn 2026: **1–7 Sep → week 1**, **7–14 Sep → week 2**. Online home open always recomputes and overwrites the cached epoch. Modern: `GetCalendarEvents` with **Mon–Sun** `endDate` (not next Monday — that wrongly pulled next week’s Monday classes, causing a ~163h fake “break” and duplicate lessons). Events outside the requested window are dropped. Same-day gap chips only (5 min–12 h), localized break strings. Course details + Calendar Settings filters (`isClassesVisible` / exams / periods). UI strips: next 48h, tasks/ZH, exams, period banners (`typeId == 6`). Drawer training switcher when multiple trainings are known. **Room codes** matching `Campus-Floor-Room[-Stream][-Group]` (e.g. `LD-0-805` or `LD-0-805-01-11`) are tappable in the timetable list, class dialog, and exam/legacy popups: tap toggles compact code ↔ localized summary (`Southern Building, Floor: 0, Room: 805, …`). Mapped prefixes: **LD** Southern / Déli, **LE**/LÉ Northern / Északi, **LK** Chemistry block (Northern); unknown prefix kept as-is. Stream/Group only shown when present in the code (`lib/Misc/elte_room_code.dart`).
 
 ### 10.2 Markbook
 
@@ -366,11 +369,15 @@ Built-in picker (`lib/colors.dart`): **Light** and **Dark** only. Preference is 
 |------|--------|
 | `en` | `lib/language.dart` — **default** |
 | `hu` | `lib/language.dart` |
-| `ru`, `tr` | `Languages/LangExtentions/*.json` via `supportedLanguages.json` |
+| `ru`, `tr` | `Languages/LangExtentions/*.json` via `supportedLanguages.json`, **also bundled as Flutter assets** |
 
 Other packs (DE, RO, UA, AR, ES, ZH, Pirate) were **removed**.
 
-Drawer **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notification bodies use `notif_payment_Body*`. Cached RU/TR packs on devices may need a language re-download after JSON updates on GitHub.
+Drawer **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notification bodies use `notif_payment_Body*`. Missing keys in a downloaded/cached RU/TR pack fall back to EN unless filled by the **bundled** asset merge (`AppStrings.loadBundledLanguagePacks` before `initialize`). GitHub `main` packs should stay in sync with the EN key set so network refresh does not lag.
+
+**Course / subject detail chrome** (calendar class tap dialog + task dialog: Type / Teacher / Room / Close / loading room / missing placeholders) uses `courseDetail_*` + `popup_case4_5_SubjectCode`. **Subject titles, course types (e.g. Előadás), rooms, and teacher names from Neptun** stay in whatever language the API returns — often Hungarian even when the app UI is EN.
+
+Also localized through `LanguagePack`: class/exam notification bodies (`notif_exam_*`, `notif_class_*`), settings font-scale label, mail error/empty strings, 2FA popup (`popup_case9_*`), Android updater UX (`updater_*`), API user-visible fallbacks / DEMO labels (`api_fallback_*`, `api_demo_*`), transport/mail errors (`api_error_*`, `mail_preview_TapToLoadBody`), and session-expired API messages (`auth_sessionExpired_PleaseSignIn`).
 
 ### 10.7 ICS
 
@@ -395,7 +402,7 @@ Drawer **Contacts** uses `topmenu_buttons_Contacts` (localized). Payment notific
 | APK / Play update | **Android only** | Hidden on iOS |
 | Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
 | App Store / Play production | **Not the current goal** | |
-| Drawer profile photo | **Not available** | No confirmed photo URL/bytes on `/api/UserInfo` (or related) in existing HARs; drawer uses **initials** only — do not invent image endpoints |
+| Drawer profile photo | **Working** | ELTE HWEB: `data.userAvatar.image` on `/api/UserInfo` + `/api/General/GetUserAvatar?imageSizeType=Normal` (base64 JPEG). Cached in `DataCache`; drawer `MemoryImage`; initials on failure/empty |
 | Drawer training ID line | **Removed** | Raw `studentTrainingId` / GUID must not show under the name; human labels only in the multi-training dropdown |
 
 Monoliths: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — ~1400–2600 lines each. **Do not split** while the goal is iOS/login, not a rewrite.
@@ -410,7 +417,7 @@ Cache flags: calendar, markbook, payments, periods, mail, first week, term list.
 
 Secrets: username/password/JWT/device cookie in secure storage (migrated from older SharedPreferences).
 
-`dataWipe` = logout: clears password/tokens/cache, **keeps username** for login prefill. Drawer avatar stays **initials** from display name / Neptun code — no photo wire-up until a HAR proves a photo endpoint.
+`dataWipe` = logout: clears password/tokens/cache (including cached avatar base64), **keeps username** for login prefill. Drawer shows HWEB profile photo when available, else **initials** from display name / Neptun code.
 
 No analytics file in git (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -676,6 +683,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `lib/notifications.dart` | Local notifications |
 | `lib/haptics.dart` | Android vibration / iOS `HapticFeedback` |
 | `lib/Misc/popup.dart` | Modes 0–9 (9 = 2FA) |
+| `lib/Misc/elte_room_code.dart` | ELTE room-code parse + tap-to-decode label |
 | `lib/Misc/app_drawer.dart` | Drawer |
 | `lib/Misc/auto_updater.dart` | GitHub APK, Android-only |
 | `universityNameUrlPairs.json` | Institutes — **ELTE only** (`https://neptun.elte.hu`) |

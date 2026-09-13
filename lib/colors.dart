@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert' as conv;
 import 'package:flutter/material.dart';
-import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/storage.dart';
 import 'package:provider/provider.dart';
 import 'Pages/startup_page.dart';
@@ -76,122 +75,11 @@ class AppColors{
         basedOnDark: true
     ));
 
-    _appColors.add(AppPalette('AMOLED Black',
-        primary: const Color(0xFF00ADB5),
-        onPrimary: const Color(0xFF000000),
-        onPrimaryContainer: const Color(0xFF00ADB5),
-        secondary: const Color(0xFF222831),
-        onSecondary: const Color(0xFFEEEEEE),
-        onSecondaryContainer: const Color(0xFF00ADB5),
-        grade1: const Color(0xFFFF5252),
-        grade2: const Color(0xFFEF9A9A),
-        grade3: const Color(0xFFFFF59D),
-        grade4: const Color(0xFFC5E1A5),
-        grade5: const Color(0xFFA5D6A7),
-        navbarStatusBarColor: const Color(0xFF000000),
-        navbarNavibarColor: const Color(0xFF000000),
-        rootBackground: const Color(0xFF000000),
-        textColor: const Color(0xFFFFFFFF),
-        buttonEnabled: const Color(0xFF1E2A2C),
-        buttonDisabled: const Color(0xFF121819),
-        errorRed: const Color(0xFFFFB0B0),
-        currentClassGreen: const Color(0xFF00E676),
-        basedOnDark: true
-    ));
-
-    _appColors.add(AppPalette('Midnight Ocean',
-        primary: const Color(0xFF48CAE4),
-        onPrimary: const Color(0xFF03045E),
-        onPrimaryContainer: const Color(0xFF90E0EF),
-        secondary: const Color(0xFF1C2541),
-        onSecondary: const Color(0xFFE0E1DD),
-        onSecondaryContainer: const Color(0xFF48CAE4),
-        grade1: const Color(0xFFFF5252),
-        grade2: const Color(0xFFEF9A9A),
-        grade3: const Color(0xFFFFF59D),
-        grade4: const Color(0xFFC5E1A5),
-        grade5: const Color(0xFFA5D6A7),
-        navbarStatusBarColor: const Color(0xFF070B1A),
-        navbarNavibarColor: const Color(0xFF070B1A),
-        rootBackground: const Color(0xFF0B132B),
-        textColor: const Color(0xFFFFFFFF),
-        buttonEnabled: const Color(0xFF1C2D4D),
-        buttonDisabled: const Color(0xFF121B2E),
-        errorRed: const Color(0xFFFF8FA3),
-        currentClassGreen: const Color(0xFF00F5D4),
-        basedOnDark: true
-    ));
-
-    _appColors.add(AppPalette('Emerald Forest',
-        primary: const Color(0xFF52B788),
-        onPrimary: const Color(0xFF081C15),
-        onPrimaryContainer: const Color(0xFF74C69D),
-        secondary: const Color(0xFF1B382B),
-        onSecondary: const Color(0xFFD8F3DC),
-        onSecondaryContainer: const Color(0xFF52B788),
-        grade1: const Color(0xFFFF5252),
-        grade2: const Color(0xFFEF9A9A),
-        grade3: const Color(0xFFFFF59D),
-        grade4: const Color(0xFFC5E1A5),
-        grade5: const Color(0xFFA5D6A7),
-        navbarStatusBarColor: const Color(0xFF0A1410),
-        navbarNavibarColor: const Color(0xFF0A1410),
-        rootBackground: const Color(0xFF0F1E17),
-        textColor: const Color(0xFFFFFFFF),
-        buttonEnabled: const Color(0xFF234435),
-        buttonDisabled: const Color(0xFF152A21),
-        errorRed: const Color(0xFFFF85A1),
-        currentClassGreen: const Color(0xFF40916C),
-        basedOnDark: true
-    ));
-
-    _appColors.add(AppPalette('Sunset Amber',
-        primary: const Color(0xFFE76F51),
-        onPrimary: const Color(0xFF26130B),
-        onPrimaryContainer: const Color(0xFFF4A261),
-        secondary: const Color(0xFF33231D),
-        onSecondary: const Color(0xFFFAEDCD),
-        onSecondaryContainer: const Color(0xFFE76F51),
-        grade1: const Color(0xFFFF5252),
-        grade2: const Color(0xFFEF9A9A),
-        grade3: const Color(0xFFFFF59D),
-        grade4: const Color(0xFFC5E1A5),
-        grade5: const Color(0xFFA5D6A7),
-        navbarStatusBarColor: const Color(0xFF140F0D),
-        navbarNavibarColor: const Color(0xFF140F0D),
-        rootBackground: const Color(0xFF1E1714),
-        textColor: const Color(0xFFFFFFFF),
-        buttonEnabled: const Color(0xFF442D24),
-        buttonDisabled: const Color(0xFF291B16),
-        errorRed: const Color(0xFFFF6B6B),
-        currentClassGreen: const Color(0xFF2A9D8F),
-        basedOnDark: true
-    ));
-
-    _appColors.add(AppPalette('Cyberpunk Violet',
-        primary: const Color(0xFFB5179E),
-        onPrimary: const Color(0xFFFFFFFF),
-        onPrimaryContainer: const Color(0xFFF72585),
-        secondary: const Color(0xFF271B4D),
-        onSecondary: const Color(0xFFE2D9F3),
-        onSecondaryContainer: const Color(0xFF7209B7),
-        grade1: const Color(0xFFFF5252),
-        grade2: const Color(0xFFEF9A9A),
-        grade3: const Color(0xFFFFF59D),
-        grade4: const Color(0xFFC5E1A5),
-        grade5: const Color(0xFFA5D6A7),
-        navbarStatusBarColor: const Color(0xFF0C091D),
-        navbarNavibarColor: const Color(0xFF0C091D),
-        rootBackground: const Color(0xFF140F2D),
-        textColor: const Color(0xFFFFFFFF),
-        buttonEnabled: const Color(0xFF3C2370),
-        buttonDisabled: const Color(0xFF231442),
-        errorRed: const Color(0xFFFF4D6D),
-        currentClassGreen: const Color(0xFF4CC9F0),
-        basedOnDark: true
-    ));
-
-    final target = DataCache.getPreferredAppTheme()!;
+    var target = DataCache.getPreferredAppTheme() ?? 'Dark';
+    if (target != 'Light' && target != 'Dark') {
+      target = 'Dark';
+      DataCache.setPreferredAppTheme(target);
+    }
     for(var item in getAllThemes()){
       if(item.paletteName == target){
         _themeBatchSelectedIdx = getAllThemes().indexOf(item);
@@ -333,38 +221,19 @@ class AppColors{
     refreshThemeIndexing();
   }
 
+  static List<String> getSelectableThemeNames(){
+    return _appColors.map((e) => e.paletteName).toList();
+  }
+
   static List<String> getThemesOnline(){
-    final List<String> list = [];
-    final List<ThemePackMap>? themes = Coloring.getAllThemesCache();
-    final obtainedList = getAllThemes();
-    for(var item in obtainedList){
-      list.add(item.paletteName);
-    }
-    if(themes == null){
-      return list;
-    }
-    for(var item in themes){
-      if(list.contains(item.themeName)){
-        continue;
-      }
-      list.add(item.themeName);
-    }
-    return list;
+    // Only built-in Light/Dark are offered in the picker.
+    return getSelectableThemeNames();
   }
   
   static Color getThemePopupAccentByName(String name){
     for (var theme in getAllThemes()) {
       if (theme.paletteName == name) {
         return theme.primary;
-      }
-    }
-    final onlineThemes = Coloring.getAllThemesCache();
-    if(onlineThemes == null){
-      return Colors.transparent;
-    }
-    for(var item in onlineThemes){
-      if(item.themeName == name){
-        return item.themepackAccent;
       }
     }
     return Colors.transparent;

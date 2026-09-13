@@ -72,9 +72,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  #assets:
-  #  - assets/neptun2_logo.png
+  # Bundled RU/TR packs: fill missing keys when GitHub/cache packs lag behind EN.
+  assets:
+    - Languages/LangExtentions/Russian.json
+    - Languages/LangExtentions/Turkish.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

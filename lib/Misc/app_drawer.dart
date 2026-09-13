@@ -1,4 +1,6 @@
+import 'dart:convert' as conv;
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,6 +34,7 @@ class _AppDrawerState extends State<AppDrawer> {
   String _accountCurrency = 'HUF';
   bool _isLoadingBalance = true;
   int _unreadCount = 0;
+  Uint8List? _avatarBytes;
 
   @override
   void initState() {
@@ -41,8 +44,31 @@ class _AppDrawerState extends State<AppDrawer> {
     _accountCurrency = storage.DataCache.getAccountBalanceCurrency();
     _unreadCount = storage.DataCache.getUnreadMailCount();
     _isLoadingBalance = _accountBalance == null;
+    _loadCachedAvatar();
     _loadTerms();
     _loadFinancialAndMessages();
+    _refreshAvatar();
+  }
+
+  void _loadCachedAvatar() {
+    final b64 = storage.DataCache.getStudentAvatarBase64();
+    if (b64 == null || b64.isEmpty) return;
+    try {
+      _avatarBytes = conv.base64Decode(b64.replaceAll(RegExp(r'\s'), ''));
+    } catch (_) {
+      _avatarBytes = null;
+    }
+  }
+
+  Future<void> _refreshAvatar() async {
+    try {
+      final bytes = await CalendarRequest.fetchUserAvatarBytes(forceNetwork: true);
+      if (bytes != null && bytes.isNotEmpty && mounted) {
+        setState(() {
+          _avatarBytes = bytes;
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _loadTerms() async {
@@ -78,12 +104,15 @@ class _AppDrawerState extends State<AppDrawer> {
     }
   }
 
+  String _hufSymbol() => AppStrings.getLanguagePack().payment_currencyHuf;
+
   String _formatBalance(double amount, String currency) {
     int intVal = amount.round();
     String s = intVal.toString();
     RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
     String formatted = s.replaceAllMapped(reg, (Match m) => '${m[1]} ');
-    String currSymbol = currency == 'HUF' ? 'Ft' : currency;
+    final upper = currency.toUpperCase();
+    String currSymbol = (upper == 'HUF' || upper == 'FT') ? _hufSymbol() : currency;
     return '$formatted $currSymbol';
   }
 
@@ -107,17 +136,43 @@ class _AppDrawerState extends State<AppDrawer> {
                 children: [
                   CircleAvatar(
                     backgroundColor: AppColors.getTheme().currentClassGreen,
+                    backgroundImage: _avatarBytes != null ? MemoryImage(_avatarBytes!) : null,
                     radius: 30,
-                    child: Text(
-                      widget.loggedInUsername.isNotEmpty ? widget.loggedInUsername[0].toUpperCase() : '?',
-                      style: TextStyle(color: AppColors.getTheme().rootBackground, fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
+                    child: _avatarBytes != null
+                        ? null
+                        : Text(
+                            () {
+                              final dn = storage.DataCache.getStudentDisplayName();
+                              final seed = (dn != null && dn.isNotEmpty) ? dn : widget.loggedInUsername;
+                              return seed.isNotEmpty ? seed[0].toUpperCase() : '?';
+                            }(),
+                            style: TextStyle(color: AppColors.getTheme().rootBackground, fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
                   ),
                   const SizedBox(height: 15),
                   EmojiRichText(
-                    text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topmenu_Greet, [widget.loggedInUsername]),
+                    text: AppStrings.getStringWithParams(
+                      AppStrings.getLanguagePack().topmenu_Greet,
+                      [
+                        () {
+                          final dn = storage.DataCache.getStudentDisplayName();
+                          return (dn != null && dn.isNotEmpty) ? dn : widget.loggedInUsername;
+                        }(),
+                      ],
+                    ),
                     defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 18),
                     emojiStyle: TextStyle(color: AppColors.getTheme().textColor, fontSize: 20, fontFamily: "Noto Color Emoji"),
+                  ),
+                  // No training ID / GUID / numeric studentTrainingId under the name.
+                  // Human training labels stay in the multi-training dropdown below.
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.loggedInUsername,
+                    style: TextStyle(
+                      color: AppColors.getTheme().textColor.withValues(alpha: 0.45),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   EmojiRichText(
@@ -191,7 +246,10 @@ class _AppDrawerState extends State<AppDrawer> {
                                         Text(
                                           _accountBalance != null
                                               ? _formatBalance(_accountBalance!, _accountCurrency)
-                                              : '0 Ft',
+                                              : AppStrings.getStringWithParams(
+                                                  AppStrings.getLanguagePack().paymentPage_MoneyDisplay,
+                                                  [0],
+                                                ),
                                           style: TextStyle(
                                             color: AppColors.getTheme().textColor,
                                             fontSize: 16,
@@ -299,6 +357,89 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
 
                     const SizedBox(height: 4),
+
+                    // --- Training switcher (when multiple trainings known) ---
+                    Builder(
+                      builder: (context) {
+                        Map<String, String> labels = {};
+                        try {
+                          final raw = storage.DataCache.getTrainingLabelsJson();
+                          final decoded = conv.jsonDecode(raw);
+                          if (decoded is Map) {
+                            decoded.forEach((k, v) {
+                              if (k != null && v != null) labels[k.toString()] = v.toString();
+                            });
+                          }
+                        } catch (_) {}
+                        if (labels.length < 2) return const SizedBox.shrink();
+                        final selected = storage.DataCache.getStudentTrainingId();
+                        final value = (selected != null && labels.containsKey(selected))
+                            ? selected
+                            : labels.keys.first;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: AppColors.getTheme().textColor.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: AppColors.getTheme().textColor.withValues(alpha: 0.08)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.school_rounded, size: 16, color: AppColors.getTheme().secondary),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      AppStrings.getLanguagePack().topmenu_TrainingSelectorTitle.toUpperCase(),
+                                      style: TextStyle(
+                                        color: AppColors.getTheme().secondary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 11,
+                                        letterSpacing: 1.1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: value,
+                                    dropdownColor: AppColors.getTheme().rootBackground,
+                                    icon: Icon(Icons.arrow_drop_down_rounded, color: AppColors.getTheme().textColor),
+                                    isExpanded: true,
+                                    isDense: true,
+                                    style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 14),
+                                    items: labels.entries.map((e) {
+                                      return DropdownMenuItem<String>(
+                                        value: e.key,
+                                        child: Text(
+                                          e.value,
+                                          style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 14),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? val) async {
+                                      if (val == null || val == selected) return;
+                                      AppHaptics.lightImpact();
+                                      await storage.DataCache.setStudentTrainingId(val);
+                                      await storage.DataCache.setStudentTrainingName(labels[val]);
+                                      CalendarRequest.clearTrainingIdCache();
+                                      await storage.DataCache.setHasCachedCalendar(0);
+                                      if (mounted) setState(() {});
+                                      HomePageState.onSemesterChanged();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
 
                     // --- Semester Selector ---
                     Padding(
@@ -443,14 +584,14 @@ class _AppDrawerState extends State<AppDrawer> {
                         AppHaptics.lightImpact();
                         Navigator.pop(context);
                         launchUrl(
-                          Uri.parse('https://github.com/Nanda070/Neptun-ELTE/issues/new/choose'),
+                          Uri.parse('https://nanda.is-a.dev'),
                           mode: LaunchMode.externalApplication,
                         );
                       },
                     ),
                     ListTile(
                       leading: Icon(Icons.link_rounded, color: AppColors.getTheme().textColor),
-                      title: Text('Contacts', style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      title: Text(AppStrings.getLanguagePack().topmenu_buttons_Contacts, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
                       onTap: () {
                         AppHaptics.lightImpact();
                         Navigator.pop(context);
@@ -503,7 +644,7 @@ class _AppDrawerState extends State<AppDrawer> {
               onTap: () {
                 AppHaptics.lightImpact();
                 Future.delayed(Duration.zero, ()async{
-                  await storage.DataCache.dataWipe();
+                  await SessionGuard.userInitiatedLogout();
                   await AppNotifications.cancelScheduledNotifs();
                 }).whenComplete((){
                   Navigator.popUntil(context, (route) => route.willHandlePopInternally);

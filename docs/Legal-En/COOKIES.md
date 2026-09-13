@@ -78,6 +78,7 @@ See the Privacy Policy for full categories. Examples:
 
 - theme (Light / Dark), language, font scale, notification toggles;
 - cached timetable, grades, payments, messages, periods;
+- profile avatar base64 (drawer), when fetched from Neptun HWEB;
 - login state and institute URL flags.
 
 The creator does **not** sell this for advertising.

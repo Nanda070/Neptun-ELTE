@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert' as conv;
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neptun2/API/ics_calendar.dart';
@@ -11,6 +12,94 @@ import 'package:neptun2/language.dart';
 import '../storage.dart' as storage;
 import 'dart:developer' as debug;
 import '../storage.dart';
+
+/// Session expiry / logout coordination. Prevents "logged in" UI with dead JWT.
+class SessionGuard {
+  /// App policy: force logout this long after entering the main (participant) session.
+  /// Independent of JWT refresh — aligns roughly with short-lived Neptun access tokens (~10–15 min).
+  static const Duration sessionWallClockLimit = Duration(minutes: 10);
+
+  static bool _authBlocked = false;
+  static bool _handlingExpired = false;
+  static String? _pendingUserMessage;
+  static Future<void> Function(String message)? _onNavigateToLogin;
+  static Timer? _sessionWallTimer;
+  static DateTime? _sessionStartedAt;
+
+  static bool get isAuthBlocked => _authBlocked;
+
+  static void registerNavigator(Future<void> Function(String message) nav) {
+    _onNavigateToLogin = nav;
+  }
+
+  static void clearAuthBlock() {
+    _authBlocked = false;
+  }
+
+  static String? consumePendingMessage() {
+    final m = _pendingUserMessage;
+    _pendingUserMessage = null;
+    return m;
+  }
+
+  /// Start / restart the 10-minute wall clock from main-session entry (after login or cold start into Home).
+  /// Does **not** restart on token refresh — only on a new participant session.
+  static void startSessionWallClock() {
+    cancelSessionWallClock();
+    _sessionStartedAt = DateTime.now();
+    final remaining = sessionWallClockLimit;
+    debug.log(
+      'SessionGuard: wall-clock logout in ${remaining.inMinutes} min '
+      '(from $_sessionStartedAt)',
+    );
+    _sessionWallTimer = Timer(remaining, () {
+      debug.log('SessionGuard: wall-clock expired — forceExpiredLogout');
+      forceExpiredLogout();
+    });
+  }
+
+  static void cancelSessionWallClock() {
+    _sessionWallTimer?.cancel();
+    _sessionWallTimer = null;
+    _sessionStartedAt = null;
+  }
+
+  /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
+  static Future<void> userInitiatedLogout() async {
+    cancelSessionWallClock();
+    _authBlocked = true;
+    _APIRequest.resetRefreshLock();
+    InstitutesRequest.resetEltePortalState();
+    await storage.DataCache.dataWipe();
+  }
+
+  /// Access token dead and refresh/silent re-auth cannot restore session,
+  /// or the 10-minute session wall clock fired.
+  static Future<void> forceExpiredLogout() async {
+    if (_handlingExpired) return;
+    _handlingExpired = true;
+    cancelSessionWallClock();
+    _authBlocked = true;
+    _APIRequest.resetRefreshLock();
+    InstitutesRequest.resetEltePortalState();
+    final msg = AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
+    _pendingUserMessage = msg;
+    try {
+      await storage.DataCache.dataWipe();
+    } catch (e) {
+      debug.log('forceExpiredLogout wipe error: $e');
+    }
+    try {
+      final nav = _onNavigateToLogin;
+      if (nav != null) {
+        await nav(msg);
+      }
+    } catch (e) {
+      debug.log('forceExpiredLogout navigate error: $e');
+    }
+    _handlingExpired = false;
+  }
+}
   
   class URLs{
     static const String INSTITUTIONS_URL = "https://mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
@@ -50,13 +139,13 @@ import '../storage.dart';
           String responseString = response.toString().trim();
           if (responseString.startsWith('<!DOCTYPE html') || responseString.startsWith('<html')){
             client.close();
-            return '{"ErrorMessage": "Hibás URL vagy a Neptun szervere weboldalt küldött válaszként"}';
+            return conv.jsonEncode({'ErrorMessage': AppStrings.getLanguagePack().api_error_InvalidUrlOrHtml});
           }
         }
       }
       catch(error){
         client.close();
-        return '{"ErrorMessage": "Hálózati hiba: $error"}';
+        return conv.jsonEncode({'ErrorMessage': AppStrings.getStringWithParams(AppStrings.getLanguagePack().api_error_Network, [error])});
       }
 
       // Close the client when done
@@ -118,8 +207,23 @@ import '../storage.dart';
 
     static bool _isRefreshingToken = false;
 
+    static void resetRefreshLock() {
+      _isRefreshingToken = false;
+    }
+
+    static bool _isUnauthorizedResponse(int statusCode, String body) {
+      if (statusCode == 401 || statusCode == 403) return true;
+      final lower = body.toLowerCase();
+      return body.contains('"statusCode": 401') ||
+          body.contains('"statusCode":401') ||
+          body.contains('Authorization has been denied') ||
+          lower.contains('unauthorized') ||
+          body.contains('A megadott kérelem nem engedélyezett');
+    }
+
     static Future<bool> tryTokenRefresh() async {
       try {
+        if (SessionGuard.isAuthBlocked) return false;
         final refreshToken = storage.DataCache.getRefreshToken();
         if (refreshToken == null || refreshToken.isEmpty) {
           return false;
@@ -138,7 +242,11 @@ import '../storage.dart';
           if (bodyJson["data"] != null && bodyJson["data"]["accessToken"] != null) {
             final newAccessToken = bodyJson["data"]["accessToken"];
             await storage.DataCache.setAccessToken(newAccessToken);
-            
+            final maybeRefresh = bodyJson["data"]["refreshToken"]?.toString();
+            if (maybeRefresh != null && maybeRefresh.isNotEmpty) {
+              await storage.DataCache.setRefreshToken(maybeRefresh);
+            }
+
             final username = storage.DataCache.getUsername();
             if (username != null) {
               _extractAndSaveCookiesAndTokens(response, username);
@@ -146,10 +254,80 @@ import '../storage.dart';
             return true;
           }
         }
+        // Failed GetNewTokens (401/empty) — session cannot be refreshed
+        if (response.statusCode == 401 || response.statusCode == 403) {
+          debug.log("GetNewTokens unauthorized (${response.statusCode})");
+        }
       } catch (e) {
         debug.log("Error during token refresh: $e");
       }
       return false;
+    }
+
+    /// Password re-auth without interactive 2FA. Never runs ELTE portal login
+    /// (that would need TOTP and pollute the cookie jar after logout).
+    static Future<bool> trySilentReauth() async {
+      if (SessionGuard.isAuthBlocked) return false;
+      final username = storage.DataCache.getUsername() ?? '';
+      final password = storage.DataCache.getPassword() ?? '';
+      final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+      if (username.isEmpty || password.isEmpty || baseUrl.isEmpty) {
+        return false;
+      }
+      if (InstitutesRequest.isElteHost(baseUrl) || InstitutesRequest.isElteHost(InstitutesRequest.elteNeptunBaseUrl)) {
+        // OuterLogin sessions need refreshToken or interactive portal+2FA — not silent.
+        return false;
+      }
+      try {
+        final result = await InstitutesRequest.validateLoginCredentialsUrl(baseUrl, username, password);
+        return result == InstitutesRequest.loginOk;
+      } catch (e) {
+        debug.log("Silent reauth error: $e");
+        return false;
+      }
+    }
+
+    /// Refresh → silent reauth → force logout. Returns true if a usable access token exists.
+    static Future<bool> ensureValidSession() async {
+      if (SessionGuard.isAuthBlocked) return false;
+      if (!(storage.DataCache.getHasLogin() ?? false)) return false;
+
+      final existing = storage.DataCache.getAccessToken();
+      if (existing != null && existing.isNotEmpty) {
+        // Caller already got 401; still try refresh first.
+      }
+
+      bool ok = false;
+      if (!_isRefreshingToken) {
+        _isRefreshingToken = true;
+        try {
+          debug.log("Session recovery: trying GetNewTokens...");
+          if (storage.DataCache.getIsModernApi()) {
+            ok = await tryTokenRefresh();
+          }
+          if (!ok) {
+            debug.log("Session recovery: trying silent reauth...");
+            ok = await trySilentReauth();
+          }
+          if (!ok) {
+            debug.log("Session recovery failed — forcing logout");
+            await SessionGuard.forceExpiredLogout();
+          }
+        } finally {
+          _isRefreshingToken = false;
+        }
+      } else {
+        debug.log("Session recovery already in progress — waiting");
+        var spins = 0;
+        while (_isRefreshingToken && spins < 100) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          spins++;
+        }
+        ok = !SessionGuard.isAuthBlocked &&
+            (storage.DataCache.getAccessToken() ?? '').isNotEmpty &&
+            (storage.DataCache.getHasLogin() ?? false);
+      }
+      return ok;
     }
 
     static Future<String> getRequest(Uri url, {required String bearerToken, bool isRetry = false}) async {
@@ -158,52 +336,35 @@ import '../storage.dart';
       final request = http.Request('GET', url);
       request.headers['Authorization'] = 'Bearer $bearerToken';
       request.headers['Content-Type'] = 'application/json';
+      request.headers['Accept-Language'] = AppStrings.getCurrentLangCode();
 
       try {
         final streamedResponse = await client.send(request);
         final response = await http.Response.fromStream(streamedResponse);
         client.close();
 
-        // Ha a token lejárt:
-        if ((response.statusCode == 401 || response.body.contains('"statusCode": 401') || response.body.contains('Authorization has been denied')) && !isRetry) {
-
-          // --- ÚJ VERSENYHELYZET GÁTLÓ LOGIKA ---
-          if (!_isRefreshingToken) {
-            _isRefreshingToken = true; // Bezárjuk a lakatot
-            debug.log("Token lejárt! Automatikus újra-bejelentkezés indítása...");
-
-            bool refreshSuccess = false;
-            if (storage.DataCache.getIsModernApi()) {
-              refreshSuccess = await tryTokenRefresh();
-            }
-
-            if (!refreshSuccess) {
-              final username = storage.DataCache.getUsername()!;
-              final password = storage.DataCache.getPassword()!;
-              final baseUrl = storage.DataCache.getInstituteUrl()!;
-
-              await InstitutesRequest.validateLoginCredentialsUrl(baseUrl, username, password);
-            }
-
-            _isRefreshingToken = false; // Kinyitjuk a lakatot
-          } else {
-            // Ha egy másik fül már frissíti a tokent, várunk rá!
-            debug.log("Egy másik fül már frissít, várakozás...");
-            while (_isRefreshingToken) {
-              await Future.delayed(const Duration(milliseconds: 100));
-            }
+        if (_isUnauthorizedResponse(response.statusCode, response.body) && !isRetry) {
+          if (SessionGuard.isAuthBlocked || !(storage.DataCache.getHasLogin() ?? false)) {
+            return conv.jsonEncode({'ErrorMessage': AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn});
           }
-          // ----------------------------------------
 
-          // Mindenki megkapja az új tokent, és újra próbálkozik
-          final newToken = await storage.DataCache.getAccessToken();
-          return await getRequest(url, bearerToken: newToken!, isRetry: true);
+          final recovered = await ensureValidSession();
+          if (!recovered) {
+            return conv.jsonEncode({'ErrorMessage': AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn});
+          }
+
+          final newToken = storage.DataCache.getAccessToken();
+          if (newToken == null || newToken.isEmpty) {
+            await SessionGuard.forceExpiredLogout();
+            return conv.jsonEncode({'ErrorMessage': AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn});
+          }
+          return await getRequest(url, bearerToken: newToken, isRetry: true);
         }
 
         return response.body;
       } catch (e) {
         client.close();
-        return '{"ErrorMessage": "$e"}';
+        return conv.jsonEncode({'ErrorMessage': '$e'});
       }
     }
 
@@ -237,7 +398,7 @@ import '../storage.dart';
 
     static Future<List<Term>> getTerms({bool forceRefresh = false}) async {
       if (storage.DataCache.getIsDemoAccount() ?? false) {
-        return [Term('70876', 'DEMO Félév (2025/26/1)'), Term('70877', 'DEMO Félév (2025/26/2)')];
+        return [Term('70876', AppStrings.getLanguagePack().api_demo_Term1), Term('70877', AppStrings.getLanguagePack().api_demo_Term2)];
       }
       if (!forceRefresh) {
         final cachedRaw = storage.DataCache.getCachedTermsRaw();
@@ -443,6 +604,17 @@ import '../storage.dart';
       return host.contains('elte.hu') || rawUrl.toLowerCase().contains('elte');
     }
 
+    /// Public ELTE host check (session recovery / silent reauth).
+    static bool isElteHost(String rawUrl) => _isElteUrl(rawUrl);
+
+    /// Clear in-memory portal cookies + 2FA pending state (call on logout / session death).
+    static void resetEltePortalState() {
+      _elteCookies.clear();
+      _elteClearPortal2fa();
+      _elteHasTotp = true;
+      _elteHasEmail = true;
+    }
+
     // --- ELTE portal (Potlap) → Student web OuterLogin (from live HAR Sep 2026) ---
     static final Map<String, String> _elteCookies = {};
     static bool _eltePortal2faPending = false;
@@ -636,9 +808,17 @@ import '../storage.dart';
         }
 
         if (loginPost.status == 200) {
-          if (_looksLikeInvalidCredentials(loginPost.body, 200) ||
-              loginPost.body.contains('LoginName') ||
-              loginPost.body.contains('field-validation')) {
+          // Only treat as invalid when the portal actually reports bad credentials.
+          // A bare login form redisplay (contains LoginName) is NOT proof of wrong password —
+          // it often means CSRF/session conflict or server busy (Bug B after logout).
+          if (_looksLikeInvalidCredentials(loginPost.body, 200)) {
+            return loginInvalidCredentials;
+          }
+          final lower = loginPost.body.toLowerCase();
+          if (lower.contains('field-validation-error') ||
+              lower.contains('validation-summary-errors') ||
+              lower.contains('login was unsuccessful') ||
+              lower.contains('sikertelen')) {
             return loginInvalidCredentials;
           }
           return loginServerBusy;
@@ -696,7 +876,7 @@ import '../storage.dart';
         final outer = Uri.parse(loc);
         final guid = outer.queryParameters['GUID'] ?? outer.queryParameters['guid'];
         if (guid == null || guid.isEmpty) return false;
-        final lcid = int.tryParse(outer.queryParameters['languageid'] ?? '') ?? 1033;
+        final lcid = AppStrings.getNeptunLcid();
         final hwebBase = '${outer.scheme}://${outer.host}';
 
         await _elteSend('GET', outer);
@@ -730,9 +910,23 @@ import '../storage.dart';
           final access = data is Map ? data['accessToken']?.toString() : null;
           if (access == null || access.isEmpty) return false;
           await storage.DataCache.setAccessToken(access);
+          // Persist refresh JWT if OuterLogin returns it or sets it via Set-Cookie
+          final refreshFromBody = data is Map ? data['refreshToken']?.toString() : null;
+          if (refreshFromBody != null && refreshFromBody.isNotEmpty) {
+            await storage.DataCache.setRefreshToken(refreshFromBody);
+          } else {
+            for (final entry in _elteCookies.entries) {
+              final v = entry.value;
+              if (v.startsWith('eyJ') && v != access && v.split('.').length >= 3) {
+                await storage.DataCache.setRefreshToken(v);
+                break;
+              }
+            }
+          }
           await storage.DataCache.setIsModernApi(true);
           await storage.DataCache.setInstituteUrl(hwebBase);
           _elteClearPortal2fa();
+          SessionGuard.clearAuthBlock();
           // ignore: avoid_print
           print('ELTE OuterLogin OK host=$hwebBase');
           return true;
@@ -940,7 +1134,7 @@ import '../storage.dart';
         final modernApiUrl = Uri.parse("$baseUrl/api/Account/Authenticate");
         final body = conv.jsonEncode({
           "userName": username, "password": password,
-          "captcha": "", "captchaIdentifier": "", "token": "", "LCID": 1038
+          "captcha": "", "captchaIdentifier": "", "token": "", "LCID": AppStrings.getNeptunLcid()
         });
 
         // Load device cookie if exists
@@ -1037,7 +1231,7 @@ import '../storage.dart';
           "captcha":"",
           "captchaIdentifier":"",
           "token": code,
-          "LCID":1038
+          "LCID": AppStrings.getNeptunLcid()
         });
 
         // Load device cookie if exists
@@ -1095,52 +1289,226 @@ import '../storage.dart';
       return false;
     }
 
-    static Future<int?> getFirstStudyweek({String? termId}) async{
-      final periods = await PeriodsRequest.getPeriods(termId: termId);
-      if(storage.DataCache.getIsDemoAccount()!){
-        return DateTime(2024, 9, 1).millisecondsSinceEpoch;
-      }
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if(periods == null || periods.isEmpty){
-        return null;
-      }
-  
-      PeriodEntry? period;
-      int neededExtraWeeks = 0;
-      for (var item in periods){
-        final name = item.name.toLowerCase();
-        if(name.contains('végleges tárgyjelentkezés') || name.contains('szorgalmi időszak') || name.contains('oktatási időszak')){
-          if(item.startEpoch <= now || period == null || (item.startEpoch <= now && item.startEpoch > period.startEpoch)){
-            period = item;
-            neededExtraWeeks = 0;
-          }
-        }
-      }
-      if(period == null){
-        for (var item in periods){
-          final name = item.name.toLowerCase();
-          if(name.contains('bejelentkezési időszak') || name.contains('regisztrációs időszak')){
-            if(item.startEpoch <= now || period == null || (item.startEpoch <= now && item.startEpoch > period.startEpoch)){
-              period = item;
-              neededExtraWeeks = 1;
-            }
-          }
-        }
-        if(period == null){
-          period = periods.first;
-        }
-      }
-  
-      final date = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
-      int difference = date.weekday - DateTime.monday;
-      final roundedDate = DateTime(date.year, date.month, date.day).subtract(Duration(days: difference)).add(Duration(days: 7 * neededExtraWeeks));
+    /// Monday on or before [day] (study-week aligned).
+    static DateTime mondayOnOrBefore(DateTime day) {
+      final dayOnly = DateTime(day.year, day.month, day.day);
+      return dayOnly.subtract(Duration(days: dayOnly.weekday - DateTime.monday));
+    }
 
-      return roundedDate.millisecondsSinceEpoch;
+    /// Conventional week-1 Monday for a semester season (autumn ≈ Sep 1, spring ≈ Feb 1).
+    static DateTime semesterSeasonWeekOneMonday(DateTime ref) {
+      final month = ref.month;
+      if (month >= 1 && month <= 6) {
+        return mondayOnOrBefore(DateTime(ref.year, 2, 1));
+      }
+      return mondayOnOrBefore(DateTime(ref.year, 9, 1));
+    }
+
+    static Future<int?> getFirstStudyweek({String? termId}) async{
+      if(storage.DataCache.getIsDemoAccount()!){
+        return mondayOnOrBefore(DateTime(2024, 9, 1)).millisecondsSinceEpoch;
+      }
+
+      final periods = await PeriodsRequest.getPeriods(termId: termId);
+      final nowDt = DateTime.now();
+      final now = nowDt.millisecondsSinceEpoch;
+      final seasonFallback = semesterSeasonWeekOneMonday(nowDt);
+
+      if(periods == null || periods.isEmpty){
+        return seasonFallback.millisecondsSinceEpoch;
+      }
+
+      bool isStudyPeriod(String raw) {
+        final name = raw.toLowerCase();
+        return name.contains('szorgalmi') ||
+            name.contains('oktatási időszak') ||
+            name.contains('oktatasi idoszak') ||
+            name.contains('oktatási') ||
+            name.contains('study period') ||
+            name.contains('teaching period') ||
+            name.contains('instruction period') ||
+            name.contains('term time');
+      }
+
+      // Prefer study/teaching period only. Subject-registration / login windows
+      // (végleges tárgyjelentkezés, bejelentkezési) often start weeks/months earlier
+      // and must NOT anchor week 1 (produced ~36 then ~16 education weeks).
+      final studyPeriods = periods.where((p) => isStudyPeriod(p.name)).toList();
+
+      PeriodEntry? pickLatestStarted(Iterable<PeriodEntry> candidates) {
+        PeriodEntry? best;
+        for (final item in candidates) {
+          if (best == null || item.startEpoch > best.startEpoch) {
+            best = item;
+          }
+        }
+        return best;
+      }
+
+      PeriodEntry? pickEarliest(Iterable<PeriodEntry> candidates) {
+        PeriodEntry? best;
+        for (final item in candidates) {
+          if (best == null || item.startEpoch < best.startEpoch) {
+            best = item;
+          }
+        }
+        return best;
+      }
+
+      PeriodEntry? period;
+      final active = studyPeriods.where((p) => p.startEpoch <= now && now <= p.endEpoch);
+      period = pickLatestStarted(active);
+
+      if (period == null) {
+        final inThirtyDays = now + const Duration(days: 30).inMilliseconds;
+        final upcoming = studyPeriods.where((p) => p.startEpoch > now && p.startEpoch <= inThirtyDays);
+        period = pickEarliest(upcoming);
+      }
+
+      if (period == null) {
+        final oldestOk = now - const Duration(days: 140).inMilliseconds;
+        final recent = studyPeriods.where((p) => p.startEpoch <= now && p.startEpoch >= oldestOk);
+        period = pickLatestStarted(recent);
+      }
+
+      DateTime anchor = seasonFallback;
+      if (period != null) {
+        final studyStart = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
+        final studyMonday = mondayOnOrBefore(studyStart);
+        final seasonMonday = semesterSeasonWeekOneMonday(studyStart);
+        // Education week 1 = calendar week containing Sep 1 / Feb 1 when teaching
+        // starts in that same fortnight (ELTE autumn 2026: Sep 1 week = 1, Sep 7 week = 2).
+        if ((studyMonday.difference(seasonMonday).inDays).abs() <= 14) {
+          anchor = studyMonday.isBefore(seasonMonday) ? studyMonday : seasonMonday;
+        } else {
+          anchor = studyMonday;
+        }
+      }
+
+      return anchor.millisecondsSinceEpoch;
     }
   }
 
 class CalendarRequest {
   static List<String>? _cachedTrainingIds;
+
+  /// True for GUID / pure numeric / digit-heavy IDs — not human training titles.
+  static bool _looksLikeRawId(String? value) {
+    if (value == null) return true;
+    final t = value.trim();
+    if (t.isEmpty) return true;
+    if (RegExp(r'^\d+$').hasMatch(t)) return true;
+    if (RegExp(r'^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$').hasMatch(t)) {
+      return true;
+    }
+    // Long digit/hyphen blobs (training ids without dashes, etc.)
+    if (t.length >= 10 && RegExp(r'^[\d\-]+$').hasMatch(t)) return true;
+    return false;
+  }
+
+  static Future<void> _persistUserInfoProfile(Map data) async {
+    final first = data['firstName']?.toString() ?? data['FirstName']?.toString() ?? '';
+    final last = data['lastName']?.toString() ?? data['LastName']?.toString() ?? '';
+    final printName = data['printName']?.toString() ??
+        data['fullName']?.toString() ??
+        data['name']?.toString() ??
+        '';
+    final display = printName.isNotEmpty
+        ? printName
+        : [last, first].where((s) => s.isNotEmpty).join(' ').trim();
+    if (display.isNotEmpty) {
+      await storage.DataCache.setStudentDisplayName(display);
+    }
+    final training = data['trainingName']?.toString() ??
+        data['studentTrainingName']?.toString() ??
+        data['facultyName']?.toString() ??
+        '';
+    // Never persist raw studentTrainingId / GUID as the training "name".
+    if (training.isNotEmpty && !_looksLikeRawId(training)) {
+      await storage.DataCache.setStudentTrainingName(training);
+    }
+    // Nested userAvatar.image is base64 JPEG (ELTE HWEB HAR).
+    final avatar = data['userAvatar'];
+    if (avatar is Map) {
+      final img = avatar['image']?.toString();
+      if (img != null && img.isNotEmpty) {
+        await storage.DataCache.setStudentAvatarBase64(img);
+      }
+    }
+  }
+
+  /// Fetch higher-res drawer avatar from HWEB (`/api/General/GetUserAvatar`).
+  /// Falls back to thumbnail already cached from `/api/UserInfo`.
+  static Future<Uint8List?> fetchUserAvatarBytes({bool forceNetwork = false}) async {
+    if (!(storage.DataCache.getIsModernApi())) return null;
+
+    Uint8List? decodeCached() {
+      final b64 = storage.DataCache.getStudentAvatarBase64();
+      if (b64 == null || b64.isEmpty) return null;
+      try {
+        return conv.base64Decode(b64.replaceAll(RegExp(r'\s'), ''));
+      } catch (_) {
+        return null;
+      }
+    }
+
+    if (!forceNetwork) {
+      final cached = decodeCached();
+      if (cached != null && cached.length > 64) return cached;
+    }
+
+    try {
+      final token = storage.DataCache.getAccessToken();
+      if (token == null || token.isEmpty) return decodeCached();
+      final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+      if (baseUrl.isEmpty) return decodeCached();
+
+      final url = Uri.parse('$baseUrl/api/General/GetUserAvatar?imageSizeType=Normal');
+      final raw = await _APIRequest.getRequest(url, bearerToken: token);
+      final decoded = conv.json.decode(raw);
+      Map? payload;
+      if (decoded is Map) {
+        if (decoded['data'] is Map) {
+          payload = decoded['data'] as Map;
+        } else if (decoded['image'] != null) {
+          payload = decoded;
+        }
+      }
+      final img = payload?['image']?.toString();
+      if (img != null && img.isNotEmpty) {
+        await storage.DataCache.setStudentAvatarBase64(img);
+        try {
+          return conv.base64Decode(img.replaceAll(RegExp(r'\s'), ''));
+        } catch (e) {
+          debug.log('fetchUserAvatarBytes decode: $e');
+        }
+      }
+    } catch (e) {
+      debug.log('fetchUserAvatarBytes: $e');
+    }
+    return decodeCached();
+  }
+
+  static void clearTrainingIdCache() {
+    _cachedTrainingIds = null;
+  }
+
+  static Future<void> refreshUserProfile() async {
+    if (!(storage.DataCache.getIsModernApi())) return;
+    try {
+      final token = await storage.DataCache.getAccessToken();
+      if (token == null || token.isEmpty) return;
+      final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+      final uInfoUrl = Uri.parse("$baseUrl/api/UserInfo");
+      final uInfoRaw = await _APIRequest.getRequest(uInfoUrl, bearerToken: token);
+      final uInfoDecoded = conv.json.decode(uInfoRaw);
+      if (uInfoDecoded['data'] is Map) {
+        await _persistUserInfoProfile(Map<String, dynamic>.from(uInfoDecoded['data'] as Map));
+      }
+    } catch (e) {
+      debug.log('refreshUserProfile: $e');
+    }
+  }
 
   static Future<List<String>> getStudentTrainingIds({bool forceRefresh = false}) async {
     if (forceRefresh) {
@@ -1167,10 +1535,21 @@ class CalendarRequest {
         final decoded = conv.json.decode(responseRaw);
 
         List<String> ids = [];
+        final trainingLabels = <String, String>{};
         if (decoded['data'] != null && decoded['data'] is List) {
           for (var training in decoded['data']) {
             final tid = training['studentTrainingId']?.toString();
             if (tid != null && tid.isNotEmpty && !ids.contains(tid)) {
+              final rawLabel = training['trainingName']?.toString() ??
+                  training['name']?.toString() ??
+                  training['facultyName']?.toString() ??
+                  training['trainingCode']?.toString() ??
+                  '';
+              // Prefer a human title; never fall back to raw studentTrainingId digits/GUID.
+              final label = (rawLabel.isNotEmpty && !_looksLikeRawId(rawLabel))
+                  ? rawLabel
+                  : AppStrings.getLanguagePack().topmenu_TrainingSelectorTitle;
+              trainingLabels[tid] = label;
               if (training['actualStudentTraining'] == true) {
                 ids.insert(0, tid);
               } else {
@@ -1181,7 +1560,15 @@ class CalendarRequest {
         }
         if (ids.isNotEmpty) {
           _cachedTrainingIds = ids;
-          await storage.DataCache.setStudentTrainingId(ids.first);
+          final preferred = storage.DataCache.getStudentTrainingId();
+          final chosen = (preferred != null && ids.contains(preferred)) ? preferred : ids.first;
+          await storage.DataCache.setStudentTrainingId(chosen);
+          await storage.DataCache.setTrainingLabelsJson(conv.jsonEncode(trainingLabels));
+          final chosenLabel = trainingLabels[chosen];
+          if (chosenLabel != null && !_looksLikeRawId(chosenLabel) && chosenLabel != AppStrings.getLanguagePack().topmenu_TrainingSelectorTitle && chosenLabel != 'Training') {
+            await storage.DataCache.setStudentTrainingName(chosenLabel);
+          }
+          // Also refresh UserInfo profile in background shape
           return ids;
         }
       } catch (e) {
@@ -1194,11 +1581,15 @@ class CalendarRequest {
         final uInfoRaw = await _APIRequest.getRequest(uInfoUrl, bearerToken: token);
         final uInfoDecoded = conv.json.decode(uInfoRaw);
         if (uInfoDecoded['data'] != null) {
-          final tid = uInfoDecoded['data']['studentTrainingId']?.toString();
-          if (tid != null && tid.isNotEmpty) {
-            _cachedTrainingIds = [tid];
-            await storage.DataCache.setStudentTrainingId(tid);
-            return [tid];
+          final d = uInfoDecoded['data'];
+          if (d is Map) {
+            await _persistUserInfoProfile(d);
+            final tid = d['studentTrainingId']?.toString();
+            if (tid != null && tid.isNotEmpty) {
+              _cachedTrainingIds = [tid];
+              await storage.DataCache.setStudentTrainingId(tid);
+              return [tid];
+            }
           }
         }
       } catch (e) {
@@ -1240,7 +1631,10 @@ class CalendarRequest {
 
   static Future<String?> getStudentTrainingId({bool forceRefresh = false}) async {
     final ids = await getStudentTrainingIds(forceRefresh: forceRefresh);
-    return ids.isNotEmpty ? ids.first : null;
+    if (ids.isEmpty) return null;
+    final preferred = storage.DataCache.getStudentTrainingId();
+    if (preferred != null && ids.contains(preferred)) return preferred;
+    return ids.first;
   }
 
   static List<CalendarEntry> getCalendarEntriesFromJSON(String jsonString) {
@@ -1259,12 +1653,12 @@ class CalendarRequest {
             list.add(CalendarEntry.fromModern(
               startEpoch: startMs,
               endEpoch: endMs,
-              location: item['location']?.toString() ?? "Nincs megadva",
-              title: item['title']?.toString() ?? "Nincs cím",
+              location: item['location']?.toString() ?? AppStrings.getLanguagePack().courseDetail_NotSpecified,
+              title: item['title']?.toString() ?? AppStrings.getLanguagePack().api_fallback_NoTitle,
               eventType: eventType,
               subjectCode: item['subjectCode']?.toString() ?? '-',
               courseType: item['courseType']?.toString(),
-              teacher: item['teacher']?.toString() ?? 'Nincs megadva',
+              teacher: item['teacher']?.toString() ?? AppStrings.getLanguagePack().courseDetail_NotSpecified,
               classInstanceId: item['classInstanceId']?.toString(),
               taskId: item['taskId']?.toString(),
             ));
@@ -1281,8 +1675,8 @@ class CalendarRequest {
           list.add(CalendarEntry(
             rawStart.isEmpty ? '0' : rawStart,
             rawEnd.isEmpty ? '0' : rawEnd,
-            item['location'] ?? "Nincs megadva",
-            item['title'] ?? "Nincs cím",
+            item['location'] ?? AppStrings.getLanguagePack().courseDetail_NotSpecified,
+            item['title'] ?? AppStrings.getLanguagePack().api_fallback_NoTitle,
             item['type'] == 1,
           ));
         }
@@ -1309,11 +1703,13 @@ class CalendarRequest {
         final startEpoch = int.parse(numRegex.firstMatch(startDateRaw)!.group(0)!);
         final endEpoch = int.parse(numRegex.firstMatch(endDateRaw)!.group(0)!);
 
+        // Use payload Sunday end — NOT next Monday 23:59 (that pulled next week's
+        // Monday classes into this week → fake ~163h "break" + duplicate lessons).
         final startDate = DateTime.fromMillisecondsSinceEpoch(startEpoch);
-        final nextMonday = startDate.add(const Duration(days: 7));
+        final endDate = DateTime.fromMillisecondsSinceEpoch(endEpoch);
 
         final startIso = "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}T00:00:00.000";
-        final endIso = "${nextMonday.year.toString().padLeft(4, '0')}-${nextMonday.month.toString().padLeft(2, '0')}-${nextMonday.day.toString().padLeft(2, '0')}T23:59:59.999";
+        final endIso = "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}T23:59:59.999";
 
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
         String responseRaw = "";
@@ -1364,10 +1760,11 @@ class CalendarRequest {
         }
 
         if (needsReAuth) {
-          debug.log("Naptár: Lejárt token/ID érzékelve. Újra-azonosítás indul...");
-          final username = storage.DataCache.getUsername()!;
-          final password = storage.DataCache.getPassword()!;
-          await InstitutesRequest.validateLoginCredentialsUrl(baseUrl, username, password);
+          debug.log("Naptár: Lejárt token/ID érzékelve. Session recovery...");
+          final recovered = await _APIRequest.ensureValidSession();
+          if (!recovered) {
+            return '{"calendarData": []}';
+          }
 
           final newTrainingIds = await getStudentTrainingIds(forceRefresh: true);
           final newToken = await storage.DataCache.getAccessToken();
@@ -1431,9 +1828,8 @@ class CalendarRequest {
           for (var event in items) {
             if (event is! Map) continue;
             final typeId = event['eventTypeId'] ?? 0;
-            if (typeId == 6) {
-              continue; // Szemeszter időszak banner kihagyása a heti nézetben
-            }
+            // typeId 6 = institutional period banner — keep as calendar entry (eventType 6)
+            // so UI can show period banners; weekly class buckets still filter via isExam/isTask.
 
             final startStr = event['startDate']?.toString();
             final endStr = event['endDate']?.toString();
@@ -1442,18 +1838,21 @@ class CalendarRequest {
             final eventStartEpoch = DateTime.tryParse(startStr)?.millisecondsSinceEpoch ?? 0;
             final eventEndEpoch = DateTime.tryParse(endStr)?.millisecondsSinceEpoch ?? 0;
 
+            // Drop events outside the requested Mon–Sun window (defense if API is inclusive of next Monday).
+            if (eventStartEpoch < startEpoch || eventStartEpoch > endEpoch) continue;
+
             final subjectCode = event['courseCode'] ?? event['subjectCode'] ?? '-';
             final courseType = event['courseTypeName'] ?? event['courseType'] ?? event['typeName'] ?? event['type'] ?? '';
 
             mappedList.add({
               'start_ms': eventStartEpoch,
               'end_ms': eventEndEpoch,
-              'location': event['rooms'] ?? event['room'] ?? event['location'] ?? 'Nincs megadva',
-              'title': event['name'] ?? event['subjectName'] ?? event['title'] ?? 'Ismeretlen',
+              'location': event['rooms'] ?? event['room'] ?? event['location'] ?? AppStrings.getLanguagePack().courseDetail_NotSpecified,
+              'title': event['name'] ?? event['subjectName'] ?? event['title'] ?? AppStrings.getLanguagePack().api_fallback_Unknown,
               'type': typeId,
               'subjectCode': subjectCode,
               'courseType': courseType.toString(),
-              'teacher': event['courseTutor'] ?? event['teacher'] ?? 'Nincs megadva',
+              'teacher': event['courseTutor'] ?? event['teacher'] ?? AppStrings.getLanguagePack().courseDetail_NotSpecified,
               'classInstanceId': event['classInstanceId']?.toString() ?? '',
               'taskId': event['id']?.toString() ?? event['taskId']?.toString() ?? event['midTermTaskId']?.toString() ?? '',
             });
@@ -1474,8 +1873,9 @@ class CalendarRequest {
 
 
   static Future<Map<String, String>> getCourseDetails(String classInstanceId) async {
+    final lang = AppStrings.getLanguagePack();
     if (storage.DataCache.getIsModernApi() != true) {
-      return {"room": "Nem támogatott (Régi API)", "teacher": "Nem támogatott", "type": "", "code": ""};
+      return {"room": lang.courseDetail_OldApiUnsupported, "teacher": lang.courseDetail_Unsupported, "type": "", "code": ""};
     }
 
     final cachedRoom = await storage.getString('room_$classInstanceId');
@@ -1486,13 +1886,13 @@ class CalendarRequest {
     if (!(storage.DataCache.getHasNetwork())) {
       if (cachedRoom != null) {
         return {
-          "room": cachedRoom,
-          "teacher": cachedTeacher ?? "Nincs tanár",
+          "room": AppStrings.localizeCourseDetailValue(cachedRoom, placeholder: (l) => l.courseDetail_NoRoom),
+          "teacher": AppStrings.localizeCourseDetailValue(cachedTeacher, placeholder: (l) => l.courseDetail_NoTeacher),
           "type": cachedType ?? "",
           "code": cachedCode ?? "",
         };
       }
-      return {"room": "Nincs internet", "teacher": "Offline mód", "type": "", "code": ""};
+      return {"room": lang.courseDetail_NoInternet, "teacher": lang.courseDetail_OfflineMode, "type": "", "code": ""};
     }
 
     try {
@@ -1505,8 +1905,10 @@ class CalendarRequest {
 
       if (decoded['data'] != null) {
         final d = decoded['data'];
-        final r = d['room']?.toString() ?? d['rooms']?.toString() ?? "Nincs terem";
-        final t = d['courseTutor']?.toString() ?? d['tutor']?.toString() ?? d['teacher']?.toString() ?? "Nincs tanár";
+        final rRaw = d['room']?.toString() ?? d['rooms']?.toString() ?? '';
+        final tRaw = d['courseTutor']?.toString() ?? d['tutor']?.toString() ?? d['teacher']?.toString() ?? '';
+        final r = rRaw.trim().isEmpty ? lang.courseDetail_NoRoom : rRaw;
+        final t = tRaw.trim().isEmpty ? lang.courseDetail_NoTeacher : tRaw;
         final type = d['courseTypeName']?.toString() ?? d['courseType']?.toString() ?? d['typeName']?.toString() ?? d['type']?.toString() ?? "";
         final code = d['subjectCode']?.toString() ?? d['courseCode']?.toString() ?? "";
 
@@ -1523,14 +1925,14 @@ class CalendarRequest {
 
     if (cachedRoom != null) {
       return {
-        "room": cachedRoom,
-        "teacher": cachedTeacher ?? "Nincs tanár",
+        "room": AppStrings.localizeCourseDetailValue(cachedRoom, placeholder: (l) => l.courseDetail_NoRoom),
+        "teacher": AppStrings.localizeCourseDetailValue(cachedTeacher, placeholder: (l) => l.courseDetail_NoTeacher),
         "type": cachedType ?? "",
         "code": cachedCode ?? "",
       };
     }
 
-    return {"room": "Hiba a betöltésnél", "teacher": "Hiba a betöltésnél", "type": "", "code": ""};
+    return {"room": lang.courseDetail_LoadError, "teacher": lang.courseDetail_LoadError, "type": "", "code": ""};
   }
 
 
@@ -1567,9 +1969,9 @@ class CalendarRequest {
             final decoded = conv.json.decode(responseRaw);
 
             if (decoded['data'] != null) {
-              final subject = decoded['data']['subjectName'] ?? "Ismeretlen tárgy";
-              final type = decoded['data']['midtermTaskType'] ?? "Feladat";
-              final result = decoded['data']['midtermResult'] ?? "Nincs eredmény";
+              final subject = decoded['data']['subjectName'] ?? AppStrings.getLanguagePack().api_fallback_UnknownSubject;
+              final type = decoded['data']['midtermTaskType'] ?? AppStrings.getLanguagePack().api_fallback_Task;
+              final result = decoded['data']['midtermResult'] ?? AppStrings.getLanguagePack().api_fallback_NoResult;
 
               entry.location = subject;
               didUpdateUI = true;
@@ -1591,10 +1993,10 @@ class CalendarRequest {
       final cachedRoom = await storage.getString('room_${entry.classInstanceId}');
       final cachedTeacher = await storage.getString('teacher_${entry.classInstanceId}');
 
-      if (cachedRoom != null && cachedRoom.isNotEmpty && cachedRoom != "Nincs terem") {
+      if (cachedRoom != null && cachedRoom.isNotEmpty && !AppStrings.isMissingRoomValue(cachedRoom)) {
         if (entry.location != cachedRoom || entry.teacher != cachedTeacher) {
           entry.location = cachedRoom;
-          entry.teacher = cachedTeacher ?? "Nincs tanár";
+          entry.teacher = AppStrings.localizeCourseDetailValue(cachedTeacher, placeholder: (l) => l.courseDetail_NoTeacher);
           didUpdateUI = true;
         }
         continue;
@@ -1607,9 +2009,11 @@ class CalendarRequest {
           final decoded = conv.json.decode(responseRaw);
 
           if (decoded['data'] != null) {
+            final lang = AppStrings.getLanguagePack();
             final r = decoded['data']['room'];
-            final finalRoom = (r == null || r.toString().trim().isEmpty) ? "Nincs terem" : r.toString();
-            final t = decoded['data']['courseTutor'] ?? "Nincs tanár";
+            final finalRoom = (r == null || r.toString().trim().isEmpty) ? lang.courseDetail_NoRoom : r.toString();
+            final tRaw = decoded['data']['courseTutor']?.toString() ?? '';
+            final t = tRaw.trim().isEmpty ? lang.courseDetail_NoTeacher : tRaw;
 
             entry.location = finalRoom;
             entry.teacher = t;
@@ -1666,8 +2070,8 @@ class MarkbookRequest{
   static Future<List<Subject>?> getMarkbookSubjects({String? termId}) async{
     if(storage.DataCache.getIsDemoAccount()!){
       return <Subject>[
-        Subject(false, 1, 'DEMO tantárgy 1', 0, 4, 0),
-        Subject(true, 4, 'DEMO szellemjegy', 1, 0, 0),
+        Subject(false, 1, AppStrings.getLanguagePack().api_demo_Subject1, 0, 4, 0),
+        Subject(true, 4, AppStrings.getLanguagePack().api_demo_GhostGrade, 1, 0, 0),
       ];
     }
     else if(storage.DataCache.getHasICSFile() ?? false){ return []; }
@@ -1762,7 +2166,7 @@ class MarkbookRequest{
         if (rawData != null && rawData is List) {
           for (var item in rawData) {
             if (item is! Map) continue;
-            String subjectName = item['subjectName'] ?? item['name'] ?? item['subjectCode'] ?? 'Ismeretlen tárgy';
+            String subjectName = item['subjectName'] ?? item['name'] ?? item['subjectCode'] ?? AppStrings.getLanguagePack().api_fallback_UnknownSubject;
             String subjectCode = item['subjectCode']?.toString() ?? subjectName;
             int credit = (item['subjectCredit'] as num?)?.toInt() ?? (item['credit'] as num?)?.toInt() ?? 0;
             
@@ -1804,7 +2208,7 @@ class MarkbookRequest{
               if (credit > existing.credit) existing.credit = credit;
               if (failState > existing.failState) existing.failState = failState;
             } else {
-              modernSubjectsMap[subjectCode] = Subject(isCompleted, credit, subjectName, 0, grade, failState);
+              modernSubjectsMap[subjectCode] = Subject(isCompleted, credit, subjectName, 0, grade, failState, subjectCode: subjectCode);
             }
           }
         }
@@ -1887,6 +2291,64 @@ class MarkbookRequest{
     }
     return latest;
   }
+
+  /// Registered courses for selected term (separate from markbook / TakenSubjects).
+  static Future<List<Subject>> getRegisteredCourses({String? termId}) async {
+    if (storage.DataCache.getIsDemoAccount()!) {
+      return [Subject(false, 3, AppStrings.getLanguagePack().api_demo_Course, 0, 0, 0, subjectCode: 'DEMO-001')];
+    }
+    if (!(storage.DataCache.getIsModernApi())) return [];
+    try {
+      final token = await storage.DataCache.getAccessToken();
+      final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+      final terms = await TermsRequest.getTerms();
+      String guid = termId ?? storage.DataCache.getSelectedTermId() ?? '';
+      if (guid.isEmpty && terms.isNotEmpty) guid = terms.last.id;
+      for (final t in terms) {
+        if (t.id == guid || t.termName == guid) {
+          guid = t.id;
+          break;
+        }
+      }
+      String urlStr = "$baseUrl/api/RegisteredCourses/GetRegisteredCourses?sortAndPage.subjectName=asc";
+      if (guid.isNotEmpty) {
+        urlStr = "$baseUrl/api/RegisteredCourses/GetRegisteredCourses?request.termId=$guid&sortAndPage.subjectName=asc";
+      }
+      final raw = await _APIRequest.getRequest(Uri.parse(urlStr), bearerToken: token!);
+      final decoded = conv.json.decode(raw);
+      final out = <Subject>[];
+      if (decoded['data'] is List) {
+        for (final item in decoded['data'] as List) {
+          if (item is! Map) continue;
+          final code = item['subjectCode']?.toString() ?? '';
+          final name = item['subjectName']?.toString() ?? item['name']?.toString() ?? code;
+          final credit = (item['subjectCredit'] as num?)?.toInt() ?? (item['credit'] as num?)?.toInt() ?? 0;
+          out.add(Subject(false, credit, name, 0, 0, 0, subjectCode: code));
+        }
+      }
+      return out;
+    } catch (e) {
+      debug.log('getRegisteredCourses: $e');
+      return [];
+    }
+  }
+
+  /// Grade history: TakenSubjects for every known term (capped).
+  static Future<List<({String termName, Subject subject})>> getGradeHistoryAcrossTerms({int maxTerms = 8}) async {
+    final terms = await TermsRequest.getTerms();
+    final out = <({String termName, Subject subject})>[];
+    final slice = terms.length > maxTerms ? terms.sublist(terms.length - maxTerms) : terms;
+    for (final t in slice.reversed) {
+      final list = await getMarkbookSubjects(termId: t.id);
+      if (list == null) continue;
+      for (final s in list) {
+        if (s.grade > 0 || s.completed) {
+          out.add((termName: t.termName, subject: s));
+        }
+      }
+    }
+    return out;
+  }
 }
 
 class CashinRequest{
@@ -1896,8 +2358,8 @@ class CashinRequest{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
       return <CashinEntry>[
-        CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 1', "1", 'aktív'),
-        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 2', "2", 'teljesített'),
+        CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment1, "1", 'aktív'),
+        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment2, "2", 'teljesített'),
       ];
     }
     else if(storage.DataCache.getHasICSFile() ?? false){
@@ -1948,9 +2410,9 @@ class CashinRequest{
             modernCashins.add(CashinEntry(
                 amount,
                 dateMs,
-                item['transactionPayingType']?.toString() ?? 'Ismeretlen tranzakció',
-                item['transactionId']?.toString() ?? 'ismeretlen_id',
-                item['transactionStatus']?.toString() ?? 'Ismeretlen státusz',
+                item['transactionPayingType']?.toString() ?? AppStrings.getLanguagePack().payment_unknownTransaction,
+                item['transactionId']?.toString() ?? 'unknown_id',
+                item['transactionStatus']?.toString() ?? AppStrings.getLanguagePack().payment_unknownStatus,
                 direction: item['transactionDirection']?.toString(),
                 note: item['transactionNote']?.toString(),
                 currency: item['transactionCurrency']?.toString() ?? 'HUF'
@@ -2000,16 +2462,11 @@ class CashinRequest{
     }
     if (storage.DataCache.getIsModernApi()) {
       try {
-        final token = await storage.DataCache.getAccessToken();
-        String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
-        final url = Uri.parse("$baseUrl/api/FinancialDataDashboard/GetCollectiveInvoices");
-        final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
-        final decoded = conv.json.decode(responseRaw);
-        if (decoded['data'] != null && decoded['data'] is List && (decoded['data'] as List).isNotEmpty) {
-          final first = decoded['data'][0];
-          final balance = (first['collectiveInvoiceBalance'] as num?)?.toDouble() ?? 0.0;
-          final currency = first['collectiveInvoiceCurrency']?.toString() ?? 'HUF';
-          await storage.DataCache.setAccountBalance(balance, currency: currency);
+        final invoices = await getCollectiveInvoices();
+        if (invoices.isNotEmpty) {
+          final first = invoices.first;
+          final balance = first.balance;
+          await storage.DataCache.setAccountBalance(balance, currency: first.currency);
           return balance;
         }
       } catch (e) {
@@ -2017,6 +2474,38 @@ class CashinRequest{
       }
     }
     return storage.DataCache.getAccountBalance();
+  }
+
+  static Future<List<CollectiveInvoice>> getCollectiveInvoices() async {
+    if (storage.DataCache.getIsDemoAccount()!) {
+      return [CollectiveInvoice('DEMO', 15000, 'HUF')];
+    }
+    if (!storage.DataCache.getIsModernApi()) return [];
+    try {
+      final token = await storage.DataCache.getAccessToken();
+      String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+      final url = Uri.parse("$baseUrl/api/FinancialDataDashboard/GetCollectiveInvoices");
+      final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
+      final decoded = conv.json.decode(responseRaw);
+      final list = <CollectiveInvoice>[];
+      if (decoded['data'] != null && decoded['data'] is List) {
+        for (final item in decoded['data'] as List) {
+          if (item is! Map) continue;
+          list.add(CollectiveInvoice(
+            item['collectiveInvoiceName']?.toString() ??
+                item['name']?.toString() ??
+                item['appellation']?.toString() ??
+                'Invoice',
+            (item['collectiveInvoiceBalance'] as num?)?.toDouble() ?? 0.0,
+            item['collectiveInvoiceCurrency']?.toString() ?? 'HUF',
+          ));
+        }
+      }
+      return list;
+    } catch (e) {
+      debug.log('getCollectiveInvoices: $e');
+      return [];
+    }
   }
 }
 
@@ -2091,7 +2580,7 @@ class PeriodsRequest{
             final fromEpoch = DateTime.tryParse(fromStr)?.millisecondsSinceEpoch ?? 0;
             final toEpoch = DateTime.tryParse(toStr)?.millisecondsSinceEpoch ?? 0;
 
-            final pName = item['periodName']?.toString() ?? item['periodType']?.toString() ?? 'Ismeretlen időszak';
+            final pName = item['periodName']?.toString() ?? item['periodType']?.toString() ?? AppStrings.getLanguagePack().api_fallback_UnknownPeriod;
 
             modernPeriods.add(PeriodEntry(
                 pName,
@@ -2116,7 +2605,7 @@ class PeriodsRequest{
     } else {
       terms = await TermsRequest.getTerms();
     }
-    if(terms.isEmpty) return <PeriodEntry>[PeriodEntry('Hiba lépett fel!\nNincs term id.', DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch, 1)];
+    if(terms.isEmpty) return <PeriodEntry>[PeriodEntry(AppStrings.getLanguagePack().api_fallback_NoTermId, DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch, 1)];
 
     List<PeriodEntry> periods = <PeriodEntry>[];
     int cntperiod = terms.length;
@@ -2192,8 +2681,8 @@ class MailRequest{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
       return <MailEntry>[
-        MailEntry('Tárgy', 'Szöveg', 'DEMO feladó', now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false, "0"),
-        MailEntry('DEMO', 'Demo Demo Demo', 'DEMO feladó', now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false, "1"),
+        MailEntry(AppStrings.getLanguagePack().api_demo_MailSubject, AppStrings.getLanguagePack().api_demo_MailBody, AppStrings.getLanguagePack().api_demo_MailSender, now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false, "0"),
+        MailEntry('DEMO', 'Demo Demo Demo', AppStrings.getLanguagePack().api_demo_MailSender, now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false, "1"),
       ];
     }
     else if(storage.DataCache.getHasICSFile() ?? false){
@@ -2217,9 +2706,9 @@ class MailRequest{
         if (decoded['data'] != null && decoded['data']['receivedMessages'] != null) {
           for (var item in decoded['data']['receivedMessages']) {
             modernMails.add(MailEntry(
-              item['subject'] ?? "Nincs tárgy",
-              "A szöveg letöltéséhez kattints ide...",
-              item['senderName'] ?? "Ismeretlen",
+              item['subject'] ?? AppStrings.getLanguagePack().api_fallback_UnknownSubject,
+              AppStrings.getLanguagePack().mail_preview_TapToLoadBody,
+              item['senderName'] ?? AppStrings.getLanguagePack().api_fallback_Unknown,
               DateTime.parse(item['lastPostDate']).millisecondsSinceEpoch,
               item['unreadedPostCount'] == 0,
               item['messageId'].toString(),
@@ -2265,7 +2754,63 @@ class MailRequest{
   }
 
   static Future<void> setMailRead(String id)async{
+    if (storage.DataCache.getIsDemoAccount() ?? false) return;
+    if (id.isEmpty) return;
+    try {
+      if (storage.DataCache.getIsModernApi()) {
+        final token = await storage.DataCache.getAccessToken();
+        if (token == null || token.isEmpty) return;
+        final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+        // Try modern endpoints (Neptun naming varies by version).
+        final candidates = <Uri>[
+          Uri.parse('$baseUrl/api/Message/SetReadedMessage'),
+          Uri.parse('$baseUrl/api/Messages/SetReadedMessage'),
+          Uri.parse('$baseUrl/api/Message/SetMessageAsReaded'),
+        ];
+        final body = conv.jsonEncode({'messageId': id, 'MessageID': id});
+        for (final url in candidates) {
+          try {
+            final res = await _APIRequest.postRequestRaw(url, body, bearerToken: token);
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              final unread = storage.DataCache.getUnreadMailCount();
+              if (unread > 0) {
+                await storage.DataCache.setUnreadMailCount(unread - 1);
+              }
+              // Refresh authoritative count when possible
+              await getUnreadMessageCount();
+              return;
+            }
+          } catch (_) {}
+        }
+      } else {
+        final username = storage.DataCache.getUsername();
+        final password = storage.DataCache.getPassword();
+        final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MESSAGE_SET_READ);
+        final json = '{"UserLogin":"$username","Password":"$password","PersonMessageId":$id}';
+        await _APIRequest.postRequest(url, json);
+        final unread = storage.DataCache.getUnreadMailCount();
+        if (unread > 0) {
+          await storage.DataCache.setUnreadMailCount(unread - 1);
+        }
+      }
+    } catch (e) {
+      debug.log('setMailRead error: $e');
+    }
   }
+
+  static String _htmlToPlain(String rawHtml) {
+    return rawHtml
+        .replaceAll(RegExp(r'<style[^>]*>[\s\S]*?</style>'), '')
+        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'</p>', caseSensitive: false), '\n\n')
+        .replaceAll(RegExp(r'<[^>]*>'), '')
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .trim();
+  }
+
   static Future<String> getMailContent(String messageId, String oldDetails) async {
     if (storage.DataCache.getIsDemoAccount() ?? false) {
       return oldDetails;
@@ -2281,28 +2826,37 @@ class MailRequest{
 
         // retry if 500 status
         if (responseRaw.contains("Hiba történt") || responseRaw.contains('"statusCode":500')) {
-          await Future.delayed(const Duration(milliseconds: 200)); // Vár egy picit
-          responseRaw = await _APIRequest.getRequest(url, bearerToken: token); // Újra beküldi
+          await Future.delayed(const Duration(milliseconds: 200));
+          responseRaw = await _APIRequest.getRequest(url, bearerToken: token);
         }
-        // ---------------------------------------------------
 
         final decoded = conv.json.decode(responseRaw);
 
         if (decoded['data'] != null && decoded['data']['posts'] != null && decoded['data']['posts'].isNotEmpty) {
-          String rawHtml = decoded['data']['posts'][0]['htmlText'] ?? "";
-          String cleanText = rawHtml
-              .replaceAll(RegExp(r'<style[^>]*>[\s\S]*?</style>'), '')
-              .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
-              .replaceAll(RegExp(r'</p>'), '\n\n')
-              .replaceAll(RegExp(r'<[^>]*>'), '')
-              .replaceAll('&nbsp;', ' ')
-              .trim();
-          return cleanText;
+          final posts = decoded['data']['posts'] as List;
+          final parts = <String>[];
+          for (var i = 0; i < posts.length; i++) {
+            final post = posts[i];
+            if (post is! Map) continue;
+            final rawHtml = post['htmlText']?.toString() ?? post['text']?.toString() ?? '';
+            final clean = _htmlToPlain(rawHtml);
+            if (clean.isEmpty) continue;
+            final when = post['postDate']?.toString() ?? post['date']?.toString() ?? '';
+            final who = post['posterName']?.toString() ?? post['senderName']?.toString() ?? '';
+            final header = [if (who.isNotEmpty) who, if (when.isNotEmpty) when].join(' · ');
+            if (posts.length > 1) {
+              parts.add(header.isNotEmpty ? '— ${i + 1}/${posts.length} — $header\n$clean' : '— ${i + 1}/${posts.length} —\n$clean');
+            } else {
+              parts.add(clean);
+            }
+          }
+          if (parts.isNotEmpty) return parts.join('\n\n');
+          return AppStrings.getStringWithParams(AppStrings.getLanguagePack().api_error_EmptyNeptunResponse, [responseRaw]);
         } else {
-          return "Üres válasz érkezett a Neptuntól.\n\nSzerver válasza: $responseRaw";
+          return AppStrings.getStringWithParams(AppStrings.getLanguagePack().api_error_EmptyNeptunResponse, [responseRaw]);
         }
       } catch (e) {
-        return "Hálózati hiba a letöltés során:\n$e";
+        return AppStrings.getStringWithParams(AppStrings.getLanguagePack().api_error_DownloadNetwork, [e]);
       }
     }
     return oldDetails;
@@ -2331,15 +2885,16 @@ class MailRequest{
     String name;
     int grade = 0;
     int failState = 0;
-  
-  
-    Subject(this.completed, this.credit, this.name, this.id, this.grade, this.failState);
-  
+    String subjectCode;
+
+
+    Subject(this.completed, this.credit, this.name, this.id, this.grade, this.failState, {this.subjectCode = ''});
+
     @override
     String toString() {
-      return '$completed\n$credit\n$id\n$name\n$grade\n$failState';
+      return '$completed\n$credit\n$id\n$name\n$grade\n$failState\n$subjectCode';
     }
-  
+
     Subject fillWithExisting(String existing){
       var data = existing.split('\n');
       if(data.length < 6){
@@ -2349,6 +2904,7 @@ class MailRequest{
         name = 'ERROR';
         grade = 0;
         failState = 1;
+        subjectCode = '';
         return this;
       }
       completed = bool.parse(data[0]);
@@ -2357,6 +2913,7 @@ class MailRequest{
       name = data[3];
       grade = int.parse(data[4]);
       failState = int.parse(data[5]);
+      subjectCode = data.length > 6 ? data[6] : '';
       return this;
     }
   }
@@ -2387,7 +2944,8 @@ class CalendarEntry {
   late String? taskId;
 
   bool get isExam => eventType == 1;
-  bool get isTask => eventType > 1;
+  bool get isPeriodBanner => eventType == 6;
+  bool get isTask => eventType > 1 && eventType != 6;
 
   CalendarEntry(String start, String end, String loc, String rawTitle, bool oldIsExam) {
     startEpoch = int.parse(start);
@@ -2481,6 +3039,13 @@ class CalendarEntry {
 
     return this;
   }
+}
+
+class CollectiveInvoice {
+  final String name;
+  final double balance;
+  final String currency;
+  CollectiveInvoice(this.name, this.balance, this.currency);
 }
 
 class CashinEntry{

@@ -43,7 +43,11 @@ class PaymentElementWidget extends StatelessWidget{
         ? (isPositive ? AppColors.getTheme().currentClassGreen : AppColors.getTheme().onPrimaryContainer)
         : (isMissed ? AppColors.getTheme().errorRed : Colors.amber.shade600);
 
-    final curr = (currency != null && currency!.isNotEmpty) ? currency! : 'Ft';
+    final rawCurr = (currency != null && currency!.isNotEmpty) ? currency! : 'HUF';
+    final upper = rawCurr.toUpperCase();
+    final curr = (upper == 'HUF' || upper == 'FT')
+        ? AppStrings.getLanguagePack().payment_currencyHuf
+        : rawCurr;
     final absAmount = ammount.abs();
     final formattedNum = absAmount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ');
 

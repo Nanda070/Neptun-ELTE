@@ -30,7 +30,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // loading defaults
     _currentFontScale = DataCache.getFontScale();
-    _themesCurrSelect = AppColors.getTheme().paletteName;
+    final preferred = DataCache.getPreferredAppTheme() ?? 'Dark';
+    _themesCurrSelect = AppColors.getSelectableThemeNames().contains(preferred)
+        ? preferred
+        : (AppColors.getSelectableThemeNames().contains(AppColors.getTheme().paletteName)
+            ? AppColors.getTheme().paletteName
+            : 'Dark');
 
     _initLanguageSelection();
     _loadOnlineLanguages();
@@ -119,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
         physics: const BouncingScrollPhysics(),
         children: [
           // --- 1. appearance and language ---
-          _buildSectionHeader("Megjelenés és Nyelv", Icons.palette_rounded),
+          _buildSectionHeader(AppStrings.getLanguagePack().settings_section_AppearanceLanguage, Icons.palette_rounded),
 
           ListTile(
             title: Text(AppStrings.getLanguagePack().popup_case1_settingOption9_ThemeSwap, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
@@ -132,12 +137,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  value: _themesCurrSelect,
+                  value: AppColors.getSelectableThemeNames().contains(_themesCurrSelect)
+                      ? _themesCurrSelect
+                      : AppColors.getSelectableThemeNames().first,
                   dropdownColor: AppColors.getTheme().rootBackground,
                   icon: Icon(Icons.arrow_drop_down_rounded, color: AppColors.getTheme().textColor),
                   isExpanded: true,
                   style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
-                  items: AppColors.getThemesOnline().map((String value) {
+                  items: AppColors.getSelectableThemeNames().map((String value) {
                     return DropdownMenuItem<String>(
                         value: value,
                         child: Row(
@@ -153,26 +160,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (value == null) return;
                     AppHaptics.lightImpact();
                     DataCache.setPreferredAppTheme(value);
-                    if(!AppColors.hasThemeDownloaded(value)){
-                      // download logic from old popup
-                      Future.delayed(Duration.zero, ()async{
-                        final pack = await Coloring.getAllThemes();
-                        await Coloring.getThemePackById(pack, value).then((val)async{
-                          if(val != null){
-                            AppColors.saveDownloadedPaletteData();
-                            AppColors.setUserThemeByName(val.paletteName, context);
-                            AppColors.refreshThemeIndexing();
-                            setState(() { _themesCurrSelect = value; });
-                          }
-                        });
-                      });
-                    } else {
-                      setState(() {
-                        _themesCurrSelect = value;
-                        AppColors.setUserTheme(context);
-                        AppColors.refreshThemeIndexing();
-                      });
-                    }
+                    setState(() {
+                      _themesCurrSelect = value;
+                      AppColors.setUserThemeByName(value, context);
+                      AppColors.refreshThemeIndexing();
+                    });
                   },
                 ),
               ),
@@ -260,7 +252,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("App Betűméret skálázás", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16)),
+                Text(AppStrings.getLanguagePack().settings_section_FontScale, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16)),
                 Slider(
                   value: _currentFontScale,
                   min: 0.8,
@@ -284,7 +276,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // --- 2. notifications ---
-          _buildSectionHeader("Értesítések", Icons.notifications_active_rounded),
+          _buildSectionHeader(AppStrings.getLanguagePack().settings_section_Notifications, Icons.notifications_active_rounded),
 
           SwitchListTile(
             title: Text(AppStrings.getLanguagePack().popup_case1_settingOption2_ExamNotifications, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
@@ -331,8 +323,47 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
 
+          // --- Calendar display filters (API GetCalendarEvents flags) ---
+          _buildSectionHeader(AppStrings.getLanguagePack().settings_section_CalendarFilters, Icons.filter_alt_rounded),
+          SwitchListTile(
+            title: Text(AppStrings.getLanguagePack().settings_calendar_ShowClasses, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getDisplayClasses() ?? true,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setDisplayClasses(b);
+              await DataCache.setHasCachedCalendar(0);
+              HomePageState.onSemesterChanged();
+              setState(() {});
+            },
+          ),
+          SwitchListTile(
+            title: Text(AppStrings.getLanguagePack().settings_calendar_ShowExams, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getDisplayExams() ?? true,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setDisplayExams(b);
+              await DataCache.setHasCachedCalendar(0);
+              HomePageState.onSemesterChanged();
+              setState(() {});
+            },
+          ),
+          SwitchListTile(
+            title: Text(AppStrings.getLanguagePack().settings_calendar_ShowPeriods, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getDisplayPeriods() ?? true,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setDisplayPeriods(b);
+              await DataCache.setHasCachedCalendar(0);
+              HomePageState.onSemesterChanged();
+              setState(() {});
+            },
+          ),
+
           // --- 3. operation and others ---
-          _buildSectionHeader("Működés és Egyéb", Icons.build_circle_rounded),
+          _buildSectionHeader(AppStrings.getLanguagePack().settings_section_BehaviorOther, Icons.build_circle_rounded),
 
           SwitchListTile(
             title: Text(AppStrings.getLanguagePack().popup_case1_settingOption1_FamilyFriendlyLoadingText, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
@@ -367,7 +398,7 @@ class _SettingsPageState extends State<SettingsPage> {
                      onPressed: () { AppHaptics.lightImpact(); HomePageState.settingsUserWeekOffsetAdd(-1); setState((){}); },
                    ),
                    Expanded(
-                     child: Text(HomePageState.getUserWeekOffsetTextController().text.isEmpty ? "Auto" : HomePageState.getUserWeekOffsetTextController().text, textAlign: TextAlign.center, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold)),
+                     child: Text(HomePageState.getUserWeekOffsetTextController().text.isEmpty ? AppStrings.getLanguagePack().popup_case1_settingOption7_WeekOffsetAuto : HomePageState.getUserWeekOffsetTextController().text, textAlign: TextAlign.center, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold)),
                    ),
                    IconButton(
                      icon: Icon(Icons.add, color: AppColors.getTheme().textColor, size: 18),

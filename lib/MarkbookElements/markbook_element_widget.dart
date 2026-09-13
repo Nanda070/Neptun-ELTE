@@ -15,8 +15,9 @@ class MarkbookElementWidget extends StatelessWidget{
   final Callback onPopupResult;
   final int listIndex;
   final int ghostGrade;
+  final String subjectCode;
 
-  const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed, required this.onPopupResult, required this.listIndex, required this.ghostGrade});
+  const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed, required this.onPopupResult, required this.listIndex, required this.ghostGrade, this.subjectCode = ''});
 
   Color getGradeColor(){
     if(ghostGrade != -1){
@@ -83,17 +84,34 @@ class MarkbookElementWidget extends StatelessWidget{
                 flex: 2,
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
-                  child: Text.rich(
-                    TextSpan(
-                      text: name,
-                      style: TextStyle(
-                          fontSize: 14.0 * fontScale, // Skálázott
-                          decoration: completed ? TextDecoration.lineThrough : TextDecoration.none,
-                          fontWeight: completed ? FontWeight.w400 : FontWeight.w600,
-                          color: AppColors.getTheme().textColor,
-                          decorationColor: AppColors.getTheme().textColor
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          text: name,
+                          style: TextStyle(
+                              fontSize: 14.0 * fontScale,
+                              decoration: completed ? TextDecoration.lineThrough : TextDecoration.none,
+                              fontWeight: completed ? FontWeight.w400 : FontWeight.w600,
+                              color: AppColors.getTheme().textColor,
+                              decorationColor: AppColors.getTheme().textColor
+                          ),
+                        ),
                       ),
-                    ),
+                      if (subjectCode.isNotEmpty && subjectCode != name)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            subjectCode,
+                            style: TextStyle(
+                              fontSize: 11.0 * fontScale,
+                              color: AppColors.getTheme().textColor.withValues(alpha: 0.55),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

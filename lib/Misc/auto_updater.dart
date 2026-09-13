@@ -13,6 +13,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../Pages/main_page.dart';
 import '../storage.dart';
 import '../colors.dart';
+import '../language.dart';
 
 class AppUpdater {
   static const String repoOwner = "Nanda070";
@@ -28,7 +29,7 @@ class AppUpdater {
     if (conn.contains(ConnectivityResult.none) && !conn.any((c) => c != ConnectivityResult.none)) {
       if (force && Platform.isAndroid) {
         Fluttertoast.showToast(
-          msg: "Nincs internetkapcsolat!",
+          msg: AppStrings.getLanguagePack().updater_NoInternet,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: AppColors.getTheme().rootBackground,
@@ -48,7 +49,7 @@ class AppUpdater {
 
     if (force && Platform.isAndroid) {
       Fluttertoast.showToast(
-        msg: "Frissítések keresése...",
+        msg: AppStrings.getLanguagePack().updater_Checking,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.SNACKBAR,
         backgroundColor: AppColors.getTheme().rootBackground,
@@ -69,7 +70,7 @@ class AppUpdater {
       if (response.statusCode != 200) {
         if (force && Platform.isAndroid) {
           Fluttertoast.showToast(
-            msg: "Nem sikerült lekérni a GitHub kiadásokat (${response.statusCode})",
+            msg: AppStrings.getStringWithParams(AppStrings.getLanguagePack().updater_FetchFailed, [response.statusCode]),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.SNACKBAR,
             backgroundColor: AppColors.getTheme().rootBackground,
@@ -105,7 +106,7 @@ class AppUpdater {
       } else {
         if (force && Platform.isAndroid) {
           Fluttertoast.showToast(
-            msg: "Az alkalmazás naprakész! (v$currentVersion)",
+            msg: AppStrings.getStringWithParams(AppStrings.getLanguagePack().updater_UpToDate, [currentVersion]),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.SNACKBAR,
             backgroundColor: AppColors.getTheme().rootBackground,
@@ -117,7 +118,7 @@ class AppUpdater {
       debugPrint("Hiba az auto-update során: $e");
       if (force && Platform.isAndroid) {
         Fluttertoast.showToast(
-          msg: "Hiba történt a frissítés ellenőrzésekor.",
+          msg: AppStrings.getLanguagePack().updater_CheckError,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: AppColors.getTheme().rootBackground,
@@ -129,23 +130,24 @@ class AppUpdater {
 
   /// Egyszerű Igen / Később ablak
   static Future<bool> _showUpdateDialog(BuildContext context, String version) async {
+    final lang = AppStrings.getLanguagePack();
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.getTheme().rootBackground,
         title: Text(
-          "Frissítés elérhető!",
+          lang.updater_DialogTitle,
           style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold),
         ),
         content: Text(
-          "Az alkalmazás új verziója ($version) elérhető. Szeretnéd most letölteni és telepíteni?",
+          AppStrings.getStringWithParams(lang.updater_DialogBody, [version]),
           style: TextStyle(color: AppColors.getTheme().textColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text("Később", style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.6))),
+            child: Text(lang.updater_Later, style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.6))),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -153,7 +155,7 @@ class AppUpdater {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text("Igen", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(lang.updater_Yes, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -261,7 +263,7 @@ class AppUpdater {
       debugPrint("Nem található megfelelő APK fájl a kiadásban.");
       if (Platform.isAndroid) {
         Fluttertoast.showToast(
-          msg: "Nem található kompatibilis telepítőcsomag (.apk) a kiadásban.",
+          msg: AppStrings.getLanguagePack().updater_NoApk,
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: AppColors.getTheme().rootBackground,
@@ -314,7 +316,7 @@ class AppUpdater {
       debugPrint("Hálózati hiba a letöltés során: $e");
       if (Platform.isAndroid) {
         Fluttertoast.showToast(
-          msg: "Hiba történt a letöltés során!",
+          msg: AppStrings.getLanguagePack().updater_DownloadError,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: AppColors.getTheme().rootBackground,
@@ -354,6 +356,7 @@ class _DownloadProgressDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppStrings.getLanguagePack();
     return AlertDialog(
       backgroundColor: AppColors.getTheme().rootBackground,
       content: Column(
@@ -361,10 +364,10 @@ class _DownloadProgressDialog extends StatelessWidget {
         children: [
           CircularProgressIndicator(color: AppColors.getTheme().currentClassGreen),
           const SizedBox(height: 20),
-          Text("Frissítés letöltése folyamatban...", style: TextStyle(color: AppColors.getTheme().textColor)),
+          Text(lang.updater_Downloading, style: TextStyle(color: AppColors.getTheme().textColor)),
           const SizedBox(height: 10),
           Text(
-            "Kérlek, ne zárd be az alkalmazást.",
+            lang.updater_DontClose,
             style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.6), fontSize: 12),
           ),
         ],

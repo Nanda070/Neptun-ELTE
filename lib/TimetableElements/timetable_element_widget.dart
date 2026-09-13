@@ -2,6 +2,7 @@ import '../storage.dart' as storage;
 import 'package:flutter/material.dart';
 import 'package:neptun2/language.dart';
 import '../API/api_coms.dart' as api;
+import '../Misc/elte_room_code.dart';
 import '../Misc/emojirich_text.dart';
 import '../Misc/popup.dart';
 import '../Pages/main_page.dart';
@@ -74,6 +75,7 @@ class TimetableElementWidget extends StatelessWidget {
         return;
       }
       if (isTask && entry.taskId != null && entry.taskId!.isNotEmpty) {
+        final lang = AppStrings.getLanguagePack();
         showDialog(
             context: context,
             builder: (context) {
@@ -90,15 +92,27 @@ class TimetableElementWidget extends StatelessWidget {
                     return FutureBuilder<String?>(
                         future: storage.getString('task_res_${entry.taskId}'),
                         builder: (context, resSnapshot) {
+                          final subjectLabel = AppStrings.localizeCourseDetailValue(
+                            entry.location,
+                            placeholder: (l) => l.courseDetail_NotSpecified,
+                          );
+                          final typeRaw = snapshot.data;
+                          final typeLabel = (typeRaw == null || typeRaw.trim().isEmpty || typeRaw == 'Ismeretlen' || typeRaw == 'Unknown')
+                              ? lang.courseDetail_Unknown
+                              : typeRaw;
+                          final resultRaw = resSnapshot.data;
+                          final resultLabel = (resultRaw == null || resultRaw.trim().isEmpty || resultRaw == 'Nincs még kiírva' || resultRaw == 'Not posted yet')
+                              ? lang.courseDetail_NoResultYet
+                              : resultRaw;
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("📚 Tárgy: ${entry.location}", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
+                              Text("📚 ${lang.courseDetail_Subject} $subjectLabel", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
                               const SizedBox(height: 10),
-                              Text("📝 Típus: ${snapshot.data ?? 'Ismeretlen'}", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
+                              Text("📝 ${lang.courseDetail_Type} $typeLabel", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 16)),
                               const SizedBox(height: 10),
-                              Text("🎯 Eredmény: ${resSnapshot.data ?? 'Nincs még kiírva'}", style: TextStyle(color: AppColors.getTheme().currentClassGreen, fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text("🎯 ${lang.courseDetail_Result} $resultLabel", style: TextStyle(color: AppColors.getTheme().currentClassGreen, fontSize: 16, fontWeight: FontWeight.bold)),
                             ],
                           );
                         }
@@ -108,7 +122,7 @@ class TimetableElementWidget extends StatelessWidget {
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text("Bezárás", style: TextStyle(color: AppColors.getTheme().textColor))
+                      child: Text(lang.courseDetail_Close, style: TextStyle(color: AppColors.getTheme().textColor))
                   )
                 ],
               );
@@ -116,8 +130,9 @@ class TimetableElementWidget extends StatelessWidget {
         );
         return;
       }
-      // HA VAN CLASSINSTANCE ID (Modern API), Akkor a mi új ablakunk jön be!
+      // Modern API: class instance detail dialog
       if (entry.classInstanceId != null && entry.classInstanceId!.isNotEmpty) {
+        final lang = AppStrings.getLanguagePack();
         showDialog(
           context: context,
           builder: (context) {
@@ -134,8 +149,20 @@ class TimetableElementWidget extends StatelessWidget {
                     );
                   }
                   final data = snapshot.data ?? {};
-                  final room = (data['room'] != null && data['room']!.isNotEmpty && data['room'] != 'Nincs terem') ? data['room']! : entry.location;
-                  final teacher = (data['teacher'] != null && data['teacher']!.isNotEmpty && data['teacher'] != 'Nincs tanár') ? data['teacher']! : entry.teacher;
+                  final roomRaw = !AppStrings.isMissingRoomValue(data['room'])
+                      ? data['room']!
+                      : entry.location;
+                  final teacherRaw = !AppStrings.isMissingTeacherValue(data['teacher'])
+                      ? data['teacher']!
+                      : entry.teacher;
+                  final room = AppStrings.localizeCourseDetailValue(
+                    roomRaw,
+                    placeholder: (l) => l.courseDetail_NoRoom,
+                  );
+                  final teacher = AppStrings.localizeCourseDetailValue(
+                    teacherRaw,
+                    placeholder: (l) => l.courseDetail_NoTeacher,
+                  );
                   final courseType = (data['type'] != null && data['type']!.isNotEmpty) ? data['type']! : (entry.courseType ?? '');
                   final subjectCode = (data['code'] != null && data['code']!.isNotEmpty && data['code'] != '-') ? data['code']! : entry.subjectCode;
 
@@ -147,7 +174,7 @@ class TimetableElementWidget extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("🏷️ Tárgykód: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text("🏷️ ${lang.popup_case4_5_SubjectCode} ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
                             Expanded(child: SelectableText(subjectCode, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
                           ],
                         ),
@@ -157,7 +184,7 @@ class TimetableElementWidget extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("📖 Típus: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text("📖 ${lang.courseDetail_Type} ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
                             Expanded(child: SelectableText(courseType, style: TextStyle(color: AppColors.getTheme().currentClassGreen, fontWeight: FontWeight.bold, fontSize: 15))),
                           ],
                         ),
@@ -166,7 +193,7 @@ class TimetableElementWidget extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("👨‍🏫 Tanár: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text("👨‍🏫 ${lang.courseDetail_Teacher} ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
                           Expanded(child: SelectableText(teacher, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
                         ],
                       ),
@@ -174,8 +201,13 @@ class TimetableElementWidget extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("📍 Terem: ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
-                          Expanded(child: SelectableText(room, style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15))),
+                          Text("📍 ${lang.courseDetail_Room} ", style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 15)),
+                          Expanded(
+                            child: DecodableRoomText(
+                              room: room,
+                              style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 15),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -185,7 +217,7 @@ class TimetableElementWidget extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text("Bezárás", style: TextStyle(color: AppColors.getTheme().textColor))
+                  child: Text(lang.courseDetail_Close, style: TextStyle(color: AppColors.getTheme().textColor))
                 )
               ],
             );
@@ -261,15 +293,25 @@ class TimetableElementWidget extends StatelessWidget {
                   const SizedBox(height: 2),
                   Visibility(
                     visible: entry.location.trim().isNotEmpty,
-                    child: Text(
-                      entry.location == "Nincs megadva" || entry.location.isEmpty || entry.location == "NULL"
-                          ? "⏳ Terem betöltése..."
-                          : entry.location,
-                      style: TextStyle(
-                          color: isExam ? AppColors.getTheme().errorRed.withValues(alpha: .8) : AppColors.getTheme().textColor.withValues(alpha: 0.8),
-                          fontSize: 13.0 * fontScale,
-                          fontWeight: FontWeight.w600
-                      ),
+                    child: Builder(
+                      builder: (context) {
+                        final loc = (AppStrings.isMissingRoomValue(entry.location) ||
+                                entry.location == "Nincs megadva" ||
+                                entry.location == "Not specified" ||
+                                entry.location == AppStrings.getLanguagePack().courseDetail_NotSpecified)
+                            ? AppStrings.getLanguagePack().courseDetail_LoadingRoom
+                            : entry.location;
+                        final style = TextStyle(
+                            color: isExam ? AppColors.getTheme().errorRed.withValues(alpha: .8) : AppColors.getTheme().textColor.withValues(alpha: 0.8),
+                            fontSize: 13.0 * fontScale,
+                            fontWeight: FontWeight.w600
+                        );
+                        if (loc == AppStrings.getLanguagePack().courseDetail_LoadingRoom ||
+                            !ElteRoomCode.canDecode(loc)) {
+                          return Text(loc, style: style);
+                        }
+                        return DecodableRoomText(room: loc, style: style);
+                      },
                     ),
                   ),
                 ],
@@ -352,17 +394,21 @@ class BreakElementWidget extends StatelessWidget {
   });
 
   String _formatDuration(int ms) {
-    final dur = Duration(milliseconds: ms);
+    final lang = AppStrings.getLanguagePack();
+    final dur = Duration(milliseconds: ms < 0 ? 0 : ms);
     if (dur.inMinutes < 60) {
-      return "${dur.inMinutes} perc";
+      return AppStrings.getStringWithParams(lang.calendar_break_minutes, [dur.inMinutes]);
     }
     final hours = dur.inHours;
     final mins = dur.inMinutes.remainder(60);
-    return mins > 0 ? "$hours óra $mins perc" : "$hours óra";
+    return mins > 0
+        ? AppStrings.getStringWithParams(lang.calendar_break_hoursMinutes, [hours, mins])
+        : AppStrings.getStringWithParams(lang.calendar_break_hours, [hours]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppStrings.getLanguagePack();
     final fontScale = storage.DataCache.getFontScale();
     final startDate = DateTime.fromMillisecondsSinceEpoch(startEpoch);
     final endDate = DateTime.fromMillisecondsSinceEpoch(endEpoch);
@@ -379,7 +425,10 @@ class BreakElementWidget extends StatelessWidget {
     final remainingFormatted = "${remainingDur.inHours.toString().padLeft(2, '0')}:${(remainingDur.inMinutes.remainder(60)).toString().padLeft(2, '0')}";
 
     if (isCurrent) {
-      // --- AKTÍV SZÜNET (Visszaszámláló órával és kiemeléssel) ---
+      final nextLine = nextClassTitle.isNotEmpty
+          ? ' • ${AppStrings.getStringWithParams(lang.calendar_break_next, [nextClassTitle])}'
+          : '';
+      // --- Active break (countdown) ---
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -414,7 +463,7 @@ class BreakElementWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "Szünet most",
+                        lang.calendar_break_now,
                         style: TextStyle(
                           color: AppColors.getTheme().currentClassGreen,
                           fontWeight: FontWeight.w800,
@@ -434,7 +483,7 @@ class BreakElementWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "$timeRange ${nextClassTitle.isNotEmpty ? '• Következő: $nextClassTitle' : ''}",
+                    "$timeRange$nextLine",
                     style: TextStyle(
                       color: AppColors.getTheme().textColor.withValues(alpha: 0.7),
                       fontSize: 12 * fontScale,
@@ -469,7 +518,7 @@ class BreakElementWidget extends StatelessWidget {
       );
     }
 
-    // --- NORMÁL ÓRA VONAL SZÜNET ELVÁLASZTÓ ---
+    // --- Normal break separator ---
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: Row(
@@ -508,7 +557,7 @@ class BreakElementWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  "$breakDurationText szünet • $timeRange",
+                  "$breakDurationText ${lang.calendar_break_label} • $timeRange",
                   style: TextStyle(
                     color: AppColors.getTheme().textColor.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w600,

@@ -42,8 +42,8 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Periods** — registration and study periods
 - **Themes & languages** — Light / Dark; EN / HU built-in, RU / TR downloadable from GitHub
 - **Notifications** — local class, exam, payment, and period alerts (Android & iOS; no creator push server)
-- **Session** — expired JWT forces logout + re-login prompt (no silent ELTE portal re-auth; refresh token when present)
-- **Drawer profile** — greets with full name from `UserInfo` + Neptun code; **initials** avatar (no confirmed photo API); no training ID under the name; training switcher when multiple trainings exist
+- **Session** — **10-minute** wall-clock auto-logout after entering the main (participant) session, plus JWT expiry / failed refresh → force logout + re-login prompt (keeps username; no silent ELTE portal re-auth; refresh may still run until the wall clock fires)
+- **Drawer profile** — greets with full name from `UserInfo` + Neptun code; **profile photo** from `userAvatar` / `GetUserAvatar` (base64 JPEG, cached locally; initials if missing/fail); no training ID under the name; training switcher when multiple trainings exist
 - **No first-party backend** — device talks to Neptun (+ optional GitHub raw for language/config JSON)
 
 ---

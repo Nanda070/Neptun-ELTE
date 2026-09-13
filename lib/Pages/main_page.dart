@@ -109,6 +109,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late List<api.CalendarEntry> calendarEntries = <api.CalendarEntry>[].toList();
   late List<api.Subject> markbookEntries = <api.Subject>[].toList();
   late List<api.CashinEntry> paymentsEntries = <api.CashinEntry>[].toList();
+  late List<api.CollectiveInvoice> invoiceEntries = <api.CollectiveInvoice>[].toList();
   late List<api.PeriodEntry> periodEntries = <api.PeriodEntry>[].toList();
   late List<api.MailEntry> mailEntries = <api.MailEntry>[].toList();
 
@@ -181,6 +182,22 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(storage.DataCache.getHasICSFile() ?? false){
       ICSCalendar.initialize();
     }
+
+    api.SessionGuard.registerNavigator((message) async {
+      if (!mounted) return;
+      await AppNotifications.cancelScheduledNotifs();
+      if (!mounted) return;
+      Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+      if (!mounted) return;
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const root_page.Splitter()),
+      );
+    });
+    // Participant session entry: 10-minute wall-clock auto-logout (not JWT-401-only).
+    api.SessionGuard.startSessionWallClock();
+
+    Future.microtask(() => api.CalendarRequest.refreshUserProfile());
 
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
       final hasConn = results.any((r) => r != ConnectivityResult.none);
@@ -318,19 +335,27 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     AppNotifications.initialize();
     Future.delayed(Duration.zero, ()async{
-      if(((await storage.getInt('NextFirstWeekCacheTime')) ?? 0) < DateTime.now().millisecondsSinceEpoch){
+      // Always recompute study-week start when online — stale FirstWeekOfSemesterEpoch
+      // (registration/May anchors) produced inflated education weeks (36 → 16).
+      if (storage.DataCache.getHasNetwork()) {
+        final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+        if (firstWeekOfSemester != null) {
+          await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+          storage.DataCache.setHasCachedFirstWeekEpoch(1);
+        }
+        storage.saveInt('NextFirstWeekCacheTime', DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
+      } else if(((await storage.getInt('NextFirstWeekCacheTime')) ?? 0) < DateTime.now().millisecondsSinceEpoch){
         storage.DataCache.setHasCachedFirstWeekEpoch(0);
         storage.saveInt('NextFirstWeekCacheTime', DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
       }
-      if(storage.DataCache.getHasCachedFirstWeekEpoch()!){
-        return;
+      if (mounted) {
+        setState(() {weeksSinceStart = calcPassedWeeks();});
       }
-      final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
-      storage.DataCache.setHasCachedFirstWeekEpoch(1);
-      await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
     }).whenComplete((){
       Future.delayed(const Duration(seconds: 1), (){
-        setState(() {weeksSinceStart = calcPassedWeeks();});
+        if (mounted) {
+          setState(() {weeksSinceStart = calcPassedWeeks();});
+        }
       });
     });
 
@@ -399,7 +424,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   void userUnavailableAccountLogout(){
     Future.delayed(Duration.zero, ()async{
-      await storage.DataCache.dataWipe();
+      await api.SessionGuard.userInitiatedLogout();
       await AppNotifications.cancelScheduledNotifs();
     }).whenComplete((){
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
@@ -553,6 +578,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void clearPayments(){
     setState(() {
       paymentsEntries.clear();
+      invoiceEntries.clear();
       paymentsList.clear();
     });
   }
@@ -650,16 +676,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Future<void> _setupNotificationsForSkimmedExams(api.CalendarEntry item, DateTime now)async{
     final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
+    final lang = AppStrings.getLanguagePack();
+    final examTitle = lang.notif_title_Exam;
     for(int i = 1; i <= daysTillExam + 1; i++){
       if(i == 1){
-        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 06, 00), 0);
+        await AppNotifications.scheduleNotification(examTitle, AppStrings.getStringWithParams(lang.notif_exam_BodyToday, [item.title]), DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 06, 00), 0);
         continue;
       }
       else if(i == 2){
-        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz HOLNAP!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
+        await AppNotifications.scheduleNotification(examTitle, AppStrings.getStringWithParams(lang.notif_exam_BodyTomorrow, [item.title]), DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
         continue;
       }
-      await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
+      await AppNotifications.scheduleNotification(examTitle, AppStrings.getStringWithParams(lang.notif_exam_BodyInDays, [item.title, i]), DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
     }
   }
 
@@ -694,15 +722,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         String finalRoom = item.location;
         if (item.classInstanceId != null && item.classInstanceId!.isNotEmpty) {
           String? cachedRoom = await storage.getString('room_${item.classInstanceId}');
-          if (cachedRoom != null && cachedRoom.isNotEmpty && cachedRoom != "Nincs terem") {
+          if (cachedRoom != null && cachedRoom.isNotEmpty && !AppStrings.isMissingRoomValue(cachedRoom)) {
             finalRoom = cachedRoom;
           }
         }
         // -------------------------------------------------------------------------------
 
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "$finalRoom" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 1);
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "$finalRoom" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 1);
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "$finalRoom"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 1);
+        final lang = AppStrings.getLanguagePack();
+        final classTitle = lang.notif_title_Class;
+        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn10Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 1);
+        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn5Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 1);
+        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyNow, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 1);
       }
     }
   }
@@ -731,17 +761,24 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       return;
     }
     final now = DateTime.now();
+    final lang = AppStrings.getLanguagePack();
+    final paymentTitle = lang.notif_title_Payment;
+    final huf = lang.payment_currencyHuf;
     for(var item in items){
+      final amountLabel = '${item.ammount} $huf';
       if(item.dueDateMs == 0){
+        final body = AppStrings.getStringWithParams(lang.notif_payment_BodyNoDeadline, [amountLabel]);
         for(int i = 0; i <= 31; i++){
-          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs határidő)', DateTime(now.year, now.month, now.day + i, 11, 00),2 );
+          await AppNotifications.scheduleNotification(paymentTitle, body, DateTime(now.year, now.month, now.day + i, 11, 00),2 );
         }
         continue;
       }
       final daysRemaining = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
       final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
+      final datePart = '${daysRemaining > 61 ? "(${time.year}) " : ""}${api.Generic.monthToText(time.month)} ${time.day}';
+      final body = AppStrings.getStringWithParams(lang.notif_payment_BodyWithDeadline, [amountLabel, datePart]);
       for(int i = 0; i <= daysRemaining; i++){
-        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)}. ${time.day}.-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 2);
+        await AppNotifications.scheduleNotification(paymentTitle, body, DateTime(now.year, now.month, now.day + i, 11, 00), 2);
       }
     }
   }
@@ -772,8 +809,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     for(var item in items){
       final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" időszak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00), 3);
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" időszak van MA!', DateTime(time.year, time.month, time.day, 06, 00), 3);
+      final periodName = api.Generic.capitalizePeriodText(item.name);
+      final lang = AppStrings.getLanguagePack();
+      await AppNotifications.scheduleNotification(
+        lang.notif_title_Period,
+        AppStrings.getStringWithParams(lang.notif_period_Tomorrow, [periodName]),
+        DateTime(time.year, time.month, time.day - 1, 11, 00),
+        3,
+      );
+      await AppNotifications.scheduleNotification(
+        lang.notif_title_Period,
+        AppStrings.getStringWithParams(lang.notif_period_Today, [periodName]),
+        DateTime(time.year, time.month, time.day, 06, 00),
+        3,
+      );
     }
   }
 
@@ -805,6 +854,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final Map<int, api.CalendarEntry> prevClassPerWkday = {};
 
     for(var item in calendarEntries){
+      if (item.isPeriodBanner) {
+        continue; // period banners shown in dedicated strip, not day lists
+      }
       final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
       if(prev != wkday){
         idx = 1;
@@ -821,13 +873,22 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         _classesNotificationList.add(item);
       }
 
-      // Szünet detektálása az azonos napon lévő egymást követő órák között
+      // Gap between consecutive classes on the *same calendar day* only
+      // (weekday-only keys wrongly linked last Monday → next Monday).
       final prevClass = prevClassPerWkday[wkday];
       if (prevClass != null && !prevClass.isExam && !item.isExam) {
+        final prevDay = DateTime.fromMillisecondsSinceEpoch(prevClass.startEpoch);
+        final itemDay = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+        final sameDay = prevDay.year == itemDay.year &&
+            prevDay.month == itemDay.month &&
+            prevDay.day == itemDay.day;
         final breakStart = prevClass.endEpoch;
         final breakEnd = item.startEpoch;
         final breakMs = breakEnd - breakStart;
-        if (breakMs >= 5 * 60 * 1000) { // legalább 5 perces szünet
+        // 5 min … 12 h — skip overnight / cross-week artefacts
+        if (sameDay &&
+            breakMs >= 5 * 60 * 1000 &&
+            breakMs <= 12 * 60 * 60 * 1000) {
           final isCurrentBreak = now.millisecondsSinceEpoch >= breakStart &&
               now.millisecondsSinceEpoch < breakEnd &&
               wkday == currWeekday &&
@@ -990,6 +1051,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             onPopupResult: e.onPopupResult,
             listIndex: e.listIndex,
             ghostGrade: -1,
+            subjectCode: e.subjectCode,
           );
           _markbookCalcGhostAvg();
         });
@@ -1009,6 +1071,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         onPopupResult: e.onPopupResult,
         listIndex: e.listIndex,
         ghostGrade: grade,
+        subjectCode: e.subjectCode,
       );
       _markbookCalcGhostAvg();
     });
@@ -1075,6 +1138,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         onPopupResult: _mbookPopupResult,
         listIndex: idx,
         ghostGrade: -1,
+        subjectCode: item.subjectCode,
       ));
       idx++;
     }
@@ -1099,6 +1163,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           onPopupResult: _mbookPopupResult,
           listIndex: idx,
           ghostGrade: -1,
+          subjectCode: item.subjectCode,
         ));
         idx++;
       }
@@ -1161,6 +1226,30 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     // Sort descending by date (newest first)
     paymentsEntries.sort((a, b) => b.dueDateMs.compareTo(a.dueDateMs));
 
+    if (invoiceEntries.isNotEmpty) {
+      paymentsList.add(Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+        child: Text(
+          AppStrings.getLanguagePack().payment_invoices_Header,
+          style: TextStyle(color: AppColors.getTheme().secondary, fontWeight: FontWeight.w800, fontSize: 12),
+        ),
+      ));
+      for (final inv in invoiceEntries) {
+        final curr = (inv.currency.toUpperCase() == 'HUF' || inv.currency.toUpperCase() == 'FT')
+            ? AppStrings.getLanguagePack().payment_currencyHuf
+            : inv.currency;
+        paymentsList.add(ListTile(
+          dense: true,
+          title: Text(inv.name, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w700, fontSize: 14)),
+          trailing: Text(
+            '${inv.balance.round()} $curr',
+            style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w800, fontSize: 13),
+          ),
+        ));
+      }
+      paymentsList.add(const SizedBox(height: 6));
+    }
+
     for(var item in paymentsEntries){
       if(item.completed){
         totalMoney += item.ammount.abs();
@@ -1186,7 +1275,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       });
     }
 
-    if(paymentsEntries.isEmpty){
+    if(paymentsEntries.isEmpty && invoiceEntries.isEmpty){
       paymentsList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -1616,6 +1705,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Future<void> fetchPayments() async{
     paymentsEntries.clear();
+    invoiceEntries.clear();
     bool hasCachedPayments = storage.DataCache.getHasCachedPayments() ?? false;
 
     final cacheTime = await storage.getString('PaymentsCacheTime');
@@ -1636,6 +1726,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           }
         }
         if (paymentsEntries.isNotEmpty) {
+          invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
           return;
         }
       }
@@ -1643,6 +1734,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     //otherwise, just fetch again
     final request = await api.CashinRequest.getAllCashins();
+    invoiceEntries = await api.CashinRequest.getCollectiveInvoices();
     await api.CashinRequest.getCollectiveInvoiceBalance();
     if(request == null || request.isEmpty){
       paymentsEntries = [];
@@ -1883,37 +1975,55 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   DateTime getClosestMondayTo(DateTime time){
-    if(time.weekday == DateTime.monday){
-      return time;
-    }
-    final result = time.add(Duration(days: 8 - time.weekday));
-    return result;
+    // Monday on or before [time] (study-week aligned).
+    return DateTime(time.year, time.month, time.day)
+        .subtract(Duration(days: time.weekday - DateTime.monday));
   }
 
   int calcPassedWeeks() {
+    // Displayed education week for the *viewed* calendar page:
+    // weeks from firstMonday to this week's Monday + currentWeekOffset
+    // (offset 1 = current week). So firstMonday = week containing Sep 1 →
+    // prev page (1–7 Sep) = 1, current (7–14 Sep) = 2.
     final epochsemester = storage.DataCache.getFirstWeekEpoch()!;
     final now = DateTime.now();
-    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : getClosestMondayTo(DateTime(now.year - (now.millisecondsSinceEpoch > DateTime(now.year, 9, 1).millisecondsSinceEpoch ? 0 : 1), 9, 1));
-    final yearlessNow = DateTime(1, now.month, now.day);
-    final sepOne = DateTime(yearlessNow.year - 1, determiner.month, determiner.day); // first week
-
-    final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
-    final weeksPassed = timepassSinceSepOne.inDays / 7;
+    late final DateTime firstMonday;
+    if (epochsemester > 0) {
+      final d = DateTime.fromMillisecondsSinceEpoch(epochsemester);
+      firstMonday = DateTime(d.year, d.month, d.day);
+    } else {
+      final sep = DateTime(
+        now.year - (now.isBefore(DateTime(now.year, 9, 1)) ? 1 : 0),
+        9,
+        1,
+      );
+      firstMonday = getClosestMondayTo(sep);
+    }
+    final thisMonday = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - DateTime.monday));
+    final weeksPassed = thisMonday.difference(firstMonday).inDays ~/ 7;
     final userOffset = storage.DataCache.getUserWeekOffset()!;
-    return ((weeksPassed.floor() % 52) + (currentWeekOffset + userOffset));// - isWeekend;// + isWeekend;
+    return weeksPassed + currentWeekOffset + userOffset;
   }
   
   int calcPassedWeekOffsetless(){
     final epochsemester = storage.DataCache.getFirstWeekEpoch()!;
     final now = DateTime.now();
-    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : getClosestMondayTo(DateTime(now.year - (now.millisecondsSinceEpoch > DateTime(now.year, 9, 1).millisecondsSinceEpoch ? 0 : 1), 9, 1));
-    final yearlessNow = DateTime(1, now.month, now.day);
-    final sepOne = DateTime(yearlessNow.year - 1, determiner.month, determiner.day); // first week
-
-    final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
-    final weeksPassed = timepassSinceSepOne.inDays / 7;
-
-    return ((weeksPassed.floor() % 52));
+    late final DateTime firstMonday;
+    if (epochsemester > 0) {
+      final d = DateTime.fromMillisecondsSinceEpoch(epochsemester);
+      firstMonday = DateTime(d.year, d.month, d.day);
+    } else {
+      final sep = DateTime(
+        now.year - (now.isBefore(DateTime(now.year, 9, 1)) ? 1 : 0),
+        9,
+        1,
+      );
+      firstMonday = getClosestMondayTo(sep);
+    }
+    final thisMonday = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - DateTime.monday));
+    return thisMonday.difference(firstMonday).inDays ~/ 7;
   }
 
   @override
@@ -1933,6 +2043,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     markbookList.clear();
     calendarTabController.dispose();
     paymentsEntries.clear();
+    invoiceEntries.clear();
     paymentsList.clear();
     periodList.clear();
     periodEntries.clear();
@@ -2092,6 +2203,92 @@ class CalendarPageWidget extends StatelessWidget{
   final List<Widget> calendarTabViews;
   const CalendarPageWidget({super.key, required this.homePage, required this.greetText, required this.calendarTabs, required this.calendarTabViews});
 
+  Widget _sectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: AppColors.getTheme().secondary,
+          fontWeight: FontWeight.w800,
+          fontSize: 12,
+          letterSpacing: 0.6,
+        ),
+      ),
+    );
+  }
+
+  Widget _eventLine(api.CalendarEntry e) {
+    final start = DateTime.fromMillisecondsSinceEpoch(e.startEpoch);
+    final hh = start.hour.toString().padLeft(2, '0');
+    final mm = start.minute.toString().padLeft(2, '0');
+    final day = '${start.month}/${start.day}';
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 72,
+            child: Text(
+              '$day $hh:$mm',
+              style: TextStyle(
+                color: AppColors.getTheme().textColor.withValues(alpha: 0.55),
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              e.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.getTheme().textColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _extraCalendarSections() {
+    final lang = AppStrings.getLanguagePack();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final until = now + const Duration(hours: 48).inMilliseconds;
+    final next48 = homePage.calendarEntries
+        .where((e) => e.startEpoch >= now && e.startEpoch <= until && !e.isPeriodBanner)
+        .take(6)
+        .toList();
+    final tasks = homePage.calendarEntries.where((e) => e.isTask).take(8).toList();
+    final exams = homePage.calendarEntries.where((e) => e.isExam).take(8).toList();
+    final banners = homePage.calendarEntries.where((e) => e.isPeriodBanner).take(8).toList();
+    final out = <Widget>[];
+    if (next48.isNotEmpty) {
+      out.add(_sectionHeader(lang.calendar_next48h_Header));
+      out.addAll(next48.map(_eventLine));
+    }
+    if (tasks.isNotEmpty) {
+      out.add(_sectionHeader(lang.calendar_tasks_Header));
+      out.addAll(tasks.map(_eventLine));
+    }
+    if (exams.isNotEmpty) {
+      out.add(_sectionHeader(lang.calendar_exams_Header));
+      out.addAll(exams.map(_eventLine));
+    }
+    if (banners.isNotEmpty) {
+      out.add(_sectionHeader(lang.calendar_periods_Header));
+      out.addAll(banners.map(_eventLine));
+    }
+    if (out.isNotEmpty) {
+      out.add(const SizedBox(height: 4));
+    }
+    return out;
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -2106,6 +2303,7 @@ class CalendarPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              ..._extraCalendarSections(),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
                 color: AppColors.getTheme().rootBackground,
@@ -2307,6 +2505,72 @@ class MarkbookPageWidget extends StatelessWidget{
                                   ],
                                 ),
                               ),
+                            ),
+                            FutureBuilder<List<api.Subject>>(
+                              future: api.MarkbookRequest.getRegisteredCourses(),
+                              builder: (context, snap) {
+                                final courses = snap.data ?? const <api.Subject>[];
+                                if (courses.isEmpty) return const SizedBox.shrink();
+                                final lang = AppStrings.getLanguagePack();
+                                return Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(lang.markbook_myCourses_Header, style: TextStyle(color: AppColors.getTheme().secondary, fontWeight: FontWeight.w800, fontSize: 12)),
+                                      const SizedBox(height: 6),
+                                      ...courses.take(12).map((c) => Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                          c.subjectCode.isNotEmpty && c.subjectCode != c.name
+                                              ? '${c.subjectCode} · ${c.name} (${c.credit} ${lang.markbook_creditAbbrev})'
+                                              : '${c.name} (${c.credit} ${lang.markbook_creditAbbrev})',
+                                          style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 13, fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            FutureBuilder<List<({String termName, api.Subject subject})>>(
+                              future: api.MarkbookRequest.getGradeHistoryAcrossTerms(maxTerms: 6),
+                              builder: (context, snap) {
+                                final hist = snap.data ?? const [];
+                                if (hist.isEmpty) return const SizedBox.shrink();
+                                final lang = AppStrings.getLanguagePack();
+                                return Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(lang.markbook_gradeHistory_Header, style: TextStyle(color: AppColors.getTheme().secondary, fontWeight: FontWeight.w800, fontSize: 12)),
+                                      const SizedBox(height: 6),
+                                      ...hist.take(20).map((h) => Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                          '${h.termName}: ${h.subject.name}${h.subject.grade > 0 ? ' · ${h.subject.grade}' : ''}',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 13, fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                             Container(
                               margin: const EdgeInsets.all(15),

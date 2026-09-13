@@ -153,7 +153,8 @@ Cached payloads so the UI can show last-known information when offline or betwee
 - payments / transactions;
 - periods;
 - mail / messages;
-- term list / selected term.
+- term list / selected term;
+- **profile avatar** (base64 JPEG from Neptun HWEB `UserInfo` / `GetUserAvatar`, for the drawer only).
 
 This is **not** a full offline product — freshness depends on successful sync with Neptun.
 

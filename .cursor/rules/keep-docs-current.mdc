@@ -1,5 +1,5 @@
 ---
-description: Keep README and developer docs in sync with every code or product change
+description: Keep README and Technical docs in sync with every code or product change
 alwaysApply: true
 ---
 
@@ -11,20 +11,34 @@ After **any** feature, fix, rename, platform change, or new behavior, update **a
 
 | File | Language | Role |
 |------|----------|------|
-| `README.md` | EN | Product README (main) |
-| `README.ru.md` | RU | Same content as EN README |
-| `docs/TECHNICAL.md` | EN | Full technical doc (canonical) |
-| `docs/TECHNICAL.ru.md` | RU | Same facts as EN TECHNICAL |
-| `docs/DEVELOPER.md` | EN/short | iOS cheatsheet; must not contradict TECHNICAL |
+| `docs/README.md` | EN | Full product README (canonical) |
+| `docs/README.ru.md` | RU | Same content as EN product README |
+| `README.md` (repo root) | EN short | Pointer to `docs/`; keep **Owner / Developer = Nanda** |
+| `docs/Technical/TECHNICAL.md` | EN | Full technical doc (canonical; includes iOS cheatsheet §14) |
+| `docs/Technical/TECHNICAL.ru.md` | RU | Same facts as EN TECHNICAL |
+| `docs/Technical/DEV_BLOG.md` | EN | Chronological Dev Blog (development diary) |
+| `docs/Technical/DEV_BLOG.ru.md` | RU | Same stages as EN Dev Blog |
+| `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | EN / RU / HU | Privacy, Terms, Cookies — index from product README, **not** per-folder README files |
+| `docs/LICENSE` | — | Canonical LGPL-3.0-only; root `LICENSE` mirrors it |
+
+There is **no** `DEVELOPER.md`. iOS quick start lives only in Technical §14 (EN + RU).
 
 EN and RU pairs must match on facts (bundle IDs, commands, languages, contacts, APIs). If you change one, change the other.
 
+## Naming / identity
+
+- **README, Technical, contacts:** owner / developer is **Nanda** (plus existing emails, Telegram, Discord, GitHub, site).
+- **Legal docs only:** full legal creator name **Adnan Huseynli (Nanda)** may appear.
+- Do **not** put “Adnan Huseynli” in product README or Technical identity tables.
+
 ## What to update when
 
-- **Identity** (name, bundle IDs, contacts, GitHub): README EN+RU + TECHNICAL EN+RU + DEVELOPER.
-- **How to run / iOS / Android / signing**: README + TECHNICAL §14–18 + DEVELOPER.
-- **API, login, 2FA, cache, languages, removed features**: TECHNICAL EN+RU (honesty table if completeness changed).
-- **User-visible features**: README feature list EN+RU.
+- **Identity** (name, bundle IDs, contacts, GitHub, owner line): `docs/README` EN+RU + root short README + Technical EN+RU.
+- **How to run / iOS / Android / signing**: `docs/README` + Technical §14–18.
+- **API, login, 2FA, cache, languages, themes, removed features**: Technical EN+RU (honesty table if completeness changed).
+- **Major development stages / decisions**: append matching entries to `docs/Technical/DEV_BLOG.md` + `DEV_BLOG.ru.md`.
+- **User-visible features**: `docs/README` feature list EN+RU.
+- **Privacy / terms / cookies behavior**: matching files under `docs/Legal-*` (all three languages when facts change).
 
 ## Honesty
 
@@ -32,4 +46,4 @@ Document what the code actually does. If something is untested (e.g. live ELTE l
 
 ## End of task
 
-Before finishing a change, scan the five files above for stale IDs, commands, or claims. Cross-link EN ↔ RU where a new doc is added.
+Before finishing a change, scan the files above for stale paths, IDs, commands, or claims. Cross-link EN ↔ RU and README ↔ Technical ↔ Legal indexes. Do not recreate `docs/Legal-*/README.md` or `DEVELOPER.md`.

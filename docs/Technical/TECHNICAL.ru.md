@@ -172,7 +172,7 @@ Neptun-ELTE/
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | 5 вкладок после входа |
 | `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); аватар — инициалы (фото API нет); семестр, баланс, переключатель training, настройки, апдейт (Android), выход |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training, настройки, апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
 ---
@@ -287,6 +287,7 @@ UI setup:
 | Логин / 2FA | `POST /api/Account/Authenticate` |
 | Refresh | `POST /api/Account/GetNewTokens` |
 | Тренинги | `/api/Calendar/GetStudentTrainings`, `/api/UserInfo`, `/api/ContextUserProfile/MyTrainings` |
+| Аватар | `/api/UserInfo` → `data.userAvatar.image` (thumbnail base64 JPEG); `/api/General/GetUserAvatar?imageSizeType=Normal` (больший base64 JPEG) |
 | Календарь | `/api/Calendar/GetCalendarEvents` |
 | Детали пары | `/api/Calendar/GetCourseDetails` |
 | Задания | `/api/Tasks/GetTaskDetail` |
@@ -316,6 +317,8 @@ UI setup:
 
 Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` сбрасывает сессию (логин сохраняется), открывает экран входа и показывает `auth_sessionExpired_PleaseSignIn`. Ручной выход очищает cookie jar портала ELTE, чтобы сразу после выхода повторный логин не ловил «invalid credentials».
 
+**Wall-clock сессии приложения (видимо пользователю):** При входе на `HomePage` (успешный логин или cold start с сохранённой сессией) `SessionGuard.startSessionWallClock()` запускает таймер на **10 минут**. По срабатыванию — тот же путь `forceExpiredLogout` (wipe токенов, логин сохраняется, snackbar, экран входа). Ручной выход отменяет таймер; новый логин / новый вход на `HomePage` перезапускает. Refresh JWT **не** продлевает wall-clock. Это намеренное выравнивание с короткоживущими access JWT Neptun (~10–15 мин с выдачи): UI выходит по фиксированным часам от **входа в сессию**, а не только после следующего 401.
+
 ---
 
 ## 9. Auth, 2FA, токены
@@ -326,7 +329,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Username, URL института, флаги кэша, настройки | `shared_preferences` |
 | Демо | `setIsDemoAccount(1)` |
 
-**Срок JWT:** access-токены короткоживущие. Без рабочего refresh token приложение принудительно разлогинивает, а не показывает пустые экраны «как будто вошёл».
+**Срок JWT:** access-токены короткоживущие (~10–15 мин на практике в Neptun). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после входа на Home** (см. wall-clock выше). Без рабочего refresh token 401 тоже форсирует logout, а не пустые экраны «как будто вошёл».
 
 **2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. После успеха setup **сначала закрывает** popup 2FA, затем переходит на `HomePage` (`pushAndRemoveUntil`), чтобы отложенный `pop` не дал чёрный экран.
 
@@ -340,7 +343,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 ### 10.1 Расписание
 
-Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI: ближайшие 48 ч, задания/ZH, экзамены, баннеры периодов (`typeId == 6`). Переключатель обучения в drawer, если известно несколько training.
+Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI: ближайшие 48 ч, задания/ZH, экзамены, баннеры периодов (`typeId == 6`). Переключатель обучения в drawer, если известно несколько training. **Коды аудиторий** вида `Кампус-Этаж-Аудитория[-Поток][-Группа]` (напр. `LD-0-805` или `LD-0-805-01-11`) нажимаются в списке расписания, диалоге занятия и popup экзамена/legacy: тап переключает короткий код ↔ локализованную расшифровку. Префиксы: **LD** Южный / Déli, **LE**/LÉ Северный / Északi, **LK** хим. блок (Северный); неизвестный префикс как есть. Поток/Группа только если есть в коде (`lib/Misc/elte_room_code.dart`).
 
 ### 10.2 Зачётка
 
@@ -366,11 +369,15 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 |-----|--------|
 | `en` | `lib/language.dart` — **default** |
 | `hu` | `lib/language.dart` |
-| `ru`, `tr` | `Languages/LangExtentions/*.json` через `supportedLanguages.json` |
+| `ru`, `tr` | `Languages/LangExtentions/*.json` через `supportedLanguages.json`, **также bundled как Flutter assets** |
 
 Другие паки (DE, RO, UA, AR, ES, ZH, Pirate) **удалены**.
 
-Пункт drawer **Contacts** — ключ `topmenu_buttons_Contacts`. Тела уведомлений о платежах — `notif_payment_Body*`. Уже скачанные RU/TR на устройстве могут потребовать повторной загрузки языка после обновления JSON на GitHub.
+Пункт drawer **Contacts** — ключ `topmenu_buttons_Contacts`. Тела уведомлений о платежах — `notif_payment_Body*`. Недостающие ключи в скачанном/кэшированном RU/TR падают в EN, если их не заполнит **bundled**-merge (`AppStrings.loadBundledLanguagePacks` до `initialize`). Пакеты на GitHub `main` должны совпадать с набором ключей EN, чтобы сетевой refresh не отставал.
+
+**Chrome деталей занятия / предмета** (диалог тапа по календарю + задача: Тип / Преподаватель / Аудитория / Закрыть / загрузка аудитории / плейсхолдеры) — `courseDetail_*` + `popup_case4_5_SubjectCode`. **Названия предметов, типы курсов (напр. Előadás), аудитории и ФИО из Neptun** остаются на языке ответа API — часто венгерский даже при EN UI.
+
+Также через `LanguagePack`: тела уведомлений о занятиях/экзаменах (`notif_exam_*`, `notif_class_*`), подпись масштаба шрифта, ошибки почты, 2FA popup (`popup_case9_*`), UX Android-updater (`updater_*`), пользовательские fallback/DEMO API (`api_fallback_*`, `api_demo_*`), ошибки транспорта/почты (`api_error_*`, `mail_preview_TapToLoadBody`) и сообщения об истечении сессии в API (`auth_sessionExpired_PleaseSignIn`).
 
 ### 10.7 ICS
 
@@ -396,7 +403,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
 | Тесты | **Нет** | Папки `test/` нет |
 | App Store / Play production | **Не цель текущего состояния** | |
-| Фото в drawer | **Нет** | В существующих HAR нет подтверждённого URL/байтов фото на `/api/UserInfo` (и рядом); drawer показывает только **инициалы** — не выдумывать image-эндпоинты |
+| Фото в drawer | **Работает** | ELTE HWEB: `data.userAvatar.image` на `/api/UserInfo` + `/api/General/GetUserAvatar?imageSizeType=Normal` (base64 JPEG). Кэш в `DataCache`; drawer `MemoryImage`; инициалы при ошибке/пустом ответе |
 | Строка training ID в drawer | **Убрана** | Сырой `studentTrainingId` / GUID не показывается под именем; человекочитаемые подписи — только в dropdown при нескольких training |
 
 Монолит: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — по ~1400–2600 строк. **Не дробить**, пока цель — iOS/логин, не рефакторинг.
@@ -411,7 +418,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences).
 
-`dataWipe` — выход: очищает пароль/токены/кэш, **сохраняет username** для префилла логина. Аватар в drawer — **инициалы** из имени / кода Neptun; фото не подключается, пока HAR не подтвердит endpoint.
+`dataWipe` — выход: очищает пароль/токены/кэш (включая base64 аватара), **сохраняет username** для префилла логина. Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
 
 Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -677,6 +684,7 @@ Release на iPhone: `--release` (см. §14).
 | `lib/notifications.dart` | Локальные нотификации |
 | `lib/haptics.dart` | Android vibration / iOS `HapticFeedback` |
 | `lib/Misc/popup.dart` | Режимы 0–9 (9 = 2FA) |
+| `lib/Misc/elte_room_code.dart` | Разбор кодов аудиторий ELTE + тап-расшифровка |
 | `lib/Misc/app_drawer.dart` | Drawer |
 | `lib/Misc/auto_updater.dart` | GitHub APK, Android-only |
 | `universityNameUrlPairs.json` | Вузы — **только ELTE** (`https://neptun.elte.hu`) |

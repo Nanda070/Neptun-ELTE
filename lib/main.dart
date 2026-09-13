@@ -10,8 +10,9 @@ void main() {
   //DataCache.dataWipeNoKeep();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  DataCache.loadThemeOnly().whenComplete((){
+  DataCache.loadThemeOnly().whenComplete(() async {
     AppColors.initialize();
+    await AppStrings.loadBundledLanguagePacks();
     AppStrings.initialize();
     final app = const NeptunApp();
     final themeNotifier = ThemeNotifier(ThemeNotifier._initialTheme(AppColors.getTheme().basedOnDark));
@@ -31,14 +32,7 @@ class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
 
   @override
   void didChangePlatformBrightness(){
-    //final systemTheme = MediaQuery.of(navigatorKey.currentContext!).platformBrightness == Brightness.dark;
-    final isDark = MediaQuery.of(navigatorKey.currentContext!).platformBrightness == Brightness.dark;
-    //log('$systemTheme $isDark');
-    AppColors.setCurrentSystemTheme(!isDark);
-    final preferedTheme = !isDark ? 'Dark' : 'Light';
-    AppColors.setUserThemeByName(preferedTheme, navigatorKey.currentContext!);
-    DataCache.setPreferredAppTheme(preferedTheme);
-    //navigatorKey.currentContext!.read<ThemeNotifier>().createNewThemeData();
+    // Keep the user-selected Light/Dark theme; do not overwrite preference from system brightness.
     super.didChangePlatformBrightness();
   }
 
@@ -46,21 +40,21 @@ class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = AppColors.getTheme().basedOnDark;
-    AppColors.setCurrentSystemTheme(isDark);
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     if(!_themeSetup){
       _themeSetup = true;
       WidgetsBinding.instance.addPostFrameCallback((_)async{
-        await AppColors.loadDownloadedPaletteData(context);
-        final isDark = AppColors.getTheme().basedOnDark;
-        AppColors.setCurrentSystemTheme(isDark);
-        final userTheme = DataCache.getPreferredAppTheme();
-        if(userTheme == null || userTheme == 'Dark' || userTheme == 'Light'){
-          AppColors.setUserThemeByName(isDark ? 'Dark' : 'Light', navigatorKey.currentContext!);
+        // Remote theme packs are no longer offered; keep Light/Dark only.
+        var userTheme = DataCache.getPreferredAppTheme() ?? 'Dark';
+        if (userTheme != 'Light' && userTheme != 'Dark') {
+          userTheme = 'Dark';
+          await DataCache.setPreferredAppTheme(userTheme);
         }
-        AppColors.setUserThemeByName(userTheme!, navigatorKey.currentContext!);
-        AppColors.refreshThemeIndexing();
+        if (navigatorKey.currentContext != null) {
+          AppColors.setUserThemeByName(userTheme, navigatorKey.currentContext!);
+          AppColors.refreshThemeIndexing();
+          AppColors.setCurrentSystemTheme(AppColors.getTheme().basedOnDark);
+        }
       });
     }
     return MaterialApp(

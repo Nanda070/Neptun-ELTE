@@ -76,7 +76,7 @@ Az egyetemi tanulmányi adatok az **ELTE / Neptun** szabályai alá tartoznak.
 | Bejelentkezés után | HWEB: `hallgato1`…`hallgatoN.neptun.elte.hu` |
 | Saját backend | **Nincs** |
 | Push szerver | **Nincs** — helyi értesítések |
-| Nyelvek | EN (alap) + HU beépítve; RU / TR GitHubról |
+| Nyelvek | EN (alap) + HU beépítve; RU / TR GitHubról + bundled asset merge |
 | Témák | Light / Dark |
 
 Részletek: [technikai dokumentáció](../Technical/TECHNICAL.md) · index: [docs/README.md](../README.md).
@@ -118,7 +118,7 @@ Eszköz
 
 ### Akadémiai gyorsítótár
 
-Órarend, leckekönyv, fizetések, időszakok, üzenetek, félévlista — nem teljes offline termék.
+Órarend, leckekönyv, fizetések, időszakok, üzenetek, félévlista, **profilavatár** (base64 JPEG a Neptun HWEB `UserInfo` / `GetUserAvatar` válaszából, drawerhez) — nem teljes offline termék.
 
 ### Értesítések
 

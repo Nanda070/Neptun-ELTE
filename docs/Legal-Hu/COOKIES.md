@@ -51,6 +51,7 @@ Példák (részletek: [PRIVACY.md](PRIVACY.md)):
 
 - téma, nyelv, betűméret, értesítés kapcsolók;
 - órarend / jegyek / fizetések / üzenetek gyorsítótára;
+- profilavatár base64 (drawer), ha a Neptun HWEB-ből lekérték;
 - bejelentkezési állapot.
 
 A készítő ezt nem adja el hirdetőknek.
