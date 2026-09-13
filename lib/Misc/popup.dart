@@ -1952,11 +1952,11 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ),
         ));
         return list;
-      case 9: // 2FA — ELTE: authenticator app OR email OTP (same 6-digit token field)
+      case 9: // 2FA — ELTE web primary path is TOTP (6 digits). Email backup is XXX-XXXXXX after an "E-mail" request (not wired in app yet).
         list.add(Text("Two-step authentication", style: TextStyle(color: AppColors.getTheme().textColor, fontSize: 22, fontWeight: FontWeight.bold)));
         list.add(const SizedBox(height: 10));
         list.add(Text(
-          "Enter the 6-digit code from your authenticator app, or the code from your Neptun email (same as on neptun.elte.hu).",
+          "Enter the 6-digit TOTP from Microsoft Authenticator (or any TOTP app). Email backup (XXX-XXXXXX after pressing E-mail on the website) is not in this app yet.",
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.7)),
         ));

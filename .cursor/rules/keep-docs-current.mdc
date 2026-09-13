@@ -28,7 +28,7 @@ EN and RU pairs must match on facts (bundle IDs, commands, languages, contacts, 
 
 ## Honesty
 
-Document what the code actually does. If something is untested (e.g. live ELTE 2FA), say so. Do not delete the 2FA warning in the app until the owner confirms after a live check.
+Document what the code actually does. If something is untested (e.g. live ELTE login), say so.
 
 ## End of task
 

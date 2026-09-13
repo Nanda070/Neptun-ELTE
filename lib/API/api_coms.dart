@@ -400,7 +400,8 @@ import '../storage.dart';
     static const int loginInvalidCredentials = 0;
     static const int loginServerBusy = 3;
 
-    /// Hub is ELTE-only. Central Neptun (not Obuda/BME-style `/ujhallgato`).
+    /// Hub is ELTE-only. Portal + JWT API base (not Obuda/BME `/ujhallgato`).
+    /// HWEB SPA is load-balanced across hallgato1…N.neptun.elte.hu — never hardcode a node as login base.
     static const String elteInstituteName = 'Eötvös Loránd Tudományegyetem (ELTE)';
     static const String elteNeptunBaseUrl = 'https://neptun.elte.hu';
 

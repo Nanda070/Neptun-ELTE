@@ -45,7 +45,7 @@ Short iOS cheatsheet: [`docs/DEVELOPER.md`](DEVELOPER.md). Product overview: [`R
 - **Scope:** ELTE only. Not a multi-university picker.
 - Institute list file still exists as `universityNameUrlPairs.json` but contains **a single entry**: ELTE → `https://neptun.elte.hu`.
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
-- ELTE uses a **central** Neptun host (`neptun.elte.hu` / `Account/Login`). It does **not** use Obuda/BME-style `/ujhallgato`. After web login, students open **Hallgatói web (HWEB)** in the top menu; the mobile client talks to the modern JWT API on the same host.
+- ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
 - Version (`pubspec.yaml`): **1.0.5+18**.
 - Dart package: `neptun2` (imports `package:neptun2/...`).
@@ -172,28 +172,35 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 User flow on `neptun.elte.hu` ([ELTE guide](https://www.elte.hu/en/neptun-administration-of-progress)):
 
 1. Open central portal → **Log in** (Neptun ID 6 chars + password).
-2. **Two-step authentication** — code from authenticator app **or** primary Neptun email.
-3. After auth, click **Student web** / Open student web (HWEB) in the top menu.
+2. **Two-step authentication** (observed on live ELTE UI, Sep 2026):
+   - **Primary — TOTP:** field “TOTP code” + Log in. User types **6 digits** from Microsoft Authenticator (or similar). Optional “New TOTP pairing”.
+   - **Backup — E-mail:** grey **E-mail** button requests a one-time code. Web UI shows a **3-digit prefix + `-`**; the mail contains the full `XXX-XXXXXX` (e.g. `436-491445`, `676-863806`); the user types **only the part after `-`** (6 digits). Prefix is shown by Neptun, not typed.
+3. After auth, **Student web** goes through `https://neptun.elte.hu/ToNeptunWeb/ToNeptunHWeb` and lands on a load-balanced HWEB node, e.g. **`https://hallgato4.neptun.elte.hu/`**. Under load (course registration / exams) the portal may say **“Neptun student web is full”**, or HWEB sticks on **“Betöltés folyamatban”**.
 
-There is **no** separate `/ujhallgato` for ELTE (unlike Óbuda/BME). One central host; HWEB is a post-login destination in the portal UI.
+**`hallgatoN` = which server:** ELTE runs many identical student-web machines (`hallgato1`, `hallgato2`, `hallgato3`, `hallgato4`, …). The digit is the **node index for load balancing** — one box cannot handle peak Tárgyfelvétel / exam traffic. The portal assigns a node automatically when you open Student web. Students used to pick a number by hand hoping for a “faster” host; that is obsolete — go via `neptun.elte.hu`.
+
+Observed HWEB paths (same assigned node, after session): `/dashboard`, `/calendar/institutional-calendar`, `/studies`, `/messages`, `/administrations`, `/administrations/student-card`, `/login-task/system-messages`, `/outerlogin?GUID=…`, `/error/5001`, …
+
+Portal (`neptun.elte.hu`) ≠ HWEB SPA (`hallgatoN.neptun.elte.hu`). App login/API base stays **`https://neptun.elte.hu`**. Do **not** hardcode `hallgato4` (or any `N`) as the hub — that is one overloaded Angular node, not the Authenticate entry we use.
 
 ### How this app maps that flow
 
 | Web step | App |
 |----------|-----|
 | Portal login | `POST https://neptun.elte.hu/api/Account/Authenticate` |
-| 2FA (app or email code) | Same endpoint again with `token` = 6-digit code → popup mode 9 |
-| Open Student web | **No browser button** — after JWT `accessToken`, student data APIs are called directly (calendar, subjects, …). That is the mobile equivalent of being inside Student web. |
+| 2FA TOTP | Same endpoint again with `token` = 6-digit TOTP → popup mode 9 |
+| 2FA E-mail (`XXX-XXXXXX`) | **Not implemented** — needs “send email OTP” API + prefix UX from Network capture |
+| Student web → `hallgatoN…` HWEB SPA | **No browser** — after JWT, student REST on `neptun.elte.hu` (calendar, subjects, …). Avoids the full/stuck HWEB UI. |
 
 App setup UI:
 
 1. `Splitter` → if `getHasLogin()` then `HomePage`, else ELTE hub (**display name: Neptun ELTE**).
 2. Hub sets `PageDTO` to `elteInstituteName` + `elteNeptunBaseUrl` (`https://neptun.elte.hu`) → `SetupPageLogin`.
 3. Credentials: Neptun code (`toUpperCase()`) + password.
-4. If API returns 2FA → enter 6-digit code (authenticator **or** email OTP).
+4. If API returns 2FA → enter **6-digit TOTP** (Authenticator).
 5. Demo: `DEMO` / `DEMO`.
 
-**Honesty:** Live ELTE login still depends on Neptun availability. Email 2FA on the website may include a “send code” choice before the digits appear; the app currently accepts the **same 6-digit `token` field** used by the modern Neptun JWT client (as in other universities). If ELTE requires an extra “send email OTP” API call before the code works, that still needs a live Network capture to wire. The in-app 2FA warning banner is **kept** until a live check succeeds.
+**Honesty:** App 2FA UI is TOTP-only (6 digits, no method picker, no Authenticator deep-link). Email backup (`XXX-XXXXXX`, prefix shown on web, user enters suffix) is documented from the live site but **not** wired — needs capture of the E-mail request + what `token` format Authenticate expects. When Neptun is overloaded, expect `loginServerBusy` / timeouts; that matches web “full” / slow Student web.
 
 Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -202,7 +209,7 @@ Constants: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 | Code | Constant | UI |
 |------|----------|-----|
 | `1` | `loginOk` | Enter Home |
-| `2` | `loginNeeds2fa` | Popup mode 9 (6 digits — app or email) |
+| `2` | `loginNeeds2fa` | Popup mode 9 (6-digit TOTP) |
 | `0` | `loginInvalidCredentials` | Red fields, “Invalid username or password!” |
 | `3` | `loginServerBusy` | Snackbar “Neptun servers are having a hard time...” — **not** a bad password |
 
@@ -304,11 +311,11 @@ Refresh / re-login on 401 lives in `_APIRequest`.
 | Username, institute URL, cache flags, settings | `shared_preferences` |
 | Demo | `setIsDemoAccount(1)` |
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → `submitTwoFactorCode`.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`.
 
 **2FA (old):** unsupported → usually `0`.
 
-The login banner (`loginPage_setupPage_2faWarning`) still says 2FA cannot log in. That text is **stale vs the code**. **Do not remove** until ELTE is verified on a live account.
+**ELTE web vs app:** Web offers TOTP + E-mail backup (`XXX-XXXXXX`). App: TOTP field only. Obsolete “2FA won’t work” banner **removed**.
 
 ---
 
@@ -361,7 +368,8 @@ Notification channel names and some settings headers are still **hardcoded Hunga
 | Android client (login, 5 tabs, cache) | **Full / mid-beta** | Real API, not a stub |
 | iOS simulator + device release | **Working** | Bundle without `_`; Automatic signing |
 | Modern JWT + refresh | **Solid** | |
-| Modern 2FA | **Code present, live ELTE unconfirmed** | “Doesn’t work” banner kept |
+| Modern 2FA TOTP | **Working MVP (manual)** | User types 6 digits from Authenticator |
+| Modern 2FA email | **Not implemented** | Web: prefix `XXX-` + user suffix; needs send-OTP API |
 | Old API 2FA | **None** | |
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
@@ -581,9 +589,11 @@ License: MIT (`LICENSE`).
 | EN default, only EN/HU/RU/TR | Owner request; fewer dead packs |
 | GitHub raw for institutes/languages/themes | Update without an APK/IPA release |
 | `badCertificateCallback => true` | Broken campus certs; MITM risk accepted |
-| Keep the 2FA banner | Live ELTE unconfirmed; university requires 2FA |
+| Removed obsolete 2FA “won’t work” banner | ELTE requires 2FA; app supports code entry |
+| No Authenticator deep-link / auto-OTP | TOTP is typed manually; Microsoft Authenticator stays external |
+| No email OTP (`XXX-XXXXXX`) yet | Needs Network capture of E-mail button + Authenticate `token` shape |
 | `loginServerBusy` ≠ invalid password | Neptun overload was shown as a bad password |
-| ELTE hub → `https://neptun.elte.hu` | Central portal; **not** `/ujhallgato` (Obuda/BME-style). `/Account` is SPA login only |
+| ELTE hub → `https://neptun.elte.hu` | Portal + JWT API. HWEB is load-balanced across `hallgato1…N` after `/ToNeptunWeb/ToNeptunHWeb` — never hardcode a single node |
 | Single institute in JSON | Product is ELTE-only; multi-uni picker removed from hub UI |
 | Keep ICS in code | Old users may still have a file; don’t advertise the UI |
 | iOS release for the icon | iOS 14+ debug restriction |

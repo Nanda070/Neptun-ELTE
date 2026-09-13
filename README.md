@@ -16,7 +16,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 
 ## Features
 
-- **ELTE-only hub** — sign-in to central ELTE Neptun (portal at `neptun.elte.hu`, not Obuda/BME `/ujhallgato`)  
+- **ELTE-only hub** — sign-in to portal `neptun.elte.hu` (HWEB SPA is `hallgatoN.neptun.elte.hu` after Student web; not Obuda/BME `/ujhallgato`)  
 - **Login like the website** — Neptun ID + password → 2FA (authenticator **or** email code) → student data APIs (mobile stand-in for “Open Student web”)  
 - **Timetable** — week view with class and exam reminders  
 - **Markbook** — subjects and grades  
@@ -24,8 +24,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Payments** — fees and due dates  
 - **Periods** — registration and study periods  
 - **Themes & languages** — custom palettes; EN / HU built-in, RU / TR downloadable  
-- **Notifications** — class, exam, payment, and period alerts (Android & iOS)  
-- **2FA warning banner** — kept until a live ELTE login is confirmed
+- **Notifications** — class, exam, payment, and period alerts (Android & iOS)
 
 ---
 

@@ -13,7 +13,7 @@ Short iOS checklist. Identity, API, 2FA, cache, languages — in TECHNICAL.
 | Android `applicationId` | `com.nanda070.neptun_mobile.app` |
 | Dart package | `neptun2` |
 | Default language | English |
-| Scope | **ELTE only** (`https://neptun.elte.hu`) |
+| Scope | **ELTE only** — portal/API `https://neptun.elte.hu`; HWEB SPA `hallgatoN.neptun.elte.hu` |
 
 ## iOS — запуск
 

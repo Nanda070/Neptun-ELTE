@@ -1539,47 +1539,6 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 fontSize: 12
                             ),
                           ),
-                          const SizedBox(height: 45),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Flexible(
-                                child: Container(
-                                  margin: const EdgeInsets.all(15),
-                                  child: Text(
-                                    AppStrings.getLanguagePack().loginPage_setupPage_2faWarning,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.getTheme().textColor.withValues(alpha: .6)
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(90)),
-                                    color: AppColors.getTheme().textColor.withValues(alpha: .06)
-                                ),
-                                child: IconButton(
-                                  onPressed: (){
-                                    _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_2faWarningDescription, 18);
-                                    AppHaptics.attentionLightImpact();
-                                  },
-                                  icon: Icon(
-                                    Icons.question_mark_rounded,
-                                    color: AppColors.getTheme().textColor.withValues(alpha: .4),
-                                  ),
-                                  enableFeedback: true,
-                                  iconSize: 24,
-                                ),
-                              ),
-                            ],
-                          ),
                           const SizedBox(height: 50),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
