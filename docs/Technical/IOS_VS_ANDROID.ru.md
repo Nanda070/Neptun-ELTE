@@ -17,7 +17,7 @@
 | Разрешение на уведомления | `DarwinInitializationSettings` + `requestPermissions(alert/badge/sound)` в `lib/notifications.dart`; `NSUserNotificationsUsageDescription` в `ios/Runner/Info.plist` | Вместо этого — Android notification + **exact-alarm** API (см. §2) |
 | Схемы внешних приложений | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` в Info.plist | В манифесте `<queries>` в основном для Custom Tabs; списка схем Telegram/Discord нет |
 | Haptics API | `HapticFeedback.*` при `Platform.isIOS` (`lib/haptics.dart`) | Пакет `vibration` + разрешение `VIBRATE` (паттерны, не Taptic Engine API) |
-| Нативная оболочка | `SceneDelegate` / UIScene (`ios/Runner/SceneDelegate.swift`, scene manifest в Info.plist) | Один `FlutterActivity` (`MainActivity.kt`) — без своих каналов |
+| Нативная оболочка | `SceneDelegate` / UIScene; MethodChannel Quick Actions (**13**) в `AppDelegate` | `FlutterActivity` + MethodChannel static shortcuts (**13**) в `MainActivity` |
 | Установка / подпись (документация) | Automatic Signing в Xcode; доверие профилю разработчика на устройстве; Bundle ID **без** `_` (`com.nanda070.neptunmobile`) — Technical §14 | Другой ID и модель подписи (см. §2) |
 | Иконка на домашнем экране (debug) | **iOS 14+:** debug-сборка **не** открывается с иконки — для иконки нужен `--release` | Debug APK нормально ставится и запускается с лаунчера |
 
@@ -54,7 +54,7 @@
 - Сеть: `http` (основной); `connectivity_plus`; GitHub raw для языков/тем
 - Ссылки: `url_launcher` (Android-only гейт **снят**)
 - ICS-парсер + `file_picker` / класс `SetupPageCalendarLogin` есть; **на хабе setup кнопки ICS нет** (dead UI на обеих)
-- Нативные плагины только через Flutter plugins — **своих `MethodChannel` нет** в `AppDelegate` / `MainActivity`
+- Нативные плагины через Flutter plugins; плюс MethodChannel shortcuts (п. **13**) в `AppDelegate` / `MainActivity`
 - **Нет** `local_auth` / биометрии в `pubspec.yaml`
 - Homescreen widget **удалён** (был stub)
 - Display name **Neptun ELTE**; владелец **Nanda**
@@ -91,6 +91,6 @@
 | `lib/notifications.dart` | Общий schedule; разные permissions |
 | `lib/haptics.dart` | iOS `HapticFeedback` vs Android `Vibration` |
 | `android/app/src/main/AndroidManifest.xml` | Разрешения Android + notification receivers |
-| `ios/Runner/Info.plist` | Usage string уведомлений + URL schemes |
+| `ios/Runner/Info.plist` | Usage string уведомлений + URL schemes + `UIApplicationShortcutItems` |
 | `pubspec.yaml` | `in_app_update`, `vibration`, `open_filex`, `dio` и др. |
 | `.github/workflows/betabuild.yml` | Только Android CI |

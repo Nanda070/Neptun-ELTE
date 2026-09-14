@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="calendar"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_calendar"
+        android:shortcutShortLabel="@string/shortcut_calendar_short"
+        android:shortcutLongLabel="@string/shortcut_calendar_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nanda070.neptun_mobile.app"
+            android:targetClass="com.nanda070.neptun_mobile.app.MainActivity">
+            <extra
+                android:name="shortcut_id"
+                android:value="calendar" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="mail"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_mail"
+        android:shortcutShortLabel="@string/shortcut_mail_short"
+        android:shortcutLongLabel="@string/shortcut_mail_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nanda070.neptun_mobile.app"
+            android:targetClass="com.nanda070.neptun_mobile.app.MainActivity">
+            <extra
+                android:name="shortcut_id"
+                android:value="mail" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="payments"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_payments"
+        android:shortcutShortLabel="@string/shortcut_payments_short"
+        android:shortcutLongLabel="@string/shortcut_payments_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nanda070.neptun_mobile.app"
+            android:targetClass="com.nanda070.neptun_mobile.app.MainActivity">
+            <extra
+                android:name="shortcut_id"
+                android:value="payments" />
+        </intent>
+    </shortcut>
+</shortcuts>

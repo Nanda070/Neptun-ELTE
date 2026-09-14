@@ -42,6 +42,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)
 - **Periods** — registration and study periods (bottom tab)
 - **Navigation** — Bottom tabs: **Calendar \| Markbook \| Periods \| Mail**. **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (plan **1c**). Figma mockups may still show 5 tabs — app IA is **4** bottom + Payments in drawer.
+- **Home-screen shortcuts** — long-press app icon → **Calendar** / **Mail** / **Payments** (plan **13**). Cold start opens that surface only with a usable session; otherwise login (no blank Home with a dead JWT). Maps shortcut not included (item 8).
 - **Themes & languages** — Light / Dark; EN / HU built-in, RU / TR downloadable from GitHub
 - **Notifications** — local class, exam, payment, and period alerts (Android & iOS; no creator push server)
 - **Session** — **10-minute** wall-clock auto-logout after entering the main (participant) session (foreground `Timer` + persisted timestamp on `AppLifecycleState.resumed` so background ≥10 min also kicks — **1b**), plus JWT expiry / failed refresh → force logout + re-login (keeps username; **keeps academic cache** so tabs paint instantly — **1**; banner “from cache” when serving stale/offline). No silent ELTE portal re-auth. Same-process logout → valid-password re-login works without killing the app (**1a**).

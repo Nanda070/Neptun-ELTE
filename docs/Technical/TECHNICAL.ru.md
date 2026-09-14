@@ -441,6 +441,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **Удалён** | Был заглушкой |
+| App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
 | Тесты | **Нет** | Папки `test/` нет |
@@ -546,6 +547,7 @@ Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Та
 
 - `NSUserNotificationsUsageDescription`
 - `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`
+- `UIApplicationShortcutItems`: Calendar / Mail / Payments (п. **13**)
 
 ### Известные iOS-дыры vs Android-only
 
@@ -724,9 +726,12 @@ Release на iPhone: `--release` (см. §14).
 | `pubspec.yaml` | Версия, зависимости |
 | `lib/main.dart` | `MaterialApp`, тема, регистрация login/home roots |
 | `lib/app_navigator.dart` | Корневой `appNavigatorKey`; `navigateToHomeRoot` / `navigateToLoginRoot` |
-| `lib/Pages/startup_page.dart` | Ветка login / home |
+| `lib/app_shortcuts.dart` | Id shortcut → индекс вкладки; MethodChannel (п. **13**) |
+| `android/.../res/xml/shortcuts.xml` | Статические Android launcher shortcuts |
+| `ios/Runner/Info.plist` | Display name, нотификации, URL schemes, `UIApplicationShortcutItems` |
+| `lib/Pages/startup_page.dart` | Ветка login / home; cold-start shortcut + гейт сессии (**13**) |
 | `lib/Pages/setup_page.dart` | Вход, URL, 2FA callback, ICS-класс |
-| `lib/Pages/main_page.dart` | Home + **4** нижние вкладки + drawer Payments (**1c**) |
+| `lib/Pages/main_page.dart` | Home + **4** нижние вкладки + drawer Payments (**1c**); `initialView` для shortcuts |
 | `lib/Pages/settings_page.dart` | Живые настройки (Contacts + версия внизу) |
 | `lib/API/api_coms.dart` | Весь HTTP, логин, нормализация URL |
 | `lib/API/ics_calendar.dart` | Парсер ICS |
@@ -742,7 +747,6 @@ Release на iPhone: `--release` (см. §14).
 | `universityNameUrlPairs.json` | Вузы — **только ELTE** (`https://neptun.elte.hu`) |
 | `Languages/supportedLanguages.json` | Каталог RU/TR |
 | `Themes/supportedThemes.json` | Remote-темы |
-| `ios/Runner/Info.plist` | Display name, нотификации, URL schemes |
 | `ios/Runner.xcodeproj/project.pbxproj` | Bundle ID, Team |
 | `android/app/build.gradle` | `applicationId` |
 | `.github/workflows/betabuild.yml` | Android CI |

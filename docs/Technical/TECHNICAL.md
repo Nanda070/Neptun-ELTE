@@ -441,6 +441,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **Removed** | Was a stub |
+| App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | APK / Play update | **Android only** | Hidden on iOS |
 | Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
 | App Store / Play production | **Not the current goal** | |
@@ -545,6 +546,7 @@ On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon �
 
 - `NSUserNotificationsUsageDescription`
 - `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`
+- `UIApplicationShortcutItems`: Calendar / Mail / Payments (plan item **13**)
 
 ### iOS vs Android-only
 
@@ -723,9 +725,12 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `pubspec.yaml` | Version, dependencies |
 | `lib/main.dart` | `MaterialApp`, theme, registers login/home roots |
 | `lib/app_navigator.dart` | Root `appNavigatorKey`; `navigateToHomeRoot` / `navigateToLoginRoot` |
-| `lib/Pages/startup_page.dart` | Login / home branch |
+| `lib/app_shortcuts.dart` | Home-screen shortcut ids → view index; MethodChannel bridge (item **13**) |
+| `android/.../res/xml/shortcuts.xml` | Static Android launcher shortcuts |
+| `ios/Runner/Info.plist` | Display name, notifications, URL schemes, `UIApplicationShortcutItems` |
+| `lib/Pages/startup_page.dart` | Login / home branch; cold-start shortcut + session gate (**13**) |
 | `lib/Pages/setup_page.dart` | Login, URL, 2FA callback, ICS class |
-| `lib/Pages/main_page.dart` | Home + **4** bottom tabs + drawer Payments (**1c**) |
+| `lib/Pages/main_page.dart` | Home + **4** bottom tabs + drawer Payments (**1c**); `initialView` for shortcuts |
 | `lib/Pages/settings_page.dart` | Live settings (Contacts + app version at bottom) |
 | `lib/API/api_coms.dart` | All HTTP, login, URL normalize |
 | `lib/API/ics_calendar.dart` | ICS parser |
@@ -741,7 +746,6 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `universityNameUrlPairs.json` | Institutes — **ELTE only** (`https://neptun.elte.hu`) |
 | `Languages/supportedLanguages.json` | RU/TR catalog |
 | `Themes/supportedThemes.json` | Remote themes |
-| `ios/Runner/Info.plist` | Display name, notifications, URL schemes |
 | `ios/Runner.xcodeproj/project.pbxproj` | Bundle ID, Team |
 | `android/app/build.gradle` | `applicationId` |
 | `.github/workflows/betabuild.yml` | Android CI |

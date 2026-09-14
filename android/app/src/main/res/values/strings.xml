@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Neptun ELTE</string>
+    <string name="shortcut_calendar_short">Calendar</string>
+    <string name="shortcut_calendar_long">Open calendar</string>
+    <string name="shortcut_mail_short">Mail</string>
+    <string name="shortcut_mail_long">Open messages</string>
+    <string name="shortcut_payments_short">Payments</string>
+    <string name="shortcut_payments_long">Open payments</string>
+</resources>

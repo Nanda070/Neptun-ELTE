@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/API/api_coms.dart' as api;
+import 'package:neptun2/app_shortcuts.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
@@ -26,6 +27,7 @@ class _SplitterState extends State<Splitter>{
 
     DataCache.loadData().then((value) async {
       AppHaptics.initialise();
+      AppShortcuts.ensureHandlerInstalled();
       if(((await getInt('NextFirstWeekCacheTime')) ?? 0) < DateTime.now().millisecondsSinceEpoch){
         DataCache.setHasCachedFirstWeekEpoch(0);
         saveInt('NextFirstWeekCacheTime', DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
@@ -58,15 +60,22 @@ class _SplitterState extends State<Splitter>{
       Future.delayed(Duration.zero,()async{
         await api.Coloring.getAllThemes();
       });
-    }).then((value) {
+    }).then((value) async {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-      if (DataCache.getHasLogin() != null && DataCache.getHasLogin()!) {
+      final shortcutView = await AppShortcuts.takeLaunchViewIndex();
+      final sessionOk = await api.SessionGuard.isColdStartSessionUsable();
+      if (sessionOk) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const main_page.HomePage()),
+          MaterialPageRoute(
+            builder: (context) => main_page.HomePage(
+              initialView: shortcutView ?? 0,
+            ),
+          ),
         );
         return;
       }
+      // Dead / missing session → login (never blank Home with dead JWT).
       Navigator.push(
         context,
         MaterialPageRoute(

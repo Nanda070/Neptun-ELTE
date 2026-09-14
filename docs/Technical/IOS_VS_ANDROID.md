@@ -17,7 +17,7 @@ Do **not** invent features here. If something is only planned, untested, or dead
 | Notification permission UX | `DarwinInitializationSettings` + `requestPermissions(alert/badge/sound)` in `lib/notifications.dart`; `NSUserNotificationsUsageDescription` in `ios/Runner/Info.plist` | Uses Android notification + **exact-alarm** permission APIs instead (see §2) |
 | External app URL schemes | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` in Info.plist | Manifest `<queries>` mainly for Custom Tabs; no Telegram/Discord scheme list |
 | Haptics API | `HapticFeedback.*` when `Platform.isIOS` (`lib/haptics.dart`) | Uses `vibration` package + `VIBRATE` permission (patterns, not Taptic Engine API) |
-| Native shell | `SceneDelegate` / UIScene lifecycle (`ios/Runner/SceneDelegate.swift`, Info.plist scene manifest) | Single `FlutterActivity` (`MainActivity.kt`) — no custom channels |
+| Native shell | `SceneDelegate` / UIScene lifecycle; MethodChannel for Quick Actions (**13**) in `AppDelegate` | `FlutterActivity` + MethodChannel for static shortcuts (**13**) in `MainActivity` |
 | Device install / signing docs | Automatic Signing in Xcode; trust developer profile on device; Bundle ID **without** `_` (`com.nanda070.neptunmobile`) — see Technical §14 | Different ID and signing model (see §2) |
 | Debug home-screen icon | **iOS 14+:** debug build does **not** open from the home-screen icon — need `--release` for icon launch | Debug APK installs/launch normally from the launcher |
 
@@ -54,7 +54,7 @@ Short list — same Flutter product surface unless gated above:
 - Network: `http` (primary); `connectivity_plus`; GitHub raw for languages/themes
 - Links: `url_launcher` (Android-only gate **removed**)
 - ICS parser + `file_picker` / `SetupPageCalendarLogin` code exists; **setup hub has no ICS entry** (dead UI on both)
-- Native plugins only via Flutter plugins — **no custom `MethodChannel`** in `AppDelegate` / `MainActivity`
+- Home-screen shortcuts (plan **13**): Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Dart `lib/app_shortcuts.dart` via MethodChannel in `MainActivity` / `AppDelegate`
 - **No** `local_auth` / biometrics in `pubspec.yaml`
 - Homescreen widget **removed** (was a stub)
 - Display name **Neptun ELTE**; owner **Nanda**
@@ -91,6 +91,6 @@ Full honesty table: [TECHNICAL.md §11](TECHNICAL.md#11-honesty-full-vs-thin) ·
 | `lib/notifications.dart` | Shared schedule; platform permission differences |
 | `lib/haptics.dart` | iOS `HapticFeedback` vs Android `Vibration` |
 | `android/app/src/main/AndroidManifest.xml` | Android permissions + notification receivers |
-| `ios/Runner/Info.plist` | Notification usage string + URL schemes |
+| `ios/Runner/Info.plist` | Notification usage string + URL schemes + `UIApplicationShortcutItems` |
 | `pubspec.yaml` | `in_app_update`, `vibration`, `open_filex`, `dio`, etc. |
 | `.github/workflows/betabuild.yml` | Android CI only |
