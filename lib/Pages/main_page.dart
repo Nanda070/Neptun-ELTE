@@ -803,30 +803,40 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
   Future<void> _setupPaymentsNotification(List<api.CashinEntry> items)async{
     await _cancelPaymentsNotifications();
-    if(!storage.DataCache.getNeedPaymentsNotifications()! || _paymentsNotificationList.isEmpty){
+    if(!storage.DataCache.getNeedPaymentsNotifications()! || items.isEmpty){
       return;
     }
+    // Antispam: at most one reminder (re-armed on next payments setup / app open).
+    // No daysRemaining fan-out and no 32-day schedule for undated items.
     final now = DateTime.now();
     final lang = AppStrings.getLanguagePack();
     final paymentTitle = lang.notif_title_Payment;
     final huf = lang.payment_currencyHuf;
-    for(var item in items){
-      final amountLabel = '${item.ammount} $huf';
-      if(item.dueDateMs == 0){
-        final body = AppStrings.getStringWithParams(lang.notif_payment_BodyNoDeadline, [amountLabel]);
-        for(int i = 0; i <= 31; i++){
-          await AppNotifications.scheduleNotification(paymentTitle, body, DateTime(now.year, now.month, now.day + i, 11, 00),2 );
-        }
-        continue;
-      }
+
+    final sorted = List<api.CashinEntry>.from(items)
+      ..sort((a, b) {
+        if (a.dueDateMs == 0 && b.dueDateMs == 0) return 0;
+        if (a.dueDateMs == 0) return 1;
+        if (b.dueDateMs == 0) return -1;
+        return a.dueDateMs.compareTo(b.dueDateMs);
+      });
+    final item = sorted.first;
+    final amountLabel = '${item.ammount.abs()} $huf';
+    final String body;
+    if (item.dueDateMs == 0) {
+      body = AppStrings.getStringWithParams(lang.notif_payment_BodyNoDeadline, [amountLabel]);
+    } else {
       final daysRemaining = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
       final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
       final datePart = '${daysRemaining > 61 ? "(${time.year}) " : ""}${api.Generic.monthToText(time.month)} ${time.day}';
-      final body = AppStrings.getStringWithParams(lang.notif_payment_BodyWithDeadline, [amountLabel, datePart]);
-      for(int i = 0; i <= daysRemaining; i++){
-        await AppNotifications.scheduleNotification(paymentTitle, body, DateTime(now.year, now.month, now.day + i, 11, 00), 2);
-      }
+      body = AppStrings.getStringWithParams(lang.notif_payment_BodyWithDeadline, [amountLabel, datePart]);
     }
+    await AppNotifications.scheduleNotification(
+      paymentTitle,
+      body,
+      DateTime(now.year, now.month, now.day + 1, 11, 00),
+      2,
+    );
   }
 
   Future<void> _cancelPaymentsNotifications()async{
@@ -1351,7 +1361,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     }
 
     for(var item in paymentsEntries){
-      if(item.completed){
+      // Paid outgoing fees only (negative completed). Scholarships / inflows stay out of "spent".
+      // Page is GetStudentPreviousTransactions last 50 — header string says so.
+      if(item.completed && item.ammount < 0){
         totalMoney += item.ammount.abs();
       }
       if(!item.completed && (item.dueDateMs > DateTime.now().millisecondsSinceEpoch || item.dueDateMs == 0)){

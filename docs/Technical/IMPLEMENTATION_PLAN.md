@@ -11,7 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + maps item **8 shipped** (Sep 2026). Items **5–7, 9–14** still backlog |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8 shipped** (Sep 2026). Items **5–6, 9–14** still backlog |
 | **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
@@ -46,7 +46,7 @@ Document what the code **actually** does.
 | Calendar week | `GetCalendarEvents` with **Mon 00:00 – Sun 23:59:59**. Events outside the window dropped. Period banners (`eventType == 6`) stay out of day lists; they go to a strip. |
 | ICS | **Import** parser exists (`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`). **No setup-hub button.** **Export does not exist.** |
 | Mail | Inbox + pagination (20) + unread count + mark-read + HU→EN/RU translate. **Local search** (subject / sender / loaded body) + **unread-only chip** (client-side). `filterType=0` stays hardcoded (HAR honesty — no server unread filter). |
-| Payments | `totalMoney` = sum of **`completed`** transaction `abs(ammount)` from the **last 50** `GetStudentPreviousTransactions`. Header string says “spent … Huf”. Collective invoices are a separate list. Payment notifs can schedule **one local notification per remaining day** (or 32 days if no deadline). |
+| Payments | `totalMoney` = sum of **completed outgoing** (`ammount < 0`) from the **latest 50** `GetStudentPreviousTransactions` — header: “Fees paid (latest 50)”. Scholarships / inflows excluded. Collective invoices remain a separate list / drawer balance. Payment notifs: **≤ 1/day** (soonest unpaid; re-armed on setup). No `daysRemaining` fan-out / no 32 undated. |
 | Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). After decode, **Open map** deep-link → Apple/Google Maps building search (Lágymányos). Unknown prefix = text only. |
 | Curriculum | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **404** on live HWEB (old MobileService path). There is **no Tanterv menu**. Progress UI is **Studies → Advancement**. `GetStudentCurriculumTemplates` and `creditprogress` returned **empty** this term. Official average *labels* live on `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` is a signup dropdown (seen, not planned). |
 | Exam / course registration | **Not in the app. Not planned.** Do not add vizsgajelentkezés / tárgyjelentkezés UI. Signup XHRs seen in `finances.har` — **seen but not planned**. |
@@ -97,7 +97,7 @@ Later work is cheaper if earlier items land first.
 |---|------|------|
 | 5 | Ghost grade goal / what-if polish | Same formula as item 2 |
 | 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
-| 7 | `totalMoney` accuracy + payment notification antispam | Independent of mail; after session/cache |
+| 7 | `totalMoney` accuracy + payment notification antispam | **DONE** (Sep 2026). Paid-outgoing fees + latest-50 label; ≤1/day payment notif |
 | 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
 | 9 | What’s Changed (simple) | **After** session/cache **and** mail IDs (item 4) |
 | 10 | Semester comparison | **After** honest markbook (item 2) |
@@ -463,10 +463,10 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 7. Payment `totalMoney` accuracy + payment notification antispam
+### 7. Payment `totalMoney` accuracy + payment notification antispam — **DONE**
 
 - **Why**  
-  Header: “You have spent %0Huf”. Code sums **`completed`** rows only, `ammount.abs()`, from **50** newest transactions. Scholarships are stored as positive; fees as negative — both completed rows **add** to “spent”. Unpaid (`aktív`) are excluded from the sum but can generate **one local notification per remaining day** (or **32** if `dueDateMs == 0`).
+  Header: “You have spent %0Huf”. Code summed **`completed`** rows only, `ammount.abs()`, from **50** newest transactions. Scholarships are stored as positive; fees as negative — both completed rows **added** to “spent”. Unpaid (`aktív`) are excluded from the sum but could generate **one local notification per remaining day** (or **32** if `dueDateMs == 0`).
 
 - **Depends on**  
   Item 1 (cache payments list).
@@ -494,7 +494,7 @@ Later work is cheaper if earlier items land first.
   Unpaid-fees endpoint is now known; this account had **no** items. Bonuses / Diákhitel2 endpoints exist but were empty / unused in-app.
 
 - **Done when**  
-  Header number matches the sum of **paid fees** the UI lists (or the label is changed to “net / 50 latest”). Enabling payment notifs schedules **≤ 1/day**, not dozens.
+  Header number matches the sum of **paid fees** the UI lists (or the label is changed to “net / 50 latest”). Enabling payment notifs schedules **≤ 1/day**, not dozens. **Met:** `totalMoney` = Σ `abs(ammount)` for **completed && ammount < 0** on the loaded page; header “Fees paid (latest 50)”; `CashinRequest.previousTransactionsPageSize = 50`; payment notif schedules **one** next-day reminder for the soonest unpaid (no fan-out).
 
 - **Out of scope**  
   In-app payment / bank transfer. Student-card bank fields (item 12).

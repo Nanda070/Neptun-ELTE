@@ -2618,6 +2618,9 @@ class MarkbookRequest{
 }
 
 class CashinRequest{
+  /// One page of previous transactions — not full history. Header / UI must not claim "all time".
+  static const int previousTransactionsPageSize = 50;
+
   static Future<List<CashinEntry>?> getCashin() => getAllCashins();
 
   static Future<List<CashinEntry>?> getAllCashins() async{
@@ -2625,7 +2628,9 @@ class CashinRequest{
       final now = DateTime.now();
       return <CashinEntry>[
         CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment1, "1", 'aktív'),
-        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment2, "2", 'teljesített'),
+        // Negative = paid outgoing fee (counts toward totalMoney); positive completed = scholarship (does not).
+        CashinEntry(-50000, now.subtract(const Duration(days: 40)).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment2, "2", 'teljesített'),
+        CashinEntry(30000, now.subtract(const Duration(days: 70)).millisecondsSinceEpoch, AppStrings.getLanguagePack().api_demo_Payment2, "3", 'teljesített'),
       ];
     }
     else if(storage.DataCache.getHasICSFile() ?? false){
@@ -2638,7 +2643,8 @@ class CashinRequest{
         final token = await storage.DataCache.getAccessToken();
         String baseUrl = storage.DataCache.getInstituteUrl() ?? '';
 
-        final url = Uri.parse("$baseUrl/api/Transactions/GetStudentPreviousTransactions?sortAndPage.firstRow=0&sortAndPage.lastRow=50&sortAndPage.transferDate=desc");
+        final lastRow = previousTransactionsPageSize;
+        final url = Uri.parse("$baseUrl/api/Transactions/GetStudentPreviousTransactions?sortAndPage.firstRow=0&sortAndPage.lastRow=$lastRow&sortAndPage.transferDate=desc");
 
         final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
         final decoded = conv.json.decode(responseRaw);
