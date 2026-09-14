@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../colors.dart';
 import '../language.dart';
 
 /// Parsed ELTE-style room code: `Campus-Floor-Room[-Stream][-Group]`.
@@ -38,9 +43,56 @@ class ElteRoomCode {
 
   static bool canDecode(String? raw) => tryParse(raw) != null;
 
+  String get _normalizedPrefix =>
+      campusPrefix.toUpperCase().replaceAll('É', 'E');
+
+  /// True only for known Lágymányos buildings (LD / LE / LK).
+  bool get hasMapsDeepLink {
+    switch (_normalizedPrefix) {
+      case 'LD':
+      case 'LE':
+      case 'LK':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /// Building search string for Apple/Google Maps. Null for unknown prefixes
+  /// so we never drop a wrong campus pin.
+  String? mapsSearchQuery() {
+    switch (_normalizedPrefix) {
+      case 'LD':
+        return 'ELTE Déli Tömb, 1117 Budapest';
+      case 'LE':
+        return 'ELTE Északi Tömb, 1117 Budapest';
+      case 'LK':
+        return 'ELTE Kémiai tömb, 1117 Budapest';
+      default:
+        return null;
+    }
+  }
+
+  Uri? mapsUri() {
+    final q = mapsSearchQuery();
+    if (q == null) return null;
+    final encoded = Uri.encodeComponent(q);
+    if (Platform.isIOS || Platform.isMacOS) {
+      return Uri.parse('https://maps.apple.com/?q=$encoded');
+    }
+    return Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$encoded',
+    );
+  }
+
+  Future<bool> openMaps() async {
+    final uri = mapsUri();
+    if (uri == null) return false;
+    return launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   String buildingName(LanguagePack lang) {
-    final key = campusPrefix.toUpperCase().replaceAll('É', 'E');
-    switch (key) {
+    switch (_normalizedPrefix) {
       case 'LD':
         return lang.roomCode_Building_LD;
       case 'LE':
@@ -69,7 +121,9 @@ class ElteRoomCode {
   }
 }
 
-/// Tap toggles coded room ↔ localized decode. Non-coded text is plain (no toggle).
+/// Tap toggles coded room ↔ localized decode. Known LD/LE/LK buildings expose
+/// an “Open map” deep-link after decode. Non-coded / unknown-prefix text stays
+/// text-only (no map pin).
 class DecodableRoomText extends StatefulWidget {
   final String room;
   final TextStyle? style;
@@ -119,20 +173,67 @@ class _DecodableRoomTextState extends State<DecodableRoomText> {
 
     final lang = AppStrings.getLanguagePack();
     final display = _expanded ? parsed.formatSummary(lang) : widget.room.trim();
+    final showMap = _expanded && parsed.hasMapsDeepLink;
+    final align = widget.textAlign ?? TextAlign.start;
+    final cross = align == TextAlign.center
+        ? CrossAxisAlignment.center
+        : (align == TextAlign.end || align == TextAlign.right)
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        setState(() => _expanded = !_expanded);
-      },
-      child: Text(
-        display,
-        style: widget.style,
-        maxLines: _expanded ? null : widget.maxLines,
-        overflow: _expanded ? TextOverflow.visible : widget.overflow,
-        textAlign: widget.textAlign,
-        softWrap: widget.softWrap,
-      ),
+    return Column(
+      crossAxisAlignment: cross,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() => _expanded = !_expanded);
+          },
+          child: Text(
+            display,
+            style: widget.style,
+            maxLines: _expanded ? null : widget.maxLines,
+            overflow: _expanded ? TextOverflow.visible : widget.overflow,
+            textAlign: widget.textAlign,
+            softWrap: widget.softWrap,
+          ),
+        ),
+        if (showMap)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                parsed.openMaps();
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.map_outlined,
+                    size: ((widget.style?.fontSize) ?? 14) + 2,
+                    color: AppColors.getTheme().onSecondaryContainer,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      lang.roomCode_OpenMap,
+                      style: (widget.style ?? const TextStyle()).copyWith(
+                        color: AppColors.getTheme().onSecondaryContainer,
+                        decoration: TextDecoration.underline,
+                        decorationColor:
+                            AppColors.getTheme().onSecondaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: widget.textAlign,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

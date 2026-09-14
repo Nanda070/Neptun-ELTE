@@ -12,7 +12,7 @@
 
 |                      |                                                                                                                                                                                                                                |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4 сделан** (сен 2026). Пункты **5–14** ещё в бэклоге                                                                                                                                                   |
+| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4** + карты п. **8 сделан** (сен 2026). Пункты **5–7, 9–14** ещё в бэклоге                                                                                                                                                   |
 | **Релиз**            | Текущая маркетинговая версия **1.3.4** (`pubspec` **1.3.4+1**). Feature-line **3** = пункты плана **1–3**; патч **4** = поиск почты + фильтр непрочитанных (п. **4**). **1.3.3** = фикс мгновенного «сессия истекла» после 2FA. Следующий крупный блок → **1.4.0**; финал → **2.0.0**. Для пользователя / Settings / docs — только три числа, без рекламы `+build`. См. [TECHNICAL § Версионирование](TECHNICAL.ru.md#версионирование). |
 | **Порядок**          | Делать строго по номерам групп. Поздние фичи опираются на честность (**1a** повторный вход после logout, **1b** wall-clock в фоне, **1c** nav IA, сессия, кэш, формула зачётки, `messageId`).                                                                            |
 | **Живой логин ELTE** | В коде есть путь portal + TOTP + OuterLogin. Считать **working MVP, не исчерпывающе перепроверено** на всех устройствах. Email OTP известен по HAR, UI тонкий. Если Student web **full** — мост падает даже после верного 2FA. |
@@ -54,7 +54,7 @@
 | ICS                      | **Импорт** есть (`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`). Кнопки на хабе **нет**. **Экспорта нет.**                                                                                                                                                                                   |
 | Почта                    | Входящие + страницы по 20 + счётчик непрочитанных + пометка прочитанным + перевод HU→EN/RU. **Локальный поиск** (тема / отправитель / загруженное тело) + **чип непрочитанных** (клиент). `filterType=0` остаётся зашитым (честность HAR — серверного unread-фильтра нет).                                                                                                                                |
 | Платежи                  | `totalMoney` = сумма `abs(ammount)` у `completed` из **последних 50** `GetStudentPreviousTransactions`. Шапка: «потратил … Huf». Collective invoices — отдельный список. Нотификации оплаты могут поставить **по одному локальному пушу на каждый оставшийся день** (или 32 дня, если дедлайна нет). |
-| Карты                    | Коды `LD`/`LE`/`LK` **расшифровываются в приложении**. **Ссылки в карты нет.**                                                                                                                                                                                                                       |
+| Карты                    | Коды `LD`/`LE`/`LK` **расшифровываются в приложении**. После расшифровки — **Открыть карту** → Apple/Google Maps (Lágymányos). Неизвестный префикс — только текст.                                                                                                                                                                                                                       |
 | Tanterv                  | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — на живом HWEB **404** (старый MobileService). Отдельного меню **Tanterv нет**. Прогресс: **Studies → Advancement**. `GetStudentCurriculumTemplates` и `creditprogress` в этом семестре **пустые**. Официальные *подписи* средних — `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` — выпадающий список записи (видно, не планируем). |
 | Запись на экзамен / курс | **В приложении нет. Не планируем.** Не возвращать UI vizsgajelentkezés / tárgyjelentkezés. XHR записи в `finances.har` — **видно, но не планируем**. |
 | Студенческий             | **В приложении нет.** HAR 2026-09-13: известны **заявка / NEK / FIR** + **банк** + поля **профиля**. **Нет QR, номера карты, срока.** |
@@ -115,7 +115,7 @@
 | 5   | Ghost / what-if                                                   | Та же формула, что в п. 2                        |
 | 6   | Сегодня + полоса ZH/дедлайны + ICS **export** + гранулярность пар | После п. 3                                       |
 | 7   | Точность `totalMoney` + антиспам платёжных нотификаций            | После сессии/кэша; независимо от почты           |
-| 8   | Deep-link карт на LD/LE/LK                                        | После полировки календаря; `elte_room_code.dart` |
+| 8   | Deep-link карт на LD/LE/LK                                        | **СДЕЛАНО** (сен 2026). После полировки календаря; `elte_room_code.dart` |
 | 9   | «Что изменилось» (простое)                                        | **После** сессии/кэша **и** почтовых id (п. 4)   |
 | 10  | Сравнение семестров                                               | **После** честной зачётки (п. 2)                 |
 | 11  | Academic Progress                                                 | **Всё ещё закрыт** — в HAR сент. 2026 нет графа tanterv |
@@ -479,7 +479,7 @@ Endpoint неоплаченных известен; у этого аккаунт
 
 
 
-### 8. Deep-link карт по LD/LE/LK
+### 8. Deep-link карт по LD/LE/LK — **СДЕЛАНО**
 
 - **Зачем / Why**  
 Тап уже переключает `LD-0-805` ↔ «Southern Building, Floor: 0, Room: 805». Нужна карта. `url_launcher` уже в зависимостях.
@@ -490,22 +490,22 @@ Endpoint неоплаченных известен; у этого аккаунт
   - **LD** Déli / Southern, **LE**/LÉ Északi / Northern, **LK** химический блок (Északi). Неизвестный префикс как есть.  
   - Список пар, диалог пары, exam/legacy popup.  
   - iOS schemes: `https`, `http`, …
-- **Что сделать / What to build**  
-  1. После расшифровки (второй тап или иконка карты): Apple Maps / Google Maps по **зданию**, этаж/комната в строке запроса.
+- **Сделано / Shipped**  
+  1. После расшифровки — **Открыть карту** (`roomCode_OpenMap`) для LD/LE/LK → Apple Maps (iOS/macOS) / Google Maps (иначе) по **зданию**.  
   2. Запросы (Lágymányos, без своих GPS в приложении):
-    - LD → `ELTE Déli Tömb` / Southern Building, 1117 Budapest  
-    - LE → `ELTE Északi Tömb`  
-    - LK → `ELTE Kémiai tömb`
+    - LD → `ELTE Déli Tömb, 1117 Budapest`  
+    - LE → `ELTE Északi Tömb, 1117 Budapest`  
+    - LK → `ELTE Kémiai tömb, 1117 Budapest`
   3. Неизвестный префикс — только текст, без ложного пина.
-  4. Координаты не выдумывать.
+  4. Координаты не выдумывать. `ElteRoomCode.mapsSearchQuery` / `openMaps`; UI в `DecodableRoomText` (timetable + popup).
 - **Где / Where**  
 `lib/Misc/elte_room_code.dart`, `lib/TimetableElements/timetable_element_widget.dart`, `lib/Misc/popup.dart`.
 - **Через что / Via**  
-`ElteRoomCode.tryParse`, `url_launcher`, ключи `roomCode_*` + новый `roomCode_OpenMap`.
+`ElteRoomCode.tryParse`, `url_launcher`, ключи `roomCode_*` + `roomCode_OpenMap` (HU/EN + RU/TR JSON).
 - **Нужно заранее / Prerequisites**  
 Нет. Опционально сверить названия корпусов. В `information.har` есть `RoomSchedule/GetBuildings` + `GetSites` + `GetOrganizations` + `GetRoomsSchedules` (список аудиторий кампуса — для LD/LE/LK deep-link не обязателен).
 - **Готово когда / Done when**  
-Из `LD-0-805` открываются карты с поиском Déli Tömb. Код с неизвестным префиксом не падает и не ведёт на чужой кампус.
+Из `LD-0-805` открываются карты с поиском Déli Tömb. Код с неизвестным префиксом не падает и не ведёт на чужой кампус. **Выполнено (сен 2026).**
 - **Не делать / Out of scope**  
 Поэтажные планы, GPS комнаты, кампусы кроме Lágymányos.
 
@@ -926,7 +926,7 @@ HAR нужен для REST, которых **нет** в приложении. �
 | Почта       | `MailsPageWidget`, `MailElementWidget`, `message_translator.dart`           | `GetReceivedMessages`, `GetUnreadedMessagesCount`, `/api/Messages/{id}/Posts` |
 | Платежи     | `PaymentsPageWidget`, `PaymentElementWidget`                                | `GetStudentPreviousTransactions`, `GetCollectiveInvoices`                     |
 | Периоды     | `periods_element_widget.dart`                                               | `GetPeriods`                                                                  |
-| Аудитории   | `lib/Misc/elte_room_code.dart`                                              | только LD/LE/LK decode                                                        |
+| Аудитории   | `lib/Misc/elte_room_code.dart`                                              | LD/LE/LK decode + deep-link карт (**8**)                                                        |
 | ICS         | `lib/API/ics_calendar.dart`                                                 | **только импорт**                                                             |
 | Нотификации | `lib/notifications.dart`, тумблеры Settings                                 | 0 экзамен, 1 пара, 2 оплата, 3 период                                         |
 | Tanterv     | `URLs.CURRICULUMS_URL`                                                      | **не вызывается**; tanterv в HAR всё ещё нет                                  |

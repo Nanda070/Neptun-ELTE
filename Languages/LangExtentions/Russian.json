@@ -261,6 +261,7 @@
   "roomCode_Building_LD": "Южный корпус",
   "roomCode_Building_LE": "Северный корпус",
   "roomCode_Building_LK": "Химический блок (Северный корпус)",
+  "roomCode_OpenMap": "Открыть карту",
   "markbook_creditAbbrev": "кр",
   "notif_exam_BodyToday": "Экзамен по «%0» СЕГОДНЯ!",
   "notif_exam_BodyTomorrow": "Экзамен по «%0» ЗАВТРА!",

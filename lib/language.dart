@@ -314,6 +314,7 @@ class AppStrings{
       roomCode_Building_LD: 'Déli Tömb',
       roomCode_Building_LE: 'Északi Tömb',
       roomCode_Building_LK: 'Kémiai tömb (Északi)',
+      roomCode_OpenMap: 'Térkép megnyitása',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
       notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
@@ -626,6 +627,7 @@ class AppStrings{
       roomCode_Building_LD: 'Southern Building',
       roomCode_Building_LE: 'Northern Building',
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
+      roomCode_OpenMap: 'Open map',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
       notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
@@ -1211,6 +1213,7 @@ class LanguagePack{
   final String roomCode_Building_LD;
   final String roomCode_Building_LE;
   final String roomCode_Building_LK;
+  final String roomCode_OpenMap;
   final String markbook_creditAbbrev;
   final String notif_exam_BodyToday;
   final String notif_exam_BodyTomorrow;
@@ -1508,6 +1511,7 @@ class LanguagePack{
     this.roomCode_Building_LD = 'Southern Building',
     this.roomCode_Building_LE = 'Northern Building',
     this.roomCode_Building_LK = 'Chemistry block (Northern Building)',
+    this.roomCode_OpenMap = 'Open map',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
     required this.notif_exam_BodyTomorrow,
@@ -1844,6 +1848,7 @@ class LanguagePack{
         roomCode_Building_LD: getStr('roomCode_Building_LD', en.roomCode_Building_LD),
         roomCode_Building_LE: getStr('roomCode_Building_LE', en.roomCode_Building_LE),
         roomCode_Building_LK: getStr('roomCode_Building_LK', en.roomCode_Building_LK),
+        roomCode_OpenMap: getStr('roomCode_OpenMap', en.roomCode_OpenMap),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
@@ -2179,6 +2184,7 @@ class LanguagePack{
       'roomCode_Building_LD':lang.roomCode_Building_LD,
       'roomCode_Building_LE':lang.roomCode_Building_LE,
       'roomCode_Building_LK':lang.roomCode_Building_LK,
+      'roomCode_OpenMap':lang.roomCode_OpenMap,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
       'notif_exam_BodyToday':lang.notif_exam_BodyToday,
       'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,

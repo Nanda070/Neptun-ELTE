@@ -189,6 +189,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Release 1.3.3** (`pubspec` **1.3.3+1**): ships the post-2FA session fix. GitHub Release **v1.3.3** + unsigned IPA via Actions. Owner **Nanda**.
 - **Plan item 4 — mail search + unread filter:** local search over loaded pages (subject / sender / body preview) + unread-only `FilterChip`; pagination accumulates `mailEntries`; API stays `filterType=0` (HAR honesty). Offline/cache filters locally; search query never logged. Owner **Nanda**.
 - **Release 1.3.4** (`pubspec` **1.3.4+1**): ships mail item **4**. GitHub Release **v1.3.4** + unsigned IPA via Actions. Owner **Nanda**.
+- **Plan item 8 — maps deep-link on LD/LE/LK:** after tap-decode, **Open map** (`roomCode_OpenMap`) opens Apple/Google Maps with building search (`ELTE Déli Tömb` / `Északi Tömb` / `Kémiai tömb`, 1117 Budapest). Unknown prefix stays text-only. No version bump. Owner **Nanda**.
 
 ---
 
@@ -196,7 +197,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** shipped; next backlog starts at item **5**.
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **8** shipped; next backlog starts at item **5** (parallel: **5–7, 9–14**).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card is **claim-only** (no QR/wallet on `/administrations/student-card`). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Bank + profile fields already captured. Exam / course registration — **not built, not planned**.

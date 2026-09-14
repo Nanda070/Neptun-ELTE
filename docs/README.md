@@ -36,7 +36,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 
 - **ELTE-only hub** — sign-in to portal `neptun.elte.hu` (HWEB SPA is `hallgatoN.neptun.elte.hu` after Student web; not Obuda/BME `/ujhallgato`)
 - **Login like the website** — Neptun ID + password → 2FA (authenticator TOTP; email OTP on web may be thinner in-app) → student data APIs
-- **Timetable** — week view (Mon–Sun only; no next-Monday bleed); same-day break chips localized; next-48h = classes+exams only; upcoming tasks/ZH and exams sorted from now; period banners only in the period strip; calendar filters in Settings; training switcher when multiple trainings exist
+- **Timetable** — week view (Mon–Sun only; no next-Monday bleed); same-day break chips localized; next-48h = classes+exams only; upcoming tasks/ZH and exams sorted from now; period banners only in the period strip; calendar filters in Settings; training switcher when multiple trainings exist; tap room codes `LD`/`LE`/`LK` to decode, then **Open map** for Lágymányos buildings
 - **Markbook (Subjects)** — taken subjects with codes, credits, grades; **átlag** (credit-weighted) and **/30** (same numerator÷30, not átlag÷30); this-term + accumulated completed credits; app-computed honesty note; my courses + grade history across terms
 - **Messages** — Neptun inbox; local search (subject / sender / loaded body) + unread-only chip; full thread; optional HU→EN/RU machine translate (may be inaccurate)
 - **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)

@@ -11,7 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4 shipped** (Sep 2026). Items **5–14** still backlog |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + maps item **8 shipped** (Sep 2026). Items **5–7, 9–14** still backlog |
 | **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
@@ -47,7 +47,7 @@ Document what the code **actually** does.
 | ICS | **Import** parser exists (`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`). **No setup-hub button.** **Export does not exist.** |
 | Mail | Inbox + pagination (20) + unread count + mark-read + HU→EN/RU translate. **Local search** (subject / sender / loaded body) + **unread-only chip** (client-side). `filterType=0` stays hardcoded (HAR honesty — no server unread filter). |
 | Payments | `totalMoney` = sum of **`completed`** transaction `abs(ammount)` from the **last 50** `GetStudentPreviousTransactions`. Header string says “spent … Huf”. Collective invoices are a separate list. Payment notifs can schedule **one local notification per remaining day** (or 32 days if no deadline). |
-| Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). **No maps URL.** |
+| Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). After decode, **Open map** deep-link → Apple/Google Maps building search (Lágymányos). Unknown prefix = text only. |
 | Curriculum | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **404** on live HWEB (old MobileService path). There is **no Tanterv menu**. Progress UI is **Studies → Advancement**. `GetStudentCurriculumTemplates` and `creditprogress` returned **empty** this term. Official average *labels* live on `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` is a signup dropdown (seen, not planned). |
 | Exam / course registration | **Not in the app. Not planned.** Do not add vizsgajelentkezés / tárgyjelentkezés UI. Signup XHRs seen in `finances.har` — **seen but not planned**. |
 | Student card | **Not in the app.** HAR 2026-09-13: **claim / NEK / FIR** + **bank** + **profile** field names known. **No QR, no card number, no expiry.** |
@@ -98,7 +98,7 @@ Later work is cheaper if earlier items land first.
 | 5 | Ghost grade goal / what-if polish | Same formula as item 2 |
 | 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
 | 7 | `totalMoney` accuracy + payment notification antispam | Independent of mail; after session/cache |
-| 8 | Maps deep-link on LD/LE/LK decode | After calendar polish; uses `elte_room_code.dart` |
+| 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
 | 9 | What’s Changed (simple) | **After** session/cache **and** mail IDs (item 4) |
 | 10 | Semester comparison | **After** honest markbook (item 2) |
 | 11 | Academic Progress | **STILL blocked** — Sep 2026 HARs have no tanterv graph |
@@ -501,7 +501,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 8. Maps deep-link on LD/LE/LK decode
+### 8. Maps deep-link on LD/LE/LK decode — **DONE**
 
 - **Why**  
   Tap already toggles `LD-0-805` ↔ “Southern Building, Floor: 0, Room: 805”. Users still need a map. `url_launcher` is already a dependency (`LaunchMode.externalApplication`).
@@ -515,26 +515,26 @@ Later work is cheaper if earlier items land first.
   - Used on timetable list, class dialog, exam/legacy popups.  
   - `url_launcher` in drawer / clickable spans. iOS `LSApplicationQueriesSchemes`: `https`, `http`, …
 
-- **What to build**  
-  1. After decode (or a second tap / map icon): open Apple Maps / Google Maps query for the **building**, optionally `floor`/`room` in the query string.  
-  2. Suggested queries (ELTE Lágymányos, not GPS-surveyed in-app):  
-     - LD → `ELTE Déli Tömb` / Southern Building, 1117 Budapest  
-     - LE → `ELTE Északi Tömb`  
-     - LK → `ELTE Kémiai tömb` / Northern chemistry  
-  3. Unknown prefix: no broken pin; keep text-only decode.  
-  4. Do not invent lat/long without a source. Query strings are enough.
+- **Shipped**  
+  1. After decode, **Open map** (`roomCode_OpenMap`) on known LD/LE/LK → Apple Maps (iOS/macOS) / Google Maps (else) building search.  
+  2. Queries (ELTE Lágymányos, not GPS-surveyed in-app):  
+     - LD → `ELTE Déli Tömb, 1117 Budapest`  
+     - LE → `ELTE Északi Tömb, 1117 Budapest`  
+     - LK → `ELTE Kémiai tömb, 1117 Budapest`  
+  3. Unknown prefix: text-only decode; no map link / wrong pin.  
+  4. No invented lat/long — query strings only. `ElteRoomCode.mapsSearchQuery` / `openMaps`; UI in `DecodableRoomText` (timetable + popup call sites).
 
 - **Where**  
   `lib/Misc/elte_room_code.dart`, call sites in `lib/TimetableElements/timetable_element_widget.dart`, `lib/Misc/popup.dart`.
 
 - **Via**  
-  `ElteRoomCode.tryParse`, `url_launcher`, existing `roomCode_*` strings + one new `roomCode_OpenMap`.
+  `ElteRoomCode.tryParse`, `url_launcher`, existing `roomCode_*` strings + `roomCode_OpenMap` (HU/EN + RU/TR JSON).
 
 - **Prerequisites**  
   None. Optional: confirm building names on campus. `information.har` also has `RoomSchedule/GetBuildings` + `GetSites` + `GetOrganizations` + `GetRoomsSchedules` (campus room list — not required for LD/LE/LK deep-link).
 
 - **Done when**  
-  Tap-through from `LD-0-805` opens a maps app whose search is Déli Tömb / Southern Building. `XY-1-1` (unknown) does not crash or open a wrong campus.
+  Tap-through from `LD-0-805` opens a maps app whose search is Déli Tömb / Southern Building. `XY-1-1` (unknown) does not crash or open a wrong campus. **Met (Sep 2026).**
 
 - **Out of scope**  
   Indoor floor plans, room-level GPS, non-Lágymányos campuses.
@@ -968,7 +968,7 @@ Agents implementing any item above should follow this, not invent a second archi
 | Mail | `MailsPageWidget`, `MailElementWidget`, `message_translator.dart` | `GetReceivedMessages`, `GetUnreadedMessagesCount`, `/api/Messages/{id}/Posts` |
 | Payments | `PaymentsPageWidget`, `PaymentElementWidget` | `GetStudentPreviousTransactions`, `GetCollectiveInvoices` |
 | Periods | `periods_element_widget.dart` | `GetPeriods` |
-| Rooms | `lib/Misc/elte_room_code.dart` | LD/LE/LK decode only |
+| Rooms | `lib/Misc/elte_room_code.dart` | LD/LE/LK decode + maps deep-link (**8**) |
 | ICS | `lib/API/ics_calendar.dart` | **Import only** |
 | Notifs | `lib/notifications.dart`, Settings toggles | ids 0 exam, 1 class, 2 payment, 3 period |
 | Curriculum | `URLs.CURRICULUMS_URL` | **Unused**; tanterv still not in HARs |
