@@ -209,6 +209,25 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Honesty:** **no QR**, no invented card number / expiry (HWEB `/administrations/student-card` is claim-only). No version bump. Owner **Nanda**.
 - **Release 1.4.0** (`pubspec` **1.4.0+1**): feature line **4** — ships plan items **5** (ghost what-if), **6** (today/ZH/ICS export/class-notif granularity), **7** (payments honesty + ≤1/day notifs), **8** (maps deep-link), **9** (What’s Changed), **12** (student card claim/bank/profile — **no QR**), **13** (home shortcuts Calendar/Mail/Payments). GitHub Release **v1.4.0** + unsigned IPA via Actions. Owner **Nanda**.
 
+---
+
+## 2026-09-14 — semester compare, widgets MVP, drop #11 → 1.5.0
+
+**[2026-09-14, ~14:30]**
+
+- **Plan item 10 — semester comparison:** Markbook gains a per-term side-by-side strip (term name, completed credits, átlag, **/30**) via `MarkbookRequest.getSemesterComparison` + `TermComparisonStat`. Same `MarkbookMath.fromCompleted` rules as the markbook header. Cache-first per-term `TakenSubjects` (`CachedMarkbookTerm_*`); fetches missing terms only when the session is usable; cap ~8 terms (newest first). Demo returns two canned terms. Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
+
+**[2026-09-14, ~14:35]**
+
+- **Plan item 11 removed (Academic Progress / tanterv):** dropped from the implementation plan entirely (EN+RU priority tables + §11). Sep 2026 HARs never captured a tanterv graph; live HWEB has **no Tanterv menu** (`GetCurriculums` **404**; Advancement templates / `creditprogress` empty this term). We will **not** ship a fake progress bar from current-term credits alone. Curriculum leftovers stay honesty notes only — not a backlog item. Owner **Nanda**.
+
+**[2026-09-14, ~14:40]**
+
+- **Plan item 14 — homescreen widgets (honest MVP):** **iOS WidgetKit** extension `ios/TodayClassesWidget/` — today’s **classes** from calendar cache only (`CachedCalendar_w*` / current-week entries) via `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Synced from calendar refresh paths. **No JWT**, passwords, or tokens in the widget process. Missing cache → prompt to open the app; stale day labeled stale. Aligns with the 10-minute session wall (widget is offline snapshot, not live Neptun). **Android Glance** deferred — docs stay honest (former Flutter stub remains removed; no fake Android widget). Owner **Nanda**.
+
+**[2026-09-14]**
+
+- **Release 1.5.0** (`pubspec` **1.5.0+1**): feature line **5** — ships plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widgets not yet). Plan item **11** removed (not shipped). Student card remains claim/bank/profile only (**no QR** — unchanged from **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA via Actions when the bump lands. Owner **Nanda**.
 
 ---
 
@@ -216,10 +235,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **5** / **6** / **7** / **8** / **9** / **12** / **13** shipped; next backlog starts at items **10–11**, **14**.
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (item **14** = iOS WidgetKit MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
-- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Exam / course registration — **not built, not planned**.
+- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.0** (iOS-first MVP only).
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
 
 ---
