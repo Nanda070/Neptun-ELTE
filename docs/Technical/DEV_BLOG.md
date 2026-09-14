@@ -215,7 +215,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-14, ~14:30]**
 
-- **Plan item 10 — semester comparison (in progress → ship with 1.5.0):** API + cache landed — `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (per-term completed credits, átlag, **/30** via same `MarkbookMath.fromCompleted` as the markbook header). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); fetch missing terms only when the session is usable; cap ~8 (newest first); demo returns two canned terms. i18n keys `markbook_semesterCompare_*` (HU/EN + RU/TR). Markbook side-by-side UI strip wiring with the same release. Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
+- **Plan item 10 — semester comparison:** `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (per-term completed credits, átlag, **/30** via same `MarkbookMath.fromCompleted` as the markbook header). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); fetch missing terms only when the session is usable; cap ~8 (newest first); demo returns two canned terms. Markbook side-by-side cards + i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
 
 **[2026-09-14, ~14:35]**
 
@@ -223,11 +223,11 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-14, ~14:40]**
 
-- **Plan item 14 — homescreen widgets (honest MVP):** **iOS WidgetKit** extension `ios/TodayClassesWidget/` — today’s **classes** from calendar cache only (`CachedCalendar_w*` / current-week entries) via `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Synced from calendar refresh paths. **No JWT**, passwords, or tokens in the widget process. Missing cache → prompt to open the app; stale day labeled stale. Aligns with the 10-minute session wall (widget is offline snapshot, not live Neptun). **Android Glance** deferred — docs stay honest (former Flutter stub remains removed; no fake Android widget). Owner **Nanda**.
+- **Plan item 14 — homescreen widgets (honest MVP):** **iOS WidgetKit** extension `ios/TodayClassesWidget/` — today’s **classes** from calendar cache only via `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Synced from calendar refresh paths. **No JWT**, passwords, or tokens in the widget process. Missing cache → “Open Neptun ELTE”; stale day labeled; empty day → “No classes today”. Tap → `neptunelte://shortcut/calendar`. Aligns with the 10-minute session wall (offline snapshot). **Android Glance** deferred — docs stay honest. Owner **Nanda**.
 
 **[2026-09-14]**
 
-- **Release 1.5.0** (`pubspec` **1.5.0+1**): feature line **5** — ships plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widgets not yet). Plan item **11** removed (not shipped). Student card remains claim/bank/profile only (**no QR** — unchanged from **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA via Actions when the bump lands. Owner **Nanda**.
+- **Release 1.5.0** (`pubspec` **1.5.0+1**): feature line **5** — ships plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widgets not yet). Plan item **11** removed (not shipped). Student card remains claim/bank/profile only (**no QR** — unchanged from **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA via Actions. Owner **Nanda**.
 
 ---
 
@@ -235,7 +235,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**9** / **12**–**13** shipped; **10** API/cache/i18n landed (Markbook UI with **1.5.0**); **14** iOS WidgetKit MVP landing with **1.5.0**; item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress).
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (iOS widget MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.0** (iOS-first MVP only).

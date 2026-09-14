@@ -32,6 +32,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../Pages/startup_page.dart' as root_page;
 import '../Misc/app_drawer.dart';
 import '../Misc/markbook_math.dart';
+import '../widget_bridge.dart';
 
 class HomePage extends StatefulWidget{
   /// Bottom 0–3 or drawer Payments (4). Used by home-screen shortcuts (item 13).
@@ -1048,6 +1049,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     calendarTabController.index = currentWeekOffset == 1 ? (currWeekday - 1 > 6 ? 0 : currWeekday - 1) : calendarTabController.index;
     if (forCurrentWeek) {
       _refreshTodaySummary(calendarEntries);
+      WidgetBridge.sync(preferEntries: calendarEntries);
     }
   }
 
@@ -1915,6 +1917,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       calendarEntries = ICSCalendar.getCalendarInterval(epochStart, epochEnd);
 
       storage.DataCache.setHasCachedFirstWeekEpoch(1);
+      if (currentWeekOffset == 1) {
+        await WidgetBridge.sync(preferEntries: calendarEntries);
+      } else {
+        await WidgetBridge.sync();
+      }
       return;
     }
 
@@ -1955,8 +1962,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
           });
         }
 
+        // Paint widget ASAP from cache while optional network refresh runs.
+        if (currentWeekOffset == 1) {
+          await WidgetBridge.sync(preferEntries: calendarEntries);
+        }
+
         if (!hasNetwork || !silentRefreshIfOnline || api.SessionGuard.isAuthBlocked) {
           _setShowingCached(paintedFromCache && (!hasNetwork || api.SessionGuard.isAuthBlocked));
+          if (currentWeekOffset != 1) {
+            await WidgetBridge.sync();
+          }
           return;
         }
       }
@@ -1964,6 +1979,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
     if (!hasNetwork || api.SessionGuard.isAuthBlocked) {
       _setShowingCached(paintedFromCache);
+      await WidgetBridge.sync(
+        preferEntries: currentWeekOffset == 1 && paintedFromCache
+            ? calendarEntries
+            : null,
+      );
       return;
     }
 
@@ -2005,12 +2025,25 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
           });
         }
         _setShowingCached(false);
+        await WidgetBridge.sync(
+          preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
+        );
       } else if (paintedFromCache) {
         _setShowingCached(true);
+        await WidgetBridge.sync(
+          preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
+        );
+      } else {
+        await WidgetBridge.sync();
       }
     } catch (e) {
       debugPrint("Hiba a naptár hálózati lekérésekor: $e");
       _setShowingCached(paintedFromCache);
+      await WidgetBridge.sync(
+        preferEntries: currentWeekOffset == 1 && paintedFromCache
+            ? calendarEntries
+            : null,
+      );
     }
   }
 
@@ -2026,6 +2059,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     }
     if (loaded.isEmpty) return false;
     markbookEntries = loaded;
+    final termId = storage.DataCache.getSelectedTermId() ?? '';
+    if (termId.isNotEmpty) {
+      // Ensure current-term cache is available for semester comparison offline.
+      await api.MarkbookRequest.cacheTermSubjects(termId, loaded);
+    }
     return true;
   }
 
@@ -2070,6 +2108,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
         storage.saveString('MarkbookCacheTime', DateTime.now().toString());
         storage.saveString('MarkbookCacheTermId', currentTerm);
         storage.DataCache.setHasCachedMarkbook(1);
+        if (currentTerm.isNotEmpty) {
+          await api.MarkbookRequest.cacheTermSubjects(currentTerm, markbookEntries);
+        }
         await _recordMarkbookWhatsChanged();
         _setShowingCached(false);
       } else if (!paintedFromCache) {
@@ -2523,6 +2564,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     if (state == AppLifecycleState.resumed) {
       // Wall-clock across background: Timer often pauses while suspended.
       api.SessionGuard.checkSessionWallClockOnResume();
+      // Refresh WidgetKit payload from calendar cache (no network / no JWT).
+      WidgetBridge.sync(
+        preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
+      );
     }
   }
 

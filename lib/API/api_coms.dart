@@ -10,6 +10,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
 import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
+import 'package:neptun2/Misc/markbook_math.dart';
 import '../storage.dart' as storage;
 import 'dart:developer' as debug;
 import '../storage.dart';
@@ -2649,6 +2650,7 @@ class MarkbookRequest{
       if (SessionGuard.isAuthBlocked) break;
       final list = await getMarkbookSubjects(termId: t.id);
       if (list == null) continue;
+      await cacheTermSubjects(t.id, list);
       for (final s in list) {
         if (s.grade > 0 || s.completed) {
           out.add((termName: t.termName, subject: s));
@@ -2657,6 +2659,116 @@ class MarkbookRequest{
     }
     return out;
   }
+
+  static String _termCacheLenKey(String termId) => 'CachedMarkbookTerm_${termId}_len';
+  static String _termCacheItemKey(String termId, int i) => 'CachedMarkbookTerm_${termId}_$i';
+
+  /// Persist TakenSubjects for one term (used by semester comparison, cache-first).
+  static Future<void> cacheTermSubjects(String termId, List<Subject> list) async {
+    if (termId.isEmpty) return;
+    await storage.saveInt(_termCacheLenKey(termId), list.length);
+    for (int i = 0; i < list.length; i++) {
+      await storage.saveString(_termCacheItemKey(termId, i), list[i].toString());
+    }
+  }
+
+  static Future<List<Subject>?> loadCachedTermSubjects(String termId) async {
+    if (termId.isEmpty) return null;
+    final len = await storage.getInt(_termCacheLenKey(termId));
+    if (len == null || len < 0) return null;
+    final out = <Subject>[];
+    for (int i = 0; i < len; i++) {
+      final raw = await storage.getString(_termCacheItemKey(termId, i));
+      if (raw == null) continue;
+      out.add(Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(raw));
+    }
+    return out;
+  }
+
+  /// Per-term átlag / /30 / completed credits for side-by-side comparison (plan item 10).
+  /// Cache-first; network only when session is usable. Cap [maxTerms] (default 8).
+  static Future<List<TermComparisonStat>> getSemesterComparison({int maxTerms = 8}) async {
+    if (storage.DataCache.getIsDemoAccount()!) {
+      return [
+        TermComparisonStat(
+          termId: '70876',
+          termName: AppStrings.getLanguagePack().api_demo_Term1,
+          creditSum: 20,
+          average: 4.2,
+          per30: 2.8,
+          fromCache: true,
+        ),
+        TermComparisonStat(
+          termId: '70877',
+          termName: AppStrings.getLanguagePack().api_demo_Term2,
+          creditSum: 24,
+          average: 3.75,
+          per30: 3.0,
+          fromCache: true,
+        ),
+      ];
+    }
+
+    final terms = await TermsRequest.getTerms();
+    if (terms.isEmpty) return [];
+    final slice = terms.length > maxTerms ? terms.sublist(terms.length - maxTerms) : List<Term>.from(terms);
+    // Newest first for the comparison UI.
+    final ordered = slice.reversed.toList();
+    final canFetch = !SessionGuard.isAuthBlocked && storage.DataCache.getHasNetwork();
+    final out = <TermComparisonStat>[];
+
+    for (final t in ordered) {
+      List<Subject>? list = await loadCachedTermSubjects(t.id);
+      bool fromCache = list != null;
+      if ((list == null || list.isEmpty) && canFetch) {
+        list = await getMarkbookSubjects(termId: t.id);
+        if (list != null) {
+          await cacheTermSubjects(t.id, list);
+          fromCache = false;
+        }
+      }
+      if (list == null || list.isEmpty) continue;
+
+      // Same rule as markbook header: completed subjects with grade ≥ 2.
+      final grades = <int>[];
+      final credits = <int>[];
+      for (final s in list) {
+        if (!s.completed) continue;
+        grades.add(s.grade);
+        credits.add(s.credit);
+      }
+      final r = MarkbookMath.fromCompleted(grades: grades, credits: credits);
+      if (r.creditSum <= 0 || r.average.isNaN) continue;
+      out.add(TermComparisonStat(
+        termId: t.id,
+        termName: t.termName,
+        creditSum: r.creditSum,
+        average: r.average,
+        per30: r.per30,
+        fromCache: fromCache,
+      ));
+    }
+    return out;
+  }
+}
+
+/// One row for semester comparison (plan item 10).
+class TermComparisonStat {
+  final String termId;
+  final String termName;
+  final int creditSum;
+  final double average;
+  final double per30;
+  final bool fromCache;
+
+  const TermComparisonStat({
+    required this.termId,
+    required this.termName,
+    required this.creditSum,
+    required this.average,
+    required this.per30,
+    this.fromCache = false,
+  });
 }
 
 class CashinRequest{

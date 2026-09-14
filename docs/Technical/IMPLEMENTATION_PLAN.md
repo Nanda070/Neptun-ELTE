@@ -11,11 +11,11 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + calendar/ICS item **6** + payments honesty item **7** + maps item **8** + What’s Changed item **9** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **10–11**, **14** still backlog |
-| **Release** | Current marketing version **1.4.0** (`pubspec` **1.4.0+1**). Feature line **4** = plan items **5–9** + **12–13** shipped (ghost, calendar/ICS, payments honesty, maps, What’s Changed, student card claim/bank/profile **no QR**, shortcuts). Previous **1.3.4** = mail item **4**. Final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + calendar/ICS item **6** + payments honesty item **7** + maps item **8** + What’s Changed item **9** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Item **10** semester comparison + item **14** iOS WidgetKit MVP shipping in **1.5.0**. Item **11** (Academic Progress / tanterv) **dropped** (no tanterv HAR / not on HWEB). |
+| **Release** | Current marketing version **1.5.0** (`pubspec` **1.5.0+1**). Feature line **5** = plan items **10** + **14** (semester comparison, iOS WidgetKit MVP; Android Glance deferred). Item **11** dropped. Previous **1.4.0** = items **5–9** + **12–13**. Final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
-| **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
+| **HAR-gated** | **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. Academic Progress / tanterv UI was **removed from the plan** (no curriculum XHR on HWEB). |
 
 Product README: [`docs/README.md`](../README.md). Technical map: [`TECHNICAL.md`](TECHNICAL.md). Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md).
 
@@ -25,7 +25,7 @@ Product README: [`docs/README.md`](../README.md). Technical map: [`TECHNICAL.md`
 
 1. [Honesty and invariants](#1-honesty-and-invariants) — [Navigation IA (planned)](#navigation-ia-planned)
 2. [Priority groups (implement in this order)](#2-priority-groups-implement-in-this-order)
-3. [Work items 1a–1c + 1–14](#3-work-items-1a1c--114)
+3. [Work items 1a–1c + 1–14](#3-work-items-1a1c--114) (item **11** removed)
 4. [HAR capture (user-actionable)](#4-har-capture-user-actionable) — [§4.2 captured inventory](#42-captured-inventory-incomplete--2026-09-13) — [§4.3 live Chrome](#43-live-chrome-walk-same-day-logged-in-hallgaton)
 5. [Implementation templates (copy this pattern)](#5-implementation-templates-copy-this-pattern)
 6. [What already exists (cheat sheet)](#6-what-already-exists-cheat-sheet)
@@ -52,7 +52,7 @@ Document what the code **actually** does.
 | Exam / course registration | **Not in the app. Not planned.** Do not add vizsgajelentkezés / tárgyjelentkezés UI. Signup XHRs seen in `finances.har` — **seen but not planned**. |
 | Student card | **Claim / bank / profile in app (item 12).** HAR-honest fields only. **No QR, no card number, no expiry** (web has none either). IBAN/SWIFT never logged. |
 | App shortcuts | **Shipped (13):** Android static shortcuts + iOS Quick Actions — Calendar (0), Mail (3), Payments (4). Cold start via `Splitter` → `HomePage(initialView:)` only if `SessionGuard.isColdStartSessionUsable()`; else login. Maps shortcut **not** included (item 8). |
-| Homescreen widgets | **Removed** (was a stub). Native epic — last. |
+| Homescreen widgets | **iOS WidgetKit MVP** (today’s classes from calendar cache; no JWT). Android Glance deferred. |
 | Live login | Implemented path: portal `Login` → `Login2FA` (TOTP) → `ToNeptunHWeb` → `OuterLogin` JWT on assigned `hallgatoN`. **Do not hardcode N.** Email OTP (`RequestEmailCode` / `CodePrefix`) HAR-known, UI thin. |
 
 **Do not break:** ELTE hub login, TOTP 2FA popup (mode 9), cache-first calendar, room-code tap decode, LanguagePack HU+EN + RU/TR JSON. **1c shipped** — keep bottom at **4** (Calendar \| Markbook \| Periods \| Mail); Payments stays drawer-only (do **not** put Payments back on the bottom bar).
@@ -65,7 +65,7 @@ Document what the code **actually** does.
 |---------|------|
 | Bottom nav | **4 tabs:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Left drawer | Profile, balance, training, **Payments** (above Settings), Settings, … |
-| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.4.0`, no `+build`) at bottom |
+| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.5.0`, no `+build`) at bottom |
 
 Do not re-add Payments to the bottom bar.
 
@@ -101,11 +101,10 @@ Later work is cheaper if earlier items land first.
 | 7 | `totalMoney` accuracy + payment notification antispam | **DONE** (Sep 2026). Paid-outgoing fees + latest-50 label; ≤1/day payment notif |
 | 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
 | 9 | What’s Changed (simple) | **DONE** (Sep 2026). Snapshot mail ids + grade triples; drawer + calendar strip; first install silent. |
-| 10 | Semester comparison | **After** honest markbook (item 2) |
-| 11 | Academic Progress | **STILL blocked** — Sep 2026 HARs have no tanterv graph |
+| 10 | Semester comparison | **DONE** (Sep 2026). Per-term átlag + /30 + credits via `MarkbookMath` / cache-first. |
 | 12 | Student card | **DONE** (Sep 2026). Claim / bank / profile **HAR fields**; QR / number / expiry **still missing** (honest — not invented) |
 | 13 | App shortcuts | **DONE** (Sep 2026). Calendar / Mail / Payments; Maps shortcut optional with item 8 (not shipped). |
-| 14 | Homescreen widgets | **Last** — native Android/iOS epic |
+| 14 | Homescreen widgets | **DONE** (Sep 2026). iOS WidgetKit MVP (cache-only today’s classes). Android Glance deferred. |
 
 ---
 
@@ -296,7 +295,7 @@ Later work is cheaper if earlier items land first.
   `TakenSubjects?request.termId=`, `Subject.credit` / `grade` / `completed` / `subjectCode`, `SELECTED_TermId`, `CACHED_TermsList`.
 
 - **Prerequisites**  
-  None. Official diploma totals / tanterv required-vs-optional → item 11 + HAR.
+  None. Official diploma totals / tanterv required-vs-optional are **out of plan** (no HWEB tanterv API).
 
 - **Done when**  
   A subject with 5 and 3 credits graded 5 and 3 shows átlag `4.25` and /30 `1.33…` ( (25+9)/8 and /30 ), not átlag/30. Accumulated credits rise when other terms have completed subjects already in grade history.
@@ -585,7 +584,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 10. Semester comparison
+### 10. Semester comparison — **DONE**
 
 - **Why**  
   Grade history is a flat list (“Grades from other terms”). Comparison = átlag + /30 + credits **per term**, side by side.
@@ -593,68 +592,28 @@ Later work is cheaper if earlier items land first.
 - **Depends on**  
   **Item 2** (honest per-term math).
 
-- **Already in code**  
-  `getGradeHistoryAcrossTerms`, `TermsRequest.getTerms`, term switcher in drawer (`SELECTED_TermId`), `markbook_gradeHistory_Header`.
+- **Already in code (shipped)**  
+  `MarkbookRequest.getSemesterComparison`, per-term cache `CachedMarkbookTerm_{termId}_*`, `MarkbookMath.fromCompleted`, markbook cards in `MarkbookPageWidget`.
 
-- **What to build**  
-  1. Table/cards: term name, credits completed, átlag, /30 — **same helper as markbook**.  
-  2. Use cached per-term `TakenSubjects` when present; fetch missing terms only with a valid session (item 1).  
-  3. Cap remains ~8 terms unless HAR says otherwise.
-
-- **Where**  
-  `lib/Pages/main_page.dart` (`MarkbookPageWidget`), `lib/API/api_coms.dart` (`getGradeHistoryAcrossTerms`).
-
-- **Via**  
-  `TakenSubjects?request.termId=`, `CACHED_TermsList`.
-
-- **Prerequisites**  
-  Item 2. Not curriculum HAR.
-
-- **Done when**  
-  Two past terms with grades show two different átlag values that match opening that term in the switcher.
-
-- **Out of scope**  
-  Official transcript PDF, tanterv completion % (item 11).
-
----
-
-### 11. Academic Progress — ONLY after live **tanterv** HAR (still missing)
-
-- **Why**  
-  Diploma progress (required vs optional, credits toward the program) is **not** in `TakenSubjects` alone. `GetCurriculums` is an unused old-API-shaped constant.
-
-- **Depends on**  
-  **HAR §4 C** — **not satisfied** by the Sep 2026 set. Items 1–2 for session + credit math. Do **not** start UI from guesswork.
-
-- **Already in code**  
-  `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **never referenced** elsewhere.  
-  Modern terms/subjects as above. No tanterv model.
-
-- **What this capture does *not* unlock**  
-  - `taken courses.har` fired **`GetRegisteredCourses`** (+ dashboard chrome), **not** `TakenSubjects` and **not** tanterv.  
-  - `GET /api/SubjectApplication/Curriculum?subjectType=&termId=` is a **signup curriculum dropdown** (`value` / `text` / `isActualTerm`) — **seen but not planned**.  
-  - Per-subject `SubjectCourse/GetSubjectDetails` has `curriculumTemplateId`, `requirementType`, `credit`, `isCompleted`, `recommendedTerm`, `preRequirement` — useful later, **not** a diploma graph.  
-  - `GET /api/Dashboard/GetAverages` exists but `dashboardAverageItems` was **[]** (official GPA **not** unlocked).
-
-- **What to build** (after a real tanterv HAR)  
-  1. Call the **real** modern tanterv path from that HAR (still may not be `/api/GetCurriculums`).  
-  2. Map required / optional / completed credits.  
-  3. Simple progress UI on the markbook tab or a popup — **not** a new bottom tab (after **1c**: still not a 4th bottom tab).
+- **What was built**  
+  1. Cards: term name, completed credits, átlag, /30 — same `MarkbookMath` as markbook header.  
+  2. Cache-first per-term `TakenSubjects`; network only when session usable (item 1).  
+  3. Cap ~8 terms.
 
 - **Where**  
-  `lib/API/api_coms.dart` (new request class), `lib/Pages/main_page.dart`.
+  `lib/Pages/main_page.dart` (`MarkbookPageWidget`), `lib/API/api_coms.dart` (`getSemesterComparison` / `cacheTermSubjects`).
 
 - **Via**  
-  Still unknown. Do not hardcode `hallgatoN`. Do not treat `SubjectApplication/Curriculum` as tanterv.
+  `TakenSubjects?request.termId=`, `CACHED_TermsList`, `CachedMarkbookTerm_*`.
 
 - **Prerequisites**  
-  **Live tanterv HAR** (Tanulmányok → Tanterv, expand groups). Without it: skip this item.
+  Item 2.
 
 - **Done when**  
-  Numbers match the Neptun tanterv screen for the same training, on a live session.
+  Two past terms with grades show two different átlag values that match opening that term in the switcher. **Met (Sep 2026).**
 
 - **Out of scope**  
-  Building a fake progress bar from current-term credits only (that would be dishonest).
+  Official transcript PDF; tanterv completion % (Academic Progress dropped — no HWEB tanterv).
 
 ---
 
@@ -735,37 +694,40 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 14. Widgets — last, native epic
+### 14. Widgets — **DONE** (iOS WidgetKit MVP; Android deferred)
 
 - **Why**  
-  Homescreen widget was a **stub and was removed**. Real widgets are native (Glance / WidgetKit), need cached timetable **without** a live JWT, and conflict with 10-minute session policy.
+  Homescreen widget was a **stub and was removed**. Real widgets need cached timetable **without** a live JWT, and must stay honest about the **10-minute** session (widget never refreshes from network).
 
 - **Depends on**  
   Items 1 and 3 (cache honesty + clean week data). Prefer after 13.
 
-- **Already in code**  
-  None. TECHNICAL honesty: “Homescreen widget | Removed | Was a stub”.
+- **Already in code (shipped)**  
+  - Dart: `lib/widget_bridge.dart` exports today’s classes JSON (title/start/end/location only) after calendar cache paint.  
+  - iOS: `TodayClassesWidget` WidgetKit extension + App Group `group.com.nanda070.neptunmobile`; tap `neptunelte://shortcut/calendar`.  
+  - Android Glance: **not shipped** (deferred).
 
-- **What to build**  
-  1. Android + iOS widgets: **today’s classes** from `CachedCalendar_w*` only.  
-  2. Tap → app (item 13 deep link).  
-  3. If cache missing: “Open Neptun ELTE”.  
-  4. No JWT inside the widget process.
+- **What was built**  
+  1. iOS widget: **today’s classes** from calendar cache export (no JWT in widget process).  
+  2. Tap → app calendar (item 13 shortcut path).  
+  3. Missing cache: “Open Neptun ELTE”. Stale day: “Stale” / refresh footer.  
+  4. Empty day: “No classes today” + cached footer.
 
 - **Where**  
-  New native modules under `android/` and `ios/`; small Dart cache export. Do not revive the old stub.
+  `lib/widget_bridge.dart`, `ios/TodayClassesWidget/*`, `ios/Runner/AppDelegate.swift`, `Runner.entitlements`.
 
 - **Via**  
-  SharedPreferences calendar strings / an App Group on iOS.
+  App Group UserDefaults JSON; Flutter MethodChannel `com.nanda070.neptun_mobile.app/widget`.
 
 - **Prerequisites**  
-  Native widget work, iOS App Group signing, Android glance/widget ids. Legal: local cache only.
+  App Group on team `48FW5533N7`. Legal: local cache only.
 
 - **Done when**  
-  Widget shows today’s cached classes after the app has opened that week once; stale cache labeled as stale.
+  Widget shows today’s cached classes after the app has opened that week once; stale labeled. **Met for iOS (Sep 2026).**
 
 - **Out of scope**  
-  Live-updating widget from Neptun every minute. Exam / course registration (not planned).
+  Live network in the widget process; Android Glance (document as deferred); inventing grades/mail in the widget.
+
 
 ---
 
@@ -811,14 +773,14 @@ User provided **8 HARs** (not copied into git). They did **not** click every but
 | `profile.har` | `PersonalData/GetGeneralUserData`, `GetStudentPersonalDataContacts`, `GetStudentPersonalDocuments`, `GetStudentAddressDetails`, `GetStudentEmailDetails`, language/guest/parallel/pref. treatment/statements/GDPR/history; `BankAccount/GetBankAccountDetails`, `GetDefaultBankAccountNumber`; `UserProfile/GetUserProfileSettings`, `GetDefaultAvatars` | **Item 12** profile + bank field names. **Not** QR / card number. Documents here: Passport + residence permit. |
 | `administration.har` | `StudentCard/StudentCardClaimProcess`, `GetStudentAddress`, `GetStudentCardPreviousClaims` (empty); `RequestForm/*`; `Questionnaires/*`; `GET /api/administration/semiannualregistration/semesters` | **Item 12** claim / NEK / FIR **status** (not wallet). Request forms / questionnaires / term registration = extras, not gated items. |
 | `information.har` | `RoomSchedule/{GetBuildings,GetSites,GetOrganizations,GetRoomsSchedules}`; `Queries/*`; `FIR/GetStudentFIRData` (**410**); `POST ContextUserProfile/SaveFilter` | **Item 8** optional campus rooms. FIR dead. **Not** tanterv. |
-| `taken courses.har` | Dashboard `GetAverages` (items **[]**), `GetAverageTypesDescription`, `GetUpcomingEvents`, `ExamOverview/*`; **`GetRegisteredCourses` only** | **Does not** unlock item 11. Official GPA **not** filled. App already has RegisteredCourses. |
+| `taken courses.har` | Dashboard `GetAverages` (items **[]**), `GetAverageTypesDescription`, `GetUpcomingEvents`, `ExamOverview/*`; **`GetRegisteredCourses` only** | Official GPA **not** filled. App already has RegisteredCourses. Academic Progress **dropped** from plan. |
 | `calendar+subjects.har` | `Calendar/GetLinksForCalendarExport`; `GetNewAllAppointmentInvitations`; `ContextUserProfile/GetCalendarSelectedTypes` + `GetCalendarSelectedView`; `SubjectCourse/GetSubjectDetails` + `GetCourseDetails` + tutors + course list | **Item 6** official ICS/webcal URL. Course `language` / `teachingMethod`. **No teacher email.** Per-subject curriculum fields ≠ tanterv graph. |
 | `messages.har` / `messages2.har` | `Message/GetReceivedArchivedMessages`, `GetSentMessages`, `GetMessageRelatedSettings`, `GetMessageLimitSetting`, `GetMessageSendingSettings`; `General/GetUsersAvatar`; `UserSearch/GetUsers` | **Item 4** extras (archive/sent/settings/search). `filterType` still **0**. Unread-only **not** seen. |
 | `finances.har` | `FinancialItem/GetItemsToBePayed` (**[]**) + `AdditionalData`; `GetStudentTransactionDetails`; `GetStudentPreviousTransactionsFilters`; `FinancialBonuses/*` (empty); `FinancialOptions/GetStudentLoan2Data`; `BankAccount/GetUserBankAccountTabList` + `GetBankAccountPermissions`; `EnvironmentData` (`sessionTimeoutInMinutes=15`, `accessTokenExpirationInMinutes=5`); `UserInfo` (full shape); **SubjectApplication/\*** | **Item 7** unpaid list + detail + filters. **Item 12** bank list. Session timeouts vs app 10 min wall clock. Signup block = seen, not planned. |
 
 **SPA chrome also seen (ignore for features):** `ContextUserProfile/GetColumnOrder*`, `GetFilter`, `Dashboard/GetNews`, `GetActiveDomainPasswordExpiration`, `Translations`, `Permissions`, `ExtendedMenuPermissions`, `Profiles/Favourites`.
 
-**UserInfo / avatar / curriculum / card / bank — field names that decide items 11–12**
+**UserInfo / avatar / curriculum / card / bank — field names (item 12; Academic Progress dropped)**
 
 | Topic | Verdict | Field names (no values) |
 |-------|---------|-------------------------|
@@ -991,4 +953,4 @@ Agents implementing any item above should follow this, not invent a second archi
 
 ---
 
-*End of plan. If this disagrees with the code, the code wins. Tanterv / Academic Progress and student-card QR stay blocked. Bank + claim field names are captured (incomplete). Exam / course registration is not planned — do not add it back.*
+*End of plan. If this disagrees with the code, the code wins. Academic Progress / tanterv was **dropped** (no HWEB API). Student-card QR stays unavailable. Bank + claim field names are captured (incomplete). Exam / course registration is not planned — do not add it back.*

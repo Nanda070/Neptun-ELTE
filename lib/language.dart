@@ -344,6 +344,10 @@ class AppStrings{
       calendar_break_hoursMinutes: '%0 óra %1 perc',
       markbook_myCourses_Header: 'Felvett kurzusok',
       markbook_gradeHistory_Header: 'Jegyek más félévekből',
+      markbook_semesterCompare_Header: 'Félévek összehasonlítása',
+      markbook_semesterCompare_AvgLabel: 'Átlag',
+      markbook_semesterCompare_Per30Label: '/30',
+      markbook_semesterCompare_CreditsLabel: 'Kredit',
       payment_invoices_Header: 'Gyűjtőszámlák',
       mail_translate_EN: 'Fordítás EN',
       mail_translate_RU: 'Fordítás RU',
@@ -723,6 +727,10 @@ class AppStrings{
       calendar_break_hoursMinutes: '%0 h %1 min',
       markbook_myCourses_Header: 'My courses',
       markbook_gradeHistory_Header: 'Grades from other terms',
+      markbook_semesterCompare_Header: 'Semester comparison',
+      markbook_semesterCompare_AvgLabel: 'Average',
+      markbook_semesterCompare_Per30Label: '/30',
+      markbook_semesterCompare_CreditsLabel: 'Credits',
       payment_invoices_Header: 'Collective invoices',
       mail_translate_EN: 'Translate EN',
       mail_translate_RU: 'Translate RU',
@@ -1376,6 +1384,10 @@ class LanguagePack{
   final String calendar_break_hoursMinutes;
   final String markbook_myCourses_Header;
   final String markbook_gradeHistory_Header;
+  final String markbook_semesterCompare_Header;
+  final String markbook_semesterCompare_AvgLabel;
+  final String markbook_semesterCompare_Per30Label;
+  final String markbook_semesterCompare_CreditsLabel;
   final String payment_invoices_Header;
   final String mail_translate_EN;
   final String mail_translate_RU;
@@ -1693,6 +1705,10 @@ class LanguagePack{
     required this.calendar_break_hoursMinutes,
     required this.markbook_myCourses_Header,
     required this.markbook_gradeHistory_Header,
+    required this.markbook_semesterCompare_Header,
+    required this.markbook_semesterCompare_AvgLabel,
+    required this.markbook_semesterCompare_Per30Label,
+    required this.markbook_semesterCompare_CreditsLabel,
     required this.payment_invoices_Header,
     required this.mail_translate_EN,
     required this.mail_translate_RU,
@@ -2096,6 +2112,10 @@ class LanguagePack{
         calendar_break_hoursMinutes: getStr('calendar_break_hoursMinutes', en.calendar_break_hoursMinutes),
         markbook_myCourses_Header: getStr('markbook_myCourses_Header', en.markbook_myCourses_Header),
         markbook_gradeHistory_Header: getStr('markbook_gradeHistory_Header', en.markbook_gradeHistory_Header),
+        markbook_semesterCompare_Header: getStr('markbook_semesterCompare_Header', en.markbook_semesterCompare_Header),
+        markbook_semesterCompare_AvgLabel: getStr('markbook_semesterCompare_AvgLabel', en.markbook_semesterCompare_AvgLabel),
+        markbook_semesterCompare_Per30Label: getStr('markbook_semesterCompare_Per30Label', en.markbook_semesterCompare_Per30Label),
+        markbook_semesterCompare_CreditsLabel: getStr('markbook_semesterCompare_CreditsLabel', en.markbook_semesterCompare_CreditsLabel),
         payment_invoices_Header: getStr('payment_invoices_Header', en.payment_invoices_Header),
         mail_translate_EN: getStr('mail_translate_EN', en.mail_translate_EN),
         mail_translate_RU: getStr('mail_translate_RU', en.mail_translate_RU),
@@ -2546,6 +2566,10 @@ class LanguagePack{
       'calendar_break_hoursMinutes':lang.calendar_break_hoursMinutes,
       'markbook_myCourses_Header':lang.markbook_myCourses_Header,
       'markbook_gradeHistory_Header':lang.markbook_gradeHistory_Header,
+      'markbook_semesterCompare_Header':lang.markbook_semesterCompare_Header,
+      'markbook_semesterCompare_AvgLabel':lang.markbook_semesterCompare_AvgLabel,
+      'markbook_semesterCompare_Per30Label':lang.markbook_semesterCompare_Per30Label,
+      'markbook_semesterCompare_CreditsLabel':lang.markbook_semesterCompare_CreditsLabel,
       'payment_invoices_Header':lang.payment_invoices_Header,
       'mail_translate_EN':lang.mail_translate_EN,
       'mail_translate_RU':lang.mail_translate_RU,

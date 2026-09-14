@@ -12,11 +12,11 @@
 
 |                      |                                                                                                                                                                                                                                |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4** + ghost п. **5** + календарь/ICS п. **6** + платежи п. **7** + карты п. **8** + «Что изменилось» п. **9** + студенческий п. **12** + app shortcuts п. **13 сделан** (сен 2026). Пункты **10–11**, **14** ещё в бэклоге                                                                                                                                                   |
-| **Релиз**            | Текущая маркетинговая версия **1.4.0** (`pubspec` **1.4.0+1**). Feature-line **4** = пункты плана **5–9** + **12–13** (ghost, календарь/ICS, честность платежей, карты, «Что изменилось», студенческий заявка/банк/профиль **без QR**, shortcuts). Предыдущая **1.3.4** = почта п. **4**. Финал → **2.0.0**. Для пользователя / Settings / docs — только три числа, без рекламы `+build`. См. [TECHNICAL § Версионирование](TECHNICAL.ru.md#версионирование). |
+| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4** + ghost п. **5** + календарь/ICS п. **6** + платежи п. **7** + карты п. **8** + «Что изменилось» п. **9** + студенческий п. **12** + app shortcuts п. **13 сделан** (сен 2026). П. **10** сравнение семестров + п. **14** iOS WidgetKit MVP в **1.5.0**. П. **11** (Academic Progress / tanterv) **снят** (нет HAR tanterv / нет на HWEB).                                                                                                                                                   |
+| **Релиз**            | Текущая маркетинговая версия **1.5.0** (`pubspec` **1.5.0+1**). Feature-line **5** = пункты **10** + **14** (сравнение семестров, iOS WidgetKit MVP; Android Glance отложен). П. **11** снят. Предыдущая **1.4.0** = п. **5–9** + **12–13**. Финал → **2.0.0**. Для пользователя / Settings / docs — только три числа, без рекламы `+build`. См. [TECHNICAL § Версионирование](TECHNICAL.ru.md#версионирование). |
 | **Порядок**          | Делать строго по номерам групп. Поздние фичи опираются на честность (**1a** повторный вход после logout, **1b** wall-clock в фоне, **1c** nav IA, сессия, кэш, формула зачётки, `messageId`).                                                                            |
 | **Живой логин ELTE** | В коде есть путь portal + TOTP + OuterLogin. Считать **working MVP, не исчерпывающе перепроверено** на всех устройствах. Email OTP известен по HAR, UI тонкий. Если Student web **full** — мост падает даже после верного 2FA. |
-| **Только после HAR** | **Граф tanterv / Academic Progress** всё ещё закрыт (нет XHR учебного плана). **QR / номер / срок студенческого** не сняты. **Банк + заявка на карту (NEK/FIR) + имена полей профиля** сняты 2026-09-13 (неполно — кликнуты не все кнопки). Запись на экзамен / курс **не планируем**. |
+| **Только после HAR** | **QR / номер / срок студенческого** не сняты. **Банк + заявка на карту (NEK/FIR) + имена полей профиля** сняты 2026-09-13 (неполно — кликнуты не все кнопки). Запись на экзамен / курс **не планируем**. Academic Progress / tanterv UI **снят с плана** (на HWEB нет curriculum XHR). |
 
 
 Продуктовый README: `[docs/README.ru.md](../README.ru.md)`. Техническая карта: `[TECHNICAL.ru.md](TECHNICAL.ru.md)`. Дневник: `[DEV_BLOG.ru.md](DEV_BLOG.ru.md)`.
@@ -58,7 +58,7 @@
 | Tanterv                  | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — на живом HWEB **404** (старый MobileService). Отдельного меню **Tanterv нет**. Прогресс: **Studies → Advancement**. `GetStudentCurriculumTemplates` и `creditprogress` в этом семестре **пустые**. Официальные *подписи* средних — `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` — выпадающий список записи (видно, не планируем). |
 | Запись на экзамен / курс | **В приложении нет. Не планируем.** Не возвращать UI vizsgajelentkezés / tárgyjelentkezés. XHR записи в `finances.har` — **видно, но не планируем**. |
 | Студенческий             | **Заявка / банк / профиль в приложении (п. 12).** Только HAR-поля. **Нет QR, номера карты, срока** (на вебе тоже нет). IBAN/SWIFT не логируются. |
-| Виджеты на рабочем столе | **Удалены** (был stub). Нативный эпик — в конце.                                                                                                                                                                                                                                                     |
+| Виджеты на рабочем столе | **iOS WidgetKit MVP** (пары сегодня из кэша календаря; без JWT). Android Glance отложен.                                                                                                                                                                                                                                                     |
 | App shortcuts | **Сделано (13):** Android static shortcuts + iOS Quick Actions — Calendar (0), Mail (3), Payments (4). Cold start: `Splitter` → `HomePage(initialView:)` только при `SessionGuard.isColdStartSessionUsable()`; иначе логин. Shortcut карт **нет** (п. 8). |
 | Живой логин              | Portal `Login` → `Login2FA` (TOTP) → `ToNeptunHWeb` → `OuterLogin` JWT на выданном `hallgatoN`. **N не хардкодить.** Email OTP (`RequestEmailCode` / `CodePrefix`) — HAR есть, UI тонкий.                                                                                                            |
 
@@ -73,7 +73,7 @@
 |-------------|-----|
 | Нижний nav | **4 вкладки:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Левый drawer | Профиль, баланс, training, **Payments** (над Settings), Settings, … |
-| Settings | … существующие переключатели; **Contacts** + маркетинговая версия (`1.4.0`, без `+build`) внизу |
+| Settings | … существующие переключатели; **Contacts** + маркетинговая версия (`1.5.0`, без `+build`) внизу |
 
 Не возвращать Payments на нижнюю панель.
 
@@ -118,11 +118,10 @@
 | 7   | Точность `totalMoney` + антиспам платёжных нотификаций            | **СДЕЛАНО** (сен 2026). Оплаченные исходящие + подпись «последние 50»; ≤1/день |
 | 8   | Deep-link карт на LD/LE/LK                                        | **СДЕЛАНО** (сен 2026). После полировки календаря; `elte_room_code.dart` |
 | 9   | «Что изменилось» (простое)                                        | **СДЕЛАНО** (сен 2026). Снимок id писем + троек оценок; drawer + полоса календаря; первый запуск без баннера. |
-| 10  | Сравнение семестров                                               | **После** честной зачётки (п. 2)                 |
-| 11  | Academic Progress                                                 | **Всё ещё закрыт** — в HAR сент. 2026 нет графа tanterv |
+| 10  | Сравнение семестров                                               | **СДЕЛАНО** (сен 2026). Átlag + /30 + кредиты по семестрам через `MarkbookMath` / cache-first. |
 | 12  | Студенческий                                                      | **СДЕЛАНО** (сент. 2026). Заявка / банк / профиль **HAR-поля**; QR / номер / срок **по-прежнему нет** (честно — не выдумываем) |
 | 13  | App shortcuts                                                     | **СДЕЛАНО** (сен 2026). Календарь / Почта / Платежи; Maps — опционально с п. 8 (не сделан). |
-| 14  | Виджеты                                                           | **Последними** — нативный Android/iOS эпик       |
+| 14  | Виджеты                                                           | **СДЕЛАНО** (сен 2026). iOS WidgetKit MVP (только кэш). Android Glance отложен. |
 
 
 ---
@@ -304,7 +303,7 @@ Auth: `getAccessToken`, `getRefreshToken`, `GetNewTokens`.
 - **Через что / Via**  
 `TakenSubjects?request.termId=`, поля `Subject`, `SELECTED_TermId`, `CACHED_TermsList`.
 - **Нужно заранее / Prerequisites**  
-Нет. Официальные итоги диплома / обязательные vs факультатив — п. 11 + HAR.
+Нет. Официальные итоги диплома / tanterv **вне плана** (на HWEB нет API).
 - **Готово когда / Done when**  
 Предметы 5 кр на 5 и 3 кр на 3 дают átlag `4.25` и /30 `1.33…` ((25+9)/8 и /30), не átlag/30. Накопленные кредиты растут, если в истории других семестров уже есть сданные предметы.
 - **Не делать / Out of scope**  
@@ -548,66 +547,34 @@ Push, дайджест на почту, changelog сервера Neptun.
 
 
 
-### 10. Сравнение семестров
+### 10. Сравнение семестров — **СДЕЛАНО**
 
 - **Зачем / Why**  
 История оценок — плоский список. Сравнение = átlag + /30 + кредиты **по семестрам** рядом.
 - **Зависит от / Depends on**  
 **П. 2** (честная математика на семестр).
-- **Уже есть в коде / Already in code**  
-`getGradeHistoryAcrossTerms`, `TermsRequest.getTerms`, переключатель семестра в drawer, `markbook_gradeHistory_Header`.
-- **Что сделать / What to build**  
-  1. Карточки/таблица: имя семестра, сданные кредиты, átlag, /30 — **тот же хелпер, что зачётка**.
-  2. Кэш `TakenSubjects` по семестрам; недостающие — только при валидной сессии.
-  3. Потолок ~8 семестров, пока HAR не скажет иначе.
+- **Уже есть в коде / Already in code (сделано)**  
+`MarkbookRequest.getSemesterComparison`, кэш `CachedMarkbookTerm_{termId}_*`, `MarkbookMath.fromCompleted`, карточки в `MarkbookPageWidget`.
+- **Что сделано / What was built**  
+  1. Карточки: имя семестра, сданные кредиты, átlag, /30 — тот же `MarkbookMath`.
+  2. Cache-first по семестрам; сеть только при живой сессии.
+  3. Потолок ~8 семестров.
 - **Где / Where**  
-`MarkbookPageWidget`, `getGradeHistoryAcrossTerms`.
+`MarkbookPageWidget`, `getSemesterComparison` / `cacheTermSubjects`.
 - **Через что / Via**  
-`TakenSubjects?request.termId=`, `CACHED_TermsList`.
+`TakenSubjects?request.termId=`, `CACHED_TermsList`, `CachedMarkbookTerm_*`.
 - **Нужно заранее / Prerequisites**  
-П. 2. HAR tanterv не нужен.
+П. 2.
 - **Готово когда / Done when**  
-Два прошлых семестра с оценками дают два разных átlag, совпадающих с переключателем семестра.
+Два прошлых семестра с оценками дают два разных átlag, совпадающих с переключателем. **Выполнено (сен 2026).**
 - **Не делать / Out of scope**  
-PDF транскрипта, % выполнения tanterv (п. 11).
+PDF транскрипта; % tanterv (Academic Progress снят с плана — на HWEB нет).
 
 ---
 
 
 
-### 11. Academic Progress — ТОЛЬКО после живого HAR по **tanterv** (всё ещё нет)
-
-- **Зачем / Why**  
-Прогресс к диплому (обязательные / факультатив, кредиты программы) **не** выводится из одного `TakenSubjects`. `GetCurriculums` — неиспользуемая константа в стиле старого API.
-- **Зависит от / Depends on**  
-**HAR §4 C** — набор сент. 2026 **не закрывает** гейт. П. 1–2 для сессии и кредитов. **Не** начинать UI наугад.
-- **Уже есть в коде / Already in code**  
-`URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **больше нигде нет**. Модели tanterv нет.
-- **Что этот захват *не* открывает**  
-  - `taken courses.har` вызвал **`GetRegisteredCourses`** (+ дашборд), **не** `TakenSubjects` и **не** tanterv.  
-  - `GET /api/SubjectApplication/Curriculum?subjectType=&termId=` — **выпадающий список записи** (`value` / `text` / `isActualTerm`) — **видно, но не планируем**.  
-  - У предмета `SubjectCourse/GetSubjectDetails` есть `curriculumTemplateId`, `requirementType`, `credit`, `isCompleted`, `recommendedTerm`, `preRequirement` — потом пригодится, это **не** граф диплома.  
-  - `GET /api/Dashboard/GetAverages` есть, но `dashboardAverageItems` был **[]** (официальный GPA **не** открыт).
-- **Что сделать / What to build** (после настоящего HAR tanterv)  
-  1. Вызвать **реальный** modern-путь tanterv из того HAR (это всё ещё может быть не `/api/GetCurriculums`).
-  2. Обязательные / необязательные / закрытые кредиты.
-  3. Простой прогресс на вкладке зачётки или в popup — **не** новая нижняя вкладка (после **1c**: всё ещё не 4-я нижняя).
-- **Где / Where**  
-Новый request-класс в `lib/API/api_coms.dart`, UI в `main_page.dart`.
-- **Через что / Via**  
-По-прежнему неизвестно. `hallgatoN` не хардкодить. `SubjectApplication/Curriculum` tanterv **не** считать.
-- **Нужно заранее / Prerequisites**  
-**Живой HAR tanterv** (Tanulmányok → Tanterv, раскрыть группы). Без него пункт пропускаем.
-- **Готово когда / Done when**  
-Цифры совпадают с экраном tanterv на сайте для того же training, на живой сессии.
-- **Не делать / Out of scope**  
-Фейковый прогресс-бар из кредитов текущего семестра (это ложь).
-
----
-
-
-
-### 12. Студенческий — заявка / банк / профиль — **DONE** (нет QR)
+### 12.### 12. Студенческий — заявка / банк / профиль — **DONE** (нет QR)
 
 - **Зачем / Why**  
 В drawer уже есть **имя** и **фото**. HAR сент. 2026 называют банк и поля **заявки** на карту. Они **не** дают wallet QR, номер пластика и срок. Это не выдумывать.
@@ -670,29 +637,31 @@ Siri / App Intents, виджеты Android (п. 14), Maps / next-room shortcut (
 
 
 
-### 14. Виджеты — последними, нативный эпик
+### 14. Виджеты — **СДЕЛАНО** (iOS WidgetKit MVP; Android отложен)
 
 - **Зачем / Why**  
-Виджет на рабочем столе был **заглушкой и удалён**. Настоящие виджеты — native (Glance / WidgetKit), им нужен кэш расписания **без** живого JWT и они конфликтуют с политикой 10-минутной сессии.
+Виджет на рабочем столе был **заглушкой и удалён**. Нужен кэш расписания **без** живого JWT и честность про **10-минутную** сессию (виджет не ходит в сеть).
 - **Зависит от / Depends on**  
-П. 1 и 3. Лучше после п. 13.
-- **Уже есть в коде / Already in code**  
-Ничего. TECHNICAL: «Homescreen widget | Удалён | Был stub».
-- **Что сделать / What to build**  
-  1. Android + iOS: **пары сегодня** только из `CachedCalendar_w`*.
-  2. Тап → приложение (deep-link п. 13).
-  3. Нет кэша: «Откройте Neptun ELTE».
-  4. JWT в процессе виджета не хранить.
+П. 1 и 3. Лучше после 13.
+- **Уже есть в коде / Already in code (сделано)**  
+  - Dart: `lib/widget_bridge.dart` — JSON сегодняшних пар (title/start/end/location) после кэша календаря.  
+  - iOS: `TodayClassesWidget` + App Group `group.com.nanda070.neptunmobile`; тап `neptunelte://shortcut/calendar`.  
+  - Android Glance: **не сделан** (отложен).
+- **Что сделано / What was built**  
+  1. iOS: пары **сегодня** из кэша (без JWT в процессе виджета).  
+  2. Тап → календарь (путь shortcuts п. 13).  
+  3. Нет кэша: «Open Neptun ELTE». Stale — пометка.  
+  4. Пустой день: «No classes today».
 - **Где / Where**  
-Новые native-модули в `android/` и `ios/`; маленький Dart-экспорт кэша. Старый stub не воскрешать.
+`lib/widget_bridge.dart`, `ios/TodayClassesWidget/*`, `AppDelegate.swift`.
 - **Через что / Via**  
-SharedPreferences строк календаря / App Group на iOS.
+App Group UserDefaults; MethodChannel `com.nanda070.neptun_mobile.app/widget`.
 - **Нужно заранее / Prerequisites**  
-Native widget work, iOS App Group, id виджета Android. Legal: только локальный кэш.
+App Group на team `48FW5533N7`. Legal: только локальный кэш.
 - **Готово когда / Done when**  
-Виджет показывает сегодняшние пары после того, как приложение один раз открыло эту неделю; протухший кэш подписан как stale.
+Виджет показывает кэшированные пары после открытия недели в приложении; stale помечен. **Выполнено для iOS (сен 2026).**
 - **Не делать / Out of scope**  
-Живой опрос Neptun каждую минуту. Запись на экзамен / курс (не планируем).
+Сеть в процессе виджета; Android Glance (документируем как отложенный); оценки/почта в виджете.
 
 ---
 
@@ -739,7 +708,7 @@ HAR нужен для REST, которых **нет** в приложении. �
 | `profile.har` | `PersonalData/GetGeneralUserData`, `GetStudentPersonalDataContacts`, `GetStudentPersonalDocuments`, `GetStudentAddressDetails`, `GetStudentEmailDetails`, язык/гость/параллель/льготы/заявления/GDPR/история; `BankAccount/GetBankAccountDetails`, `GetDefaultBankAccountNumber`; `UserProfile/GetUserProfileSettings`, `GetDefaultAvatars` | **П. 12** имена полей профиля + банка. **Не** QR / номер карты. Документы здесь: Passport + residence permit. |
 | `administration.har` | `StudentCard/StudentCardClaimProcess`, `GetStudentAddress`, `GetStudentCardPreviousClaims` (пусто); `RequestForm/*`; `Questionnaires/*`; `GET /api/administration/semiannualregistration/semesters` | **П. 12** статус заявки / NEK / FIR (**не** wallet). Заявки / анкеты / регистрация семестра — extras, не гейты. |
 | `information.har` | `RoomSchedule/{GetBuildings,GetSites,GetOrganizations,GetRoomsSchedules}`; `Queries/*`; `FIR/GetStudentFIRData` (**410**); `POST ContextUserProfile/SaveFilter` | **П. 8** опционально аудитории кампуса. FIR мёртв. **Не** tanterv. |
-| `taken courses.har` | Дашборд `GetAverages` (items **[]**), `GetAverageTypesDescription`, `GetUpcomingEvents`, `ExamOverview/*`; **только `GetRegisteredCourses`** | **Не** открывает п. 11. Официальный GPA **не** заполнен. RegisteredCourses в приложении уже есть. |
+| `taken courses.har` | Дашборд `GetAverages` (items **[]**), `GetAverageTypesDescription`, `GetUpcomingEvents`, `ExamOverview/*`; **только `GetRegisteredCourses`** | Официальный GPA **не** заполнен. RegisteredCourses уже есть. Academic Progress **снят** с плана. |
 | `calendar+subjects.har` | `Calendar/GetLinksForCalendarExport`; `GetNewAllAppointmentInvitations`; `ContextUserProfile/GetCalendarSelectedTypes` + `GetCalendarSelectedView`; `SubjectCourse/GetSubjectDetails` + `GetCourseDetails` + тьюторы + список курсов | **П. 6** официальный ICS/webcal URL. У курса `language` / `teachingMethod`. **Нет email преподавателя.** Поля curriculum у предмета ≠ граф tanterv. |
 | `messages.har` / `messages2.har` | `Message/GetReceivedArchivedMessages`, `GetSentMessages`, `GetMessageRelatedSettings`, `GetMessageLimitSetting`, `GetMessageSendingSettings`; `General/GetUsersAvatar`; `UserSearch/GetUsers` | **П. 4** extras (архив/исходящие/настройки/поиск). `filterType` всё ещё **0**. Unread-only **не** видели. |
 | `finances.har` | `FinancialItem/GetItemsToBePayed` (**[]**) + `AdditionalData`; `GetStudentTransactionDetails`; `GetStudentPreviousTransactionsFilters`; `FinancialBonuses/*` (пусто); `FinancialOptions/GetStudentLoan2Data`; `BankAccount/GetUserBankAccountTabList` + `GetBankAccountPermissions`; `EnvironmentData` (`sessionTimeoutInMinutes=15`, `accessTokenExpirationInMinutes=5`); `UserInfo` (полная форма); **SubjectApplication/\*** | **П. 7** неоплаченные + детали + фильтры. **П. 12** список банков. Таймауты сессии vs 10 мин wall clock приложения. Блок записи = видно, не планируем. |
@@ -947,4 +916,4 @@ HAR нужен для REST, которых **нет** в приложении. �
 
 ---
 
-*Конец плана. Если расходится с кодом — побеждает код. Tanterv / Academic Progress и QR студенческого остаются закрытыми. Банк + поля заявки сняты (неполно). Запись на экзамен / курс не планируем — не возвращать.*
+*Конец плана. Если расходится с кодом — побеждает код. Academic Progress / tanterv **снят** (нет API на HWEB). QR студенческого по-прежнему нет. Банк + поля заявки сняты (неполно). Запись на экзамен / курс не планируем — не возвращать.*

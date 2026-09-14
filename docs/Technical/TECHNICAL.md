@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.4.0+1** — user-facing / Settings / docs = **1.4.0** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.5.0+1** — user-facing / Settings / docs = **1.5.0** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.4.0`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.0`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -77,7 +77,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.4.0** | **Current.** Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
+| **1.5.0** | **Current.** Feature line **5** — plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android Glance deferred). Item **11** (Academic Progress / tanterv) **dropped**. |
+| **1.4.0** | Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
 | **1.4.1**, … | Patches on feature line **4**. Next big block after **1.4.x** → **1.5.0**. |
@@ -197,7 +198,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.4.0` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.0` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -390,7 +391,7 @@ Week view, `getUserWeekOffset()`, first study week `getFirstWeekEpoch()` from `g
 
 ### 10.2 Markbook
 
-Subjects tab = markbook: taken subjects (with subject codes), credits, grades, ghost grade (popup 0), confetti. Shared math in `lib/Misc/markbook_math.dart` (**plan item 2**): **Átlag / Average** = `Σ(grade × credit) / Σ(credit)` for completed `grade >= 2`; **/30** = `Σ(grade × credit) / 30` (same numerator — **not** átlag÷30). Header shows this-term credits **and** accumulated completed credits (deduped by `subjectCode` across `getGradeHistoryAcrossTerms`). UI labels say `/30` explicitly; note: **app-computed**, not official Neptun KKI/GPA (`GetAverages` was empty in Sep 2026 HAR). Also lists **My courses** (`GetRegisteredCourses`) and a compact **grade history** across recent terms.
+Subjects tab = markbook: taken subjects (with subject codes), credits, grades, ghost grade (popup 0), confetti. Shared math in `lib/Misc/markbook_math.dart` (**plan item 2**): **Átlag / Average** = `Σ(grade × credit) / Σ(credit)` for completed `grade >= 2`; **/30** = `Σ(grade × credit) / 30` (same numerator — **not** átlag÷30). Header shows this-term credits **and** accumulated completed credits (deduped by `subjectCode` across `getGradeHistoryAcrossTerms`). **Semester comparison** (**plan item 10**): per-term cards via `getSemesterComparison` / `CachedMarkbookTerm_*` (cache-first; same `MarkbookMath`). UI labels say `/30` explicitly; note: **app-computed**, not official Neptun KKI/GPA (`GetAverages` was empty in Sep 2026 HAR). Also lists **My courses** (`GetRegisteredCourses`) and a compact **grade history** across recent terms.
 
 ### 10.3 Payments / periods / mail
 
@@ -441,7 +442,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | Old API 2FA | **None** | |
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
-| Homescreen widget | **Removed** | Was a stub |
+| Homescreen widget | **iOS WidgetKit MVP** | Today’s classes from calendar cache (App Group); no JWT. Android Glance deferred |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | APK / Play update | **Android only** | Hidden on iOS |
 | Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
@@ -617,7 +618,7 @@ CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK. `.github/workflows/
 | zoligamer branding | Stripped (packages, funding, theme/language URLs) |
 | Pirate + DE/RO/UA/AR/ES/ZH | Removed from language catalog |
 | `linux/` | Removed |
-| Homescreen widget stub | Removed |
+| Homescreen widget | iOS WidgetKit MVP (Android deferred) |
 | `AppUpdateHelper` / `appMinimumAllowedVersion.json` | Removed (dead version-gate) |
 | `cupertino_icons`, `change_app_package_name` | Dropped from pubspec |
 | ICS from first setup screen | Not wired |

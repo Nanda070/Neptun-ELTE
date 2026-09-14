@@ -55,7 +55,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Мобильный клиент логинится и зовёт modern JWT API на **`https://neptun.elte.hu`**, не конкретный `hallgatoN`.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.4.0+1** — для пользователя / Settings / docs = **1.4.0** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.5.0+1** — для пользователя / Settings / docs = **1.5.0** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -67,7 +67,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.4.0`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.0`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -77,7 +77,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.4.0** | **Текущая.** Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
+| **1.5.0** | **Текущая.** Feature-line **5** — пункты **10** (сравнение семестров) + **14** (iOS WidgetKit MVP; Android Glance отложен). П. **11** (Academic Progress / tanterv) **снят**. |
+| **1.4.0** | Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
 | **1.4.1**, … | Патчи на линии **4**. Следующий крупный блок после **1.4.x** → **1.5.0**. |
@@ -197,7 +198,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.4.0` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.0` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -390,7 +391,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 ### 10.2 Зачётка
 
-Вкладка «Предметы» = зачётка: взятые предметы (с кодами), кредиты, оценки, ghost grade (popup 0), конфетти. Общая формула в `lib/Misc/markbook_math.dart` (**п. 2**): **Átlag / Average** = `Σ(оценка × кредит) / Σ(кредит)` для сданных `grade >= 2`; **/30** = `Σ(оценка × кредит) / 30` (тот же числитель — **не** átlag÷30). Шапка: кредиты семестра **и** накопленные сданные (дедуп по `subjectCode` через `getGradeHistoryAcrossTerms`). Подписи явно говорят `/30`; пометка: **счёт приложения**, не официальный KKI/GPA Neptun (`GetAverages` в HAR сент. 2026 был пуст). Также **Мои курсы** (`GetRegisteredCourses`) и компактная **история оценок** по недавним семестрам.
+Вкладка «Предметы» = зачётка: взятые предметы (с кодами), кредиты, оценки, ghost grade (popup 0), конфетти. Общая формула в `lib/Misc/markbook_math.dart` (**п. 2**): **Átlag / Average** = `Σ(оценка × кредит) / Σ(кредит)` для сданных `grade >= 2`; **/30** = `Σ(оценка × кредит) / 30` (тот же числитель — **не** átlag÷30). Шапка: кредиты семестра **и** накопленные сданные (дедуп по `subjectCode` через `getGradeHistoryAcrossTerms`). **Сравнение семестров** (**п. 10**): карточки по семестрам через `getSemesterComparison` / `CachedMarkbookTerm_*` (cache-first; тот же `MarkbookMath`). Подписи явно говорят `/30`; пометка: **счёт приложения**, не официальный KKI/GPA Neptun (`GetAverages` в HAR сент. 2026 был пуст). Также **Мои курсы** (`GetRegisteredCourses`) и компактная **история оценок** по недавним семестрам.
 
 ### 10.3 Платежи / периоды / почта
 
@@ -441,7 +442,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
-| Homescreen widget | **Удалён** | Был заглушкой |
+| Homescreen widget | **iOS WidgetKit MVP** | Пары сегодня из кэша календаря (App Group); без JWT. Android Glance отложен |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -618,7 +619,7 @@ CI: `.github/workflows/betabuild.yml` — Ubuntu, debug APK. `.github/workflows/
 | zoligamer branding | Вычищен (пакеты, funding, URL тем/языков) |
 | Pirate + DE/RO/UA/AR/ES/ZH | Удалены из каталога языков |
 | `linux/` | Удалён |
-| Homescreen widget stub | Удалён |
+| Homescreen widget | iOS WidgetKit MVP (Android отложен) |
 | `AppUpdateHelper` / `appMinimumAllowedVersion.json` | Удалены (мёртвый version-gate) |
 | `cupertino_icons`, `change_app_package_name` | Убраны из pubspec |
 | ICS с первого экрана | Не подключён |

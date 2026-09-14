@@ -56,7 +56,7 @@ Short list — same Flutter product surface unless gated above:
 - ICS parser + `file_picker` / `SetupPageCalendarLogin` code exists; **setup hub has no ICS entry** (dead UI on both)
 - Home-screen shortcuts (plan **13**): Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Dart `lib/app_shortcuts.dart` via MethodChannel in `MainActivity` / `AppDelegate`
 - **No** `local_auth` / biometrics in `pubspec.yaml`
-- Homescreen widget **removed** (was a stub)
+- Homescreen widget: **iOS WidgetKit MVP** (today’s classes from cache); Android Glance deferred
 - Display name **Neptun ELTE**; owner **Nanda**
 - Different identifiers by design: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`
 

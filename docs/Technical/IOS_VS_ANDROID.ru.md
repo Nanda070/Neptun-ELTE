@@ -56,7 +56,7 @@
 - ICS-парсер + `file_picker` / класс `SetupPageCalendarLogin` есть; **на хабе setup кнопки ICS нет** (dead UI на обеих)
 - Нативные плагины через Flutter plugins; плюс MethodChannel shortcuts (п. **13**) в `AppDelegate` / `MainActivity`
 - **Нет** `local_auth` / биометрии в `pubspec.yaml`
-- Homescreen widget **удалён** (был stub)
+- Homescreen widget: **iOS WidgetKit MVP** (пары сегодня из кэша); Android Glance отложен
 - Display name **Neptun ELTE**; владелец **Nanda**
 - Разные ID намеренно: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`
 

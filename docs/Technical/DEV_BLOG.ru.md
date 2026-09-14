@@ -215,7 +215,7 @@
 
 **[2026-09-14, ~14:30]**
 
-- **П. 10 — сравнение семестров (in progress → шип с 1.5.0):** API + кэш — `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (сданные кредиты, átlag, **/30** той же `MarkbookMath.fromCompleted`, что у шапки зачётки). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); недостающие термы только при живой сессии; потолок ~8 (сначала новые); в demo — два заготовленных терма. Ключи i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Полоса side-by-side в зачётке — в том же релизе. Плоская история «оценки из других семестров» остаётся. Это **не** tanterv / % к диплому. Владелец **Nanda**.
+- **П. 10 — сравнение семестров:** `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (сданные кредиты, átlag, **/30** той же `MarkbookMath.fromCompleted`, что у шапки зачётки). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); недостающие термы только при живой сессии; потолок ~8 (сначала новые); в demo — два заготовленных терма. Карточки side-by-side в зачётке + i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Плоская история «оценки из других семестров» остаётся. Это **не** tanterv / % к диплому. Владелец **Nanda**.
 
 **[2026-09-14, ~14:35]**
 
@@ -223,11 +223,11 @@
 
 **[2026-09-14, ~14:40]**
 
-- **П. 14 — виджеты на домашнем экране (честный MVP):** расширение **iOS WidgetKit** `ios/TodayClassesWidget/` — пары **на сегодня** только из кэша календаря (`CachedCalendar_w*` / текущая неделя) через `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Синхронизация из путей refresh календаря. В процессе виджета **нет JWT**, паролей и токенов. Нет кэша → «откройте приложение»; устаревший день помечен stale. Согласовано с 10-минутной сессией (снимок офлайн, не live Neptun). **Android Glance** отложен — в docs честно (старый Flutter stub по-прежнему удалён; фейкового Android-виджета нет). Владелец **Nanda**.
+- **П. 14 — виджеты на домашнем экране (честный MVP):** расширение **iOS WidgetKit** `ios/TodayClassesWidget/` — пары **на сегодня** только из кэша календаря через `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Синхронизация из путей refresh календаря. В процессе виджета **нет JWT**, паролей и токенов. Нет кэша → «Open Neptun ELTE»; stale помечен; пустой день → «No classes today». Тап → `neptunelte://shortcut/calendar`. Согласовано с 10-минутной сессией (снимок офлайн). **Android Glance** отложен — в docs честно. Владелец **Nanda**.
 
 **[2026-09-14]**
 
-- **Релиз 1.5.0** (`pubspec` **1.5.0+1**): feature-line **5** — пункты **10** (сравнение семестров) + **14** (iOS WidgetKit MVP; Android-виджетов ещё нет). П. **11** снят (не шиппился). Студенческий по-прежнему только заявка/банк/профиль (**без QR** — как в **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA через Actions, когда bump попадёт в дерево. Владелец **Nanda**.
+- **Релиз 1.5.0** (`pubspec` **1.5.0+1**): feature-line **5** — пункты **10** (сравнение семестров) + **14** (iOS WidgetKit MVP; Android-виджетов ещё нет). П. **11** снят (не шиппился). Студенческий по-прежнему только заявка/банк/профиль (**без QR** — как в **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA через Actions. Владелец **Nanda**.
 
 ---
 
@@ -235,7 +235,7 @@
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**9** / **12**–**13** сделаны; **10** API/кэш/i18n есть (UI зачётки с **1.5.0**); **14** iOS WidgetKit MVP уходит в **1.5.0**; п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать).
+- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать).
 - **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
 - **Переводчик сообщений** (HU → EN/RU для тел писем) — helper + действия в popup есть; считать **in progress**, пока offline / failure не проверены тщательно.
 - **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**. Android-виджеты — **не** в **1.5.0** (только iOS MVP).
