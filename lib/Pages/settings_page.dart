@@ -358,6 +358,47 @@ class _SettingsPageState extends State<SettingsPage> {
               setState(() {});
             },
           ),
+          if (DataCache.getNeedClassNotifications()!) ...[
+            CheckboxListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.only(left: 28, right: 16),
+              activeColor: AppColors.getTheme().secondary,
+              title: Text(AppStrings.getLanguagePack().settings_classNotif_10min, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w500, fontSize: 14)),
+              value: DataCache.getClassNotif10() ?? true,
+              onChanged: (b) {
+                AppHaptics.lightImpact();
+                DataCache.setClassNotif10((b ?? true) ? 1 : 0);
+                HomePageState.setupClassesNotifications();
+                setState(() {});
+              },
+            ),
+            CheckboxListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.only(left: 28, right: 16),
+              activeColor: AppColors.getTheme().secondary,
+              title: Text(AppStrings.getLanguagePack().settings_classNotif_5min, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w500, fontSize: 14)),
+              value: DataCache.getClassNotif5() ?? true,
+              onChanged: (b) {
+                AppHaptics.lightImpact();
+                DataCache.setClassNotif5((b ?? true) ? 1 : 0);
+                HomePageState.setupClassesNotifications();
+                setState(() {});
+              },
+            ),
+            CheckboxListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.only(left: 28, right: 16),
+              activeColor: AppColors.getTheme().secondary,
+              title: Text(AppStrings.getLanguagePack().settings_classNotif_atStart, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w500, fontSize: 14)),
+              value: DataCache.getClassNotif0() ?? true,
+              onChanged: (b) {
+                AppHaptics.lightImpact();
+                DataCache.setClassNotif0((b ?? true) ? 1 : 0);
+                HomePageState.setupClassesNotifications();
+                setState(() {});
+              },
+            ),
+          ],
           SwitchListTile(
             title: Text(AppStrings.getLanguagePack().popup_case1_settingOption4_PaymentNotifications, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
             activeThumbColor: AppColors.getTheme().secondary,

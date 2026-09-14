@@ -167,6 +167,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   late TabController calendarTabController;
   late int currentView;
   String calendarGreetText = "";
+  String calendarTodaySummary = "";
 
   int totalCredits = 0;
   /// Completed credits across terms (deduped) — app-computed, not official diploma.
@@ -780,14 +781,24 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   final List<api.CalendarEntry> _classesNotificationList = <api.CalendarEntry>[].toList();
 
   Future<void> _setupClassesNotifications(List<api.CalendarEntry> items)async{
+    // Plan item 1 / 6: do not cancel+reschedule a batch on a dead session.
+    if (api.SessionGuard.isAuthBlocked) {
+      return;
+    }
     await _cancelClassesNotifications();
     if(!storage.DataCache.getNeedClassNotifications()!){
+      return;
+    }
+    final want10 = storage.DataCache.getClassNotif10() ?? true;
+    final want5 = storage.DataCache.getClassNotif5() ?? true;
+    final want0 = storage.DataCache.getClassNotif0() ?? true;
+    if (!want10 && !want5 && !want0) {
       return;
     }
     for(var item in items){
       // set up notifications for today
       final now = DateTime.now();
-      if(now.millisecondsSinceEpoch < item.startEpoch && !item.isExam){ // did not pass them in time
+      if(now.millisecondsSinceEpoch < item.startEpoch && !item.isExam && !item.isTask && !item.isPeriodBanner){ // did not pass them in time
 
         String finalRoom = item.location;
         if (item.classInstanceId != null && item.classInstanceId!.isNotEmpty) {
@@ -800,9 +811,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
         final lang = AppStrings.getLanguagePack();
         final classTitle = lang.notif_title_Class;
-        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn10Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 1);
-        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn5Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 1);
-        await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyNow, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 1);
+        if (want10) {
+          await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn10Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 1);
+        }
+        if (want5) {
+          await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyIn5Min, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 1);
+        }
+        if (want0) {
+          await AppNotifications.scheduleNotification(classTitle, AppStrings.getStringWithParams(lang.notif_class_BodyNow, [item.title, finalRoom]), DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 1);
+        }
       }
     }
   }
@@ -919,7 +936,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     saturdayCalendar.clear();
     sundayCalendar.clear();
 
-    if (thisweekCalendar) {
+    final bool forCurrentWeek = thisweekCalendar || currentWeekOffset == 1;
+    if (forCurrentWeek) {
       _classesNotificationList.clear();
     }
 
@@ -949,7 +967,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       }
       prevEntry = item;
 
-      if(thisweekCalendar && currWeekday == wkday && !item.isExam){
+      if(forCurrentWeek && currWeekday == wkday && !item.isExam && !item.isTask){
         _classesNotificationList.add(item);
       }
 
@@ -1028,6 +1046,47 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       }
     }
     calendarTabController.index = currentWeekOffset == 1 ? (currWeekday - 1 > 6 ? 0 : currWeekday - 1) : calendarTabController.index;
+    if (forCurrentWeek) {
+      _refreshTodaySummary(calendarEntries);
+    }
+  }
+
+  void _refreshTodaySummary(List<api.CalendarEntry> weekEntries) {
+    final lang = AppStrings.getLanguagePack();
+    final now = DateTime.now();
+    final dayStart = DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+    final dayEnd = dayStart + const Duration(days: 1).inMilliseconds;
+    final todayClasses = weekEntries.where((e) =>
+        !e.isExam &&
+        !e.isTask &&
+        !e.isPeriodBanner &&
+        e.startEpoch >= dayStart &&
+        e.startEpoch < dayEnd).toList()
+      ..sort((a, b) => a.startEpoch.compareTo(b.startEpoch));
+    final upcoming = todayClasses.where((e) => e.startEpoch >= now.millisecondsSinceEpoch).toList();
+    if (upcoming.isNotEmpty) {
+      final next = upcoming.first;
+      final t = DateTime.fromMillisecondsSinceEpoch(next.startEpoch);
+      final hh = t.hour.toString().padLeft(2, '0');
+      final mm = t.minute.toString().padLeft(2, '0');
+      calendarTodaySummary = AppStrings.getStringWithParams(lang.calendar_today_NextClass, [next.title, '$hh:$mm']);
+    } else {
+      calendarTodaySummary = lang.calendar_today_NoClass;
+    }
+  }
+
+  Future<void> exportCalendarIcs() async {
+    final lang = AppStrings.getLanguagePack();
+    final ok = await ICSCalendar.shareIcsExport(
+      calendarEntries,
+      subject: lang.calendar_ics_ExportShareSubject,
+    );
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(lang.calendar_ics_ExportEmpty)),
+      );
+    }
   }
 
   List<Widget> calendarTabs = <Widget>[].toList();
@@ -2720,11 +2779,9 @@ class CalendarPageWidget extends StatelessWidget{
         !e.isPeriodBanner &&
         !e.isTask)).take(6).toList();
 
-    // Upcoming tasks/ZH from now (not “first 8 in week” regardless of past).
-    final tasks = sorted(homePage.calendarEntries.where((e) => e.isTask && e.startEpoch >= now)).take(8).toList();
-
-    // Upcoming exams from now.
-    final exams = sorted(homePage.calendarEntries.where((e) => e.isExam && e.startEpoch >= now)).take(8).toList();
+    // ZH / deadlines: calendar isTask + exam deadlines already in calendarEntries.
+    final deadlines = sorted(homePage.calendarEntries.where((e) =>
+        e.startEpoch >= now && (e.isTask || e.isExam))).take(8).toList();
 
     // Period banners only in this strip.
     final banners = sorted(homePage.calendarEntries.where((e) => e.isPeriodBanner)).take(8).toList();
@@ -2734,13 +2791,9 @@ class CalendarPageWidget extends StatelessWidget{
       out.add(_sectionHeader(lang.calendar_next48h_Header));
       out.addAll(next48.map(_eventLine));
     }
-    if (tasks.isNotEmpty) {
-      out.add(_sectionHeader(lang.calendar_tasks_Header));
-      out.addAll(tasks.map(_eventLine));
-    }
-    if (exams.isNotEmpty) {
-      out.add(_sectionHeader(lang.calendar_exams_Header));
-      out.addAll(exams.map(_eventLine));
+    if (deadlines.isNotEmpty) {
+      out.add(_sectionHeader(lang.calendar_deadlines_Header));
+      out.addAll(deadlines.map(_eventLine));
     }
     if (banners.isNotEmpty) {
       out.add(_sectionHeader(lang.calendar_periods_Header));
@@ -2754,6 +2807,9 @@ class CalendarPageWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+    final hint = homePage.calendarTodaySummary.isNotEmpty
+        ? homePage.calendarTodaySummary
+        : greetText;
     return Scaffold(
       drawer: AppDrawer(
           loggedInUsername: storage.DataCache.getUsername()!,
@@ -2765,7 +2821,7 @@ class CalendarPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: hint, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               homePage.buildCacheHonestyBanner(),
               homePage.buildWhatsChangedBanner(),
               ..._extraCalendarSections(),
@@ -2796,15 +2852,39 @@ class CalendarPageWidget extends StatelessWidget{
               HomePageState.getSeparatorLine(context),
               Container(
                 width: MediaQuery.of(context).size.width,
-                child: t_table.WeekoffseterElementWidget(
-                  week: homePage.weeksSinceStart,
-                  from: homePage.calendarEntries.isEmpty ? null : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[0].startEpoch),
-                  to: homePage.calendarEntries.isEmpty ? DateTime.now() : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[homePage.calendarEntries.length - 1].endEpoch),
-                  onBackPressed: homePage.stepCalendarBack,
-                  onForwardPressed: homePage.stepCalendarForward,
-                  canDoPaging: homePage.canDoCalendarPaging,
-                  homePage: homePage,
-                  isLoading: homePage.isLoadingCalendar,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: t_table.WeekoffseterElementWidget(
+                        week: homePage.weeksSinceStart,
+                        from: homePage.calendarEntries.isEmpty ? null : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[0].startEpoch),
+                        to: homePage.calendarEntries.isEmpty ? DateTime.now() : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[homePage.calendarEntries.length - 1].endEpoch),
+                        onBackPressed: homePage.stepCalendarBack,
+                        onForwardPressed: homePage.stepCalendarForward,
+                        canDoPaging: homePage.canDoCalendarPaging,
+                        homePage: homePage,
+                        isLoading: homePage.isLoadingCalendar,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: IconButton(
+                        tooltip: AppStrings.getLanguagePack().calendar_ics_Export,
+                        onPressed: () {
+                          AppHaptics.lightImpact();
+                          homePage.exportCalendarIcs();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(AppColors.getTheme().textColor.withValues(alpha: .08)),
+                        ),
+                        icon: Icon(
+                          Icons.ios_share_rounded,
+                          color: AppColors.getTheme().onPrimaryContainer,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(

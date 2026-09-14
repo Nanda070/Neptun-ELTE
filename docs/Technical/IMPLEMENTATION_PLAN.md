@@ -11,7 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + payments honesty item **7** + maps item **8** + What’s Changed item **9** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **6, 10–11**, **14** still backlog |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + calendar/ICS item **6** + payments honesty item **7** + maps item **8** + What’s Changed item **9** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **10–11**, **14** still backlog |
 | **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
@@ -44,7 +44,7 @@ Document what the code **actually** does.
 | Markbook numbers | Credit-weighted **átlag** = `Σ(grade × credit) / Σ(credit)` for completed subjects with `grade >= 2`. Second number **`Σ(grade × credit) / 30`**, labeled **/30** (ösztöndíj / scholarship as subtitle) — **not** “átlag ÷ 30”. Shared `MarkbookMath` (**2**). Ghost grade uses the same formulas. |
 | Credits in header | This-term credits **and** accumulated completed credits (dedupe `subjectCode` via `getGradeHistoryAcrossTerms`). Diploma / official KKI **not** shown. |
 | Calendar week | `GetCalendarEvents` with **Mon 00:00 – Sun 23:59:59**. Events outside the window dropped. Period banners (`eventType == 6`) stay out of day lists; they go to a strip. |
-| ICS | **Import** parser exists (`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`). **No setup-hub button.** **Export does not exist.** |
+| ICS | **Import** parser + **export** share (`ICSCalendar.shareIcsExport` from current `calendarEntries`). **No setup-hub import button.** Official Neptun webcal sync URL not wired. |
 | Mail | Inbox + pagination (20) + unread count + mark-read + HU→EN/RU translate. **Local search** (subject / sender / loaded body) + **unread-only chip** (client-side). `filterType=0` stays hardcoded (HAR honesty — no server unread filter). |
 | Payments | `totalMoney` = sum of **completed outgoing** (`ammount < 0`) from the **latest 50** `GetStudentPreviousTransactions` — header: “Fees paid (latest 50)”. Scholarships / inflows excluded. Collective invoices remain a separate list / drawer balance. Payment notifs: **≤ 1/day** (soonest unpaid; re-armed on setup). No `daysRemaining` fan-out / no 32 undated. |
 | Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). After decode, **Open map** deep-link → Apple/Google Maps building search (Lágymányos). Unknown prefix = text only. |
@@ -97,7 +97,7 @@ Later work is cheaper if earlier items land first.
 | # | Item | Gate |
 |---|------|------|
 | 5 | Ghost grade goal / what-if polish | **DONE** (Sep 2026). Live átlag+/30 in popup; optional target grade; same `MarkbookMath` formula. |
-| 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
+| 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | **DONE** (Sep 2026). After item 3 |
 | 7 | `totalMoney` accuracy + payment notification antispam | **DONE** (Sep 2026). Paid-outgoing fees + latest-50 label; ≤1/day payment notif |
 | 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
 | 9 | What’s Changed (simple) | **DONE** (Sep 2026). Snapshot mail ids + grade triples; drawer + calendar strip; first install silent. |
@@ -429,7 +429,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 6. Today summary + ZH/deadline strip + ICS export + class notification granularity
+### 6. Today summary + ZH/deadline strip + ICS export + class notification granularity — **DONE**
 
 - **Why**  
   Greeting line is time-of-day only (`topheader_calendar_greetMessage_*`). Strips are week-scoped. ICS can be **imported** but never **exported**. Class alerts are always 10 min + 5 min + start (`notif_class_BodyIn10Min` / `In5Min` / `Now`) with one Settings toggle.
@@ -464,6 +464,9 @@ Later work is cheaper if earlier items land first.
 
 - **Out of scope**  
   Re-advertising ICS **import** on the hub. Exam / course registration (**not planned**). Remote push.
+
+- **Shipped**  
+  Header today line (`calendar_today_NextClass` / `NoClass`); ZH/deadline strip (`isTask` + exams); ICS export share from `calendarEntries` (`ICSCalendar.shareIcsExport`); Settings granularity `SETTING_ClassNotif10` / `5` / `0` (default all on); no class-notif reschedule when `SessionGuard.isAuthBlocked`.
 
 ---
 
@@ -980,7 +983,7 @@ Agents implementing any item above should follow this, not invent a second archi
 | Payments | `PaymentsPageWidget`, `PaymentElementWidget` | `GetStudentPreviousTransactions`, `GetCollectiveInvoices` |
 | Periods | `periods_element_widget.dart` | `GetPeriods` |
 | Rooms | `lib/Misc/elte_room_code.dart` | LD/LE/LK decode + maps deep-link (**8**) |
-| ICS | `lib/API/ics_calendar.dart` | **Import only** |
+| ICS | `lib/API/ics_calendar.dart` | Import + export (`shareIcsExport`) |
 | Notifs | `lib/notifications.dart`, Settings toggles | ids 0 exam, 1 class, 2 payment, 3 period |
 | Curriculum | `URLs.CURRICULUMS_URL` | **Unused**; tanterv still not in HARs |
 | Profile / student card | `UserInfo`, `GetUserAvatar`, bank + `StudentCardClaimProcess` + `GetGeneralUserData` | Name + photo; **item 12** claim/bank/profile page (no QR) |
