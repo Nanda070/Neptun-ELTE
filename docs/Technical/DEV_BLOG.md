@@ -215,7 +215,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-14, ~14:30]**
 
-- **Plan item 10 — semester comparison:** Markbook gains a per-term side-by-side strip (term name, completed credits, átlag, **/30**) via `MarkbookRequest.getSemesterComparison` + `TermComparisonStat`. Same `MarkbookMath.fromCompleted` rules as the markbook header. Cache-first per-term `TakenSubjects` (`CachedMarkbookTerm_*`); fetches missing terms only when the session is usable; cap ~8 terms (newest first). Demo returns two canned terms. Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
+- **Plan item 10 — semester comparison (in progress → ship with 1.5.0):** API + cache landed — `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (per-term completed credits, átlag, **/30** via same `MarkbookMath.fromCompleted` as the markbook header). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); fetch missing terms only when the session is usable; cap ~8 (newest first); demo returns two canned terms. i18n keys `markbook_semesterCompare_*` (HU/EN + RU/TR). Markbook side-by-side UI strip wiring with the same release. Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
 
 **[2026-09-14, ~14:35]**
 

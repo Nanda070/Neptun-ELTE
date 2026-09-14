@@ -215,7 +215,7 @@
 
 **[2026-09-14, ~14:30]**
 
-- **П. 10 — сравнение семестров:** в зачётке полоса по терминам (название, сданные кредиты, átlag, **/30**) через `MarkbookRequest.getSemesterComparison` + `TermComparisonStat`. Те же правила `MarkbookMath.fromCompleted`, что у шапки зачётки. Cache-first `TakenSubjects` по терму (`CachedMarkbookTerm_*`); недостающие термы тянутся только при живой сессии; потолок ~8 (сначала новые). В demo — два заготовленных терма. Плоская история «оценки из других семестров» остаётся. Это **не** tanterv / % к диплому. Владелец **Nanda**.
+- **П. 10 — сравнение семестров (in progress → шип с 1.5.0):** API + кэш — `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (сданные кредиты, átlag, **/30** той же `MarkbookMath.fromCompleted`, что у шапки зачётки). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); недостающие термы только при живой сессии; потолок ~8 (сначала новые); в demo — два заготовленных терма. Ключи i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Полоса side-by-side в зачётке — в том же релизе. Плоская история «оценки из других семестров» остаётся. Это **не** tanterv / % к диплому. Владелец **Nanda**.
 
 **[2026-09-14, ~14:35]**
 
