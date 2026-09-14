@@ -5,6 +5,7 @@ import '../colors.dart';
 import '../storage.dart'; // ÚJ: Betűméret lekéréséhez
 
 typedef Callback = void Function(int, int);
+typedef PrepareGhostPopup = void Function(int listIndex, int subjectCredit, int currentGhost);
 
 class MarkbookElementWidget extends StatelessWidget{
   final String name;
@@ -16,8 +17,21 @@ class MarkbookElementWidget extends StatelessWidget{
   final int listIndex;
   final int ghostGrade;
   final String subjectCode;
+  final PrepareGhostPopup? prepareGhostPopup;
 
-  const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed, required this.onPopupResult, required this.listIndex, required this.ghostGrade, this.subjectCode = ''});
+  const MarkbookElementWidget({
+    super.key,
+    required this.name,
+    required this.credit,
+    required this.completed,
+    required this.grade,
+    required this.isFailed,
+    required this.onPopupResult,
+    required this.listIndex,
+    required this.ghostGrade,
+    this.subjectCode = '',
+    this.prepareGhostPopup,
+  });
 
   Color getGradeColor(){
     if(ghostGrade != -1){
@@ -44,6 +58,7 @@ class MarkbookElementWidget extends StatelessWidget{
 
     return GestureDetector(
         onTap: grade >= 2 || credit == 0 ? null : () {
+          prepareGhostPopup?.call(listIndex, credit, ghostGrade);
           PopupWidgetHandler(mode: 0, callback: (r){
             onPopupResult(r as int, listIndex);
           });

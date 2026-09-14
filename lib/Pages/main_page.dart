@@ -1083,22 +1083,54 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     _fillOneCalendarElement(context, sundayCalendar, AppStrings.getLanguagePack().api_daySun_Universal, isLoading);
   }
 
+  void _prepareGhostPopup(int listIndex, int subjectCredit, int currentGhost) {
+    final grades = <int>[];
+    final credits = <int>[];
+    for (final item in markbookList) {
+      try {
+        final itm = item as mbook.MarkbookElementWidget;
+        if (itm.listIndex == listIndex) continue;
+        if (itm.completed && itm.grade >= 2) {
+          grades.add(itm.grade);
+          credits.add(itm.credit);
+        } else if (itm.ghostGrade != -1) {
+          grades.add(itm.ghostGrade);
+          credits.add(itm.credit);
+        }
+      } catch (_) {}
+    }
+    GhostGradePopupData.set(
+      otherGrades: grades,
+      otherCredits: credits,
+      subjectCredit: subjectCredit,
+      existingGhostGrade: currentGhost,
+    );
+  }
+
+  mbook.MarkbookElementWidget _copyMarkbookElement(
+    mbook.MarkbookElementWidget e, {
+    required int ghostGrade,
+  }) {
+    return mbook.MarkbookElementWidget(
+      name: e.name,
+      credit: e.credit,
+      completed: e.completed,
+      grade: e.grade,
+      isFailed: e.isFailed,
+      onPopupResult: e.onPopupResult,
+      listIndex: e.listIndex,
+      ghostGrade: ghostGrade,
+      subjectCode: e.subjectCode,
+      prepareGhostPopup: _prepareGhostPopup,
+    );
+  }
+
   void _mbookPopupResult(int result, int idx){
     if(result == -1){
       setState(() {
         final e = markbookList[idx] as mbook.MarkbookElementWidget;
         setState(() {
-          markbookList[idx] = mbook.MarkbookElementWidget(
-            name: e.name,
-            credit: e.credit,
-            completed: e.completed,
-            grade: e.grade,
-            isFailed: e.isFailed,
-            onPopupResult: e.onPopupResult,
-            listIndex: e.listIndex,
-            ghostGrade: -1,
-            subjectCode: e.subjectCode,
-          );
+          markbookList[idx] = _copyMarkbookElement(e, ghostGrade: -1);
           _markbookCalcGhostAvg();
         });
       });
@@ -1108,17 +1140,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     final grade = result + 1;
     final e = markbookList[idx] as mbook.MarkbookElementWidget;
     setState(() {
-      markbookList[idx] = mbook.MarkbookElementWidget(
-        name: e.name,
-        credit: e.credit,
-        completed: e.completed,
-        grade: e.grade,
-        isFailed: e.isFailed,
-        onPopupResult: e.onPopupResult,
-        listIndex: e.listIndex,
-        ghostGrade: grade,
-        subjectCode: e.subjectCode,
-      );
+      markbookList[idx] = _copyMarkbookElement(e, ghostGrade: grade);
       _markbookCalcGhostAvg();
     });
   }
@@ -1185,6 +1207,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
         listIndex: idx,
         ghostGrade: -1,
         subjectCode: item.subjectCode,
+        prepareGhostPopup: _prepareGhostPopup,
       ));
       idx++;
     }
@@ -1210,6 +1233,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
           listIndex: idx,
           ghostGrade: -1,
           subjectCode: item.subjectCode,
+          prepareGhostPopup: _prepareGhostPopup,
         ));
         idx++;
       }
