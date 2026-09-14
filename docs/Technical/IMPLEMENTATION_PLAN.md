@@ -96,7 +96,7 @@ Later work is cheaper if earlier items land first.
 | # | Item | Gate |
 |---|------|------|
 | 5 | Ghost grade goal / what-if polish | Same formula as item 2 |
-| 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
+| 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | **DONE** (Sep 2026). After item 3 |
 | 7 | `totalMoney` accuracy + payment notification antispam | Independent of mail; after session/cache |
 | 8 | Maps deep-link on LD/LE/LK decode | After calendar polish; uses `elte_room_code.dart` |
 | 9 | What’s Changed (simple) | **After** session/cache **and** mail IDs (item 4) |
@@ -425,7 +425,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 6. Today summary + ZH/deadline strip + ICS export + class notification granularity
+### 6. Today summary + ZH/deadline strip + ICS export + class notification granularity — **DONE**
 
 - **Why**  
   Greeting line is time-of-day only (`topheader_calendar_greetMessage_*`). Strips are week-scoped. ICS can be **imported** but never **exported**. Class alerts are always 10 min + 5 min + start (`notif_class_BodyIn10Min` / `In5Min` / `Now`) with one Settings toggle.
@@ -460,6 +460,9 @@ Later work is cheaper if earlier items land first.
 
 - **Out of scope**  
   Re-advertising ICS **import** on the hub. Exam / course registration (**not planned**). Remote push.
+
+- **Shipped**  
+  Header today line (`calendar_today_NextClass` / `NoClass`); ZH/deadline strip (`isTask` + exams); ICS export share from `calendarEntries` (`ICSCalendar.shareIcsExport`); Settings granularity `SETTING_ClassNotif10` / `5` / `0` (default all on); no class-notif reschedule when `SessionGuard.isAuthBlocked`.
 
 ---
 

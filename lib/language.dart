@@ -268,8 +268,17 @@ class AppStrings{
       settings_calendar_ShowPeriods: 'Időszakok megjelenítése',
       calendar_next48h_Header: 'Következő 48 óra',
       calendar_tasks_Header: 'Feladatok / ZH',
+      calendar_deadlines_Header: 'ZH / határidők',
       calendar_exams_Header: 'Vizsgák',
       calendar_periods_Header: 'Időszak bannerek',
+      calendar_today_NextClass: 'Következő ma: %0 · %1',
+      calendar_today_NoClass: 'Ma nincs óra',
+      calendar_ics_Export: 'ICS export',
+      calendar_ics_ExportEmpty: 'Nincs mit exportálni',
+      calendar_ics_ExportShareSubject: 'Neptun ELTE naptár',
+      settings_classNotif_10min: '10 perccel előtte',
+      settings_classNotif_5min: '5 perccel előtte',
+      settings_classNotif_atStart: 'Óra kezdetekor',
       calendar_break_label: 'szünet',
       calendar_break_now: 'Szünet most',
       calendar_break_next: 'Következő: %0',
@@ -580,8 +589,17 @@ class AppStrings{
       settings_calendar_ShowPeriods: 'Show periods',
       calendar_next48h_Header: 'Next 48 hours',
       calendar_tasks_Header: 'Tasks / midterms',
+      calendar_deadlines_Header: 'ZH / deadlines',
       calendar_exams_Header: 'Exams',
       calendar_periods_Header: 'Period banners',
+      calendar_today_NextClass: 'Next today: %0 · %1',
+      calendar_today_NoClass: 'No class today',
+      calendar_ics_Export: 'Export ICS',
+      calendar_ics_ExportEmpty: 'Nothing to export',
+      calendar_ics_ExportShareSubject: 'Neptun ELTE calendar',
+      settings_classNotif_10min: '10 minutes before',
+      settings_classNotif_5min: '5 minutes before',
+      settings_classNotif_atStart: 'At class start',
       calendar_break_label: 'break',
       calendar_break_now: 'Break now',
       calendar_break_next: 'Next: %0',
@@ -1165,8 +1183,17 @@ class LanguagePack{
   final String settings_calendar_ShowPeriods;
   final String calendar_next48h_Header;
   final String calendar_tasks_Header;
+  final String calendar_deadlines_Header;
   final String calendar_exams_Header;
   final String calendar_periods_Header;
+  final String calendar_today_NextClass;
+  final String calendar_today_NoClass;
+  final String calendar_ics_Export;
+  final String calendar_ics_ExportEmpty;
+  final String calendar_ics_ExportShareSubject;
+  final String settings_classNotif_10min;
+  final String settings_classNotif_5min;
+  final String settings_classNotif_atStart;
   final String calendar_break_label;
   final String calendar_break_now;
   final String calendar_break_next;
@@ -1462,8 +1489,17 @@ class LanguagePack{
     required this.settings_calendar_ShowPeriods,
     required this.calendar_next48h_Header,
     required this.calendar_tasks_Header,
+    required this.calendar_deadlines_Header,
     required this.calendar_exams_Header,
     required this.calendar_periods_Header,
+    required this.calendar_today_NextClass,
+    required this.calendar_today_NoClass,
+    required this.calendar_ics_Export,
+    required this.calendar_ics_ExportEmpty,
+    required this.calendar_ics_ExportShareSubject,
+    required this.settings_classNotif_10min,
+    required this.settings_classNotif_5min,
+    required this.settings_classNotif_atStart,
     required this.calendar_break_label,
     required this.calendar_break_now,
     required this.calendar_break_next,
@@ -1798,8 +1834,17 @@ class LanguagePack{
         settings_calendar_ShowPeriods: getStr('settings_calendar_ShowPeriods', en.settings_calendar_ShowPeriods),
         calendar_next48h_Header: getStr('calendar_next48h_Header', en.calendar_next48h_Header),
         calendar_tasks_Header: getStr('calendar_tasks_Header', en.calendar_tasks_Header),
+        calendar_deadlines_Header: getStr('calendar_deadlines_Header', en.calendar_deadlines_Header),
         calendar_exams_Header: getStr('calendar_exams_Header', en.calendar_exams_Header),
         calendar_periods_Header: getStr('calendar_periods_Header', en.calendar_periods_Header),
+        calendar_today_NextClass: getStr('calendar_today_NextClass', en.calendar_today_NextClass),
+        calendar_today_NoClass: getStr('calendar_today_NoClass', en.calendar_today_NoClass),
+        calendar_ics_Export: getStr('calendar_ics_Export', en.calendar_ics_Export),
+        calendar_ics_ExportEmpty: getStr('calendar_ics_ExportEmpty', en.calendar_ics_ExportEmpty),
+        calendar_ics_ExportShareSubject: getStr('calendar_ics_ExportShareSubject', en.calendar_ics_ExportShareSubject),
+        settings_classNotif_10min: getStr('settings_classNotif_10min', en.settings_classNotif_10min),
+        settings_classNotif_5min: getStr('settings_classNotif_5min', en.settings_classNotif_5min),
+        settings_classNotif_atStart: getStr('settings_classNotif_atStart', en.settings_classNotif_atStart),
         calendar_break_label: getStr('calendar_break_label', en.calendar_break_label),
         calendar_break_now: getStr('calendar_break_now', en.calendar_break_now),
         calendar_break_next: getStr('calendar_break_next', en.calendar_break_next),
@@ -2133,8 +2178,17 @@ class LanguagePack{
       'settings_calendar_ShowPeriods':lang.settings_calendar_ShowPeriods,
       'calendar_next48h_Header':lang.calendar_next48h_Header,
       'calendar_tasks_Header':lang.calendar_tasks_Header,
+      'calendar_deadlines_Header':lang.calendar_deadlines_Header,
       'calendar_exams_Header':lang.calendar_exams_Header,
       'calendar_periods_Header':lang.calendar_periods_Header,
+      'calendar_today_NextClass':lang.calendar_today_NextClass,
+      'calendar_today_NoClass':lang.calendar_today_NoClass,
+      'calendar_ics_Export':lang.calendar_ics_Export,
+      'calendar_ics_ExportEmpty':lang.calendar_ics_ExportEmpty,
+      'calendar_ics_ExportShareSubject':lang.calendar_ics_ExportShareSubject,
+      'settings_classNotif_10min':lang.settings_classNotif_10min,
+      'settings_classNotif_5min':lang.settings_classNotif_5min,
+      'settings_classNotif_atStart':lang.settings_classNotif_atStart,
       'calendar_break_label':lang.calendar_break_label,
       'calendar_break_now':lang.calendar_break_now,
       'calendar_break_next':lang.calendar_break_next,

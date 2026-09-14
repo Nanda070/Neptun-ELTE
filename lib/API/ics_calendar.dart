@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:neptun2/API/api_coms.dart';
+import 'package:path_provider/path_provider.dart' as path;
+import 'package:share_plus/share_plus.dart';
 import '../local_file_actions.dart';
 
 class ICSCalendar{
@@ -60,6 +63,77 @@ class ICSCalendar{
       }
     }
     return list;
+  }
+
+  /// Build a standards-ish ICS document from app calendar entries (export only).
+  /// Skips period banners. Does not touch import / [ICSStreamConverter].
+  static String buildIcsFromEntries(List<CalendarEntry> entries) {
+    final buf = StringBuffer();
+    buf.writeln('BEGIN:VCALENDAR');
+    buf.writeln('VERSION:2.0');
+    buf.writeln('PRODID:-//Neptun ELTE//Calendar Export//EN');
+    buf.writeln('CALSCALE:GREGORIAN');
+    buf.writeln('METHOD:PUBLISH');
+    for (final e in entries) {
+      if (e.isPeriodBanner) continue;
+      buf.writeln('BEGIN:VEVENT');
+      buf.writeln('DTSTART:${_formatIcsLocal(e.startEpoch)}');
+      buf.writeln('DTEND:${_formatIcsLocal(e.endEpoch)}');
+      buf.writeln('SUMMARY:${_escapeIcsText(e.title)}');
+      if (e.location.isNotEmpty && e.location != 'NULL') {
+        buf.writeln('LOCATION:${_escapeIcsText(e.location)}');
+      }
+      buf.writeln('UID:${e.startEpoch}-${e.endEpoch}-${e.title.hashCode}@neptun-elte');
+      buf.writeln('DTSTAMP:${_formatIcsUtc(DateTime.now().toUtc())}');
+      buf.writeln('END:VEVENT');
+    }
+    buf.writeln('END:VCALENDAR');
+    return buf.toString().replaceAll('\n', '\r\n');
+  }
+
+  static bool icsHasEvents(String ics) => ics.contains('BEGIN:VEVENT');
+
+  static Future<File?> writeIcsTempFile(List<CalendarEntry> entries, {String fileName = 'neptun-elte-calendar.ics'}) async {
+    final content = buildIcsFromEntries(entries);
+    if (!icsHasEvents(content)) return null;
+    final dir = await path.getTemporaryDirectory();
+    final file = File('${dir.path}/$fileName');
+    await file.writeAsString(content, flush: true);
+    return file;
+  }
+
+  /// Share / save via the system share sheet. Returns false if nothing to export.
+  static Future<bool> shareIcsExport(List<CalendarEntry> entries, {String? subject}) async {
+    final file = await writeIcsTempFile(entries);
+    if (file == null) return false;
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path, mimeType: 'text/calendar', name: 'neptun-elte-calendar.ics')],
+        subject: subject,
+        title: subject,
+      ),
+    );
+    return true;
+  }
+
+  static String _formatIcsLocal(int epochMs) {
+    final d = DateTime.fromMillisecondsSinceEpoch(epochMs);
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${d.year}${two(d.month)}${two(d.day)}T${two(d.hour)}${two(d.minute)}${two(d.second)}';
+  }
+
+  static String _formatIcsUtc(DateTime d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${d.year}${two(d.month)}${two(d.day)}T${two(d.hour)}${two(d.minute)}${two(d.second)}Z';
+  }
+
+  static String _escapeIcsText(String raw) {
+    return raw
+        .replaceAll('\\', '\\\\')
+        .replaceAll(';', '\\;')
+        .replaceAll(',', '\\,')
+        .replaceAll('\r\n', '\\n')
+        .replaceAll('\n', '\\n');
   }
 }
 

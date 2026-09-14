@@ -135,8 +135,11 @@ class DataCache{
     setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
     setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
-    setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
-    setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
+    setClassNotif10(_persistentSetting_classNotif10! ? 1 : 0);
+    setClassNotif5(_persistentSetting_classNotif5! ? 1 : 0);
+    setClassNotif0(_persistentSetting_classNotif0! ? 1 : 0);
+    setNeedPaymentsNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
+    setNeedPeriodsNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
     setUserWeekOffset(_persistentSetting_weekOffset!);
     setUserSelectedLanguage(_persistentSetting_userSelectedLanguage!);
     setUserSelectedLanguageCode(_persistentSetting_userSelectedLanguageCode);
@@ -212,6 +215,9 @@ class DataCache{
   late bool? _persistentSetting_familyFriendlyLoadingComments = false;
   late bool? _persistentSetting_showExamNotifications = true;
   late bool? _persistentSetting_showClassNotifications = true;
+  late bool? _persistentSetting_classNotif10 = true;
+  late bool? _persistentSetting_classNotif5 = true;
+  late bool? _persistentSetting_classNotif0 = true;
   late bool? _persistentSetting_showPaymentsNotifications = true;
   late bool? _persistentSetting_showPeriodsNotifications = true;
   late int? _persistentSetting_weekOffset = 0;
@@ -323,6 +329,13 @@ class DataCache{
     if(tmp == null){
       _persistentSetting_showClassNotifications = true;  // this is the default value, not false
     }
+
+    tmp = await getInt('SETTING_ClassNotif10');
+    _persistentSetting_classNotif10 = tmp == null || tmp != 0;
+    tmp = await getInt('SETTING_ClassNotif5');
+    _persistentSetting_classNotif5 = tmp == null || tmp != 0;
+    tmp = await getInt('SETTING_ClassNotif0');
+    _persistentSetting_classNotif0 = tmp == null || tmp != 0;
 
     tmp = await getInt('SETTING_IsNeedPaymentsNotifications');
     _persistentSetting_showPaymentsNotifications = tmp != null && tmp != 0;
@@ -559,6 +572,24 @@ class DataCache{
   static Future<void> setNeedClassNotifications(int? value) async{
     _instance._persistentSetting_showClassNotifications = value != null && value != 0;
     await saveInt('SETTING_IsNeedClassNotifications', value ?? 1);
+  }
+
+  static bool? getClassNotif10(){return _instance._persistentSetting_classNotif10;}
+  static Future<void> setClassNotif10(int? value) async{
+    _instance._persistentSetting_classNotif10 = value == null || value != 0;
+    await saveInt('SETTING_ClassNotif10', value ?? 1);
+  }
+
+  static bool? getClassNotif5(){return _instance._persistentSetting_classNotif5;}
+  static Future<void> setClassNotif5(int? value) async{
+    _instance._persistentSetting_classNotif5 = value == null || value != 0;
+    await saveInt('SETTING_ClassNotif5', value ?? 1);
+  }
+
+  static bool? getClassNotif0(){return _instance._persistentSetting_classNotif0;}
+  static Future<void> setClassNotif0(int? value) async{
+    _instance._persistentSetting_classNotif0 = value == null || value != 0;
+    await saveInt('SETTING_ClassNotif0', value ?? 1);
   }
 
   static bool? getNeedPaymentsNotifications(){return _instance._persistentSetting_showPaymentsNotifications;}
