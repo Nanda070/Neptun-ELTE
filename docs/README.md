@@ -7,7 +7,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 | **Owner / Developer** | **Nanda** |
 | **Hub** | ELTE only (`https://neptun.elte.hu`) — no multi-university list |
 | **Display name** | Neptun ELTE |
-| **Version** | **1.5.0** (marketing) — scheme `1.<feature-line>.<patch>`; feature line **5** = plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android Glance deferred). Item **11** (Academic Progress / tanterv) **dropped**. Previous **1.4.0** = items **5–9** + **12–13**. Final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
+| **Version** | **1.5.1** (marketing) — scheme `1.<feature-line>.<patch>`; feature line **5** = plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android Glance deferred). Patch **1.5.1** removes the Calendar “Next 48 hours” strip. Item **11** (Academic Progress / tanterv) **dropped**. Previous **1.5.0** = line-5 ship; **1.4.0** = items **5–9** + **12–13**. Final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
 | **Platforms** | Android · iOS |
 | **Languages** | English (default) · Hungarian · Russian · Turkish |
 | **Repo** | [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE) |

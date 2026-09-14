@@ -239,7 +239,17 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-14, ~20:56]**
 
-- Calendar: removed the **“Next 48 hours”** strip (classes+exams list above the week tabs). Kept today summary, ZH/deadline strip, period banners, week view, ICS export, What’s Changed. Dropped unused `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. No version bump. Owner **Nanda**.
+- Calendar: removed the **“Next 48 hours”** strip (classes+exams list above the week tabs). Kept today summary, ZH/deadline strip, period banners, week view, ICS export, What’s Changed. Dropped unused `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. Owner **Nanda**.
+
+---
+
+## 2026-09-14 — release 1.5.1 (Next 48h strip)
+
+**[2026-09-14, ~21:11]**
+
+- **Release 1.5.1** (`pubspec` **1.5.1+1**): patch for user-facing Calendar cleanup — ships the **“Next 48 hours”** strip removal from **72b5aea**. No other feature work in this cut.
+- **Session policy unchanged:** still **10-minute** session + existing `SessionGuard` / auto-login behavior — **no** SessionGuard or idle-timeout changes in this release.
+- GitHub Release **v1.5.1** + unsigned IPA via Actions. Owner **Nanda**.
 
 ---
 
@@ -250,7 +260,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (iOS widget MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress). Numbered plan files **deleted**.
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper returns `null` offline/failure (keep original) + disclaimer; treat as **verify on device** until thoroughly exercised.
-- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.0** (iOS-first MVP only).
+- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.x** (iOS-first MVP only).
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
 - Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI has unsigned IPA + Android debug APK only (no analyze/test job).
 
