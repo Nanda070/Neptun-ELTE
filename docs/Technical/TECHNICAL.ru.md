@@ -197,7 +197,7 @@ Neptun-ELTE/
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
 | `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.3.4` — без `+build`) внизу |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; **Payments над Settings**; апдейт (Android), выход |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
 **Макеты в Figma (только дизайн — без правок Flutter из этого файла):** [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Страницы: `Android — polished target` и `iOS — current + polish`. Макеты могут ещё показывать **5-tab** icon nav; **в приложении IA** — снизу **Calendar \| Markbook \| Periods \| Mail** + Payments в drawer над Settings (п. **1c**).
@@ -446,6 +446,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Тесты | **Нет** | Папки `test/` нет |
 | App Store / Play production | **Не цель текущего состояния** | |
 | Фото в drawer | **Работает** | ELTE HWEB: `data.userAvatar.image` на `/api/UserInfo` + `/api/General/GetUserAvatar?imageSizeType=Normal` (base64 JPEG). Кэш в `DataCache`; drawer `MemoryImage`; инициалы при ошибке/пустом ответе |
+| Студенческий / профиль | **Только заявка / банк / профиль** | П. **12**: `StudentCardPage` + `StudentCardRequest`. Флаги банка (IBAN/SWIFT не логируются). Статус заявки (нет QR / номера / срока — на HWEB тоже нет). Опционально `GetGeneralUserData` + контакты. Кэш `STUDENT_CardCacheJson` |
 | Строка training ID в drawer | **Убрана** | Сырой `studentTrainingId` / GUID не показывается под именем; человекочитаемые подписи — только в dropdown при нескольких training |
 
 Монолит: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — по ~1400–2600 строк. **Не дробить**, пока цель — iOS/логин, не рефакторинг.
@@ -737,7 +738,8 @@ Release на iPhone: `--release` (см. §14).
 | `lib/haptics.dart` | Android vibration / iOS `HapticFeedback` |
 | `lib/Misc/popup.dart` | Режимы 0–9 (9 = 2FA) |
 | `lib/Misc/elte_room_code.dart` | Разбор кодов аудиторий ELTE + тап-расшифровка |
-| `lib/Misc/app_drawer.dart` | Drawer |
+| `lib/Misc/app_drawer.dart` | Drawer + вход в студенческий / профиль |
+| `lib/Pages/student_card_page.dart` | П. **12** UI заявки / банка / профиля (без QR) |
 | `lib/Misc/auto_updater.dart` | GitHub APK, Android-only |
 | `universityNameUrlPairs.json` | Вузы — **только ELTE** (`https://neptun.elte.hu`) |
 | `Languages/supportedLanguages.json` | Каталог RU/TR |

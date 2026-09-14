@@ -175,6 +175,53 @@ class AppStrings{
       topmenu_NoUnreadMessages: 'Nincs új üzenet',
       topmenu_MessagesTitle: 'Üzenetek',
       topmenu_PaymentsTitle: 'Pénzügyek',
+      studentCard_Title: 'Diákigazolvány / profil',
+      studentCard_NoQrNote: 'Csak a Neptunban látott pályázati státusz, banki jelzők és profilmezők. Nincs QR, kártyaszám vagy lejárat — a weben sincs wallet kártya.',
+      studentCard_ClaimSection: 'Igazolvány-igénylés státusza',
+      studentCard_BankSection: 'Bankszámla (csak olvasás)',
+      studentCard_ProfileSection: 'Személyes adatok',
+      studentCard_AddressSection: 'Igénylés címei',
+      studentCard_ContactsSection: 'Kapcsolatok',
+      studentCard_NoClaim: 'Nincs aktív igénylés (vagy üres válasz).',
+      studentCard_NoBank: 'Nincs megjeleníthető bankszámla-jelző.',
+      studentCard_NoProfile: 'Nincs profiladat (még).',
+      studentCard_EmptyValue: '—',
+      studentCard_Yes: 'Igen',
+      studentCard_No: 'Nem',
+      studentCard_Owner: 'Tulajdonos',
+      studentCard_BankName: 'Bank',
+      studentCard_Default: 'Alapértelmezett',
+      studentCard_Foreign: 'Külföldi',
+      studentCard_Valid: 'Érvényes',
+      studentCard_OtpStatus: 'OTP státusz',
+      studentCard_BankPrivacyNote: 'Számlaszám / IBAN / SWIFT nem jelenik meg és nem naplózódik.',
+      studentCard_ClaimType: 'Igénylés típusa',
+      studentCard_FirStatus: 'FIR státusz',
+      studentCard_ProcessStatus: 'Folyamat státusz',
+      studentCard_FinalDecision: 'Végső döntés',
+      studentCard_RegistrationDate: 'Regisztráció dátuma',
+      studentCard_Training: 'Képzés',
+      studentCard_Faculty: 'Kar',
+      studentCard_Institute: 'Intézmény',
+      studentCard_Address: 'Cím',
+      studentCard_AddressType: 'Cím típusa',
+      studentCard_PrintName: 'Nyomtatott név',
+      studentCard_Honorific: 'Titulus',
+      studentCard_FirstName: 'Keresztnév',
+      studentCard_LastName: 'Vezetéknév',
+      studentCard_LoginName: 'Bejelentkezési név',
+      studentCard_BornName: 'Születési név',
+      studentCard_BornDate: 'Születési dátum',
+      studentCard_BornPlace: 'Születési hely',
+      studentCard_BornCountry: 'Születési ország',
+      studentCard_Sex: 'Nem',
+      studentCard_MotherName: 'Anyja neve',
+      studentCard_Children: 'Gyermekek száma',
+      studentCard_EduId: 'Oktatási azonosító',
+      studentCard_Citizenship: 'Állampolgárság',
+      studentCard_ExtraField: 'Extra mező',
+      studentCard_Emails: 'E-mail',
+      studentCard_Phones: 'Telefon',
       calendarPage_FreeDay: '🥳Szabadnap!🥳',
       calendarPage_weekNav_ClassesThisWeekFull: 'Óráid ezen a héten: %0 %1. - %2 %3.',
       calendarPage_weekNav_ClassesThisWeekOneDay: 'Órád ezen a héten: %0 %1. (%2)',
@@ -487,6 +534,53 @@ class AppStrings{
       topmenu_NoUnreadMessages: 'No new messages',
       topmenu_MessagesTitle: 'Messages',
       topmenu_PaymentsTitle: 'Payments',
+      studentCard_Title: 'Student card / profile',
+      studentCard_NoQrNote: 'Only claim status, bank visibility flags, and profile fields captured from Neptun. No QR, card number, or expiry — the web has no wallet card either.',
+      studentCard_ClaimSection: 'Card claim status',
+      studentCard_BankSection: 'Bank account (read-only)',
+      studentCard_ProfileSection: 'Personal data',
+      studentCard_AddressSection: 'Claim addresses',
+      studentCard_ContactsSection: 'Contacts',
+      studentCard_NoClaim: 'No active claim (or empty response).',
+      studentCard_NoBank: 'No bank visibility flags to show.',
+      studentCard_NoProfile: 'No profile data yet.',
+      studentCard_EmptyValue: '—',
+      studentCard_Yes: 'Yes',
+      studentCard_No: 'No',
+      studentCard_Owner: 'Owner',
+      studentCard_BankName: 'Bank',
+      studentCard_Default: 'Default',
+      studentCard_Foreign: 'Foreign',
+      studentCard_Valid: 'Valid',
+      studentCard_OtpStatus: 'OTP status',
+      studentCard_BankPrivacyNote: 'Account number / IBAN / SWIFT are not shown and never logged.',
+      studentCard_ClaimType: 'Claim type',
+      studentCard_FirStatus: 'FIR status',
+      studentCard_ProcessStatus: 'Process status',
+      studentCard_FinalDecision: 'Final decision',
+      studentCard_RegistrationDate: 'Registration date',
+      studentCard_Training: 'Training',
+      studentCard_Faculty: 'Faculty',
+      studentCard_Institute: 'Institute',
+      studentCard_Address: 'Address',
+      studentCard_AddressType: 'Address type',
+      studentCard_PrintName: 'Print name',
+      studentCard_Honorific: 'Title',
+      studentCard_FirstName: 'First name',
+      studentCard_LastName: 'Last name',
+      studentCard_LoginName: 'Login name',
+      studentCard_BornName: 'Birth name',
+      studentCard_BornDate: 'Date of birth',
+      studentCard_BornPlace: 'Place of birth',
+      studentCard_BornCountry: 'Country of birth',
+      studentCard_Sex: 'Sex',
+      studentCard_MotherName: "Mother's name",
+      studentCard_Children: 'Number of children',
+      studentCard_EduId: 'Educational ID',
+      studentCard_Citizenship: 'Citizenship',
+      studentCard_ExtraField: 'Extra field',
+      studentCard_Emails: 'Email',
+      studentCard_Phones: 'Phone',
       calendarPage_FreeDay: '🥳Free Day!🥳',
       calendarPage_weekNav_ClassesThisWeekFull: 'Classes this week: %0 %1. - %2 %3.',
       calendarPage_weekNav_ClassesThisWeekOneDay: 'Class this week: %0 %1. (%2)',
@@ -1058,6 +1152,54 @@ class LanguagePack{
   final String topmenu_MessagesTitle;
   final String topmenu_PaymentsTitle;
 
+  final String studentCard_Title;
+  final String studentCard_NoQrNote;
+  final String studentCard_ClaimSection;
+  final String studentCard_BankSection;
+  final String studentCard_ProfileSection;
+  final String studentCard_AddressSection;
+  final String studentCard_ContactsSection;
+  final String studentCard_NoClaim;
+  final String studentCard_NoBank;
+  final String studentCard_NoProfile;
+  final String studentCard_EmptyValue;
+  final String studentCard_Yes;
+  final String studentCard_No;
+  final String studentCard_Owner;
+  final String studentCard_BankName;
+  final String studentCard_Default;
+  final String studentCard_Foreign;
+  final String studentCard_Valid;
+  final String studentCard_OtpStatus;
+  final String studentCard_BankPrivacyNote;
+  final String studentCard_ClaimType;
+  final String studentCard_FirStatus;
+  final String studentCard_ProcessStatus;
+  final String studentCard_FinalDecision;
+  final String studentCard_RegistrationDate;
+  final String studentCard_Training;
+  final String studentCard_Faculty;
+  final String studentCard_Institute;
+  final String studentCard_Address;
+  final String studentCard_AddressType;
+  final String studentCard_PrintName;
+  final String studentCard_Honorific;
+  final String studentCard_FirstName;
+  final String studentCard_LastName;
+  final String studentCard_LoginName;
+  final String studentCard_BornName;
+  final String studentCard_BornDate;
+  final String studentCard_BornPlace;
+  final String studentCard_BornCountry;
+  final String studentCard_Sex;
+  final String studentCard_MotherName;
+  final String studentCard_Children;
+  final String studentCard_EduId;
+  final String studentCard_Citizenship;
+  final String studentCard_ExtraField;
+  final String studentCard_Emails;
+  final String studentCard_Phones;
+
   final String calendarPage_weekNav_StudyWeek;
   final String calendarPage_weekNav_ClassesThisWeekFull;
   final String calendarPage_weekNav_ClassesThisWeekOneDay;
@@ -1571,7 +1713,54 @@ class LanguagePack{
     this.topmenu_UnreadMessagesBadge = '%0 new messages',
     this.topmenu_NoUnreadMessages = 'No new messages',
     this.topmenu_MessagesTitle = 'Messages',
-    this.topmenu_PaymentsTitle = 'Payments'
+    this.topmenu_PaymentsTitle = 'Payments',
+    this.studentCard_Title = 'Student card / profile',
+    this.studentCard_NoQrNote = 'Only claim status, bank visibility flags, and profile fields captured from Neptun. No QR, card number, or expiry — the web has no wallet card either.',
+    this.studentCard_ClaimSection = 'Card claim status',
+    this.studentCard_BankSection = 'Bank account (read-only)',
+    this.studentCard_ProfileSection = 'Personal data',
+    this.studentCard_AddressSection = 'Claim addresses',
+    this.studentCard_ContactsSection = 'Contacts',
+    this.studentCard_NoClaim = 'No active claim (or empty response).',
+    this.studentCard_NoBank = 'No bank visibility flags to show.',
+    this.studentCard_NoProfile = 'No profile data yet.',
+    this.studentCard_EmptyValue = '—',
+    this.studentCard_Yes = 'Yes',
+    this.studentCard_No = 'No',
+    this.studentCard_Owner = 'Owner',
+    this.studentCard_BankName = 'Bank',
+    this.studentCard_Default = 'Default',
+    this.studentCard_Foreign = 'Foreign',
+    this.studentCard_Valid = 'Valid',
+    this.studentCard_OtpStatus = 'OTP status',
+    this.studentCard_BankPrivacyNote = 'Account number / IBAN / SWIFT are not shown and never logged.',
+    this.studentCard_ClaimType = 'Claim type',
+    this.studentCard_FirStatus = 'FIR status',
+    this.studentCard_ProcessStatus = 'Process status',
+    this.studentCard_FinalDecision = 'Final decision',
+    this.studentCard_RegistrationDate = 'Registration date',
+    this.studentCard_Training = 'Training',
+    this.studentCard_Faculty = 'Faculty',
+    this.studentCard_Institute = 'Institute',
+    this.studentCard_Address = 'Address',
+    this.studentCard_AddressType = 'Address type',
+    this.studentCard_PrintName = 'Print name',
+    this.studentCard_Honorific = 'Title',
+    this.studentCard_FirstName = 'First name',
+    this.studentCard_LastName = 'Last name',
+    this.studentCard_LoginName = 'Login name',
+    this.studentCard_BornName = 'Birth name',
+    this.studentCard_BornDate = 'Date of birth',
+    this.studentCard_BornPlace = 'Place of birth',
+    this.studentCard_BornCountry = 'Country of birth',
+    this.studentCard_Sex = 'Sex',
+    this.studentCard_MotherName = "Mother's name",
+    this.studentCard_Children = 'Number of children',
+    this.studentCard_EduId = 'Educational ID',
+    this.studentCard_Citizenship = 'Citizenship',
+    this.studentCard_ExtraField = 'Extra field',
+    this.studentCard_Emails = 'Email',
+    this.studentCard_Phones = 'Phone',
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1907,6 +2096,53 @@ class LanguagePack{
         topmenu_NoUnreadMessages: getStr('topmenu_NoUnreadMessages', en.topmenu_NoUnreadMessages),
         topmenu_MessagesTitle: getStr('topmenu_MessagesTitle', en.topmenu_MessagesTitle),
         topmenu_PaymentsTitle: getStr('topmenu_PaymentsTitle', en.topmenu_PaymentsTitle),
+        studentCard_Title: getStr('studentCard_Title', en.studentCard_Title),
+        studentCard_NoQrNote: getStr('studentCard_NoQrNote', en.studentCard_NoQrNote),
+        studentCard_ClaimSection: getStr('studentCard_ClaimSection', en.studentCard_ClaimSection),
+        studentCard_BankSection: getStr('studentCard_BankSection', en.studentCard_BankSection),
+        studentCard_ProfileSection: getStr('studentCard_ProfileSection', en.studentCard_ProfileSection),
+        studentCard_AddressSection: getStr('studentCard_AddressSection', en.studentCard_AddressSection),
+        studentCard_ContactsSection: getStr('studentCard_ContactsSection', en.studentCard_ContactsSection),
+        studentCard_NoClaim: getStr('studentCard_NoClaim', en.studentCard_NoClaim),
+        studentCard_NoBank: getStr('studentCard_NoBank', en.studentCard_NoBank),
+        studentCard_NoProfile: getStr('studentCard_NoProfile', en.studentCard_NoProfile),
+        studentCard_EmptyValue: getStr('studentCard_EmptyValue', en.studentCard_EmptyValue),
+        studentCard_Yes: getStr('studentCard_Yes', en.studentCard_Yes),
+        studentCard_No: getStr('studentCard_No', en.studentCard_No),
+        studentCard_Owner: getStr('studentCard_Owner', en.studentCard_Owner),
+        studentCard_BankName: getStr('studentCard_BankName', en.studentCard_BankName),
+        studentCard_Default: getStr('studentCard_Default', en.studentCard_Default),
+        studentCard_Foreign: getStr('studentCard_Foreign', en.studentCard_Foreign),
+        studentCard_Valid: getStr('studentCard_Valid', en.studentCard_Valid),
+        studentCard_OtpStatus: getStr('studentCard_OtpStatus', en.studentCard_OtpStatus),
+        studentCard_BankPrivacyNote: getStr('studentCard_BankPrivacyNote', en.studentCard_BankPrivacyNote),
+        studentCard_ClaimType: getStr('studentCard_ClaimType', en.studentCard_ClaimType),
+        studentCard_FirStatus: getStr('studentCard_FirStatus', en.studentCard_FirStatus),
+        studentCard_ProcessStatus: getStr('studentCard_ProcessStatus', en.studentCard_ProcessStatus),
+        studentCard_FinalDecision: getStr('studentCard_FinalDecision', en.studentCard_FinalDecision),
+        studentCard_RegistrationDate: getStr('studentCard_RegistrationDate', en.studentCard_RegistrationDate),
+        studentCard_Training: getStr('studentCard_Training', en.studentCard_Training),
+        studentCard_Faculty: getStr('studentCard_Faculty', en.studentCard_Faculty),
+        studentCard_Institute: getStr('studentCard_Institute', en.studentCard_Institute),
+        studentCard_Address: getStr('studentCard_Address', en.studentCard_Address),
+        studentCard_AddressType: getStr('studentCard_AddressType', en.studentCard_AddressType),
+        studentCard_PrintName: getStr('studentCard_PrintName', en.studentCard_PrintName),
+        studentCard_Honorific: getStr('studentCard_Honorific', en.studentCard_Honorific),
+        studentCard_FirstName: getStr('studentCard_FirstName', en.studentCard_FirstName),
+        studentCard_LastName: getStr('studentCard_LastName', en.studentCard_LastName),
+        studentCard_LoginName: getStr('studentCard_LoginName', en.studentCard_LoginName),
+        studentCard_BornName: getStr('studentCard_BornName', en.studentCard_BornName),
+        studentCard_BornDate: getStr('studentCard_BornDate', en.studentCard_BornDate),
+        studentCard_BornPlace: getStr('studentCard_BornPlace', en.studentCard_BornPlace),
+        studentCard_BornCountry: getStr('studentCard_BornCountry', en.studentCard_BornCountry),
+        studentCard_Sex: getStr('studentCard_Sex', en.studentCard_Sex),
+        studentCard_MotherName: getStr('studentCard_MotherName', en.studentCard_MotherName),
+        studentCard_Children: getStr('studentCard_Children', en.studentCard_Children),
+        studentCard_EduId: getStr('studentCard_EduId', en.studentCard_EduId),
+        studentCard_Citizenship: getStr('studentCard_Citizenship', en.studentCard_Citizenship),
+        studentCard_ExtraField: getStr('studentCard_ExtraField', en.studentCard_ExtraField),
+        studentCard_Emails: getStr('studentCard_Emails', en.studentCard_Emails),
+        studentCard_Phones: getStr('studentCard_Phones', en.studentCard_Phones)
       );
     }
     catch(error){
@@ -2040,6 +2276,54 @@ class LanguagePack{
       'topmenu_NoUnreadMessages':lang.topmenu_NoUnreadMessages,
       'topmenu_MessagesTitle':lang.topmenu_MessagesTitle,
       'topmenu_PaymentsTitle':lang.topmenu_PaymentsTitle,
+      'studentCard_Title':lang.studentCard_Title,
+      'studentCard_NoQrNote':lang.studentCard_NoQrNote,
+      'studentCard_ClaimSection':lang.studentCard_ClaimSection,
+      'studentCard_BankSection':lang.studentCard_BankSection,
+      'studentCard_ProfileSection':lang.studentCard_ProfileSection,
+      'studentCard_AddressSection':lang.studentCard_AddressSection,
+      'studentCard_ContactsSection':lang.studentCard_ContactsSection,
+      'studentCard_NoClaim':lang.studentCard_NoClaim,
+      'studentCard_NoBank':lang.studentCard_NoBank,
+      'studentCard_NoProfile':lang.studentCard_NoProfile,
+      'studentCard_EmptyValue':lang.studentCard_EmptyValue,
+      'studentCard_Yes':lang.studentCard_Yes,
+      'studentCard_No':lang.studentCard_No,
+      'studentCard_Owner':lang.studentCard_Owner,
+      'studentCard_BankName':lang.studentCard_BankName,
+      'studentCard_Default':lang.studentCard_Default,
+      'studentCard_Foreign':lang.studentCard_Foreign,
+      'studentCard_Valid':lang.studentCard_Valid,
+      'studentCard_OtpStatus':lang.studentCard_OtpStatus,
+      'studentCard_BankPrivacyNote':lang.studentCard_BankPrivacyNote,
+      'studentCard_ClaimType':lang.studentCard_ClaimType,
+      'studentCard_FirStatus':lang.studentCard_FirStatus,
+      'studentCard_ProcessStatus':lang.studentCard_ProcessStatus,
+      'studentCard_FinalDecision':lang.studentCard_FinalDecision,
+      'studentCard_RegistrationDate':lang.studentCard_RegistrationDate,
+      'studentCard_Training':lang.studentCard_Training,
+      'studentCard_Faculty':lang.studentCard_Faculty,
+      'studentCard_Institute':lang.studentCard_Institute,
+      'studentCard_Address':lang.studentCard_Address,
+      'studentCard_AddressType':lang.studentCard_AddressType,
+      'studentCard_PrintName':lang.studentCard_PrintName,
+      'studentCard_Honorific':lang.studentCard_Honorific,
+      'studentCard_FirstName':lang.studentCard_FirstName,
+      'studentCard_LastName':lang.studentCard_LastName,
+      'studentCard_LoginName':lang.studentCard_LoginName,
+      'studentCard_BornName':lang.studentCard_BornName,
+      'studentCard_BornDate':lang.studentCard_BornDate,
+      'studentCard_BornPlace':lang.studentCard_BornPlace,
+      'studentCard_BornCountry':lang.studentCard_BornCountry,
+      'studentCard_Sex':lang.studentCard_Sex,
+      'studentCard_MotherName':lang.studentCard_MotherName,
+      'studentCard_Children':lang.studentCard_Children,
+      'studentCard_EduId':lang.studentCard_EduId,
+      'studentCard_Citizenship':lang.studentCard_Citizenship,
+      'studentCard_ExtraField':lang.studentCard_ExtraField,
+      'studentCard_Emails':lang.studentCard_Emails,
+      'studentCard_Phones':lang.studentCard_Phones,
+
       'calendarPage_FreeDay':lang.calendarPage_FreeDay,
       'calendarPage_weekNav_ClassesThisWeekFull':lang.calendarPage_weekNav_ClassesThisWeekFull,
       'calendarPage_weekNav_ClassesThisWeekOneDay':lang.calendarPage_weekNav_ClassesThisWeekOneDay,
