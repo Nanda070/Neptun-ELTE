@@ -526,9 +526,12 @@ On the phone: **Settings → General → VPN & Device Management** → trust the
 | Display name | `Neptun ELTE` (`CFBundleDisplayName` / Android `android:label`) |
 | `CFBundleName` | `NeptunELTE` |
 | Bundle ID | **`com.nanda070.neptunmobile`** |
+| Widget extension | `com.nanda070.neptunmobile.TodayClassesWidget` (App Group `group.com.nanda070.neptunmobile`) |
 | Tests | `com.nanda070.neptunmobile.RunnerTests` |
 | Team (local) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (do not change — breaks Flutter) |
+
+**WidgetKit:** extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.5.0**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`).
 
 **Why no underscore in the Bundle ID:** Automatic Signing names the profile `XC com nanda070 neptun_mobile app`. Underscores in that name are invalid → `The attribute 'name' is invalid` / no profiles.
 

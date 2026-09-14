@@ -527,9 +527,12 @@ Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.
 | Display name | `Neptun ELTE` (`CFBundleDisplayName` / Android `android:label`) |
 | `CFBundleName` | `NeptunELTE` |
 | Bundle ID | **`com.nanda070.neptunmobile`** |
+| Widget extension | `com.nanda070.neptunmobile.TodayClassesWidget` (App Group `group.com.nanda070.neptunmobile`) |
 | Tests | `com.nanda070.neptunmobile.RunnerTests` |
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
+
+**WidgetKit:** extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.0**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`).
 
 **Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
 
