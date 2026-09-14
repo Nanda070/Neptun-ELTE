@@ -237,6 +237,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - Full docs refresh to match shipped **1.5.0**: removed all live links to deleted `IMPLEMENTATION_PLAN*` (backlog = TECHNICAL honesty + DEV_BLOG “In progress”); fixed stale “no iOS CI” / “no tests” claims (`ios-ipa.yml` unsigned IPA; `test/elte_room_code_test.dart` + placeholder `widget_test.dart`); TOC/home-tabs anchors; version rows (feature line **5**, item **11** dropped, **2.0.0** = final); student card claim/bank/profile **no QR**; iOS WidgetKit MVP / Android Glance deferred; mail translator still “verify offline/failure”; Student web full + 10-min session + 4-tab nav honesty. Cursor rules `keep-docs-current` / `versioning` no longer mandate IMPLEMENTATION_PLAN. Owner **Nanda**. Docs-only; no app version bump.
 
+**[2026-09-14, ~20:56]**
+
+- Calendar: removed the **“Next 48 hours”** strip (classes+exams list above the week tabs). Kept today summary, ZH/deadline strip, period banners, week view, ICS export, What’s Changed. Dropped unused `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. No version bump. Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)

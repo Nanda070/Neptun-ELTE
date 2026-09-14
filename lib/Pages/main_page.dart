@@ -2810,19 +2810,11 @@ class CalendarPageWidget extends StatelessWidget{
   List<Widget> _extraCalendarSections() {
     final lang = AppStrings.getLanguagePack();
     final now = DateTime.now().millisecondsSinceEpoch;
-    final until = now + const Duration(hours: 48).inMilliseconds;
 
     List<api.CalendarEntry> sorted(Iterable<api.CalendarEntry> src) {
       final list = src.toList()..sort((a, b) => a.startEpoch.compareTo(b.startEpoch));
       return list;
     }
-
-    // Next 48h: classes + exams only (no period banners, no ZH/tasks).
-    final next48 = sorted(homePage.calendarEntries.where((e) =>
-        e.startEpoch >= now &&
-        e.startEpoch <= until &&
-        !e.isPeriodBanner &&
-        !e.isTask)).take(6).toList();
 
     // ZH / deadlines: calendar isTask + exam deadlines already in calendarEntries.
     final deadlines = sorted(homePage.calendarEntries.where((e) =>
@@ -2832,10 +2824,6 @@ class CalendarPageWidget extends StatelessWidget{
     final banners = sorted(homePage.calendarEntries.where((e) => e.isPeriodBanner)).take(8).toList();
 
     final out = <Widget>[];
-    if (next48.isNotEmpty) {
-      out.add(_sectionHeader(lang.calendar_next48h_Header));
-      out.addAll(next48.map(_eventLine));
-    }
     if (deadlines.isNotEmpty) {
       out.add(_sectionHeader(lang.calendar_deadlines_Header));
       out.addAll(deadlines.map(_eventLine));

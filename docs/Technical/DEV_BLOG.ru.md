@@ -237,6 +237,10 @@
 
 - Полное обновление docs под отгруженный **1.5.0**: убраны живые ссылки на удалённые `IMPLEMENTATION_PLAN*` (бэклог = честность TECHNICAL + «В работе» DEV_BLOG); исправлены устаревшие «нет iOS CI» / «нет тестов» (`ios-ipa.yml` unsigned IPA; `test/elte_room_code_test.dart` + placeholder `widget_test.dart`); TOC/якоря вкладок; строки версий (feature-line **5**, п. **11** снят, **2.0.0** = финал); студенческий заявка/банк/профиль **без QR**; iOS WidgetKit MVP / Android Glance отложен; переводчик почты всё ещё «проверить offline/failure»; честность Student web full + 10-мин сессия + 4 вкладки. Правила Cursor `keep-docs-current` / `versioning` больше не требуют IMPLEMENTATION_PLAN. Владелец **Nanda**. Только docs; версию приложения не поднимали.
 
+**[2026-09-14, ~20:56]**
+
+- Календарь: убрана полоса **«Следующие 48 часов»** (список пар+экзаменов над вкладками недели). Оставлены сводка «сегодня», полоса ZH/дедлайны, баннеры периодов, неделя, ICS export, What’s Changed. Удалён неиспользуемый `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. Без bump версии. Владелец **Nanda**.
+
 ---
 
 ## В работе / запланировано (честно)

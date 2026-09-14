@@ -323,7 +323,6 @@ class AppStrings{
       settings_calendar_ShowClasses: 'Órák megjelenítése',
       settings_calendar_ShowExams: 'Vizsgák megjelenítése',
       settings_calendar_ShowPeriods: 'Időszakok megjelenítése',
-      calendar_next48h_Header: 'Következő 48 óra',
       calendar_tasks_Header: 'Feladatok / ZH',
       calendar_deadlines_Header: 'ZH / határidők',
       calendar_exams_Header: 'Vizsgák',
@@ -706,7 +705,6 @@ class AppStrings{
       settings_calendar_ShowClasses: 'Show classes',
       settings_calendar_ShowExams: 'Show exams',
       settings_calendar_ShowPeriods: 'Show periods',
-      calendar_next48h_Header: 'Next 48 hours',
       calendar_tasks_Header: 'Tasks / midterms',
       calendar_deadlines_Header: 'ZH / deadlines',
       calendar_exams_Header: 'Exams',
@@ -1363,7 +1361,6 @@ class LanguagePack{
   final String settings_calendar_ShowClasses;
   final String settings_calendar_ShowExams;
   final String settings_calendar_ShowPeriods;
-  final String calendar_next48h_Header;
   final String calendar_tasks_Header;
   final String calendar_deadlines_Header;
   final String calendar_exams_Header;
@@ -1684,7 +1681,6 @@ class LanguagePack{
     required this.settings_calendar_ShowClasses,
     required this.settings_calendar_ShowExams,
     required this.settings_calendar_ShowPeriods,
-    required this.calendar_next48h_Header,
     required this.calendar_tasks_Header,
     required this.calendar_deadlines_Header,
     required this.calendar_exams_Header,
@@ -2091,7 +2087,6 @@ class LanguagePack{
         settings_calendar_ShowClasses: getStr('settings_calendar_ShowClasses', en.settings_calendar_ShowClasses),
         settings_calendar_ShowExams: getStr('settings_calendar_ShowExams', en.settings_calendar_ShowExams),
         settings_calendar_ShowPeriods: getStr('settings_calendar_ShowPeriods', en.settings_calendar_ShowPeriods),
-        calendar_next48h_Header: getStr('calendar_next48h_Header', en.calendar_next48h_Header),
         calendar_tasks_Header: getStr('calendar_tasks_Header', en.calendar_tasks_Header),
         calendar_deadlines_Header: getStr('calendar_deadlines_Header', en.calendar_deadlines_Header),
         calendar_exams_Header: getStr('calendar_exams_Header', en.calendar_exams_Header),
@@ -2545,7 +2540,6 @@ class LanguagePack{
       'settings_calendar_ShowClasses':lang.settings_calendar_ShowClasses,
       'settings_calendar_ShowExams':lang.settings_calendar_ShowExams,
       'settings_calendar_ShowPeriods':lang.settings_calendar_ShowPeriods,
-      'calendar_next48h_Header':lang.calendar_next48h_Header,
       'calendar_tasks_Header':lang.calendar_tasks_Header,
       'calendar_deadlines_Header':lang.calendar_deadlines_Header,
       'calendar_exams_Header':lang.calendar_exams_Header,
