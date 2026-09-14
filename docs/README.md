@@ -140,7 +140,7 @@ Repo root `README.md` / `LICENSE` point here so GitHub still has a landing page;
 
 ## Legal
 
-Privacy, Terms, and Cookie / local-storage notices in three languages. **Full legal name of the creator appears only inside these Legal files** — product/docs elsewhere use **Nanda**.
+Privacy, Terms, and Cookie / local-storage notices in three languages.
 
 ### English — [`Legal-En/`](Legal-En/)
 

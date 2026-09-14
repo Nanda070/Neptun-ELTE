@@ -155,7 +155,7 @@ If you misuse the app or violate these Terms or university rules in a way that c
 
 Source distribution is under the **GNU Lesser General Public License v3** (LGPL-3.0-only) — see [`docs/LICENSE`](../LICENSE) (mirrored at repo root). These Terms govern **use of the distributed app as a product** and do not replace the LGPL for code contribution/redistribution.
 
-Historical contributors may be credited; product identity in non-Legal docs is **Nanda**. Legal owner named above.
+Historical contributors may be credited. Legal owner named above.
 
 ---
 

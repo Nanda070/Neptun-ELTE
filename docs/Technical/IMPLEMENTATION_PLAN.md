@@ -2,7 +2,7 @@
 
 > 🇷🇺 [Русская версия](IMPLEMENTATION_PLAN.ru.md) (richer user-facing twin; **same facts**)
 
-**Owner / developer:** **Nanda** (full legal name only in Legal docs).  
+**Owner / developer:** **Nanda**.  
 **Product:** Neptun ELTE — unofficial mobile client for ELTE Neptun. Not a multi-university app.
 
 This file is a **plan only**. Nothing listed here is implemented by writing the document. Do **not** treat unchecked items as shipped.

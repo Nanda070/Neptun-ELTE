@@ -109,7 +109,7 @@ Neptun может быть перегружен («student web is full»). Кэ�
 
 ## 11. Лицензия на код
 
-Исходники — **GNU Lesser General Public License v3** (LGPL-3.0-only) ([`docs/LICENSE`](../LICENSE)). Эти условия — про использование **приложения как продукта** и не заменяют LGPL для кода. В не-Legal документах владелец указан как **Nanda**; полное юридическое имя — выше.
+Исходники — **GNU Lesser General Public License v3** (LGPL-3.0-only) ([`docs/LICENSE`](../LICENSE)). Эти условия — про использование **приложения как продукта** и не заменяют LGPL для кода.
 
 ---
 

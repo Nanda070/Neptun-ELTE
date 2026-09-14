@@ -224,4 +224,4 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
-*Owner / developer: **Nanda**. Full legal name appears only in Legal docs.*
+*Owner / developer: **Nanda**.*
