@@ -99,8 +99,16 @@ struct TodayClassesWidget: Widget {
 
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: kind, provider: TodayClassesProvider()) { entry in
-      TodayClassesWidgetView(entry: entry)
-        .containerBackground(.fill.tertiary, for: .widget)
+      Group {
+        if #available(iOSApplicationExtension 17.0, *) {
+          TodayClassesWidgetView(entry: entry)
+            .containerBackground(.fill.tertiary, for: .widget)
+        } else {
+          TodayClassesWidgetView(entry: entry)
+            .padding(8)
+            .background(Color(.secondarySystemBackground))
+        }
+      }
     }
     .configurationDisplayName("Today's classes")
     .description("Cached timetable for today. Open Neptun ELTE to refresh.")
@@ -182,7 +190,7 @@ struct TodayClassesWidgetView: View {
   private func footer(text: String) -> some View {
     Text(text)
       .font(.caption2)
-      .foregroundStyle(.tertiary)
+      .foregroundColor(.secondary)
       .lineLimit(1)
   }
 }
