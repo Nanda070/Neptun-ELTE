@@ -1,6 +1,6 @@
 # Neptun ELTE — техническая документация
 
-> 🇬🇧 [English](TECHNICAL.md) · 📋 [План реализации (RU)](IMPLEMENTATION_PLAN.ru.md) · [EN](IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android (RU)](IOS_VS_ANDROID.ru.md) · [EN](IOS_VS_ANDROID.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
+> 🇬🇧 [English](TECHNICAL.md) · 📱 [iOS vs Android (RU)](IOS_VS_ANDROID.ru.md) · [EN](IOS_VS_ANDROID.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
 
 > **Аудитория:** разработчики и люди с доступом к репозиторию.  
 > Файл только в git (`docs/Technical/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
@@ -11,8 +11,7 @@
 **Владелец и разработчик:** **Nanda**.
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
-Бэклог реализации (не сделано): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).  
-Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
+Дневник разработки (сделанные этапы / решения): [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
 Матрица платформ (что есть/нет на каждой ОС): [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md) / [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md).  
@@ -112,7 +111,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Полный продуктовый README
 │   ├── LICENSE                    # Канонический LGPL-3.0-only
-│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG + IOS_VS_ANDROID (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -128,7 +127,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + IOS_VS_ANDROID (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
@@ -334,7 +333,7 @@ UI setup:
 | Периоды | `/api/Periods/GetPeriods` |
 | Почта | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
 
-Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) — в [`IMPLEMENTATION_PLAN.ru.md` §4.2](IMPLEMENTATION_PLAN.ru.md#42-снятый-инвентарь-неполно--2026-09-13); покрытие неполное, HAR в git нет.
+Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) — инвентарь по пользовательским HAR (в git нет; покрытие неполное).
 
 Тело логина:
 
@@ -725,7 +724,6 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | Матрица iOS vs Android |
-| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Приоритетный план реализации (не сделано) |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (канон); корневой `LICENSE` зеркалирует |

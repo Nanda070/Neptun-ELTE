@@ -15,7 +15,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Bug%20reports-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📋 [Implementation plan](Technical/IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · 🎨 [UI mockups (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal)
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · 🎨 [UI mockups (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal)
 
 ---
 
@@ -127,8 +127,6 @@ iOS checklist lives in Technical §14 (not a separate developer file).
 | Technical (RU) | [`docs/Technical/TECHNICAL.ru.md`](Technical/TECHNICAL.ru.md) |
 | iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
 | iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
-| Implementation plan (EN) | [`docs/Technical/IMPLEMENTATION_PLAN.md`](Technical/IMPLEMENTATION_PLAN.md) |
-| Implementation plan (RU) | [`docs/Technical/IMPLEMENTATION_PLAN.ru.md`](Technical/IMPLEMENTATION_PLAN.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
 | UI mockups (Figma) | [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — Figma only (not Flutter). Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer. Android = polished target; iOS = current shell + additive polish. Owner **Nanda** |

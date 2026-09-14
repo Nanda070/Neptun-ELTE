@@ -19,4 +19,4 @@ Owner: **Nanda**. Canonical detail: `docs/Technical/TECHNICAL.md` § Versioning 
 
 ## When bumping
 
-Update together: `pubspec.yaml`, Android `versionName` fallback, iOS `MARKETING_VERSION` if hardcoded, Settings fallback string, README EN+RU identity row, TECHNICAL EN+RU § Versioning + product overview version line, IMPLEMENTATION_PLAN EN+RU Release row, DEV_BLOG EN+RU entry. Settings UI must show `PackageInfo.version` **without** `+buildNumber`.
+Update together: `pubspec.yaml`, Android `versionName` fallback, iOS `MARKETING_VERSION` if hardcoded, Settings fallback string, README EN+RU identity row, TECHNICAL EN+RU § Versioning + product overview version line, DEV_BLOG EN+RU entry. Settings UI must show `PackageInfo.version` **without** `+buildNumber`.

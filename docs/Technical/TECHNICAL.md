@@ -1,6 +1,6 @@
 # Neptun ELTE — technical documentation
 
-> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📋 [Implementation plan (EN)](IMPLEMENTATION_PLAN.md) · [RU](IMPLEMENTATION_PLAN.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
 
 > **Audience:** developers and anyone with repo access.  
 > Git-only (`docs/Technical/TECHNICAL.md`). **Not** published as a website, **no** public route.  
@@ -11,8 +11,7 @@ Last sync with the codebase: **September 2026** (repo **Neptun-ELTE**, display n
 **Owner / developer:** **Nanda**.
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
-Implementation backlog (not shipped): [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) / [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md).  
-Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
+Dev diary (shipped stages / decisions): [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
 Platform matrix (what each OS has/lacks): [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) / [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md).  
@@ -112,7 +111,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Product README (full)
 │   ├── LICENSE                    # Canonical LGPL-3.0-only text
-│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG + IOS_VS_ANDROID (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -128,7 +127,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + IOS_VS_ANDROID (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
@@ -334,7 +333,7 @@ Base: `{institute without /Account}` + `/api/...`.
 | Periods | `/api/Periods/GetPeriods` |
 | Mail | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
 
-Unused HWEB paths seen in Sep 2026 captures (not called by the app) live in [`IMPLEMENTATION_PLAN.md` §4.2](IMPLEMENTATION_PLAN.md#42-captured-inventory-incomplete--2026-09-13) — coverage incomplete; HARs are not in git.
+Unused HWEB paths seen in Sep 2026 captures (not called by the app) were inventoried from user HARs (not in git; coverage incomplete).
 
 Login body:
 
@@ -724,7 +723,6 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | iOS vs Android platform matrix |
-| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Prioritized implementation plan (not shipped) |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (canonical); root `LICENSE` mirrors it |
