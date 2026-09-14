@@ -11,7 +11,8 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **5–6, 9–11**, **14** still backlog || **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + payments honesty item **7** + maps item **8** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **6, 9–11**, **14** still backlog |
+| **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
 | **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
@@ -95,7 +96,7 @@ Later work is cheaper if earlier items land first.
 
 | # | Item | Gate |
 |---|------|------|
-| 5 | Ghost grade goal / what-if polish | Same formula as item 2 |
+| 5 | Ghost grade goal / what-if polish | **DONE** (Sep 2026). Live átlag+/30 in popup; optional target grade; same `MarkbookMath` formula. |
 | 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
 | 7 | `totalMoney` accuracy + payment notification antispam | **DONE** (Sep 2026). Paid-outgoing fees + latest-50 label; ≤1/day payment notif |
 | 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
@@ -388,7 +389,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 5. Ghost grade goal / what-if polish
+### 5. Ghost grade goal / what-if polish — **DONE**
 
 - **Why**  
   Ghost grades already change átlag and /30 via `_markbookCalcGhostAvg`, but the UI is a raw 1–5 picker (popup mode 0) with no “target átlag” / “what if I get X on remaining credits”.
@@ -422,6 +423,9 @@ Later work is cheaper if earlier items land first.
 
 - **Out of scope**  
   Official scholarship rules, KKI from server.
+
+- **Shipped**  
+  Live átlag + /30 preview in ghost popup; optional target-átlag hint via `MarkbookMath.minGradeForTargetAvg`; `GhostGradePopupData` + clear-ghost control. Marketing version unchanged on this item.
 
 ---
 

@@ -192,6 +192,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Plan item 8 — maps deep-link on LD/LE/LK:** after tap-decode, **Open map** (`roomCode_OpenMap`) opens Apple/Google Maps with building search (`ELTE Déli Tömb` / `Északi Tömb` / `Kémiai tömb`, 1117 Budapest). Unknown prefix stays text-only. No version bump. Owner **Nanda**.
 - **Plan item 7 — payments honesty + antispam:** `totalMoney` = completed outgoing (`ammount < 0`) from latest 50 txns — header “Fees paid (latest 50)”; payment notifs ≤ 1/day (soonest unpaid). No version bump. Owner **Nanda**.
 - **Plan item 13 — app shortcuts:** Android static `shortcuts.xml` + iOS `UIApplicationShortcutItems` (Calendar / Mail / Payments). Cold start via `Splitter` + `SessionGuard.isColdStartSessionUsable()` → `HomePage(initialView:)` or login. Maps shortcut left for item **8**. No version bump. Owner **Nanda**.
+- **Plan item 5 — ghost grade what-if:** ghost popup (mode 0) shows live átlag + /30 while picking 1–5; optional target átlag → “need ≥ N” via same `MarkbookMath.weightedAvg` / `index30`. Clear-ghost control. No version bump. Owner **Nanda**.
 
 ---
 
@@ -208,7 +209,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **7** / **8** / **12** / **13** shipped; next backlog starts at item **5** (parallel: **5–6, 9–11**, **14**).
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **5** / **7** / **8** / **12** / **13** shipped; next backlog starts at item **6** (parallel: **6, 9–11**, **14**).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Exam / course registration — **not built, not planned**.

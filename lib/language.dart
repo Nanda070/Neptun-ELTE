@@ -256,6 +256,13 @@ class AppStrings{
       mail_filter_NoMatches: 'Nincs találat',
       popup_case0_GhostGradeHeader: '👻 Szellemjegy 👻',
       popup_case0_SelectGrade: 'Válassz jegyet...',
+      popup_case0_LiveAverage: 'Átlag: %0',
+      popup_case0_LivePer30: '/30: %0',
+      popup_case0_TargetAverageHint: 'Cél átlag (opcionális)',
+      popup_case0_NeedGradeAtLeast: 'Ehhez a tárgyhoz ≥ %0 kell a(z) %1 átlaghoz',
+      popup_case0_NeedGradeImpossible: 'Még 5-össel sem éred el a(z) %0 átlagot',
+      popup_case0_NeedGradeAlready: 'Már eléred a(z) %0 átlagot e nélkül',
+      popup_case0_ClearGhost: 'Szellemjegy törlése',
       popup_caseAll_OkButton: 'Ok',
       popup_case1_SettingsHeader: '⚙ Beállítások ⚙',
       popup_case1_settingOption1_FamilyFriendlyLoadingText: 'Szókimondó betöltőszövegek',
@@ -616,6 +623,13 @@ class AppStrings{
       mail_filter_NoMatches: 'No matching messages',
       popup_case0_GhostGradeHeader: '👻 Ghost grade 👻',
       popup_case0_SelectGrade: 'Select grade...',
+      popup_case0_LiveAverage: 'Average: %0',
+      popup_case0_LivePer30: '/30: %0',
+      popup_case0_TargetAverageHint: 'Target átlag (optional)',
+      popup_case0_NeedGradeAtLeast: 'Need grade ≥ %0 on this subject to reach átlag %1',
+      popup_case0_NeedGradeImpossible: 'Even a 5 won’t reach átlag %0',
+      popup_case0_NeedGradeAlready: 'Already at/above átlag %0 without this subject',
+      popup_case0_ClearGhost: 'Clear ghost grade',
       popup_caseAll_OkButton: 'Ok',
       popup_case1_SettingsHeader: '⚙ Settings ⚙',
       popup_case1_settingOption1_FamilyFriendlyLoadingText: 'Outspoken loading texts',
@@ -1242,6 +1256,13 @@ class LanguagePack{
   final String popup_case0_GhostGradeHeader;
   final String popup_caseAll_OkButton;
   final String popup_case0_SelectGrade;
+  final String popup_case0_LiveAverage;
+  final String popup_case0_LivePer30;
+  final String popup_case0_TargetAverageHint;
+  final String popup_case0_NeedGradeAtLeast;
+  final String popup_case0_NeedGradeImpossible;
+  final String popup_case0_NeedGradeAlready;
+  final String popup_case0_ClearGhost;
 
   final String popup_case1_SettingsHeader;
   final String popup_case1_settingOption1_FamilyFriendlyLoadingText;
@@ -1548,6 +1569,13 @@ class LanguagePack{
     required this.mail_filter_NoMatches,
     required this.popup_case0_GhostGradeHeader,
     required this.popup_case0_SelectGrade,
+    required this.popup_case0_LiveAverage,
+    required this.popup_case0_LivePer30,
+    required this.popup_case0_TargetAverageHint,
+    required this.popup_case0_NeedGradeAtLeast,
+    required this.popup_case0_NeedGradeImpossible,
+    required this.popup_case0_NeedGradeAlready,
+    required this.popup_case0_ClearGhost,
     required this.popup_caseAll_OkButton,
     required this.popup_case1_settingBottomText_InstallOrigin,
     required this.popup_case1_settingBottomText_InstallOrigin3rdParty,
@@ -1932,6 +1960,13 @@ class LanguagePack{
         mail_filter_NoMatches: getStr('mail_filter_NoMatches', en.mail_filter_NoMatches),
         popup_case0_GhostGradeHeader: getStr('popup_case0_GhostGradeHeader', en.popup_case0_GhostGradeHeader),
         popup_case0_SelectGrade: getStr('popup_case0_SelectGrade', en.popup_case0_SelectGrade),
+        popup_case0_LiveAverage: getStr('popup_case0_LiveAverage', en.popup_case0_LiveAverage),
+        popup_case0_LivePer30: getStr('popup_case0_LivePer30', en.popup_case0_LivePer30),
+        popup_case0_TargetAverageHint: getStr('popup_case0_TargetAverageHint', en.popup_case0_TargetAverageHint),
+        popup_case0_NeedGradeAtLeast: getStr('popup_case0_NeedGradeAtLeast', en.popup_case0_NeedGradeAtLeast),
+        popup_case0_NeedGradeImpossible: getStr('popup_case0_NeedGradeImpossible', en.popup_case0_NeedGradeImpossible),
+        popup_case0_NeedGradeAlready: getStr('popup_case0_NeedGradeAlready', en.popup_case0_NeedGradeAlready),
+        popup_case0_ClearGhost: getStr('popup_case0_ClearGhost', en.popup_case0_ClearGhost),
         popup_caseAll_OkButton: getStr('popup_caseAll_OkButton', en.popup_caseAll_OkButton),
         popup_case1_settingBottomText_InstallOrigin: getStr('popup_case1_settingBottomText_InstallOrigin', en.popup_case1_settingBottomText_InstallOrigin),
         popup_case1_settingBottomText_InstallOrigin3rdParty: getStr('popup_case1_settingBottomText_InstallOrigin3rdParty', en.popup_case1_settingBottomText_InstallOrigin3rdParty),
@@ -2363,6 +2398,13 @@ class LanguagePack{
       'mail_filter_NoMatches':lang.mail_filter_NoMatches,
       'popup_case0_GhostGradeHeader':lang.popup_case0_GhostGradeHeader,
       'popup_case0_SelectGrade':lang.popup_case0_SelectGrade,
+      'popup_case0_LiveAverage':lang.popup_case0_LiveAverage,
+      'popup_case0_LivePer30':lang.popup_case0_LivePer30,
+      'popup_case0_TargetAverageHint':lang.popup_case0_TargetAverageHint,
+      'popup_case0_NeedGradeAtLeast':lang.popup_case0_NeedGradeAtLeast,
+      'popup_case0_NeedGradeImpossible':lang.popup_case0_NeedGradeImpossible,
+      'popup_case0_NeedGradeAlready':lang.popup_case0_NeedGradeAlready,
+      'popup_case0_ClearGhost':lang.popup_case0_ClearGhost,
       'popup_caseAll_OkButton':lang.popup_caseAll_OkButton,
       'popup_case1_settingBottomText_InstallOrigin':lang.popup_case1_settingBottomText_InstallOrigin,
       'popup_case1_settingBottomText_InstallOrigin3rdParty':lang.popup_case1_settingBottomText_InstallOrigin3rdParty,

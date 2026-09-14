@@ -18,6 +18,7 @@ import '../Pages/startup_page.dart';
 import '../TimetableElements/timetable_element_widget.dart';
 import 'elte_room_code.dart';
 import 'emojirich_text.dart';
+import 'markbook_math.dart';
 import 'message_translator.dart';
 
 typedef Callback = void Function(dynamic);
@@ -200,6 +201,9 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
   bool _mailTranslating = false;
   Future<String>? _mailContentFuture;
 
+  final TextEditingController _ghostTargetController = TextEditingController();
+  double? _ghostTargetAvg;
+
   @override
   void initState() {
     super.initState();
@@ -214,6 +218,9 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
     _mailTranslatedBody = null;
     _mailShowOriginal = true;
     _mailTranslating = false;
+    if (widget.mode == 0 && GhostGradePopupData.existingGhostGrade >= 1) {
+      selectionValue = GhostGradePopupData.existingGhostGrade - 1;
+    }
     if (widget.mode == 3) {
       _mailContentFuture = api.MailRequest.getMailContent(
         MailPopupDisplayTexts.mailID,
@@ -245,6 +252,117 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
   }
 
   int selectionValue = -1;
+
+  String _fmtMarkbookNumber(double v) {
+    if (v.isNaN || v <= 0) {
+      return AppStrings.getLanguagePack().markbookPage_NoGrades;
+    }
+    return v.toStringAsFixed(2);
+  }
+
+  List<Widget> _ghostLivePreviewWidgets() {
+    final lang = AppStrings.getLanguagePack();
+    final list = <Widget>[];
+    if (selectionValue >= 0) {
+      final preview = GhostGradePopupData.previewForGrade(selectionValue + 1);
+      list.add(const SizedBox(height: 12));
+      list.add(Text(
+        AppStrings.getStringWithParams(
+          lang.popup_case0_LiveAverage,
+          [_fmtMarkbookNumber(preview.average)],
+        ),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.getTheme().textColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ));
+      list.add(const SizedBox(height: 4));
+      list.add(Text(
+        AppStrings.getStringWithParams(
+          lang.popup_case0_LivePer30,
+          [_fmtMarkbookNumber(preview.per30)],
+        ),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.getTheme().textColor.withValues(alpha: 0.75),
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ));
+    }
+
+    list.add(const SizedBox(height: 16));
+    list.add(SizedBox(
+      width: 220,
+      child: TextField(
+        controller: _ghostTargetController,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.getTheme().textColor,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: lang.popup_case0_TargetAverageHint,
+          hintStyle: TextStyle(
+            color: AppColors.getTheme().textColor.withValues(alpha: 0.45),
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+          ),
+          filled: true,
+          fillColor: AppColors.getTheme().textColor.withValues(alpha: 0.05),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        ),
+        onChanged: (raw) {
+          final normalized = raw.trim().replaceAll(',', '.');
+          final parsed = double.tryParse(normalized);
+          setState(() {
+            _ghostTargetAvg = (parsed != null && parsed > 0) ? parsed : null;
+          });
+        },
+      ),
+    ));
+
+    if (_ghostTargetAvg != null) {
+      final need = GhostGradePopupData.minGradeForTarget(_ghostTargetAvg!);
+      list.add(const SizedBox(height: 10));
+      final String tip;
+      if (need == 0) {
+        tip = AppStrings.getStringWithParams(
+          lang.popup_case0_NeedGradeAlready,
+          [_ghostTargetAvg!.toStringAsFixed(2)],
+        );
+      } else if (need == null) {
+        tip = AppStrings.getStringWithParams(
+          lang.popup_case0_NeedGradeImpossible,
+          [_ghostTargetAvg!.toStringAsFixed(2)],
+        );
+      } else {
+        tip = AppStrings.getStringWithParams(
+          lang.popup_case0_NeedGradeAtLeast,
+          ['$need', _ghostTargetAvg!.toStringAsFixed(2)],
+        );
+      }
+      list.add(Text(
+        tip,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.getTheme().textColor.withValues(alpha: 0.8),
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+      ));
+    }
+    return list;
+  }
 
   List<Widget> getWidgets(int mode){
     List<Widget> list = <Widget>[];
@@ -405,6 +523,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
             )
         );
+        list.addAll(_ghostLivePreviewWidgets());
         list.add(const SizedBox(height: 20));
         list.add(TextButton(
           onPressed: (){
@@ -412,6 +531,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(selectionValue);
+            GhostGradePopupData.clear();
             PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
@@ -430,6 +550,28 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             ),
           ),
         ));
+        if (GhostGradePopupData.existingGhostGrade != -1 || selectionValue != -1) {
+          list.add(const SizedBox(height: 8));
+          list.add(TextButton(
+            onPressed: (){
+              if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                return;
+              }
+              PopupWidgetHandler._instance!.callback(-1);
+              GhostGradePopupData.clear();
+              PopupWidgetHandler.closePopup(context);
+              AppHaptics.lightImpact();
+            },
+            child: Text(
+              AppStrings.getLanguagePack().popup_case0_ClearGhost,
+              style: TextStyle(
+                color: AppColors.getTheme().textColor.withValues(alpha: 0.65),
+                fontWeight: FontWeight.w600,
+                fontSize: 14.0,
+              ),
+            ),
+          ));
+        }
 
         return list;
 
@@ -2270,5 +2412,11 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           );
         }
     );
+  }
+
+  @override
+  void dispose() {
+    _ghostTargetController.dispose();
+    super.dispose();
   }
 }
