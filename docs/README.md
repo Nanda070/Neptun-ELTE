@@ -15,7 +15,9 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Bug%20reports-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📋 [Implementation plan](Technical/IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · 🎨 [UI mockups (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal)
+> 🇷🇺 [Русская версия](README.ru.md) · 📘 [Technical (EN)](Technical/TECHNICAL.md) · [RU](Technical/TECHNICAL.ru.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.md) · 📝 [Dev Blog](Technical/DEV_BLOG.md) · 🎨 [UI mockups (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal)
+
+Backlog / remaining work lives in [Technical](Technical/TECHNICAL.md) (honesty + decisions) and the [Dev Blog](Technical/DEV_BLOG.md) “In progress” section. Numbered `IMPLEMENTATION_PLAN` files were **deleted** (item **11** dropped earlier).
 
 ---
 
@@ -38,7 +40,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Login like the website** — Neptun ID + password → 2FA (authenticator TOTP; email OTP on web may be thinner in-app) → student data APIs
 - **Timetable** — week view (Mon–Sun only; no next-Monday bleed); **today summary** + ZH/deadline strip; ICS **export** share; class-notif granularity 10/5/0 min; same-day break chips localized; next-48h = classes+exams only; period banners only in the period strip; calendar filters in Settings; training switcher when multiple trainings exist; tap room codes `LD`/`LE`/`LK` to decode, then **Open map** for Lágymányos buildings
 - **Markbook (Subjects)** — taken subjects with codes, credits, grades; **átlag** (credit-weighted) and **/30** (same numerator÷30, not átlag÷30); this-term + accumulated completed credits; **semester comparison** (per-term átlag / /30 / credits, cache-first); **ghost grade what-if** (live átlag+/30 + optional target); app-computed honesty note; my courses + grade history across terms
-- **Messages** — Neptun inbox; local search (subject / sender / loaded body) + unread-only chip; full thread; optional HU→EN/RU machine translate (may be inaccurate)
+- **Messages** — Neptun inbox; local search (subject / sender / loaded body) + unread-only chip; full thread; optional HU→EN/RU machine translate (`MessageTranslator`; may be inaccurate; offline/failure keeps original — still treat as verify-on-device)
 - **What’s Changed** — after refresh, simple banners for new mails / grade changes (drawer + calendar strip; first install silent)
 - **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)
 - **Periods** — registration and study periods (bottom tab)
@@ -60,7 +62,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 2. 2FA when required (TOTP field in app).
 3. Bridge via Student web / OuterLogin → JWT on the assigned `hallgatoN` host.
 4. If Student web is **full**, login stops after 2FA with an honest “full / try later” message — **not** “invalid password”.
-4. REST calls for calendar, subjects, messages, payments, periods; responses may be cached locally.
+5. REST calls for calendar, subjects, messages, payments, periods; responses may be cached locally.
 
 Full honesty table and API map: [Technical documentation](Technical/TECHNICAL.md).
 
@@ -127,10 +129,9 @@ iOS checklist lives in Technical §14 (not a separate developer file).
 | Technical (RU) | [`docs/Technical/TECHNICAL.ru.md`](Technical/TECHNICAL.ru.md) |
 | iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
 | iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
-| Implementation plan (EN) | [`docs/Technical/IMPLEMENTATION_PLAN.md`](Technical/IMPLEMENTATION_PLAN.md) |
-| Implementation plan (RU) | [`docs/Technical/IMPLEMENTATION_PLAN.ru.md`](Technical/IMPLEMENTATION_PLAN.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
+| Backlog | TECHNICAL honesty + DEV_BLOG “In progress” (numbered `IMPLEMENTATION_PLAN*` **deleted**) |
 | UI mockups (Figma) | [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — Figma only (not Flutter). Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer. Android = polished target; iOS = current shell + additive polish. Owner **Nanda** |
 | License (canonical) | [`docs/LICENSE`](LICENSE) |
 | Short root pointer | [`README.md`](../README.md) at repo root |

@@ -1,6 +1,6 @@
 # Neptun ELTE — technical documentation
 
-> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📋 [Implementation plan (EN)](IMPLEMENTATION_PLAN.md) · [RU](IMPLEMENTATION_PLAN.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
 
 > **Audience:** developers and anyone with repo access.  
 > Git-only (`docs/Technical/TECHNICAL.md`). **Not** published as a website, **no** public route.  
@@ -11,12 +11,12 @@ Last sync with the codebase: **September 2026** (repo **Neptun-ELTE**, display n
 **Owner / developer:** **Nanda**.
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
-Implementation backlog (not shipped): [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) / [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md).  
+**Backlog** (remaining work): this file’s [honesty table](#11-honesty-full-vs-thin) + [§20 decisions](#20-why-we-chose-this) and the Dev Blog [“In progress / planned”](DEV_BLOG.md#in-progress--planned-honest) section. Numbered `IMPLEMENTATION_PLAN.md` / `.ru.md` were **deleted** after **1.5.0** (plan item **11** Academic Progress / tanterv was **dropped** earlier — do not rebuild).  
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
 Platform matrix (what each OS has/lacks): [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) / [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md).  
-UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = polished target; **iOS** = current Flutter shell + additive plan fields. Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer above Settings (plan **1c**). Owner **Nanda**.
+UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = polished target; **iOS** = current Flutter shell + additive polish. Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer above Settings (plan **1c**). Owner **Nanda**.
 
 ---
 
@@ -28,7 +28,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 4. [Architecture and request flow](#4-architecture-and-request-flow)
 5. [Screens](#5-screens)
 6. [Setup / login](#6-setup--login)
-7. [Home tabs (5 today; planned 3 + drawer)](#7-home-tabs-5-today-planned-3--drawer)
+7. [Home tabs (4 bottom + Payments drawer)](#7-home-tabs-4-bottom--payments-drawer)
 8. [Neptun APIs](#8-neptun-apis)
 9. [Auth, 2FA, tokens](#9-auth-2fa-tokens)
 10. [Domain features](#10-domain-features)
@@ -77,11 +77,11 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.5.0** | **Current.** Feature line **5** — plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android Glance deferred). Item **11** (Academic Progress / tanterv) **dropped**. |
+| **1.5.0** | **Current.** Feature line **5** — plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android Glance deferred). Item **11** (Academic Progress / tanterv) **dropped**. Numbered plan files deleted; backlog = TECHNICAL + DEV_BLOG. |
 | **1.4.0** | Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
-| **1.4.1**, … | Patches on feature line **4**. Next big block after **1.4.x** → **1.5.0**. |
+| **1.5.1**, … | Patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
@@ -112,7 +112,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Product README (full)
 │   ├── LICENSE                    # Canonical LGPL-3.0-only text
-│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -128,13 +128,14 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
+| `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
 | `.github/workflows/ios-ipa.yml` | CI: unsigned iOS IPA → artifact / GitHub Release |
 
-**Missing:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, and any first-party backend.
+**Missing:** `web/`, `linux/`, `macos/`, `windows/`, and any first-party backend. (No `IMPLEMENTATION_PLAN*` — deleted.)
 
 ---
 
@@ -334,7 +335,7 @@ Base: `{institute without /Account}` + `/api/...`.
 | Periods | `/api/Periods/GetPeriods` |
 | Mail | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
 
-Unused HWEB paths seen in Sep 2026 captures (not called by the app) live in [`IMPLEMENTATION_PLAN.md` §4.2](IMPLEMENTATION_PLAN.md#42-captured-inventory-incomplete--2026-09-13) — coverage incomplete; HARs are not in git.
+Unused HWEB paths seen in Sep 2026 captures (not called by the app) were inventoried in the former numbered plan §4.2 (files **deleted**). Coverage was incomplete; HARs are not in git. Known leftovers: mail archive/sent/settings, finance unpaid detail, official ICS/webcal URL — **not** product backlog unless re-opened. Exam/course registration XHRs seen — **not planned**.
 
 Login body:
 
@@ -395,7 +396,7 @@ Subjects tab = markbook: taken subjects (with subject codes), credits, grades, g
 
 ### 10.3 Payments / periods / mail
 
-Charges and deadlines; **collective invoices** list + balance; periods with timers; inbox + **local search** (subject / sender / loaded body) + **unread-only chip** (client-side; API still `filterType=0`) + mark read; full mail thread posts. Message detail: optional HU→EN/RU machine translate (`MessageTranslator`); first use on a device shows a 5s inaccuracy disclaimer snackbar (`hasSeenMailTranslateDisclaimer`).
+Charges and deadlines; **collective invoices** list + balance; periods with timers; inbox + **local search** (subject / sender / loaded body) + **unread-only chip** (client-side; API still `filterType=0`) + mark read; full mail thread posts. Message detail: optional HU→EN/RU machine translate (`MessageTranslator`); offline/HTTP failure → `null` (caller keeps original). First use on a device shows a 5s inaccuracy disclaimer snackbar (`hasSeenMailTranslateDisclaimer`). Treat thorough offline/failure UX as **still verify on device**.
 
 **Payments UI chrome** (tab title, empty state, deadlines, currency symbol, notification bodies, drawer balance label) uses `LanguagePack` (EN/HU built-in; RU/TR JSON). **Transaction / invoice titles and statuses from Neptun** (`transactionPayingType`, `transactionStatus`, collective-invoice labels) usually remain **Hungarian** — that is server payload language, not a missing app string.
 
@@ -443,7 +444,9 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit MVP** | Today’s classes from calendar cache (App Group); no JWT. Android Glance deferred |
+| Mail translator | **MVP; verify offline/failure** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
+| Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |
 | Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
 | App Store / Play production | **Not the current goal** | |
@@ -698,7 +701,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | Decision | Why |
 |----------|-----|
 | Two bundle IDs (iOS without `_`) | Xcode Automatic Signing breaks on `neptun_mobile` in the profile name |
-| Don’t split monoliths yet | No tests; goal is platform + login, not Clean Architecture |
+| Don’t split monoliths yet | Only thin unit smoke tests; goal is platform + product honesty, not Clean Architecture |
 | EN default, only EN/HU/RU/TR | Owner request; fewer dead packs |
 | GitHub raw for institutes/languages/themes | Update without an APK/IPA release |
 | `badCertificateCallback => true` | Broken campus certs; MITM risk accepted |
@@ -724,8 +727,9 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | iOS vs Android platform matrix |
-| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Prioritized implementation plan (not shipped) |
-| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary |
+| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
+| `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
+| `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (canonical); root `LICENSE` mirrors it |
 | `pubspec.yaml` | Version, dependencies |

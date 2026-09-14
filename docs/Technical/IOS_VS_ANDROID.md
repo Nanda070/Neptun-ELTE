@@ -38,7 +38,7 @@ There is **no** iOS-only product feature (login, tabs, cache, themes, languages)
 | Fluttertoast feedback | Semester change, logout, copy-on-long-press, theme-download failures, updater toasts — often `if (Platform.isAndroid)` | Clipboard / actions still run; **toast often skipped**; Technical notes Fluttertoast as often invisible; `custom_snackbar.dart` exists as alternative |
 | Install-origin flag | `DataCache` / `PackageInfo.installerStore` → GPlay vs 3rd-party strings in settings footer | Flag still written at startup (`installerStore == com.android.vending` → else “not Play”); **no** Play IAU / APK updater |
 | Release signing | Local `key.properties` (gitignored) + release signingConfigs in `android/app/build.gradle`; ABI-named APKs | Xcode Team / profiles — **not** in repo; App Store / TestFlight **not set up** (Technical) |
-| CI | `.github/workflows/betabuild.yml` builds **debug APK** on Ubuntu | **No** iOS CI job |
+| CI | `.github/workflows/betabuild.yml` builds **debug APK** on Ubuntu | `.github/workflows/ios-ipa.yml` builds **unsigned release IPA** on macOS (artifact / GitHub Release; no Apple signing secrets) |
 
 ---
 
@@ -57,6 +57,7 @@ Short list — same Flutter product surface unless gated above:
 - Home-screen shortcuts (plan **13**): Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Dart `lib/app_shortcuts.dart` via MethodChannel in `MainActivity` / `AppDelegate`
 - **No** `local_auth` / biometrics in `pubspec.yaml`
 - Homescreen widget: **iOS WidgetKit MVP** (today’s classes from cache); Android Glance deferred
+- Unit tests: thin smoke in `test/` (`elte_room_code_test.dart`; placeholder `widget_test.dart`) — **not** run in CI yet
 - Display name **Neptun ELTE**; owner **Nanda**
 - Different identifiers by design: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`
 
@@ -75,7 +76,7 @@ Short list — same Flutter product surface unless gated above:
 | TestFlight / IPA auto-update | **Not implemented** (no iOS twin of `AppUpdater`) |
 | Analytics | File not in git |
 | SPM warnings | `flutter_secure_storage`, `open_filex` — noted, not a current blocker |
-| CI | Android debug APK only — no analyze/test/iOS |
+| CI | Android debug APK (`betabuild.yml`) + unsigned iOS IPA (`ios-ipa.yml`); **no** analyze/test job; **no** signed IPA / TestFlight |
 
 Full honesty table: [TECHNICAL.md §11](TECHNICAL.md#11-honesty-full-vs-thin) · iOS cheatsheet [§14](TECHNICAL.md#14-ios) · Android [§15](TECHNICAL.md#15-android).
 
@@ -93,4 +94,5 @@ Full honesty table: [TECHNICAL.md §11](TECHNICAL.md#11-honesty-full-vs-thin) ·
 | `android/app/src/main/AndroidManifest.xml` | Android permissions + notification receivers |
 | `ios/Runner/Info.plist` | Notification usage string + URL schemes + `UIApplicationShortcutItems` |
 | `pubspec.yaml` | `in_app_update`, `vibration`, `open_filex`, `dio`, etc. |
-| `.github/workflows/betabuild.yml` | Android CI only |
+| `.github/workflows/betabuild.yml` | Android debug APK CI |
+| `.github/workflows/ios-ipa.yml` | Unsigned iOS IPA → artifact / Release |

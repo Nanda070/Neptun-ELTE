@@ -117,7 +117,7 @@
 
 **[2026-09-13, ~08:58]**
 
-- Написан приоритетный **план реализации** (только docs, без кода фич): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md). Порядок: сессия+кэш → честная зачётка → календарь → поиск/unread почты → затем параллельно (ghost, сегодня/ZH/ICS export/гранулярность пар, платежи, карты, «Что изменилось», сравнение семестров). За HAR: academic progress, студенческий. Виджеты последними. Индекс из README + TECHNICAL.
+- Написан приоритетный **план реализации** (только docs, без кода фич): former IMPLEMENTATION_PLAN.ru (deleted) / former IMPLEMENTATION_PLAN (deleted). Порядок: сессия+кэш → честная зачётка → календарь → поиск/unread почты → затем параллельно (ghost, сегодня/ZH/ICS export/гранулярность пар, платежи, карты, «Что изменилось», сравнение семестров). За HAR: academic progress, студенческий. Виджеты последними. Индекс из README + TECHNICAL.
 
 **[2026-09-13, ~09:05]**
 
@@ -129,7 +129,7 @@
 
 **[2026-09-13, ~09:20]**
 
-- Разобраны 8 пользовательских HAR (в git не копировали; секреты замазаны) в [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) §4.2 / EN-близнец. Известны имена полей **банка + профиля + заявки на студенческий (NEK/FIR)**. **Нет QR / номера / срока карты.** **Нет графа tanterv** (`taken courses.har` = `RegisteredCourses`; items `GetAverages` пустые). Extras почты (архив/исходящие/настройки); extras финансов (неоплаченные пустые, детали транзакции); официальный ICS/webcal URL календаря. XHR записи в `finances.har` — **видно, но не планируем**. Кликнуты не все кнопки; отсутствующие POST ожидаемы. Только docs; Dart не меняли.
+- Разобраны 8 пользовательских HAR (в git не копировали; секреты замазаны) в former IMPLEMENTATION_PLAN.ru (deleted) §4.2 / EN-близнец. Известны имена полей **банка + профиля + заявки на студенческий (NEK/FIR)**. **Нет QR / номера / срока карты.** **Нет графа tanterv** (`taken courses.har` = `RegisteredCourses`; items `GetAverages` пустые). Extras почты (архив/исходящие/настройки); extras финансов (неоплаченные пустые, детали транзакции); официальный ICS/webcal URL календаря. XHR записи в `finances.har` — **видно, но не планируем**. Кликнуты не все кнопки; отсутствующие POST ожидаемы. Только docs; Dart не меняли.
 
 **[2026-09-13, ~09:30]**
 
@@ -141,7 +141,7 @@
 
 **[2026-09-13, ~10:00]**
 
-- Решение продукта (только docs/план, **без Dart**): **Nav IA** — снизу **Calendar \| Markbook \| Mail**; **Payments** + **Periods** в левый drawer **над Settings**. В коде **по-прежнему 5 вкладок**; Figma может ещё показывать 5 — цель 3 + drawer (п. **1c**). **Сессия 1b:** фон ≥10 мин → на resume `forceExpiredLogout` — Flutter `Timer` замирает в suspend; timestamp + проверка на `AppLifecycleState.resumed`. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / IMPLEMENTATION_PLAN EN+RU. Владелец **Nanda**.
+- Решение продукта (только docs/план, **без Dart**): **Nav IA** — снизу **Calendar \| Markbook \| Mail**; **Payments** + **Periods** в левый drawer **над Settings**. В коде **по-прежнему 5 вкладок**; Figma может ещё показывать 5 — цель 3 + drawer (п. **1c**). **Сессия 1b:** фон ≥10 мин → на resume `forceExpiredLogout` — Flutter `Timer` замирает в suspend; timestamp + проверка на `AppLifecycleState.resumed`. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / former IMPLEMENTATION_PLAN EN+RU (deleted). Владелец **Nanda**.
 
 **[2026-09-13, ~10:10]**
 
@@ -149,11 +149,11 @@
 
 **[2026-09-13, ~10:16]**
 
-- Задокументирована политика версий EN+RU (TECHNICAL § Версионирование, строка в README, релиз-заметка в IMPLEMENTATION_PLAN). `pubspec` **1.1.0+19** (build +1 от **1.0.5+18**); зеркала iOS `MARKETING_VERSION` / Android fallback. Честно: GitHub «1.0» — утверждение о опубликованной базовой линии; старые checkout’ы могут ещё показывать **1.0.x**, пока этот bump не попадёт в дерево. Владелец **Nanda**.
+- Задокументирована политика версий EN+RU (TECHNICAL § Версионирование, строка в README, релиз-заметка в former IMPLEMENTATION_PLAN — файл позже удалён). `pubspec` **1.1.0+19** (build +1 от **1.0.5+18**); зеркала iOS `MARKETING_VERSION` / Android fallback. Честно: GitHub «1.0» — утверждение о опубликованной базовой линии; старые checkout’ы могут ещё показывать **1.0.x**, пока этот bump не попадёт в дерево. Владелец **Nanda**.
 
 **[2026-09-13, ~10:20]**
 
-- **Nav IA пересмотрена (1c):** снизу **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** только в drawer над Settings. **Contacts** перенесены из drawer в Settings (внизу); версия приложения через `package_info_plus` под Contacts. Синхронизированы README / TECHNICAL / IMPLEMENTATION_PLAN / IOS_VS_ANDROID EN+RU. Сессия **1a**/**1b** без изменений. Владелец **Nanda**.
+- **Nav IA пересмотрена (1c):** снизу **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** только в drawer над Settings. **Contacts** перенесены из drawer в Settings (внизу); версия приложения через `package_info_plus` под Contacts. Синхронизированы README / TECHNICAL / former IMPLEMENTATION_PLAN (deleted) / IOS_VS_ANDROID EN+RU. Сессия **1a**/**1b** без изменений. Владелец **Nanda**.
 
 **[2026-09-13, ~10:45]**
 
@@ -169,7 +169,7 @@
 
 **[2026-09-13, ~15:15]**
 
-- **Политика версий пересмотрена:** больше не рассказывать пользователю историю через `+N` build. Маркетинг / Settings / docs = только **`1.x.y`**. Схема `1.<feature-line>.<patch>`; **2.0** = финальная / RC линия. Сейчас **`1.3.1`** (`pubspec` **1.3.1+1**): линия **3** = пункты плана **1–3**; патч **1** = auth/2FA/Student-web-full. Следующий крупный блок → **1.4.0**. Settings показывает `info.version` без `+build`. Синхронизированы TECHNICAL / README / IMPLEMENTATION_PLAN EN+RU + `.cursor/rules/versioning.mdc`. Владелец **Nanda**.
+- **Политика версий пересмотрена:** больше не рассказывать пользователю историю через `+N` build. Маркетинг / Settings / docs = только **`1.x.y`**. Схема `1.<feature-line>.<patch>`; **2.0** = финальная / RC линия. Сейчас **`1.3.1`** (`pubspec` **1.3.1+1**): линия **3** = пункты плана **1–3**; патч **1** = auth/2FA/Student-web-full. Следующий крупный блок → **1.4.0**. Settings показывает `info.version` без `+build`. Синхронизированы TECHNICAL / README / former IMPLEMENTATION_PLAN EN+RU (deleted) + `.cursor/rules/versioning.mdc`. Владелец **Nanda**.
 
 **[2026-09-13, ~16:00]**
 
@@ -231,15 +231,24 @@
 
 ---
 
+## 2026-09-14 — синхронизация docs после 1.5.0 (plan-файлы удалены)
+
+**[2026-09-14, docs]**
+
+- Полное обновление docs под отгруженный **1.5.0**: убраны живые ссылки на удалённые `IMPLEMENTATION_PLAN*` (бэклог = честность TECHNICAL + «В работе» DEV_BLOG); исправлены устаревшие «нет iOS CI» / «нет тестов» (`ios-ipa.yml` unsigned IPA; `test/elte_room_code_test.dart` + placeholder `widget_test.dart`); TOC/якоря вкладок; строки версий (feature-line **5**, п. **11** снят, **2.0.0** = финал); студенческий заявка/банк/профиль **без QR**; iOS WidgetKit MVP / Android Glance отложен; переводчик почты всё ещё «проверить offline/failure»; честность Student web full + 10-мин сессия + 4 вкладки. Правила Cursor `keep-docs-current` / `versioning` больше не требуют IMPLEMENTATION_PLAN. Владелец **Nanda**. Только docs; версию приложения не поднимали.
+
+---
+
 ## В работе / запланировано (честно)
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать).
+- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать). Нумерованные plan-файлы **удалены**.
 - **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
-- **Переводчик сообщений** (HU → EN/RU для тел писем) — helper + действия в popup есть; считать **in progress**, пока offline / failure не проверены тщательно.
+- **Переводчик сообщений** (HU → EN/RU для тел писем) — helper при offline/ошибке возвращает `null` (оставляем оригинал) + disclaimer; считать **проверить на устройстве**, пока не прогнали тщательно.
 - **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**. Android-виджеты — **не** в **1.5.0** (только iOS MVP).
 - Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — известен по HAR; **не** основной путь (сначала TOTP).
+- Signed IPA / TestFlight / App Store / Play production — **не** текущая цель. В CI только unsigned IPA + Android debug APK (нет analyze/test job).
 
 ---
 

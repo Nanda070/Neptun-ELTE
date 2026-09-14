@@ -38,7 +38,7 @@
 | Fluttertoast | Смена семестра, выход, копирование long-press, ошибки темы, апдейтер — часто `if (Platform.isAndroid)` | Действия (например clipboard) выполняются; **toast часто пропускается**; Technical: Fluttertoast часто невидим; есть `custom_snackbar.dart` |
 | Флаг источника установки | `DataCache` / `PackageInfo.installerStore` → строки GPlay vs 3rd-party в футере настроек | Флаг при старте всё равно пишется (`installerStore == com.android.vending` или иначе); **нет** Play IAU / APK-апдейтера |
 | Подпись release | Локальный `key.properties` (не в git) + signingConfigs в `android/app/build.gradle`; APK с именами по ABI | Xcode Team / профили — **не** в репо; App Store / TestFlight **не настроены** (Technical) |
-| CI | `.github/workflows/betabuild.yml` собирает **debug APK** на Ubuntu | Job для **iOS нет** |
+| CI | `.github/workflows/betabuild.yml` собирает **debug APK** на Ubuntu | `.github/workflows/ios-ipa.yml` собирает **unsigned release IPA** на macOS (артефакт / GitHub Release; секретов Apple signing нет) |
 
 ---
 
@@ -57,6 +57,7 @@
 - Нативные плагины через Flutter plugins; плюс MethodChannel shortcuts (п. **13**) в `AppDelegate` / `MainActivity`
 - **Нет** `local_auth` / биометрии в `pubspec.yaml`
 - Homescreen widget: **iOS WidgetKit MVP** (пары сегодня из кэша); Android Glance отложен
+- Unit-тесты: тонкий smoke в `test/` (`elte_room_code_test.dart`; placeholder `widget_test.dart`) — в CI **пока не** гоняются
 - Display name **Neptun ELTE**; владелец **Nanda**
 - Разные ID намеренно: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`
 
@@ -75,7 +76,7 @@
 | TestFlight / автообновление IPA | **Не реализовано** (нет iOS-близнеца `AppUpdater`) |
 | Аналитика | Файла нет в git |
 | SPM warnings | `flutter_secure_storage`, `open_filex` — отмечено, пока не блокер |
-| CI | Только Android debug APK — без analyze/test/iOS |
+| CI | Android debug APK (`betabuild.yml`) + unsigned iOS IPA (`ios-ipa.yml`); **нет** analyze/test job; **нет** signed IPA / TestFlight |
 
 Полная честная таблица: [TECHNICAL.ru.md §11](TECHNICAL.ru.md#11-честность-full-vs-thin) · iOS [§14](TECHNICAL.ru.md#14-ios) · Android [§15](TECHNICAL.ru.md#15-android).
 
@@ -93,4 +94,5 @@
 | `android/app/src/main/AndroidManifest.xml` | Разрешения Android + notification receivers |
 | `ios/Runner/Info.plist` | Usage string уведомлений + URL schemes + `UIApplicationShortcutItems` |
 | `pubspec.yaml` | `in_app_update`, `vibration`, `open_filex`, `dio` и др. |
-| `.github/workflows/betabuild.yml` | Только Android CI |
+| `.github/workflows/betabuild.yml` | Android debug APK CI |
+| `.github/workflows/ios-ipa.yml` | Unsigned iOS IPA → артефакт / Release |

@@ -15,7 +15,9 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Баг--репорты-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📋 [План реализации](Technical/IMPLEMENTATION_PLAN.ru.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · 🎨 [UI-макеты (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal--юридические-документы)
+> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · 🎨 [UI-макеты (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal--юридические-документы)
+
+Бэклог / остаток работы — в [технической](Technical/TECHNICAL.ru.md) (честность + решения) и в разделе «В работе» [Dev Blog](Technical/DEV_BLOG.ru.md). Нумерованные файлы `IMPLEMENTATION_PLAN` **удалены** (п. **11** снят раньше).
 
 ---
 
@@ -38,7 +40,7 @@
 - **Логин как на сайте** — Neptun ID + пароль → 2FA (TOTP; email OTP на сайте может быть тоньше в приложении) → student API
 - **Расписание** — неделя **пн–вс** (без «протекания» следующего понедельника); **сводка «сегодня»** + полоса ZH/дедлайны; ICS **export** share; гранулярность нотификаций пар 10/5/0 мин; локализованные чипы перерыва в тот же день; полоса 48 ч = пары+экзамены; баннеры периодов только в полосе периодов; фильтры календаря в настройках; переключатель обучения при нескольких training; тап по кодам аудиторий `LD`/`LE`/`LK` → расшифровка, затем **Открыть карту** для корпусов Lágymányos
 - **Зачётная книжка (Предметы)** — взятые предметы с кодами, кредиты и оценки; **átlag** (взвешенный кредитами) и **/30** (тот же числитель÷30, не átlag÷30); кредиты семестра + накопленные сданные; **сравнение семестров** (átlag / /30 / кредиты по семестрам, cache-first); **ghost what-if** (живые átlag+/30 + опциональная цель); пометка «счёт приложения»; мои курсы + история оценок по семестрам
-- **Сообщения** — входящие Neptun; локальный поиск (тема / отправитель / загруженное тело) + чип «только непрочитанные»; полная ветка; опциональный машинный перевод HU→EN/RU (может быть неточным)
+- **Сообщения** — входящие Neptun; локальный поиск (тема / отправитель / загруженное тело) + чип «только непрочитанные»; полная ветка; опциональный машинный перевод HU→EN/RU (`MessageTranslator`; может быть неточным; offline/ошибка → исходный текст — всё ещё стоит проверить на устройстве)
 - **«Что изменилось»** — после refresh простые баннеры новых писем / смен оценок (drawer + полоса календаря; первый запуск без баннера)
 - **Платежи** — оплаты, сроки, collective invoices / баланс (drawer над Settings; UI локализован; часть серверных названий может оставаться на венгерском)
 - **Периоды** — регистрация и учебные периоды (нижняя вкладка)
@@ -59,7 +61,8 @@
 1. Портальный логин на `https://neptun.elte.hu` (секреты — в защищённом хранилище устройства).
 2. 2FA при необходимости (в UI — TOTP).
 3. Bridge Student web / OuterLogin → JWT на назначенном `hallgatoN`.
-4. REST для расписания, предметов, сообщений, платежей, периодов; ответы могут кэшироваться локально.
+4. Если Student web **full** — вход останавливается после 2FA с честным «полный / попробуйте позже» — **не** «неверный пароль».
+5. REST для расписания, предметов, сообщений, платежей, периодов; ответы могут кэшироваться локально.
 
 Полная таблица «честности» и карта API: [техническая документация](Technical/TECHNICAL.ru.md).
 
@@ -126,10 +129,9 @@ iOS-шпаргалка — в Technical §14 (отдельного `DEVELOPER.md
 | Technical (EN) | [`docs/Technical/TECHNICAL.md`](Technical/TECHNICAL.md) |
 | iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
 | iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
-| План реализации (RU) | [`docs/Technical/IMPLEMENTATION_PLAN.ru.md`](Technical/IMPLEMENTATION_PLAN.ru.md) |
-| Implementation plan (EN) | [`docs/Technical/IMPLEMENTATION_PLAN.md`](Technical/IMPLEMENTATION_PLAN.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
+| Бэклог | Честность TECHNICAL + «В работе» в DEV_BLOG (нумерованные `IMPLEMENTATION_PLAN*` **удалены**) |
 | UI-макеты (Figma) | [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — только Figma (не Flutter). Макеты могут ещё показывать **5** нижних вкладок; **в приложении IA** — **4** (Calendar \| Markbook \| Periods \| Mail) + Payments в drawer. Android = целевой polish; iOS = текущая оболочка + аддитивные поля. Владелец **Nanda** |
 | Лицензия (канон) | [`docs/LICENSE`](LICENSE) |
 | Короткий указатель в корне | [`README.md`](../README.md) |

@@ -1,6 +1,6 @@
 # Neptun ELTE — техническая документация
 
-> 🇬🇧 [English](TECHNICAL.md) · 📋 [План реализации (RU)](IMPLEMENTATION_PLAN.ru.md) · [EN](IMPLEMENTATION_PLAN.md) · 📱 [iOS vs Android (RU)](IOS_VS_ANDROID.ru.md) · [EN](IOS_VS_ANDROID.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
+> 🇬🇧 [English](TECHNICAL.md) · 📱 [iOS vs Android (RU)](IOS_VS_ANDROID.ru.md) · [EN](IOS_VS_ANDROID.md) · 📝 [Dev Blog (RU)](DEV_BLOG.ru.md) · [EN](DEV_BLOG.md)
 
 > **Аудитория:** разработчики и люди с доступом к репозиторию.  
 > Файл только в git (`docs/Technical/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
@@ -11,12 +11,12 @@
 **Владелец и разработчик:** **Nanda**.
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
-Бэклог реализации (не сделано): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).  
+**Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
 Матрица платформ (что есть/нет на каждой ОС): [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md) / [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md).  
-UI-макеты (Figma, не код приложения): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = целевой polish; **iOS** = текущая оболочка Flutter + аддитивные поля из плана. Макеты могут ещё показывать **5** нижних вкладок; **в приложении IA** — **4** (Calendar \| Markbook \| Periods \| Mail) + Payments в drawer над Settings (п. **1c**). Владелец **Nanda**.
+UI-макеты (Figma, не код приложения): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = целевой polish; **iOS** = текущая оболочка Flutter + аддитивный polish. Макеты могут ещё показывать **5** нижних вкладок; **в приложении IA** — **4** (Calendar \| Markbook \| Periods \| Mail) + Payments в drawer над Settings (п. **1c**). Владелец **Nanda**.
 
 ---
 
@@ -28,7 +28,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 4. [Архитектура и поток запросов](#4-архитектура-и-поток-запросов)
 5. [Экраны](#5-экраны)
 6. [Setup / вход](#6-setup--вход)
-7. [Home tabs (5 сегодня; план 3 + drawer)](#7-home-tabs-5-сегодня-план-3--drawer)
+7. [Home tabs (4 снизу + Payments в drawer)](#7-home-tabs-4-снизу--payments-в-drawer)
 8. [API Neptun](#8-api-neptun)
 9. [Auth, 2FA, токены](#9-auth-2fa-токены)
 10. [Доменные возможности](#10-доменные-возможности)
@@ -77,11 +77,11 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.0** | **Текущая.** Feature-line **5** — пункты **10** (сравнение семестров) + **14** (iOS WidgetKit MVP; Android Glance отложен). П. **11** (Academic Progress / tanterv) **снят**. |
+| **1.5.0** | **Текущая.** Feature-line **5** — пункты **10** (сравнение семестров) + **14** (iOS WidgetKit MVP; Android Glance отложен). П. **11** (Academic Progress / tanterv) **снят**. Нумерованные plan-файлы удалены; бэклог = TECHNICAL + DEV_BLOG. |
 | **1.4.0** | Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
-| **1.4.1**, … | Патчи на линии **4**. Следующий крупный блок после **1.4.x** → **1.5.0**. |
+| **1.5.1**, … | Патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
@@ -112,7 +112,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Полный продуктовый README
 │   ├── LICENSE                    # Канонический LGPL-3.0-only
-│   ├── Technical/                 # TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -128,13 +128,14 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
+| `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
 | `.github/workflows/betabuild.yml` | CI: `flutter build apk --debug` |
 | `.github/workflows/ios-ipa.yml` | CI: unsigned iOS IPA → артефакт / GitHub Release |
 
-**Нет:** `test/`, `web/`, `linux/`, `macos/`, `windows/`, backend этого приложения.
+**Нет:** `web/`, `linux/`, `macos/`, `windows/`, backend этого приложения. (Нет `IMPLEMENTATION_PLAN*` — удалены.)
 
 ---
 
@@ -334,7 +335,7 @@ UI setup:
 | Периоды | `/api/Periods/GetPeriods` |
 | Почта | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
 
-Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) — в [`IMPLEMENTATION_PLAN.ru.md` §4.2](IMPLEMENTATION_PLAN.ru.md#42-снятый-инвентарь-неполно--2026-09-13); покрытие неполное, HAR в git нет.
+Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) были в бывшем нумерованном плане §4.2 (файлы **удалены**). Покрытие неполное; HAR в git нет. Известные leftovers: архив/исходящие/настройки почты, детали неоплаченных финансов, официальный ICS/webcal URL — **не** продуктовый бэклог, пока не откроем снова. XHR записи на экзамен/курс — **не планируем**.
 
 Тело логина:
 
@@ -395,7 +396,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 ### 10.3 Платежи / периоды / почта
 
-Начисления и дедлайны; список **collective invoices** + баланс; периоды с таймерами; входящие + **локальный поиск** (тема / отправитель / загруженное тело) + **чип непрочитанных** (на клиенте; API по-прежнему `filterType=0`) + mark read; полная цепочка постов письма. В карточке письма: опциональный машинный перевод HU→EN/RU (`MessageTranslator`); при первом использовании на устройстве показывается 5‑секундный snackbar о возможной неточности (`hasSeenMailTranslateDisclaimer`).
+Начисления и дедлайны; список **collective invoices** + баланс; периоды с таймерами; входящие + **локальный поиск** (тема / отправитель / загруженное тело) + **чип непрочитанных** (на клиенте; API по-прежнему `filterType=0`) + mark read; полная цепочка постов письма. В карточке письма: опциональный машинный перевод HU→EN/RU (`MessageTranslator`); offline/ошибка HTTP → `null` (caller оставляет оригинал). При первом использовании на устройстве — 5‑секундный snackbar о возможной неточности (`hasSeenMailTranslateDisclaimer`). Тщательную UX offline/failure всё ещё **стоит проверить на устройстве**.
 
 **Chrome UI платежей** (заголовок вкладки, пустое состояние, дедлайны, символ валюты, тексты уведомлений, баланс в drawer) идёт через `LanguagePack` (EN/HU встроены; RU/TR JSON). **Названия транзакций/счетов и статусы из Neptun** (`transactionPayingType`, `transactionStatus`, подписи collective invoice) обычно остаются **на венгерском** — это язык ответа сервера, а не пропущенная строка приложения.
 
@@ -443,10 +444,11 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit MVP** | Пары сегодня из кэша календаря (App Group); без JWT. Android Glance отложен |
+| Переводчик почты | **MVP; проверить offline/failure** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
-| Тесты | **Нет** | Папки `test/` нет |
+| Автотесты | **Тонкие** | `test/elte_room_code_test.dart` (аудитории/карты); `test/widget_test.dart` placeholder — **нет** CI analyze/test job |
 | App Store / Play production | **Не цель текущего состояния** | |
 | Фото в drawer | **Работает** | ELTE HWEB: `data.userAvatar.image` на `/api/UserInfo` + `/api/General/GetUserAvatar?imageSizeType=Normal` (base64 JPEG). Кэш в `DataCache`; drawer `MemoryImage`; инициалы при ошибке/пустом ответе |
 | Студенческий / профиль | **Только заявка / банк / профиль** | П. **12**: `StudentCardPage` + `StudentCardRequest`. Флаги банка (IBAN/SWIFT не логируются). Статус заявки (нет QR / номера / срока — на HWEB тоже нет). Опционально `GetGeneralUserData` + контакты. Кэш `STUDENT_CardCacheJson` |
@@ -699,7 +701,7 @@ Release на iPhone: `--release` (см. §14).
 | Решение | Почему |
 |---------|--------|
 | Два Bundle ID (iOS без `_`) | Xcode Automatic Signing ломается на `neptun_mobile` в имени профиля |
-| Не дробить монолиты сейчас | Нет тестов; цель — платформа и логин, не Clean Architecture |
+| Не дробить монолиты сейчас | Только тонкие unit smoke; цель — платформа и честность продукта, не Clean Architecture |
 | EN default, только EN/HU/RU/TR | Запрос владельца; меньше мёртвых паков |
 | GitHub raw для вузов/языков/тем | Обновление без релиза APK/IPA |
 | `badCertificateCallback => true` | Вузы с кривыми сертификатами; риск MITM принят |
@@ -725,8 +727,9 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | Матрица iOS vs Android |
-| `docs/Technical/IMPLEMENTATION_PLAN.md` / `IMPLEMENTATION_PLAN.ru.md` | Приоритетный план реализации (не сделано) |
-| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog |
+| `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
+| `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
+| `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
 | `docs/LICENSE` | LGPL-3.0-only (канон); корневой `LICENSE` зеркалирует |
 | `pubspec.yaml` | Версия, зависимости |

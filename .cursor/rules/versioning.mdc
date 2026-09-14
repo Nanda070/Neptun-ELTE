@@ -15,8 +15,10 @@ Owner: **Nanda**. Canonical detail: `docs/Technical/TECHNICAL.md` § Versioning 
   - Feature line advances when a planned foundation/feature block ships.
   - Patch advances for bugfixes / auth / small tweaks within that line.
 - **`2.0.0`** = final / release-candidate product line. Everything before that is **1.x.y** only.
-- Current line example: plan items **1–3** → feature line **3**; then auth/2FA tweaks → **1.3.1**. Next big block → **1.4.0**.
+- Current line example: **`1.5.0`** = feature line **5** (plan items **10** + **14**; item **11** dropped). Patches → **1.5.x**. Next big block → **1.6.0** (or **2.0.0** if that is the final/RC cut).
 
 ## When bumping
 
-Update together: `pubspec.yaml`, Android `versionName` fallback, iOS `MARKETING_VERSION` if hardcoded, Settings fallback string, README EN+RU identity row, TECHNICAL EN+RU § Versioning + product overview version line, IMPLEMENTATION_PLAN EN+RU Release row, DEV_BLOG EN+RU entry. Settings UI must show `PackageInfo.version` **without** `+buildNumber`.
+Update together: `pubspec.yaml`, Android `versionName` fallback, iOS `MARKETING_VERSION` if hardcoded, Settings fallback string, README EN+RU identity row, TECHNICAL EN+RU § Versioning + product overview version line, DEV_BLOG EN+RU entry. Settings UI must show `PackageInfo.version` **without** `+buildNumber`.
+
+Do **not** expect `IMPLEMENTATION_PLAN*` — those files were deleted; backlog lives in TECHNICAL + DEV_BLOG.
