@@ -235,7 +235,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (item **14** = iOS WidgetKit MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress).
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**9** / **12**–**13** shipped; **10** API/cache/i18n landed (Markbook UI with **1.5.0**); **14** iOS WidgetKit MVP landing with **1.5.0**; item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.0** (iOS-first MVP only).
