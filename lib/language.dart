@@ -207,6 +207,9 @@ class AppStrings{
       mail_search_Hint: 'Üzenetek keresése...',
       mail_filter_UnreadOnly: 'Olvasatlan',
       mail_filter_NoMatches: 'Nincs találat',
+      whatsChanged_Header: 'Mi változott',
+      whatsChanged_NewMessages: '%0 új üzenet',
+      whatsChanged_GradeChanges: '%0 jegyváltozás',
       popup_case0_GhostGradeHeader: '👻 Szellemjegy 👻',
       popup_case0_SelectGrade: 'Válassz jegyet...',
       popup_caseAll_OkButton: 'Ok',
@@ -519,6 +522,9 @@ class AppStrings{
       mail_search_Hint: 'Search messages...',
       mail_filter_UnreadOnly: 'Unread',
       mail_filter_NoMatches: 'No matching messages',
+      whatsChanged_Header: 'What’s changed',
+      whatsChanged_NewMessages: '%0 new messages',
+      whatsChanged_GradeChanges: '%0 grade changes',
       popup_case0_GhostGradeHeader: '👻 Ghost grade 👻',
       popup_case0_SelectGrade: 'Select grade...',
       popup_caseAll_OkButton: 'Ok',
@@ -1094,6 +1100,9 @@ class LanguagePack{
   final String mail_search_Hint;
   final String mail_filter_UnreadOnly;
   final String mail_filter_NoMatches;
+  final String whatsChanged_Header;
+  final String whatsChanged_NewMessages;
+  final String whatsChanged_GradeChanges;
 
   final String popup_case0_GhostGradeHeader;
   final String popup_caseAll_OkButton;
@@ -1401,6 +1410,9 @@ class LanguagePack{
     required this.mail_search_Hint,
     required this.mail_filter_UnreadOnly,
     required this.mail_filter_NoMatches,
+    required this.whatsChanged_Header,
+    required this.whatsChanged_NewMessages,
+    required this.whatsChanged_GradeChanges,
     required this.popup_case0_GhostGradeHeader,
     required this.popup_case0_SelectGrade,
     required this.popup_caseAll_OkButton,
@@ -1737,6 +1749,9 @@ class LanguagePack{
         mail_search_Hint: getStr('mail_search_Hint', en.mail_search_Hint),
         mail_filter_UnreadOnly: getStr('mail_filter_UnreadOnly', en.mail_filter_UnreadOnly),
         mail_filter_NoMatches: getStr('mail_filter_NoMatches', en.mail_filter_NoMatches),
+        whatsChanged_Header: getStr('whatsChanged_Header', en.whatsChanged_Header),
+        whatsChanged_NewMessages: getStr('whatsChanged_NewMessages', en.whatsChanged_NewMessages),
+        whatsChanged_GradeChanges: getStr('whatsChanged_GradeChanges', en.whatsChanged_GradeChanges),
         popup_case0_GhostGradeHeader: getStr('popup_case0_GhostGradeHeader', en.popup_case0_GhostGradeHeader),
         popup_case0_SelectGrade: getStr('popup_case0_SelectGrade', en.popup_case0_SelectGrade),
         popup_caseAll_OkButton: getStr('popup_caseAll_OkButton', en.popup_caseAll_OkButton),
@@ -2072,6 +2087,9 @@ class LanguagePack{
       'mail_search_Hint':lang.mail_search_Hint,
       'mail_filter_UnreadOnly':lang.mail_filter_UnreadOnly,
       'mail_filter_NoMatches':lang.mail_filter_NoMatches,
+      'whatsChanged_Header':lang.whatsChanged_Header,
+      'whatsChanged_NewMessages':lang.whatsChanged_NewMessages,
+      'whatsChanged_GradeChanges':lang.whatsChanged_GradeChanges,
       'popup_case0_GhostGradeHeader':lang.popup_case0_GhostGradeHeader,
       'popup_case0_SelectGrade':lang.popup_case0_SelectGrade,
       'popup_caseAll_OkButton':lang.popup_caseAll_OkButton,

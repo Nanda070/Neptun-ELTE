@@ -356,6 +356,117 @@ class _AppDrawerState extends State<AppDrawer> {
                       ),
                     ),
 
+                    // --- What’s Changed (item 9) ---
+                    Builder(
+                      builder: (context) {
+                        final newMails = storage.DataCache.getWhatsChangedNewMails();
+                        final gradeChanges = storage.DataCache.getWhatsChangedGradeChanges();
+                        if (newMails <= 0 && gradeChanges <= 0) {
+                          return const SizedBox.shrink();
+                        }
+                        final lang = AppStrings.getLanguagePack();
+                        final theme = AppColors.getTheme();
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            decoration: BoxDecoration(
+                              color: theme.textColor.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: theme.textColor.withValues(alpha: 0.08)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lang.whatsChanged_Header,
+                                  style: TextStyle(
+                                    color: theme.textColor.withValues(alpha: 0.7),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (newMails > 0) ...[
+                                  const SizedBox(height: 8),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(10),
+                                      onTap: () {
+                                        AppHaptics.lightImpact();
+                                        Navigator.pop(context);
+                                        HomePageState.openWhatsChangedMails();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.mark_email_unread_rounded, size: 18, color: theme.primary),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                AppStrings.getStringWithParams(
+                                                  lang.whatsChanged_NewMessages,
+                                                  [newMails],
+                                                ),
+                                                style: TextStyle(
+                                                  color: theme.primary,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                            Icon(Icons.chevron_right_rounded, size: 18, color: theme.textColor.withValues(alpha: 0.3)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                if (gradeChanges > 0) ...[
+                                  const SizedBox(height: 4),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(10),
+                                      onTap: () {
+                                        AppHaptics.lightImpact();
+                                        Navigator.pop(context);
+                                        HomePageState.openWhatsChangedMarkbook();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.grade_rounded, size: 18, color: theme.secondary),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                AppStrings.getStringWithParams(
+                                                  lang.whatsChanged_GradeChanges,
+                                                  [gradeChanges],
+                                                ),
+                                                style: TextStyle(
+                                                  color: theme.secondary,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                            Icon(Icons.chevron_right_rounded, size: 18, color: theme.textColor.withValues(alpha: 0.3)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
                     const SizedBox(height: 4),
 
                     // --- Training switcher (when multiple trainings known) ---
