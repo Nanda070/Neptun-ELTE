@@ -34,7 +34,10 @@ import '../Misc/app_drawer.dart';
 import '../Misc/markbook_math.dart';
 
 class HomePage extends StatefulWidget{
-  const HomePage({super.key});
+  /// Bottom 0–3 or drawer Payments (4). Used by home-screen shortcuts (item 13).
+  final int initialView;
+
+  const HomePage({super.key, this.initialView = 0});
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -151,7 +154,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   int weeksSinceStart = 1;
   int currentWeekOffset = 1;
   late TabController calendarTabController;
-  int currentView = 0;
+  late int currentView;
   String calendarGreetText = "";
 
   int totalCredits = 0;
@@ -192,6 +195,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    final iv = widget.initialView;
+    currentView = (iv >= 0 && iv <= 4) ? iv : 0;
 
     FlutterNativeSplash.remove();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

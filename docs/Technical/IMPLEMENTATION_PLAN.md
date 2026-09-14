@@ -11,7 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8 shipped** (Sep 2026). Items **5–6, 9–14** still backlog |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8** + app shortcuts item **13 shipped** (Sep 2026). Items **5–6, 9–12**, **14** still backlog |
 | **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
@@ -51,6 +51,7 @@ Document what the code **actually** does.
 | Curriculum | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **404** on live HWEB (old MobileService path). There is **no Tanterv menu**. Progress UI is **Studies → Advancement**. `GetStudentCurriculumTemplates` and `creditprogress` returned **empty** this term. Official average *labels* live on `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` is a signup dropdown (seen, not planned). |
 | Exam / course registration | **Not in the app. Not planned.** Do not add vizsgajelentkezés / tárgyjelentkezés UI. Signup XHRs seen in `finances.har` — **seen but not planned**. |
 | Student card | **Not in the app.** HAR 2026-09-13: **claim / NEK / FIR** + **bank** + **profile** field names known. **No QR, no card number, no expiry.** |
+| App shortcuts | **Shipped (13):** Android static shortcuts + iOS Quick Actions — Calendar (0), Mail (3), Payments (4). Cold start via `Splitter` → `HomePage(initialView:)` only if `SessionGuard.isColdStartSessionUsable()`; else login. Maps shortcut **not** included (item 8). |
 | Homescreen widgets | **Removed** (was a stub). Native epic — last. |
 | Live login | Implemented path: portal `Login` → `Login2FA` (TOTP) → `ToNeptunHWeb` → `OuterLogin` JWT on assigned `hallgatoN`. **Do not hardcode N.** Email OTP (`RequestEmailCode` / `CodePrefix`) HAR-known, UI thin. |
 
@@ -103,7 +104,7 @@ Later work is cheaper if earlier items land first.
 | 10 | Semester comparison | **After** honest markbook (item 2) |
 | 11 | Academic Progress | **STILL blocked** — Sep 2026 HARs have no tanterv graph |
 | 12 | Student card | Claim / bank / profile **field names captured**; QR / number / expiry **still missing** |
-| 13 | App shortcuts | After session UX + deep links (items 1, 8) |
+| 13 | App shortcuts | **DONE** (Sep 2026). Calendar / Mail / Payments; Maps shortcut optional with item 8 (not shipped). |
 | 14 | Homescreen widgets | **Last** — native Android/iOS epic |
 
 ---
@@ -688,7 +689,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 13. App shortcuts — after session UX + deep links
+### 13. App shortcuts — after session UX + deep links — **DONE**
 
 - **Why**  
   Long-press icon → Calendar / Mail / Payments is useful only if a **dead session** opens login (item 1) and maps/mail deep links exist.
@@ -696,28 +697,31 @@ Later work is cheaper if earlier items land first.
 - **Depends on**  
   Item 1. Item 8 if a “maps / next room” shortcut is included.
 
-- **Already in code**  
-  No `shortcuts.xml`, no iOS `UIApplicationShortcutItems`. Navigation is **index-based**, no named routes.
+- **Already in code (shipped)**  
+  - Android: `res/xml/shortcuts.xml` + `android.app.shortcuts` meta-data; intent extra `shortcut_id`.  
+  - iOS: `UIApplicationShortcutItems` in `Info.plist`.  
+  - Dart: `lib/app_shortcuts.dart` MethodChannel; `Splitter` → `HomePage(initialView:)`; `SessionGuard.isColdStartSessionUsable()`.  
+  - Indices match **1c** IA: Calendar **0**, Mail **3**, Payments **4**. Maps shortcut **not** shipped (item 8 separate).
 
-- **What to build**  
-  1. Android pinned shortcuts + iOS home-screen quick actions: Calendar (bottom 0), Mail (bottom 3), Payments (drawer index 4).  
-  2. Cold start: `Splitter` → if `HasLogin` and session valid → `HomePage` with tab index or drawer route; else login.  
-  3. Do not open Home with a dead JWT and empty tabs. Prefer after **1c** so indices match target IA.
+- **What was built**  
+  1. Android static shortcuts + iOS home-screen quick actions: Calendar (bottom 0), Mail (bottom 3), Payments (drawer index 4).  
+  2. Cold start: `Splitter` → if session usable → `HomePage` with `initialView`; else login.  
+  3. Dead JWT / expired wall-clock → wipe auth (keep cache) + login — never blank Home.
 
 - **Where**  
-  `android/app/src/main/res/xml/`, `AndroidManifest.xml`, `ios/Runner/Info.plist`, `lib/Pages/startup_page.dart`, `lib/Pages/main_page.dart` (initial tab).
+  `android/app/src/main/res/xml/shortcuts.xml`, `AndroidManifest.xml`, `MainActivity.kt`, `ios/Runner/Info.plist`, `AppDelegate.swift`, `lib/app_shortcuts.dart`, `lib/Pages/startup_page.dart`, `lib/Pages/main_page.dart`, `SessionGuard.isColdStartSessionUsable`.
 
 - **Via**  
-  Intent extras / URL scheme already listed (`https`, `http`, `mailto`, `tg`, …). Add an app-specific scheme only if needed.
+  Intent extra `shortcut_id` (Android) + `UIApplicationShortcutItemType` (iOS) over MethodChannel `com.nanda070.neptun_mobile.app/shortcuts`. No custom URL scheme required.
 
 - **Prerequisites**  
-  Item 1. Optional item 8.
+  Item 1. Optional item 8 (Maps — not included).
 
 - **Done when**  
-  Cold-start shortcut lands on the right tab or login; never a blank Home.
+  Cold-start shortcut lands on the right tab or login; never a blank Home. **Met (Sep 2026).**
 
 - **Out of scope**  
-  Siri / App Intents, Android widgets (item 14).
+  Siri / App Intents, Android widgets (item 14), Maps / next-room shortcut (item 8).
 
 ---
 

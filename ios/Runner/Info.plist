@@ -60,6 +60,39 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.nanda070.neptunmobile.shortcut.calendar</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Calendar</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Open calendar</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeDate</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.nanda070.neptunmobile.shortcut.mail</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Mail</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Open messages</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeMail</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.nanda070.neptunmobile.shortcut.payments</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Payments</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Open payments</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeTask</string>
+		</dict>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

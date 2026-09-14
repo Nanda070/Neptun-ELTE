@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_calendar_short">Naptár</string>
+    <string name="shortcut_calendar_long">Naptár megnyitása</string>
+    <string name="shortcut_mail_short">Levelek</string>
+    <string name="shortcut_mail_long">Üzenetek megnyitása</string>
+    <string name="shortcut_payments_short">Befizetendők</string>
+    <string name="shortcut_payments_long">Befizetendők megnyitása</string>
+</resources>

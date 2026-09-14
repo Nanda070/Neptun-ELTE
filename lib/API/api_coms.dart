@@ -174,6 +174,48 @@ class SessionGuard {
     await _wipeAuthLeftovers();
   }
 
+  /// Cold-start gate (shortcuts / Splitter): usable participant session only if
+  /// [HasLogin], access token present, and wall-clock not already expired.
+  /// On failure, wipes auth (keeps academic cache) and sets the pending
+  /// sign-in message — never open Home with a dead JWT.
+  static Future<bool> isColdStartSessionUsable() async {
+    if (_authBlocked) return false;
+    if (!(storage.DataCache.getHasLogin() ?? false)) return false;
+    final token = storage.DataCache.getAccessToken();
+    if (token == null || token.isEmpty) {
+      _pendingUserMessage =
+          AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
+      try {
+        await _wipeAuthLeftovers();
+      } catch (e) {
+        debug.log('isColdStartSessionUsable wipe (no token): $e');
+      }
+      _authBlocked = true;
+      return false;
+    }
+    final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+    if (ms != null && ms > 0) {
+      final started = DateTime.fromMillisecondsSinceEpoch(ms);
+      if (DateTime.now().difference(started) >= sessionWallClockLimit) {
+        debug.log(
+          'SessionGuard: cold start wall-clock expired — wipe, skip Home',
+        );
+        _pendingUserMessage =
+            AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
+        cancelSessionWallClock();
+        _clearAuthenticatedAt();
+        _authBlocked = true;
+        try {
+          await _wipeAuthLeftovers();
+        } catch (e) {
+          debug.log('isColdStartSessionUsable wipe (expired): $e');
+        }
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// Access token dead and refresh/silent re-auth cannot restore session,
   /// or the 10-minute session wall clock fired.
   static Future<void> forceExpiredLogout() async {

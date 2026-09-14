@@ -12,7 +12,7 @@
 
 |                      |                                                                                                                                                                                                                                |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4** + платежи п. **7** + карты п. **8 сделан** (сен 2026). Пункты **5–6, 9–14** ещё в бэклоге                                                                                                                                                   |
+| **Статус**           | Foundation **1a / 1b / 1c / 1 / 2 / 3** + почта п. **4** + платежи п. **7** + карты п. **8** + app shortcuts п. **13 сделан** (сен 2026). Пункты **5–6, 9–12**, **14** ещё в бэклоге                                                                                                                                                   |
 | **Релиз**            | Текущая маркетинговая версия **1.3.4** (`pubspec` **1.3.4+1**). Feature-line **3** = пункты плана **1–3**; патч **4** = поиск почты + фильтр непрочитанных (п. **4**). **1.3.3** = фикс мгновенного «сессия истекла» после 2FA. Следующий крупный блок → **1.4.0**; финал → **2.0.0**. Для пользователя / Settings / docs — только три числа, без рекламы `+build`. См. [TECHNICAL § Версионирование](TECHNICAL.ru.md#версионирование). |
 | **Порядок**          | Делать строго по номерам групп. Поздние фичи опираются на честность (**1a** повторный вход после logout, **1b** wall-clock в фоне, **1c** nav IA, сессия, кэш, формула зачётки, `messageId`).                                                                            |
 | **Живой логин ELTE** | В коде есть путь portal + TOTP + OuterLogin. Считать **working MVP, не исчерпывающе перепроверено** на всех устройствах. Email OTP известен по HAR, UI тонкий. Если Student web **full** — мост падает даже после верного 2FA. |
@@ -59,6 +59,7 @@
 | Запись на экзамен / курс | **В приложении нет. Не планируем.** Не возвращать UI vizsgajelentkezés / tárgyjelentkezés. XHR записи в `finances.har` — **видно, но не планируем**. |
 | Студенческий             | **В приложении нет.** HAR 2026-09-13: известны **заявка / NEK / FIR** + **банк** + поля **профиля**. **Нет QR, номера карты, срока.** |
 | Виджеты на рабочем столе | **Удалены** (был stub). Нативный эпик — в конце.                                                                                                                                                                                                                                                     |
+| App shortcuts | **Сделано (13):** Android static shortcuts + iOS Quick Actions — Calendar (0), Mail (3), Payments (4). Cold start: `Splitter` → `HomePage(initialView:)` только при `SessionGuard.isColdStartSessionUsable()`; иначе логин. Shortcut карт **нет** (п. 8). |
 | Живой логин              | Portal `Login` → `Login2FA` (TOTP) → `ToNeptunHWeb` → `OuterLogin` JWT на выданном `hallgatoN`. **N не хардкодить.** Email OTP (`RequestEmailCode` / `CodePrefix`) — HAR есть, UI тонкий.                                                                                                            |
 
 
@@ -120,7 +121,7 @@
 | 10  | Сравнение семестров                                               | **После** честной зачётки (п. 2)                 |
 | 11  | Academic Progress                                                 | **Всё ещё закрыт** — в HAR сент. 2026 нет графа tanterv |
 | 12  | Студенческий                                                      | Имена полей заявки / банка / профиля **сняты**; QR / номер / срок **нет** |
-| 13  | App shortcuts                                                     | После UX сессии и deep-link (п. 1, 8)            |
+| 13  | App shortcuts                                                     | **СДЕЛАНО** (сен 2026). Календарь / Почта / Платежи; Maps — опционально с п. 8 (не сделан). |
 | 14  | Виджеты                                                           | **Последними** — нативный Android/iOS эпик       |
 
 
@@ -632,28 +633,31 @@ NFC-эмуляция. Декоративная «карта» из аватар�
 
 
 
-### 13. App shortcuts — после UX сессии и deep-link
+### 13. App shortcuts — после UX сессии и deep-link — **СДЕЛАНО**
 
 - **Зачем / Why**  
 Долгий тап по иконке → Календарь / Почта / Платежи имеет смысл, только если мёртвая сессия ведёт на логин (п. 1) и deep-link уже есть.
 - **Зависит от / Depends on**  
 П. 1. П. 8 — если будет shortcut «карта / следующая аудитория».
-- **Уже есть в коде / Already in code**  
-Нет `shortcuts.xml`, нет iOS `UIApplicationShortcutItems`. Навигация **по индексу вкладки**, без named routes.
-- **Что сделать / What to build**  
-  1. Android shortcuts + iOS Home Screen Quick Actions: календарь (низ 0), почта (низ 3), платежи (drawer индекс 4).
-  2. Cold start: `Splitter` → если `HasLogin` и сессия жива → `HomePage` с индексом или drawer-маршрутом, иначе логин.
-  3. Не открывать Home с мёртвым JWT и пустыми вкладками. Лучше после **1c**, чтобы индексы совпали с целевой IA.
+- **Уже есть в коде / Already in code (сделано)**  
+  - Android: `res/xml/shortcuts.xml` + meta-data `android.app.shortcuts`; intent extra `shortcut_id`.  
+  - iOS: `UIApplicationShortcutItems` в `Info.plist`.  
+  - Dart: `lib/app_shortcuts.dart` MethodChannel; `Splitter` → `HomePage(initialView:)`; `SessionGuard.isColdStartSessionUsable()`.  
+  - Индексы как у **1c**: Calendar **0**, Mail **3**, Payments **4**. Shortcut карт **не** сделан (п. 8 отдельно).
+- **Что сделано / What was built**  
+  1. Android shortcuts + iOS Home Screen Quick Actions: календарь (низ 0), почта (низ 3), платежи (drawer индекс 4).  
+  2. Cold start: `Splitter` → если сессия жива → `HomePage` с `initialView`, иначе логин.  
+  3. Мёртвый JWT / истёкший wall-clock → wipe auth (кэш остаётся) + логин — пустого Home нет.
 - **Где / Where**  
-`android/app/src/main/res/xml/`, `AndroidManifest.xml`, `ios/Runner/Info.plist`, `startup_page.dart`, `main_page.dart`.
+`android/.../res/xml/shortcuts.xml`, `AndroidManifest.xml`, `MainActivity.kt`, `ios/Runner/Info.plist`, `AppDelegate.swift`, `lib/app_shortcuts.dart`, `startup_page.dart`, `main_page.dart`, `SessionGuard.isColdStartSessionUsable`.
 - **Через что / Via**  
-Intent extras / уже прописанные schemes. Свой scheme — только если без него никак.
+Intent extra `shortcut_id` (Android) + `UIApplicationShortcutItemType` (iOS) через MethodChannel `com.nanda070.neptun_mobile.app/shortcuts`. Свой URL scheme не нужен.
 - **Нужно заранее / Prerequisites**  
-П. 1. Опционально п. 8.
+П. 1. Опционально п. 8 (Maps — не включён).
 - **Готово когда / Done when**  
-Cold-start shortcut попадает на нужную вкладку или на логин; пустого Home нет.
+Cold-start shortcut попадает на нужную вкладку или на логин; пустого Home нет. **Выполнено (сен 2026).**
 - **Не делать / Out of scope**  
-Siri / App Intents, виджеты Android (п. 14).
+Siri / App Intents, виджеты Android (п. 14), Maps / next-room shortcut (п. 8).
 
 ---
 
