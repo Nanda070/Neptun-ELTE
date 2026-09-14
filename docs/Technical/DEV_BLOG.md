@@ -117,7 +117,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-13, ~08:58]**
 
-- Wrote a prioritized **implementation plan** (docs only, no feature code): implementation plan (removed after 1.5.0; see DEV_BLOG / TECHNICAL). Order: session+cache → honest markbook → calendar polish → mail search/unread → then parallel (ghost, today/ZH/ICS export/class notif granularity, payments, maps, What’s Changed, semester compare). HAR-gated: academic progress, student card. Widgets last. Indexed from README + TECHNICAL.
+- Wrote a prioritized **implementation plan** (docs only, no feature code): [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) / [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md). Order: session+cache → honest markbook → calendar polish → mail search/unread → then parallel (ghost, today/ZH/ICS export/class notif granularity, payments, maps, What’s Changed, semester compare). HAR-gated: academic progress, student card. Widgets last. Indexed from README + TECHNICAL.
 
 **[2026-09-13, ~09:05]**
 
@@ -129,7 +129,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-13, ~09:20]**
 
-- Inventoried 8 user HARs (not copied into git; secrets redacted) into Sep 2026 HAR inventory (docs; HARs not in git). **Bank + profile + student-card claim (NEK/FIR)** field names are now known. **No QR / card number / expiry.** **No tanterv graph** (`taken courses.har` was `RegisteredCourses`; `GetAverages` items empty). Mail extras (archive/sent/settings); finance extras (unpaid list empty, transaction detail); calendar official ICS/webcal URL. Signup XHRs seen in `finances.har` — **seen but not planned**. User did not click every control; missing POSTs expected. Docs only; no Dart.
+- Inventoried 8 user HARs (not copied into git; secrets redacted) into [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) §4.2 / RU twin. **Bank + profile + student-card claim (NEK/FIR)** field names are now known. **No QR / card number / expiry.** **No tanterv graph** (`taken courses.har` was `RegisteredCourses`; `GetAverages` items empty). Mail extras (archive/sent/settings); finance extras (unpaid list empty, transaction detail); calendar official ICS/webcal URL. Signup XHRs seen in `finances.har` — **seen but not planned**. User did not click every control; missing POSTs expected. Docs only; no Dart.
 
 **[2026-09-13, ~09:30]**
 
@@ -141,7 +141,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-13, ~10:00]**
 
-- Product decision (docs/plan only, **no Dart**): **Nav IA** — bottom **Calendar \| Markbook \| Mail**; **Payments** + **Periods** move to left drawer **above Settings**. Code **still has 5 tabs**; Figma may still show 5 — target is 3 + drawer (plan **1c**). **Session 1b:** background ≥10 min must `forceExpiredLogout` on resume — Flutter `Timer` pauses while suspended; store timestamp + check on `AppLifecycleState.resumed`. Synced README / TECHNICAL / IOS_VS_ANDROID / DEV_BLOG EN+RU. Owner **Nanda**.
+- Product decision (docs/plan only, **no Dart**): **Nav IA** — bottom **Calendar \| Markbook \| Mail**; **Payments** + **Periods** move to left drawer **above Settings**. Code **still has 5 tabs**; Figma may still show 5 — target is 3 + drawer (plan **1c**). **Session 1b:** background ≥10 min must `forceExpiredLogout` on resume — Flutter `Timer` pauses while suspended; store timestamp + check on `AppLifecycleState.resumed`. Synced README / TECHNICAL / IOS_VS_ANDROID / IMPLEMENTATION_PLAN EN+RU. Owner **Nanda**.
 
 **[2026-09-13, ~10:10]**
 
@@ -149,11 +149,11 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-13, ~10:16]**
 
-- Documented versioning policy EN+RU (TECHNICAL § Versioning, README identity row). `pubspec` **1.1.0+19** (+1 build from **1.0.5+18**); iOS `MARKETING_VERSION` / Android fallback mirrored. Honesty: GitHub “1.0” is the published baseline statement; older checkouts may still show **1.0.x** until this bump lands. Owner **Nanda**.
+- Documented versioning policy EN+RU (TECHNICAL § Versioning, README identity row, IMPLEMENTATION_PLAN release note). `pubspec` **1.1.0+19** (+1 build from **1.0.5+18**); iOS `MARKETING_VERSION` / Android fallback mirrored. Honesty: GitHub “1.0” is the published baseline statement; older checkouts may still show **1.0.x** until this bump lands. Owner **Nanda**.
 
 **[2026-09-13, ~10:20]**
 
-- **Nav IA revised (1c):** bottom = **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** stays drawer-only above Settings. **Contacts** moved from drawer into Settings (bottom); app version via `package_info_plus` shown under Contacts. Synced README / TECHNICAL / IOS_VS_ANDROID / DEV_BLOG EN+RU. Session **1a**/**1b** unchanged. Owner **Nanda**.
+- **Nav IA revised (1c):** bottom = **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** stays drawer-only above Settings. **Contacts** moved from drawer into Settings (bottom); app version via `package_info_plus` shown under Contacts. Synced README / TECHNICAL / IMPLEMENTATION_PLAN / IOS_VS_ANDROID EN+RU. Session **1a**/**1b** unchanged. Owner **Nanda**.
 
 **[2026-09-13, ~10:45]**
 
@@ -169,7 +169,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-13, ~15:15]**
 
-- **Versioning policy revised:** stop meaningful `+N` build bumps as the user-facing story. Marketing / Settings / docs = **`1.x.y` only**. Scheme `1.<feature-line>.<patch>`; **2.0** = final / RC line. Current **`1.3.1`** (`pubspec` **1.3.1+1**): feature line **3** = plan items **1–3**; patch **1** = auth/2FA/Student-web-full fixes. Next big block → **1.4.0**. Settings shows `info.version` without `+build`. Synced TECHNICAL / README / DEV_BLOG EN+RU + `.cursor/rules/versioning.mdc`. Owner **Nanda**.
+- **Versioning policy revised:** stop meaningful `+N` build bumps as the user-facing story. Marketing / Settings / docs = **`1.x.y` only**. Scheme `1.<feature-line>.<patch>`; **2.0** = final / RC line. Current **`1.3.1`** (`pubspec` **1.3.1+1**): feature line **3** = plan items **1–3**; patch **1** = auth/2FA/Student-web-full fixes. Next big block → **1.4.0**. Settings shows `info.version` without `+build`. Synced TECHNICAL / README / IMPLEMENTATION_PLAN EN+RU + `.cursor/rules/versioning.mdc`. Owner **Nanda**.
 
 **[2026-09-13, ~16:00]**
 

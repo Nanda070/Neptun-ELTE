@@ -38,7 +38,7 @@ EN and RU pairs must match on facts (bundle IDs, commands, languages, contacts, 
 - **API, login, 2FA, cache, languages, themes, removed features**: Technical EN+RU (honesty table if completeness changed).
 - **Major development stages / decisions**: append matching entries to `docs/Technical/DEV_BLOG.md` + `DEV_BLOG.ru.md`.
 - **User-visible features**: `docs/README` feature list EN+RU.
-- **Version bumps** (`1.x.y` marketing): follow `.cursor/rules/versioning.mdc` — `pubspec`, platform mirrors, Settings (three numbers only), README + TECHNICAL + DEV_BLOG EN+RU.
+- **Version bumps** (`1.x.y` marketing): follow `.cursor/rules/versioning.mdc` — `pubspec`, platform mirrors, Settings (three numbers only), README + TECHNICAL + IMPLEMENTATION_PLAN + DEV_BLOG EN+RU.
 - **Privacy / terms / cookies behavior**: matching files under `docs/Legal-*` (all three languages when facts change).
 
 ## Honesty

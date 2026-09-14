@@ -117,7 +117,7 @@
 
 **[2026-09-13, ~08:58]**
 
-- Написан приоритетный **план реализации** (только docs, без кода фич): план реализации (удалён после 1.5.0; см. DEV_BLOG / TECHNICAL). Порядок: сессия+кэш → честная зачётка → календарь → поиск/unread почты → затем параллельно (ghost, сегодня/ZH/ICS export/гранулярность пар, платежи, карты, «Что изменилось», сравнение семестров). За HAR: academic progress, студенческий. Виджеты последними. Индекс из README + TECHNICAL.
+- Написан приоритетный **план реализации** (только docs, без кода фич): [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) / [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md). Порядок: сессия+кэш → честная зачётка → календарь → поиск/unread почты → затем параллельно (ghost, сегодня/ZH/ICS export/гранулярность пар, платежи, карты, «Что изменилось», сравнение семестров). За HAR: academic progress, студенческий. Виджеты последними. Индекс из README + TECHNICAL.
 
 **[2026-09-13, ~09:05]**
 
@@ -129,7 +129,7 @@
 
 **[2026-09-13, ~09:20]**
 
-- Разобраны 8 пользовательских HAR (в git не копировали; секреты замазаны) в инвентарь HAR сент. 2026 (docs; HAR в git нет). Известны имена полей **банка + профиля + заявки на студенческий (NEK/FIR)**. **Нет QR / номера / срока карты.** **Нет графа tanterv** (`taken courses.har` = `RegisteredCourses`; items `GetAverages` пустые). Extras почты (архив/исходящие/настройки); extras финансов (неоплаченные пустые, детали транзакции); официальный ICS/webcal URL календаря. XHR записи в `finances.har` — **видно, но не планируем**. Кликнуты не все кнопки; отсутствующие POST ожидаемы. Только docs; Dart не меняли.
+- Разобраны 8 пользовательских HAR (в git не копировали; секреты замазаны) в [`IMPLEMENTATION_PLAN.ru.md`](IMPLEMENTATION_PLAN.ru.md) §4.2 / EN-близнец. Известны имена полей **банка + профиля + заявки на студенческий (NEK/FIR)**. **Нет QR / номера / срока карты.** **Нет графа tanterv** (`taken courses.har` = `RegisteredCourses`; items `GetAverages` пустые). Extras почты (архив/исходящие/настройки); extras финансов (неоплаченные пустые, детали транзакции); официальный ICS/webcal URL календаря. XHR записи в `finances.har` — **видно, но не планируем**. Кликнуты не все кнопки; отсутствующие POST ожидаемы. Только docs; Dart не меняли.
 
 **[2026-09-13, ~09:30]**
 
@@ -141,7 +141,7 @@
 
 **[2026-09-13, ~10:00]**
 
-- Решение продукта (только docs/план, **без Dart**): **Nav IA** — снизу **Calendar \| Markbook \| Mail**; **Payments** + **Periods** в левый drawer **над Settings**. В коде **по-прежнему 5 вкладок**; Figma может ещё показывать 5 — цель 3 + drawer (п. **1c**). **Сессия 1b:** фон ≥10 мин → на resume `forceExpiredLogout` — Flutter `Timer` замирает в suspend; timestamp + проверка на `AppLifecycleState.resumed`. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / DEV_BLOG EN+RU. Владелец **Nanda**.
+- Решение продукта (только docs/план, **без Dart**): **Nav IA** — снизу **Calendar \| Markbook \| Mail**; **Payments** + **Periods** в левый drawer **над Settings**. В коде **по-прежнему 5 вкладок**; Figma может ещё показывать 5 — цель 3 + drawer (п. **1c**). **Сессия 1b:** фон ≥10 мин → на resume `forceExpiredLogout` — Flutter `Timer` замирает в suspend; timestamp + проверка на `AppLifecycleState.resumed`. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / IMPLEMENTATION_PLAN EN+RU. Владелец **Nanda**.
 
 **[2026-09-13, ~10:10]**
 
@@ -149,11 +149,11 @@
 
 **[2026-09-13, ~10:16]**
 
-- Задокументирована политика версий EN+RU (TECHNICAL § Версионирование, строка в README). `pubspec` **1.1.0+19** (build +1 от **1.0.5+18**); зеркала iOS `MARKETING_VERSION` / Android fallback. Честно: GitHub «1.0» — утверждение о опубликованной базовой линии; старые checkout’ы могут ещё показывать **1.0.x**, пока этот bump не попадёт в дерево. Владелец **Nanda**.
+- Задокументирована политика версий EN+RU (TECHNICAL § Версионирование, строка в README, релиз-заметка в IMPLEMENTATION_PLAN). `pubspec` **1.1.0+19** (build +1 от **1.0.5+18**); зеркала iOS `MARKETING_VERSION` / Android fallback. Честно: GitHub «1.0» — утверждение о опубликованной базовой линии; старые checkout’ы могут ещё показывать **1.0.x**, пока этот bump не попадёт в дерево. Владелец **Nanda**.
 
 **[2026-09-13, ~10:20]**
 
-- **Nav IA пересмотрена (1c):** снизу **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** только в drawer над Settings. **Contacts** перенесены из drawer в Settings (внизу); версия приложения через `package_info_plus` под Contacts. Синхронизированы README / TECHNICAL / IOS_VS_ANDROID / DEV_BLOG EN+RU. Сессия **1a**/**1b** без изменений. Владелец **Nanda**.
+- **Nav IA пересмотрена (1c):** снизу **Calendar \| Markbook \| Periods \| Mail** (`maxBottomNavWidgets = 4`). **Payments** только в drawer над Settings. **Contacts** перенесены из drawer в Settings (внизу); версия приложения через `package_info_plus` под Contacts. Синхронизированы README / TECHNICAL / IMPLEMENTATION_PLAN / IOS_VS_ANDROID EN+RU. Сессия **1a**/**1b** без изменений. Владелец **Nanda**.
 
 **[2026-09-13, ~10:45]**
 
@@ -169,7 +169,7 @@
 
 **[2026-09-13, ~15:15]**
 
-- **Политика версий пересмотрена:** больше не рассказывать пользователю историю через `+N` build. Маркетинг / Settings / docs = только **`1.x.y`**. Схема `1.<feature-line>.<patch>`; **2.0** = финальная / RC линия. Сейчас **`1.3.1`** (`pubspec` **1.3.1+1**): линия **3** = пункты плана **1–3**; патч **1** = auth/2FA/Student-web-full. Следующий крупный блок → **1.4.0**. Settings показывает `info.version` без `+build`. Синхронизированы TECHNICAL / README / DEV_BLOG EN+RU + `.cursor/rules/versioning.mdc`. Владелец **Nanda**.
+- **Политика версий пересмотрена:** больше не рассказывать пользователю историю через `+N` build. Маркетинг / Settings / docs = только **`1.x.y`**. Схема `1.<feature-line>.<patch>`; **2.0** = финальная / RC линия. Сейчас **`1.3.1`** (`pubspec` **1.3.1+1**): линия **3** = пункты плана **1–3**; патч **1** = auth/2FA/Student-web-full. Следующий крупный блок → **1.4.0**. Settings показывает `info.version` без `+build`. Синхронизированы TECHNICAL / README / IMPLEMENTATION_PLAN EN+RU + `.cursor/rules/versioning.mdc`. Владелец **Nanda**.
 
 **[2026-09-13, ~16:00]**
 
