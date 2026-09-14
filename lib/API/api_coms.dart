@@ -29,8 +29,18 @@ class SessionGuard {
   static Future<void> Function(String message)? _onNavigateToLogin;
   static Timer? _sessionWallTimer;
   static DateTime? _sessionStartedAt;
+  /// Set when login / 2FA succeeds — avoids stale [SESSION_StartedAtMs] or
+  /// immediate 401 recovery forcing logout right after a fresh participant session.
+  static DateTime? _authenticatedAt;
+  static const Duration _postLoginGrace = Duration(seconds: 45);
 
   static bool get isAuthBlocked => _authBlocked;
+
+  static bool get _inPostLoginGrace {
+    final at = _authenticatedAt;
+    if (at == null) return false;
+    return DateTime.now().difference(at) < _postLoginGrace;
+  }
 
   static void registerNavigator(Future<void> Function(String message) nav) {
     _onNavigateToLogin = nav;
@@ -46,14 +56,41 @@ class SessionGuard {
     return m;
   }
 
+  /// Clear persisted wall-clock before a new login attempt (stale stamp after expiry).
+  static void prepareForLoginAttempt() {
+    cancelSessionWallClock();
+    _authenticatedAt = null;
+    clearAuthBlock();
+  }
+
+  /// Call when portal / API login succeeds, **before** navigating to Home.
+  static Future<void> markParticipantSessionStarted() async {
+    _handlingExpired = false;
+    clearAuthBlock();
+    cancelSessionWallClock();
+    final now = DateTime.now();
+    _sessionStartedAt = now;
+    _authenticatedAt = now;
+    await storage.saveInt(
+      _sessionStartedAtPrefsKey,
+      now.millisecondsSinceEpoch,
+    );
+    _armSessionWallTimer();
+  }
+
   /// Start / restart the 10-minute wall clock from main-session entry (after login or cold start into Home).
   /// Does **not** restart on token refresh — only on a new participant session.
   /// Stores wall-clock timestamp so background time still counts (Timer alone pauses while suspended).
   static void startSessionWallClock() {
     cancelSessionWallClock();
-    _sessionStartedAt = DateTime.now();
-    // Fire-and-forget persist; Timer uses in-memory stamp.
-    storage.saveInt(_sessionStartedAtPrefsKey, _sessionStartedAt!.millisecondsSinceEpoch);
+    final now = DateTime.now();
+    _sessionStartedAt = now;
+    if (_authenticatedAt == null ||
+        now.difference(_authenticatedAt!) > const Duration(seconds: 2)) {
+      _authenticatedAt = now;
+    }
+    // Fire-and-forget persist; in-memory stamp is authoritative until resume reload.
+    storage.saveInt(_sessionStartedAtPrefsKey, now.millisecondsSinceEpoch);
     _armSessionWallTimer();
   }
 
@@ -85,6 +122,10 @@ class SessionGuard {
     storage.saveInt(_sessionStartedAtPrefsKey, 0);
   }
 
+  static void _clearAuthenticatedAt() {
+    _authenticatedAt = null;
+  }
+
   /// Call on [AppLifecycleState.resumed]. If background/suspend time pushed the
   /// session past 10 minutes, force logout; otherwise re-arm the foreground Timer
   /// for the remaining wall-clock time (Timers often pause while backgrounded).
@@ -95,10 +136,14 @@ class SessionGuard {
       final ms = await storage.getInt(_sessionStartedAtPrefsKey);
       if (ms != null && ms > 0) {
         started = DateTime.fromMillisecondsSinceEpoch(ms);
-        _sessionStartedAt = started;
       }
     }
+    final authAt = _authenticatedAt;
+    if (authAt != null && (started == null || started.isBefore(authAt))) {
+      started = authAt;
+    }
     if (started == null) return;
+    _sessionStartedAt = started;
     final elapsed = DateTime.now().difference(started);
     if (elapsed >= sessionWallClockLimit) {
       debug.log(
@@ -124,6 +169,7 @@ class SessionGuard {
   /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
   static Future<void> userInitiatedLogout() async {
     cancelSessionWallClock();
+    _clearAuthenticatedAt();
     _authBlocked = true;
     await _wipeAuthLeftovers();
   }
@@ -134,6 +180,7 @@ class SessionGuard {
     if (_handlingExpired) return;
     _handlingExpired = true;
     cancelSessionWallClock();
+    _clearAuthenticatedAt();
     _authBlocked = true;
     final msg = AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
     _pendingUserMessage = msg;
@@ -369,8 +416,16 @@ class SessionGuard {
             ok = await trySilentReauth();
           }
           if (!ok) {
-            debug.log("Session recovery failed — forcing logout");
-            await SessionGuard.forceExpiredLogout();
+            if (SessionGuard._inPostLoginGrace &&
+                (storage.DataCache.getAccessToken() ?? '').isNotEmpty) {
+              debug.log(
+                'Session recovery: post-login grace — skip force logout',
+              );
+              ok = true;
+            } else {
+              debug.log("Session recovery failed — forcing logout");
+              await SessionGuard.forceExpiredLogout();
+            }
           }
         } finally {
           _isRefreshingToken = false;

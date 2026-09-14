@@ -183,6 +183,11 @@
 
 - **Релиз 1.3.2** (`pubspec` **1.3.2+1**): фикс чёрного экрана после 2FA + корневой navigator. GitHub Release **v1.3.2** + unsigned IPA через Actions. Владелец **Nanda**.
 
+**[2026-09-14]**
+
+- **Багфикс — «сессия истекла» сразу после 2FA:** устаревший `SESSION_StartedAtMs` или гонка resume / первого API 401 могли вызвать `forceExpiredLogout` на Home сразу после входа. `SessionGuard.prepareForLoginAttempt()` сбрасывает wall-clock в начале логина; `markParticipantSessionStarted()` сохраняет новый старт до `navigateToHomeRoot`; grace ~45 с после входа не форсирует logout, если access token ещё есть. Владелец **Nanda**.
+- **Релиз 1.3.3** (`pubspec` **1.3.3+1**): фикс сессии после 2FA. GitHub Release **v1.3.3** + unsigned IPA через Actions. Владелец **Nanda**.
+
 ---
 
 ## В работе / запланировано (честно)

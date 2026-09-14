@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.3.2+1** — user-facing / Settings / docs = **1.3.2** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.3.3+1** — user-facing / Settings / docs = **1.3.3** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.2`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.3`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -75,7 +75,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 |------|---------|
 | **1.x.y** | Pre-final product line only. Feature line `x` advances when a planned foundation/feature block ships; patch `y` for bugfixes / auth / small tweaks within that line. |
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
-| **1.3.2** | **Current.** Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
+| **1.3.3** | **Current.** Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
+| **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
 | **1.4.0**, **1.4.1**, … | Next big feature block (e.g. mail search / ICS / maps), then patches. |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
@@ -194,7 +195,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.2` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.3` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -351,7 +352,9 @@ For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `tw
 
 Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes **auth only** via `DataCache.sessionWipeKeepCache()` (password / JWT / refresh / device cookie / `HasLogin`; **keeps username + academic cache**), navigates to login via `navigateToLoginRoot()` (root `pushAndRemoveUntil(Splitter)` — **not** `popUntil` on a sole Home route, which could empty the navigator into a black screen), and shows `auth_sessionExpired_PleaseSignIn`. Manual / expired logout share that wipe. Portal leftovers: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, tighten `_looksLikeInvalidCredentials` (no bare `invalid` on HTML `is-invalid`) so same-process re-login is not stuck on false “invalid credentials” (**1a**). Full `dataWipe()` (prefs.clear including cache) remains available for hard reset — not used on normal logout.
 
-**App session wall clock (user-visible):** On entering `HomePage` (successful login or cold start into a stored session), `SessionGuard.startSessionWallClock()` stores `SESSION_StartedAtMs` and arms a **10-minute** `Timer` for the remaining time. When it fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). Manual logout cancels the timer; a new login / new `HomePage` entry restarts it. Token refresh does **not** extend the wall clock. This is intentional alignment with short-lived Neptun access JWTs (~10–15 min from issue): the UI logs out on a fixed wall clock from **session entry**, not only after the next 401.
+**App session wall clock (user-visible):** On successful login / 2FA, `SessionGuard.markParticipantSessionStarted()` (from `SetupPage`, before `navigateToHomeRoot`) clears stale `SESSION_StartedAtMs`, persists a fresh start time, and arms the **10-minute** `Timer`. Entering `HomePage` calls `startSessionWallClock()` again (same participant session). When the timer fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). `prepareForLoginAttempt()` clears the wall clock at login start. Manual logout cancels the timer; token refresh does **not** extend the wall clock. This aligns UI logout with short-lived Neptun access JWTs (~10–15 min from **session entry**, not only 401).
+
+**Post-login grace (1.3.3):** For ~45 s after `markParticipantSessionStarted`, `ensureValidSession` does **not** call `forceExpiredLogout` when refresh/silent re-auth fail but an access token is still present — avoids an immediate kick from a race or flaky first API after fresh 2FA. Resume wall-clock checks prefer the in-memory start and ignore prefs older than the last auth stamp.
 
 **Background wall clock (plan 1b shipped):** `HomePage` is a `WidgetsBindingObserver`. On `AppLifecycleState.resumed`, `SessionGuard.checkSessionWallClockOnResume()` compares `now` to the persisted session start; if `>= 10 min` → `forceExpiredLogout`; else re-arms the foreground `Timer` for the remaining duration. Do not rely on an in-memory `Timer` alone while the process is suspended. Foreground continuous 10 min still kicks as before.
 

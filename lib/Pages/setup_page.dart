@@ -1252,7 +1252,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
     // Fresh portal login after logout/session expiry — never reuse stale HWEB JWT path.
     api.InstitutesRequest.resetEltePortalState();
     api.CalendarRequest.clearTrainingIdCache();
-    api.SessionGuard.clearAuthBlock();
+    api.SessionGuard.prepareForLoginAttempt();
     // Drop stale device cookie for this user before POST Login (same-process re-login).
     if (_username.isNotEmpty) {
       storage.DataCache.setDeviceCookie(_username, null);
@@ -1269,11 +1269,9 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       });
     });
 
-    api.InstitutesRequest.validateLoginCredentials(selected, _username.toUpperCase(), _password).then((value)
-    {
+    api.InstitutesRequest.validateLoginCredentials(selected, _username.toUpperCase(), _password).then((value) async {
       if(value == 1){ // 1: SIKERES BELÉPÉS
         if (!mounted) return;
-        api.SessionGuard.clearAuthBlock();
         storage.DataCache.setUsername(_username.toUpperCase());
         storage.DataCache.setPassword(_password);
         // Prefer API base set by login (ELTE root), not a stale list URL
@@ -1284,6 +1282,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
           );
         }
         storage.DataCache.setHasLogin(1);
+        await api.SessionGuard.markParticipantSessionStarted();
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -1338,7 +1338,6 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
           if (!mounted) return;
 
           if (isOk) {
-            api.SessionGuard.clearAuthBlock();
             storage.DataCache.setUsername(_username.toUpperCase());
             await storage.DataCache.setPassword(_password);
             final apiBase = storage.DataCache.getInstituteUrl();
@@ -1348,6 +1347,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
               );
             }
             await storage.DataCache.setHasLogin(1);
+            await api.SessionGuard.markParticipantSessionStarted();
             if (mounted) {
               setState(() {
                 _isLoading = false;

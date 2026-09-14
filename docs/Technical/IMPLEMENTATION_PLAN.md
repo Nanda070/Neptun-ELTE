@@ -12,7 +12,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 | | |
 |--|--|
 | **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3 shipped** (Sep 2026). Items **4–14** still backlog |
-| **Release** | Current marketing version **1.3.2** (`pubspec` **1.3.2+1**). Feature line **3** = plan items **1–3** done; patch **2** = post-2FA black-screen navigation fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Release** | Current marketing version **1.3.3** (`pubspec` **1.3.3+1**). Feature line **3** = plan items **1–3** done; patch **3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
 | **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
@@ -64,7 +64,7 @@ Document what the code **actually** does.
 |---------|------|
 | Bottom nav | **4 tabs:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Left drawer | Profile, balance, training, **Payments** (above Settings), Settings, … |
-| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.3.2`, no `+build`) at bottom |
+| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.3.3`, no `+build`) at bottom |
 
 Do not re-add Payments to the bottom bar.
 

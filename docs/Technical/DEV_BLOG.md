@@ -183,6 +183,11 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **Release 1.3.2** (`pubspec` **1.3.2+1**): ships the post-2FA black-screen fix + root navigator helpers. GitHub Release **v1.3.2** + unsigned IPA via Actions. Owner **Nanda**.
 
+**[2026-09-14]**
+
+- **Bugfix — session expired right after 2FA:** stale `SESSION_StartedAtMs` or a race on resume / first API 401 could call `forceExpiredLogout` immediately on Home. `SessionGuard.prepareForLoginAttempt()` clears wall-clock at login start; `markParticipantSessionStarted()` persists a fresh stamp before `navigateToHomeRoot`; ~45 s post-login grace skips forced logout when an access token is still present. Owner **Nanda**.
+- **Release 1.3.3** (`pubspec` **1.3.3+1**): ships the post-2FA session fix. GitHub Release **v1.3.3** + unsigned IPA via Actions. Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)

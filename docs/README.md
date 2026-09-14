@@ -7,7 +7,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 | **Owner / Developer** | **Nanda** |
 | **Hub** | ELTE only (`https://neptun.elte.hu`) — no multi-university list |
 | **Display name** | Neptun ELTE |
-| **Version** | **1.3.2** (marketing) — scheme `1.<feature-line>.<patch>`; line **3** = plan items 1–3; patch **2** = post-2FA black-screen nav fix; next big block → **1.4.0**; final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
+| **Version** | **1.3.3** (marketing) — scheme `1.<feature-line>.<patch>`; line **3** = plan items 1–3; patch **3** = post-2FA immediate session-expired fix; next big block → **1.4.0**; final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
 | **Platforms** | Android · iOS |
 | **Languages** | English (default) · Hungarian · Russian · Turkish |
 | **Repo** | [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE) |
