@@ -2823,6 +2823,655 @@ class CashinRequest{
   }
 }
 
+/// Plan item 12 — bank (read-only flags), student-card **claim** status, optional profile.
+/// Never logs IBAN / bankAccountNumber / SWIFT / nekId. No QR / card number / expiry.
+class StudentCardRequest {
+  static const _secretBankKeys = {
+    'bankAccountNumber',
+    'BankAccountNumber',
+    'iban',
+    'IBAN',
+    'bankAccountSwiftCode',
+    'BankAccountSwiftCode',
+    'swift',
+    'SWIFT',
+    'bic',
+    'BIC',
+  };
+
+  static Future<Map?> _getData(String path) async {
+    if (!storage.DataCache.getIsModernApi()) return null;
+    if (SessionGuard.isAuthBlocked) return null;
+    final token = storage.DataCache.getAccessToken();
+    if (token == null || token.isEmpty) return null;
+    final baseUrl = storage.DataCache.getInstituteUrl() ?? '';
+    if (baseUrl.isEmpty) return null;
+    try {
+      final raw = await _APIRequest.getRequest(
+        Uri.parse('$baseUrl$path'),
+        bearerToken: token,
+      );
+      final decoded = conv.json.decode(raw);
+      if (decoded is! Map) return null;
+      final data = decoded['data'];
+      if (data is Map) return Map<String, dynamic>.from(data);
+      if (data is List) return {'_list': data};
+      if (data == null) return {};
+      return {'_value': data};
+    } catch (e) {
+      debug.log('StudentCardRequest $path: $e');
+      return null;
+    }
+  }
+
+  /// Strip account numbers / SWIFT before any debug or cache of raw maps.
+  static Map<String, dynamic> _sanitizeBankMap(Map raw) {
+    final out = <String, dynamic>{};
+    raw.forEach((k, v) {
+      final key = k.toString();
+      if (_secretBankKeys.contains(key)) return;
+      // Never copy nested account-number blobs.
+      if (v is Map) {
+        out[key] = _sanitizeBankMap(v);
+      } else {
+        out[key] = v;
+      }
+    });
+    return out;
+  }
+
+  static BankAccountFlags? _flagsFromMap(Map raw) {
+    final s = _sanitizeBankMap(raw);
+    final owner = s['bankAccountOwner']?.toString() ??
+        s['BankAccountOwner']?.toString() ??
+        '';
+    final bankName = s['bankName']?.toString() ?? s['BankName']?.toString() ?? '';
+    if (owner.isEmpty && bankName.isEmpty && s['isDefault'] == null && s['isValid'] == null) {
+      return null;
+    }
+    return BankAccountFlags(
+      owner: owner,
+      bankName: bankName,
+      isDefault: s['isDefault'] == true,
+      isForeign: s['isForeign'] == true,
+      isValid: s['isValid'] == true,
+      otpStatus: s['otpStatus']?.toString() ?? s['OtpStatus']?.toString() ?? '',
+      otpStatusIsVisible: s['otpStatusIsVisible'] != false,
+    );
+  }
+
+  static Future<List<BankAccountFlags>> fetchBankFlags() async {
+    final list = <BankAccountFlags>[];
+    final seen = <String>{};
+
+    void addFlags(BankAccountFlags? f, {String? dedupeKey}) {
+      if (f == null) return;
+      final key = dedupeKey ?? '${f.owner}|${f.bankName}|${f.isDefault}';
+      if (seen.contains(key)) return;
+      seen.add(key);
+      list.add(f);
+    }
+
+    // Tab list first — ids only; details pulled without logging secrets.
+    final tab = await _getData('/api/BankAccount/GetUserBankAccountTabList');
+    final tabItems = tab?['_list'];
+    if (tabItems is List) {
+      for (final item in tabItems) {
+        if (item is! Map) continue;
+        final id = item['bankAccountId']?.toString() ??
+            item['BankAccountId']?.toString() ??
+            item['id']?.toString();
+        if (id != null && id.isNotEmpty) {
+          final details = await _getData(
+            '/api/BankAccount/GetBankAccountDetails?bankAccountId=$id',
+          );
+          if (details != null && details['_list'] == null) {
+            addFlags(_flagsFromMap(details), dedupeKey: id);
+            continue;
+          }
+        }
+        addFlags(_flagsFromMap(item));
+      }
+    }
+
+    // Default account — may return an id or a number; never log the payload.
+    final def = await _getData('/api/BankAccount/GetDefaultBankAccountNumber');
+    if (def != null) {
+      final id = def['bankAccountId']?.toString() ??
+          def['BankAccountId']?.toString() ??
+          def['id']?.toString();
+      if (id != null && id.isNotEmpty && !seen.contains(id)) {
+        final details = await _getData(
+          '/api/BankAccount/GetBankAccountDetails?bankAccountId=$id',
+        );
+        if (details != null && details['_list'] == null) {
+          addFlags(_flagsFromMap(details), dedupeKey: id);
+        }
+      } else if (def['_list'] == null && def['_value'] == null) {
+        addFlags(_flagsFromMap(def));
+      }
+      // If `_value` is a raw account number string — discard; never use/log it.
+    }
+
+    return list;
+  }
+
+  static StudentCardClaimStatus? _claimFromMap(Map raw) {
+    // nekId present on wire — never copy into logs; omit from model for UI honesty.
+    final claimType = raw['claimType']?.toString() ?? '';
+    final firStatus = raw['firStatus']?.toString() ?? '';
+    final firStatusId = raw['firStatusId']?.toString() ?? '';
+    final processStatus = raw['processStatus']?.toString() ?? '';
+    final finalDecision = raw['finalDecision']?.toString() ?? '';
+    final registrationDate = raw['registrationDate']?.toString() ?? '';
+    final trainingName = raw['trainingName']?.toString() ?? '';
+    final trainingFaculty = raw['trainingFaculty']?.toString() ?? '';
+    final primaryInstituteName = raw['primaryInstituteName']?.toString() ?? '';
+    final primaryInstitutePrintCode =
+        raw['primaryInstitutePrintCode']?.toString() ?? '';
+    final addressId = raw['addressId']?.toString() ?? '';
+    final hasAny = [
+      claimType,
+      firStatus,
+      processStatus,
+      finalDecision,
+      trainingName,
+      primaryInstituteName,
+    ].any((s) => s.isNotEmpty);
+    if (!hasAny && raw.isEmpty) return null;
+    return StudentCardClaimStatus(
+      claimType: claimType,
+      firStatus: firStatus,
+      firStatusId: firStatusId,
+      processStatus: processStatus,
+      finalDecision: finalDecision,
+      registrationDate: registrationDate,
+      trainingName: trainingName,
+      trainingFaculty: trainingFaculty,
+      primaryInstituteName: primaryInstituteName,
+      primaryInstitutePrintCode: primaryInstitutePrintCode,
+      addressId: addressId,
+    );
+  }
+
+  static Future<StudentCardClaimStatus?> fetchClaimStatus() async {
+    final data = await _getData('/api/StudentCard/StudentCardClaimProcess');
+    if (data == null) return null;
+    if (data['_list'] is List) {
+      final list = data['_list'] as List;
+      if (list.isEmpty) return null;
+      final first = list.first;
+      if (first is Map) return _claimFromMap(first);
+      return null;
+    }
+    if (data.isEmpty) return null;
+    return _claimFromMap(data);
+  }
+
+  static Future<List<StudentCardAddress>> fetchClaimAddresses() async {
+    final data = await _getData('/api/StudentCard/GetStudentAddress');
+    final out = <StudentCardAddress>[];
+    final items = data?['_list'];
+    if (items is List) {
+      for (final item in items) {
+        if (item is! Map) continue;
+        final address = item['address']?.toString() ?? '';
+        final addressType = item['addressType']?.toString() ?? '';
+        if (address.isEmpty && addressType.isEmpty) continue;
+        out.add(StudentCardAddress(address: address, addressType: addressType));
+      }
+    } else if (data != null && data['_list'] == null && data.isNotEmpty) {
+      final address = data['address']?.toString() ?? '';
+      final addressType = data['addressType']?.toString() ?? '';
+      if (address.isNotEmpty || addressType.isNotEmpty) {
+        out.add(StudentCardAddress(address: address, addressType: addressType));
+      }
+    }
+    return out;
+  }
+
+  static Future<GeneralUserProfile?> fetchGeneralProfile() async {
+    final data = await _getData('/api/PersonalData/GetGeneralUserData');
+    if (data == null || data.isEmpty || data['_list'] != null) return null;
+
+    final citizenships = <String>[];
+    final rawCit = data['userCitizenship'] ?? data['UserCitizenship'];
+    if (rawCit is List) {
+      for (final c in rawCit) {
+        if (c is Map) {
+          final label = c['name']?.toString() ??
+              c['citizenship']?.toString() ??
+              c['translation']?.toString() ??
+              c['value']?.toString() ??
+              '';
+          if (label.isNotEmpty) citizenships.add(label);
+        } else if (c != null && c.toString().isNotEmpty) {
+          citizenships.add(c.toString());
+        }
+      }
+    }
+
+    final extras = <ProfileExtraField>[];
+    final rawExtra = data['extraFields'] ?? data['ExtraFields'];
+    if (rawExtra is List) {
+      for (final e in rawExtra) {
+        if (e is! Map) continue;
+        extras.add(ProfileExtraField(
+          field: e['field']?.toString() ?? '',
+          translation: e['translation']?.toString() ?? '',
+          value: e['value']?.toString() ?? '',
+          isRequired: e['required'] == true,
+        ));
+      }
+    }
+
+    String s(String a, [String? b]) =>
+        data[a]?.toString() ?? (b != null ? data[b]?.toString() : null) ?? '';
+
+    return GeneralUserProfile(
+      printName: s('printName', 'PrintName'),
+      firstName: s('firstName', 'FirstName'),
+      lastName: s('lastName', 'LastName'),
+      title: s('title', 'Title'),
+      bornName: s('bornName', 'BornName'),
+      bornDate: s('bornDate', 'BornDate'),
+      bornCountry: s('bornCountry', 'BornCountry'),
+      bornPlace: s('bornPlace', 'BornPlace'),
+      sex: s('sex', 'Sex'),
+      loginName: s('loginName', 'LoginName'),
+      motherName: s('motherName', 'MotherName'),
+      numberOfChildren: s('numberOfChildren', 'NumberOfChildren'),
+      educationalIdentifier: s('educationalIdentifier', 'EducationalIdentifier'),
+      citizenships: citizenships,
+      extraFields: extras,
+    );
+  }
+
+  static Future<ProfileContacts?> fetchContacts() async {
+    final data = await _getData('/api/PersonalData/GetStudentPersonalDataContacts');
+    if (data == null) return null;
+    final addresses = <String>[];
+    final emails = <String>[];
+    final phones = <String>[];
+
+    void collect(dynamic node, List<String> into, List<String> keys) {
+      if (node is List) {
+        for (final item in node) {
+          if (item is Map) {
+            for (final k in keys) {
+              final v = item[k]?.toString();
+              if (v != null && v.isNotEmpty) {
+                into.add(v);
+                break;
+              }
+            }
+          } else if (item != null && item.toString().isNotEmpty) {
+            into.add(item.toString());
+          }
+        }
+      }
+    }
+
+    collect(data['addresses'] ?? data['addressList'] ?? data['Addresses'], addresses, [
+      'address',
+      'fullAddress',
+      'value',
+      'text',
+    ]);
+    collect(data['emails'] ?? data['emailList'] ?? data['Emails'], emails, [
+      'email',
+      'emailAddress',
+      'value',
+      'text',
+    ]);
+    collect(data['phones'] ?? data['phoneList'] ?? data['Phones'], phones, [
+      'phone',
+      'phoneNumber',
+      'value',
+      'text',
+    ]);
+
+    // Some payloads nest under contact groups.
+    if (addresses.isEmpty && emails.isEmpty && phones.isEmpty) {
+      collect(data['studentAddresses'], addresses, ['address', 'fullAddress', 'value']);
+      collect(data['studentEmails'], emails, ['email', 'emailAddress', 'value']);
+      collect(data['studentPhones'], phones, ['phone', 'phoneNumber', 'value']);
+    }
+
+    if (addresses.isEmpty && emails.isEmpty && phones.isEmpty) return null;
+    return ProfileContacts(addresses: addresses, emails: emails, phones: phones);
+  }
+
+  /// Fetch all item-12 surfaces and persist **non-secret** claim/bank flags (+ light profile).
+  static Future<StudentCardSnapshot> fetchAndCache() async {
+    final banks = await fetchBankFlags();
+    final claim = await fetchClaimStatus();
+    final addresses = await fetchClaimAddresses();
+    final profile = await fetchGeneralProfile();
+    final contacts = await fetchContacts();
+    final snap = StudentCardSnapshot(
+      banks: banks,
+      claim: claim,
+      addresses: addresses,
+      profile: profile,
+      contacts: contacts,
+      fromCache: false,
+    );
+    await storage.DataCache.setStudentCardCacheJson(snap.toCacheJson());
+    return snap;
+  }
+
+  static StudentCardSnapshot? loadCached() {
+    final raw = storage.DataCache.getStudentCardCacheJson();
+    if (raw == null || raw.isEmpty) return null;
+    try {
+      return StudentCardSnapshot.fromCacheJson(raw);
+    } catch (e) {
+      debug.log('StudentCardRequest.loadCached: $e');
+      return null;
+    }
+  }
+}
+
+class BankAccountFlags {
+  final String owner;
+  final String bankName;
+  final bool isDefault;
+  final bool isForeign;
+  final bool isValid;
+  final String otpStatus;
+  final bool otpStatusIsVisible;
+
+  const BankAccountFlags({
+    required this.owner,
+    required this.bankName,
+    required this.isDefault,
+    required this.isForeign,
+    required this.isValid,
+    required this.otpStatus,
+    this.otpStatusIsVisible = true,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'owner': owner,
+        'bankName': bankName,
+        'isDefault': isDefault,
+        'isForeign': isForeign,
+        'isValid': isValid,
+        'otpStatus': otpStatus,
+        'otpStatusIsVisible': otpStatusIsVisible,
+      };
+
+  static BankAccountFlags fromJson(Map<String, dynamic> j) => BankAccountFlags(
+        owner: j['owner']?.toString() ?? '',
+        bankName: j['bankName']?.toString() ?? '',
+        isDefault: j['isDefault'] == true,
+        isForeign: j['isForeign'] == true,
+        isValid: j['isValid'] == true,
+        otpStatus: j['otpStatus']?.toString() ?? '',
+        otpStatusIsVisible: j['otpStatusIsVisible'] != false,
+      );
+}
+
+class StudentCardClaimStatus {
+  final String claimType;
+  final String firStatus;
+  final String firStatusId;
+  final String processStatus;
+  final String finalDecision;
+  final String registrationDate;
+  final String trainingName;
+  final String trainingFaculty;
+  final String primaryInstituteName;
+  final String primaryInstitutePrintCode;
+  final String addressId;
+
+  const StudentCardClaimStatus({
+    required this.claimType,
+    required this.firStatus,
+    required this.firStatusId,
+    required this.processStatus,
+    required this.finalDecision,
+    required this.registrationDate,
+    required this.trainingName,
+    required this.trainingFaculty,
+    required this.primaryInstituteName,
+    required this.primaryInstitutePrintCode,
+    required this.addressId,
+  });
+
+  bool get isEmpty =>
+      claimType.isEmpty &&
+      firStatus.isEmpty &&
+      processStatus.isEmpty &&
+      finalDecision.isEmpty &&
+      trainingName.isEmpty &&
+      primaryInstituteName.isEmpty;
+
+  Map<String, dynamic> toJson() => {
+        'claimType': claimType,
+        'firStatus': firStatus,
+        'firStatusId': firStatusId,
+        'processStatus': processStatus,
+        'finalDecision': finalDecision,
+        'registrationDate': registrationDate,
+        'trainingName': trainingName,
+        'trainingFaculty': trainingFaculty,
+        'primaryInstituteName': primaryInstituteName,
+        'primaryInstitutePrintCode': primaryInstitutePrintCode,
+        'addressId': addressId,
+      };
+
+  static StudentCardClaimStatus fromJson(Map<String, dynamic> j) =>
+      StudentCardClaimStatus(
+        claimType: j['claimType']?.toString() ?? '',
+        firStatus: j['firStatus']?.toString() ?? '',
+        firStatusId: j['firStatusId']?.toString() ?? '',
+        processStatus: j['processStatus']?.toString() ?? '',
+        finalDecision: j['finalDecision']?.toString() ?? '',
+        registrationDate: j['registrationDate']?.toString() ?? '',
+        trainingName: j['trainingName']?.toString() ?? '',
+        trainingFaculty: j['trainingFaculty']?.toString() ?? '',
+        primaryInstituteName: j['primaryInstituteName']?.toString() ?? '',
+        primaryInstitutePrintCode: j['primaryInstitutePrintCode']?.toString() ?? '',
+        addressId: j['addressId']?.toString() ?? '',
+      );
+}
+
+class StudentCardAddress {
+  final String address;
+  final String addressType;
+
+  const StudentCardAddress({required this.address, required this.addressType});
+
+  Map<String, dynamic> toJson() => {'address': address, 'addressType': addressType};
+
+  static StudentCardAddress fromJson(Map<String, dynamic> j) => StudentCardAddress(
+        address: j['address']?.toString() ?? '',
+        addressType: j['addressType']?.toString() ?? '',
+      );
+}
+
+class ProfileExtraField {
+  final String field;
+  final String translation;
+  final String value;
+  final bool isRequired;
+
+  const ProfileExtraField({
+    required this.field,
+    required this.translation,
+    required this.value,
+    required this.isRequired,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'field': field,
+        'translation': translation,
+        'value': value,
+        'required': isRequired,
+      };
+
+  static ProfileExtraField fromJson(Map<String, dynamic> j) => ProfileExtraField(
+        field: j['field']?.toString() ?? '',
+        translation: j['translation']?.toString() ?? '',
+        value: j['value']?.toString() ?? '',
+        isRequired: j['required'] == true,
+      );
+}
+
+class GeneralUserProfile {
+  final String printName;
+  final String firstName;
+  final String lastName;
+  final String title;
+  final String bornName;
+  final String bornDate;
+  final String bornCountry;
+  final String bornPlace;
+  final String sex;
+  final String loginName;
+  final String motherName;
+  final String numberOfChildren;
+  final String educationalIdentifier;
+  final List<String> citizenships;
+  final List<ProfileExtraField> extraFields;
+
+  const GeneralUserProfile({
+    required this.printName,
+    required this.firstName,
+    required this.lastName,
+    required this.title,
+    required this.bornName,
+    required this.bornDate,
+    required this.bornCountry,
+    required this.bornPlace,
+    required this.sex,
+    required this.loginName,
+    required this.motherName,
+    required this.numberOfChildren,
+    required this.educationalIdentifier,
+    required this.citizenships,
+    required this.extraFields,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'printName': printName,
+        'firstName': firstName,
+        'lastName': lastName,
+        'title': title,
+        'bornName': bornName,
+        'bornDate': bornDate,
+        'bornCountry': bornCountry,
+        'bornPlace': bornPlace,
+        'sex': sex,
+        'loginName': loginName,
+        'motherName': motherName,
+        'numberOfChildren': numberOfChildren,
+        'educationalIdentifier': educationalIdentifier,
+        'citizenships': citizenships,
+        'extraFields': extraFields.map((e) => e.toJson()).toList(),
+      };
+
+  static GeneralUserProfile fromJson(Map<String, dynamic> j) => GeneralUserProfile(
+        printName: j['printName']?.toString() ?? '',
+        firstName: j['firstName']?.toString() ?? '',
+        lastName: j['lastName']?.toString() ?? '',
+        title: j['title']?.toString() ?? '',
+        bornName: j['bornName']?.toString() ?? '',
+        bornDate: j['bornDate']?.toString() ?? '',
+        bornCountry: j['bornCountry']?.toString() ?? '',
+        bornPlace: j['bornPlace']?.toString() ?? '',
+        sex: j['sex']?.toString() ?? '',
+        loginName: j['loginName']?.toString() ?? '',
+        motherName: j['motherName']?.toString() ?? '',
+        numberOfChildren: j['numberOfChildren']?.toString() ?? '',
+        educationalIdentifier: j['educationalIdentifier']?.toString() ?? '',
+        citizenships: (j['citizenships'] as List?)?.map((e) => e.toString()).toList() ?? [],
+        extraFields: (j['extraFields'] as List?)
+                ?.whereType<Map>()
+                .map((e) => ProfileExtraField.fromJson(Map<String, dynamic>.from(e)))
+                .toList() ??
+            [],
+      );
+}
+
+class ProfileContacts {
+  final List<String> addresses;
+  final List<String> emails;
+  final List<String> phones;
+
+  const ProfileContacts({
+    required this.addresses,
+    required this.emails,
+    required this.phones,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'addresses': addresses,
+        'emails': emails,
+        'phones': phones,
+      };
+
+  static ProfileContacts fromJson(Map<String, dynamic> j) => ProfileContacts(
+        addresses: (j['addresses'] as List?)?.map((e) => e.toString()).toList() ?? [],
+        emails: (j['emails'] as List?)?.map((e) => e.toString()).toList() ?? [],
+        phones: (j['phones'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      );
+}
+
+class StudentCardSnapshot {
+  final List<BankAccountFlags> banks;
+  final StudentCardClaimStatus? claim;
+  final List<StudentCardAddress> addresses;
+  final GeneralUserProfile? profile;
+  final ProfileContacts? contacts;
+  final bool fromCache;
+
+  const StudentCardSnapshot({
+    required this.banks,
+    required this.claim,
+    required this.addresses,
+    required this.profile,
+    required this.contacts,
+    this.fromCache = false,
+  });
+
+  String toCacheJson() => conv.jsonEncode({
+        'banks': banks.map((b) => b.toJson()).toList(),
+        'claim': claim?.toJson(),
+        'addresses': addresses.map((a) => a.toJson()).toList(),
+        'profile': profile?.toJson(),
+        'contacts': contacts?.toJson(),
+      });
+
+  static StudentCardSnapshot fromCacheJson(String raw) {
+    final j = conv.jsonDecode(raw) as Map<String, dynamic>;
+    return StudentCardSnapshot(
+      banks: (j['banks'] as List?)
+              ?.whereType<Map>()
+              .map((e) => BankAccountFlags.fromJson(Map<String, dynamic>.from(e)))
+              .toList() ??
+          [],
+      claim: j['claim'] is Map
+          ? StudentCardClaimStatus.fromJson(Map<String, dynamic>.from(j['claim'] as Map))
+          : null,
+      addresses: (j['addresses'] as List?)
+              ?.whereType<Map>()
+              .map((e) => StudentCardAddress.fromJson(Map<String, dynamic>.from(e)))
+              .toList() ??
+          [],
+      profile: j['profile'] is Map
+          ? GeneralUserProfile.fromJson(Map<String, dynamic>.from(j['profile'] as Map))
+          : null,
+      contacts: j['contacts'] is Map
+          ? ProfileContacts.fromJson(Map<String, dynamic>.from(j['contacts'] as Map))
+          : null,
+      fromCache: true,
+    );
+  }
+}
+
 class PeriodsRequest{
 
   static Future<List<PeriodEntry>?> getPeriods({String? termId}) async{

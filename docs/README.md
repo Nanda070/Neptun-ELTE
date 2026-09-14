@@ -41,12 +41,13 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Messages** — Neptun inbox; local search (subject / sender / loaded body) + unread-only chip; full thread; optional HU→EN/RU machine translate (may be inaccurate)
 - **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)
 - **Periods** — registration and study periods (bottom tab)
-- **Navigation** — Bottom tabs: **Calendar \| Markbook \| Periods \| Mail**. **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (plan **1c**). Figma mockups may still show 5 tabs — app IA is **4** bottom + Payments in drawer.
+- **Student card / profile** — claim status (NEK/FIR/process), bank **visibility flags** (no IBAN/SWIFT shown or logged), optional personal data + contacts. Drawer + Settings. **No wallet QR / card number / expiry** (HWEB has none either; plan item **12**)
+- **Navigation** — Bottom tabs: **Calendar \| Markbook \| Periods \| Mail**. **Payments** in the left drawer **above Settings**. Student card / profile also in drawer + Settings. Contacts + app version live at the bottom of Settings (plan **1c**). Figma mockups may still show 5 tabs — app IA is **4** bottom + Payments in drawer.
 - **Home-screen shortcuts** — long-press app icon → **Calendar** / **Mail** / **Payments** (plan **13**). Cold start opens that surface only with a usable session; otherwise login (no blank Home with a dead JWT). Maps shortcut not included (item 8).
 - **Themes & languages** — Light / Dark; EN / HU built-in, RU / TR downloadable from GitHub
 - **Notifications** — local class, exam, payment, and period alerts (Android & iOS; no creator push server)
 - **Session** — **10-minute** wall-clock auto-logout after entering the main (participant) session (foreground `Timer` + persisted timestamp on `AppLifecycleState.resumed` so background ≥10 min also kicks — **1b**), plus JWT expiry / failed refresh → force logout + re-login (keeps username; **keeps academic cache** so tabs paint instantly — **1**; banner “from cache” when serving stale/offline). No silent ELTE portal re-auth. Same-process logout → valid-password re-login works without killing the app (**1a**).
-- **Drawer profile** — greets with full name from `UserInfo` + Neptun code; **profile photo** from `userAvatar` / `GetUserAvatar` (base64 JPEG, cached locally; initials if missing/fail); no training ID under the name; training switcher when multiple trainings exist
+- **Drawer profile** — greets with full name from `UserInfo` + Neptun code; **profile photo** from `userAvatar` / `GetUserAvatar` (base64 JPEG, cached locally; initials if missing/fail); no training ID under the name; training switcher when multiple trainings exist; **Student card / profile** page (claim + bank flags + optional personal data — item **12**, no QR)
 - **No first-party backend** — device talks to Neptun (+ optional GitHub raw for language/config JSON)
 
 ---

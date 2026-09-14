@@ -197,7 +197,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
 | `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.4` — no `+build`) at bottom |
-| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
+| `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
 **Design mockups (Figma only — no Flutter change from this file):** [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups). Pages: `Android — polished target` and `iOS — current + polish`. Mockups may still show **5-tab** icon nav; **app IA** is bottom **Calendar \| Markbook \| Periods \| Mail** + Payments in drawer above Settings (plan **1c**).
@@ -446,6 +446,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | Education week number | **Fixed (Sep 2026)** | Season Monday (Sep/Feb 1 week) + teaching period; ignores registration anchors; online refresh overwrites cache |
 | App Store / Play production | **Not the current goal** | |
 | Drawer profile photo | **Working** | ELTE HWEB: `data.userAvatar.image` on `/api/UserInfo` + `/api/General/GetUserAvatar?imageSizeType=Normal` (base64 JPEG). Cached in `DataCache`; drawer `MemoryImage`; initials on failure/empty |
+| Student card / profile | **Claim / bank / profile only** | Item **12**: `StudentCardPage` + `StudentCardRequest`. Bank flags (no IBAN/SWIFT logged). Claim status (no QR / card number / expiry — HWEB has none). Optional `GetGeneralUserData` + contacts. Cache `STUDENT_CardCacheJson` |
 | Drawer training ID line | **Removed** | Raw `studentTrainingId` / GUID must not show under the name; human labels only in the multi-training dropdown |
 
 Monoliths: `main_page.dart`, `api_coms.dart`, `popup.dart`, `setup_page.dart`, `language.dart` — ~1400–2600 lines each. **Do not split** while the goal is iOS/login, not a rewrite.
@@ -741,7 +742,8 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `lib/haptics.dart` | Android vibration / iOS `HapticFeedback` |
 | `lib/Misc/popup.dart` | Modes 0–9 (9 = 2FA) |
 | `lib/Misc/elte_room_code.dart` | ELTE room-code parse + tap-to-decode label |
-| `lib/Misc/app_drawer.dart` | Drawer |
+| `lib/Misc/app_drawer.dart` | Drawer + entry to student card / profile |
+| `lib/Pages/student_card_page.dart` | Item **12** claim / bank / profile UI (no QR) |
 | `lib/Misc/auto_updater.dart` | GitHub APK, Android-only |
 | `universityNameUrlPairs.json` | Institutes — **ELTE only** (`https://neptun.elte.hu`) |
 | `Languages/supportedLanguages.json` | RU/TR catalog |

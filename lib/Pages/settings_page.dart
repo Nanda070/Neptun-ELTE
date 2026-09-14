@@ -11,6 +11,7 @@ import '../storage.dart';
 import '../Misc/emojirich_text.dart';
 import '../Pages/startup_page.dart';
 import '../Misc/auto_updater.dart';
+import '../Pages/student_card_page.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -477,6 +478,18 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
           // --- Contacts + app version (bottom of Settings) ---
+          ListTile(
+            leading: Icon(Icons.badge_outlined, color: AppColors.getTheme().textColor),
+            title: Text(AppStrings.getLanguagePack().studentCard_Title, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+            trailing: Icon(Icons.chevron_right_rounded, color: AppColors.getTheme().textColor.withValues(alpha: 0.4)),
+            onTap: () {
+              AppHaptics.lightImpact();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const StudentCardPage()),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.link_rounded, color: AppColors.getTheme().textColor),
             title: Text(AppStrings.getLanguagePack().topmenu_buttons_Contacts, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),

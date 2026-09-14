@@ -195,14 +195,23 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-14 — student card claim / bank / profile (item 12)
+
+**[2026-09-14]**
+
+- **Plan item 12:** `StudentCardPage` (drawer + Settings) shows HAR-honest **claim status**, bank **visibility flags** (owner / bank name / default / foreign / valid / OTP — **never** IBAN/SWIFT), optional `GetGeneralUserData` + contacts. Cache `STUDENT_CardCacheJson` for offline non-secret flags + existing photo cache.
+- **Honesty:** **no QR**, no invented card number / expiry (HWEB `/administrations/student-card` is claim-only). No version bump. Owner **Nanda**.
+
+---
+
 ## In progress / planned (honest)
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **7** / **8** / **13** shipped; next backlog starts at item **5** (parallel: **5–6, 9–12**, **14**).
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **7** / **8** / **12** / **13** shipped; next backlog starts at item **5** (parallel: **5–6, 9–11**, **14**).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
-- **Large features:** student card is **claim-only** (no QR/wallet on `/administrations/student-card`). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Bank + profile fields already captured. Exam / course registration — **not built, not planned**.
+- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Exam / course registration — **not built, not planned**.
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
 
 ---

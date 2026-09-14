@@ -132,6 +132,7 @@ class DataCache{
     _studentTrainingName = null;
     _studentAvatarBase64 = null;
     _trainingLabelsJson = null;
+    _studentCardCacheJson = null;
     setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
     setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
@@ -164,6 +165,8 @@ class DataCache{
   String? _studentTrainingName;
   String? _studentAvatarBase64;
   String? _trainingLabelsJson;
+  /// Non-secret student-card claim / bank flags (+ light profile). No IBAN / nekId.
+  String? _studentCardCacheJson;
   late bool _hasNetwork = false;
   late bool? _hasLogin = false;
   late bool? _hasCachedCalendar = false;
@@ -358,6 +361,7 @@ class DataCache{
     _studentTrainingName = await getString('STUDENT_TrainingName');
     _studentAvatarBase64 = await getString('STUDENT_AvatarBase64');
     _trainingLabelsJson = await getString('STUDENT_TrainingLabelsJson') ?? '{}';
+    _studentCardCacheJson = await getString('STUDENT_CardCacheJson');
 
     tmp = await getInt('CONFIG_IsInstalledFromGPlay');
     _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
@@ -673,6 +677,18 @@ class DataCache{
   static Future<void> setTrainingLabelsJson(String? value) async {
     _instance._trainingLabelsJson = value ?? '{}';
     await saveString('STUDENT_TrainingLabelsJson', _instance._trainingLabelsJson!);
+  }
+
+  /// Cached non-secret claim/bank flags for offline drawer/Settings (plan item 12).
+  static String? getStudentCardCacheJson() => _instance._studentCardCacheJson;
+  static Future<void> setStudentCardCacheJson(String? value) async {
+    _instance._studentCardCacheJson = value;
+    if (value == null || value.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('STUDENT_CardCacheJson');
+    } else {
+      await saveString('STUDENT_CardCacheJson', value);
+    }
   }
 
   static bool? getNeedsHaptics(){return _instance._persistentSetting_needBetterHaptics;}

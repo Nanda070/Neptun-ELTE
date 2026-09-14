@@ -14,6 +14,7 @@ import '../Misc/emojirich_text.dart';
 import '../language.dart';
 import '../notifications.dart';
 import '../Pages/settings_page.dart';
+import '../Pages/student_card_page.dart';
 import '../Misc/auto_updater.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -549,6 +550,18 @@ class _AppDrawerState extends State<AppDrawer> {
                     const SizedBox(height: 4),
 
                     // --- menus ---
+                    ListTile(
+                      leading: Icon(Icons.badge_outlined, color: AppColors.getTheme().textColor),
+                      title: Text(AppStrings.getLanguagePack().studentCard_Title, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      onTap: () {
+                        AppHaptics.lightImpact();
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const StudentCardPage()),
+                        );
+                      },
+                    ),
                     ListTile(
                       leading: Icon(Icons.price_change_rounded, color: AppColors.getTheme().textColor),
                       title: Text(AppStrings.getLanguagePack().view_header_Payments, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),

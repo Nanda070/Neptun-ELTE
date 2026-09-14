@@ -11,8 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8** + app shortcuts item **13 shipped** (Sep 2026). Items **5–6, 9–12**, **14** still backlog |
-| **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + payments honesty item **7** + maps item **8** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **5–6, 9–11**, **14** still backlog || **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
 | **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
@@ -50,7 +49,7 @@ Document what the code **actually** does.
 | Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). After decode, **Open map** deep-link → Apple/Google Maps building search (Lágymányos). Unknown prefix = text only. |
 | Curriculum | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **404** on live HWEB (old MobileService path). There is **no Tanterv menu**. Progress UI is **Studies → Advancement**. `GetStudentCurriculumTemplates` and `creditprogress` returned **empty** this term. Official average *labels* live on `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` is a signup dropdown (seen, not planned). |
 | Exam / course registration | **Not in the app. Not planned.** Do not add vizsgajelentkezés / tárgyjelentkezés UI. Signup XHRs seen in `finances.har` — **seen but not planned**. |
-| Student card | **Not in the app.** HAR 2026-09-13: **claim / NEK / FIR** + **bank** + **profile** field names known. **No QR, no card number, no expiry.** |
+| Student card | **Claim / bank / profile in app (item 12).** HAR-honest fields only. **No QR, no card number, no expiry** (web has none either). IBAN/SWIFT never logged. |
 | App shortcuts | **Shipped (13):** Android static shortcuts + iOS Quick Actions — Calendar (0), Mail (3), Payments (4). Cold start via `Splitter` → `HomePage(initialView:)` only if `SessionGuard.isColdStartSessionUsable()`; else login. Maps shortcut **not** included (item 8). |
 | Homescreen widgets | **Removed** (was a stub). Native epic — last. |
 | Live login | Implemented path: portal `Login` → `Login2FA` (TOTP) → `ToNeptunHWeb` → `OuterLogin` JWT on assigned `hallgatoN`. **Do not hardcode N.** Email OTP (`RequestEmailCode` / `CodePrefix`) HAR-known, UI thin. |
@@ -103,7 +102,7 @@ Later work is cheaper if earlier items land first.
 | 9 | What’s Changed (simple) | **After** session/cache **and** mail IDs (item 4) |
 | 10 | Semester comparison | **After** honest markbook (item 2) |
 | 11 | Academic Progress | **STILL blocked** — Sep 2026 HARs have no tanterv graph |
-| 12 | Student card | Claim / bank / profile **field names captured**; QR / number / expiry **still missing** |
+| 12 | Student card | **DONE** (Sep 2026). Claim / bank / profile **HAR fields**; QR / number / expiry **still missing** (honest — not invented) |
 | 13 | App shortcuts | **DONE** (Sep 2026). Calendar / Mail / Payments; Maps shortcut optional with item 8 (not shipped). |
 | 14 | Homescreen widgets | **Last** — native Android/iOS epic |
 
@@ -649,16 +648,17 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 12. Student card — HAR captured (**incomplete**): claim / bank / profile; **no QR**
+### 12. Student card — claim / bank / profile — **DONE** (no QR)
 
 - **Why**  
-  Drawer already has **name** and **photo**. Sep 2026 HARs now name bank + card-**claim** fields. They do **not** give a wallet QR, plastic-card number, or expiry. Do not invent those.
+  Drawer already has **name** and **photo**. Sep 2026 HARs name bank + card-**claim** fields. They do **not** give a wallet QR, plastic-card number, or expiry. Do not invent those.
 
 - **Depends on**  
   **HAR §4 B** (profile + administration + finances). Session/cache (item 1) before any new fetch.
 
 - **Already in code**  
-  `/api/UserInfo`, `/api/General/GetUserAvatar?imageSizeType=Normal`, `STUDENT_DisplayName`, `STUDENT_AvatarBase64`, drawer `MemoryImage`.
+  `/api/UserInfo`, `/api/General/GetUserAvatar?imageSizeType=Normal`, `STUDENT_DisplayName`, `STUDENT_AvatarBase64`, drawer `MemoryImage`.  
+  **Shipped (item 12):** `StudentCardRequest` + `StudentCardPage` (drawer + Settings) — bank flags, claim status, optional profile/contacts; cache `STUDENT_CardCacheJson` (non-secret). **No QR UI.**
 
 - **`/api/UserInfo` shape** (finances.har; values redacted)  
   `data.userStatus` (int), `data.studentTrainingId`, `data.name` (**not** top-level `printName`), `data.neptunCode` (redact), `data.substitutePrintName`, `data.isTokenRegistered`, `data.userAvatar.{avatarType, image` (thumbnail base64 JPEG), `fallbackColorCodeInHexa, printName}`. App already falls back `printName` → `name`.
@@ -682,10 +682,10 @@ Later work is cheaper if earlier items land first.
   Field names are known. Legal: personal data (existing Privacy). Still missing for a “wallet card”: QR payload, card number, validity dates — **another click** if the web even has them.
 
 - **Done when**  
-  UI shows only captured fields and matches web Saját adatok / card-**claim** / bank for the capturing account. No decorative QR.
+  UI shows only captured fields and matches web Saját adatok / card-**claim** / bank for the capturing account. No decorative QR. **Met** — honesty: wallet QR / card number / expiry remain **unavailable** on HWEB; app does not invent them.
 
 - **Out of scope**  
-  NFC emulation. Decorative “card” from avatar only. Editing / POSTing personal or bank data (no save XHRs in this capture).
+  NFC emulation. Decorative “card” from avatar only. Editing / POSTing personal or bank data (no save XHRs in this capture). Wallet QR (still missing on web).
 
 ---
 
@@ -976,7 +976,7 @@ Agents implementing any item above should follow this, not invent a second archi
 | ICS | `lib/API/ics_calendar.dart` | **Import only** |
 | Notifs | `lib/notifications.dart`, Settings toggles | ids 0 exam, 1 class, 2 payment, 3 period |
 | Curriculum | `URLs.CURRICULUMS_URL` | **Unused**; tanterv still not in HARs |
-| Profile | `UserInfo`, `GetUserAvatar` | Name + photo; HAR also names bank + card-claim (not in app) |
+| Profile / student card | `UserInfo`, `GetUserAvatar`, bank + `StudentCardClaimProcess` + `GetGeneralUserData` | Name + photo; **item 12** claim/bank/profile page (no QR) |
 | Widgets | — | **Removed stub** |
 
 ---
