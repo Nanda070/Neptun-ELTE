@@ -11,7 +11,7 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + payments honesty item **7** + maps item **8** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **6, 9–11**, **14** still backlog |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4** + ghost item **5** + payments honesty item **7** + maps item **8** + What’s Changed item **9** + student card/claim/bank/profile item **12** + app shortcuts item **13 shipped** (Sep 2026). Items **6, 10–11**, **14** still backlog |
 | **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
@@ -100,7 +100,7 @@ Later work is cheaper if earlier items land first.
 | 6 | Today summary + ZH/deadline strip + ICS **export** + class notification granularity | After item 3 |
 | 7 | `totalMoney` accuracy + payment notification antispam | **DONE** (Sep 2026). Paid-outgoing fees + latest-50 label; ≤1/day payment notif |
 | 8 | Maps deep-link on LD/LE/LK decode | **DONE** (Sep 2026). After calendar polish; uses `elte_room_code.dart` |
-| 9 | What’s Changed (simple) | **After** session/cache **and** mail IDs (item 4) |
+| 9 | What’s Changed (simple) | **DONE** (Sep 2026). Snapshot mail ids + grade triples; drawer + calendar strip; first install silent. |
 | 10 | Semester comparison | **After** honest markbook (item 2) |
 | 11 | Academic Progress | **STILL blocked** — Sep 2026 HARs have no tanterv graph |
 | 12 | Student card | **DONE** (Sep 2026). Claim / bank / profile **HAR fields**; QR / number / expiry **still missing** (honest — not invented) |
@@ -545,7 +545,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 9. What’s Changed (simple)
+### 9. What’s Changed (simple) — **DONE**
 
 - **Why**  
   After re-login or a silent refresh, users want “2 new mails, 1 new grade” — not a full activity product.
@@ -576,6 +576,9 @@ Later work is cheaper if earlier items land first.
 
 - **Out of scope**  
   Push, email digest, changelog of Neptun server messages.
+
+- **Shipped**  
+  `SNAPSHOT_MailIds` / `SNAPSHOT_GradeKeys` (+ ready flags); pending `WHATSCHANGED_*`; calendar strip chips + drawer “What’s changed”; tap → unread mail / markbook; first network paint seeds baseline with no banner.
 
 ---
 

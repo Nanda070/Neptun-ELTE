@@ -212,6 +212,10 @@ class DataCache{
   String? _accountBalanceCurrency = 'HUF';
   int _unreadMailCount = 0;
 
+  /// Pending “What’s Changed” counts after the last successful network refresh.
+  int _whatsChangedNewMails = 0;
+  int _whatsChangedGradeChanges = 0;
+
   late bool? _persistentSetting_familyFriendlyLoadingComments = false;
   late bool? _persistentSetting_showExamNotifications = true;
   late bool? _persistentSetting_showClassNotifications = true;
@@ -382,6 +386,9 @@ class DataCache{
     _accountBalanceCurrency = await getString('ACCOUNT_BalanceCurrency') ?? 'HUF';
     final unread = await getInt('CachedMailsUnread');
     _unreadMailCount = unread ?? 0;
+
+    _whatsChangedNewMails = (await getInt('WHATSCHANGED_NewMails')) ?? 0;
+    _whatsChangedGradeChanges = (await getInt('WHATSCHANGED_GradeChanges')) ?? 0;
   }
 
   static Future<void> loadThemeOnly()async{
@@ -527,6 +534,76 @@ class DataCache{
   static Future<void> setUnreadMailCount(int value) async {
     _instance._unreadMailCount = value;
     await saveInt('CachedMailsUnread', value);
+  }
+
+  /// Stable mail id set for What’s Changed (item 9). Empty until first successful refresh.
+  static const String snapshotMailIdsKey = 'SNAPSHOT_MailIds';
+  static const String snapshotMailReadyKey = 'SNAPSHOT_MailReady';
+  static const String snapshotGradeKeysKey = 'SNAPSHOT_GradeKeys';
+  static const String snapshotGradesReadyKey = 'SNAPSHOT_GradesReady';
+
+  static int getWhatsChangedNewMails() => _instance._whatsChangedNewMails;
+  static int getWhatsChangedGradeChanges() => _instance._whatsChangedGradeChanges;
+
+  static Future<void> clearWhatsChangedNewMails() async {
+    _instance._whatsChangedNewMails = 0;
+    await saveInt('WHATSCHANGED_NewMails', 0);
+  }
+
+  static Future<void> clearWhatsChangedGradeChanges() async {
+    _instance._whatsChangedGradeChanges = 0;
+    await saveInt('WHATSCHANGED_GradeChanges', 0);
+  }
+
+  /// Encode markbook row for snapshot diffs: `(subjectCode, grade, termId)`.
+  static String gradeSnapshotKey({
+    required String subjectCode,
+    required int grade,
+    required String termId,
+  }) {
+    final code = subjectCode.trim().isEmpty ? '_' : subjectCode.trim();
+    final term = termId.trim().isEmpty ? '_' : termId.trim();
+    return '$code|$grade|$term';
+  }
+
+  /// After a successful mail network refresh: first install seeds baseline (no banner);
+  /// later refreshes set pending “N new messages” = ids in [currentIds] not in the prior snapshot.
+  static Future<int> diffAndSaveMailSnapshot(Iterable<String> currentIds) async {
+    final list = currentIds.where((id) => id.trim().isNotEmpty).toList();
+    final ready = await _instance.getBool(snapshotMailReadyKey) ?? false;
+    if (!ready) {
+      await saveStringList(snapshotMailIdsKey, list);
+      await _instance.saveBool(snapshotMailReadyKey, true);
+      _instance._whatsChangedNewMails = 0;
+      await saveInt('WHATSCHANGED_NewMails', 0);
+      return 0;
+    }
+    final prev = (await getStringList(snapshotMailIdsKey) ?? []).toSet();
+    final n = list.where((id) => !prev.contains(id)).length;
+    await saveStringList(snapshotMailIdsKey, list);
+    _instance._whatsChangedNewMails = n;
+    await saveInt('WHATSCHANGED_NewMails', n);
+    return n;
+  }
+
+  /// After a successful markbook network refresh: first install seeds baseline (no banner);
+  /// later refreshes set pending “N grade changes” = triples not in the prior snapshot.
+  static Future<int> diffAndSaveGradeSnapshot(Iterable<String> currentKeys) async {
+    final list = currentKeys.where((k) => k.trim().isNotEmpty).toList();
+    final ready = await _instance.getBool(snapshotGradesReadyKey) ?? false;
+    if (!ready) {
+      await saveStringList(snapshotGradeKeysKey, list);
+      await _instance.saveBool(snapshotGradesReadyKey, true);
+      _instance._whatsChangedGradeChanges = 0;
+      await saveInt('WHATSCHANGED_GradeChanges', 0);
+      return 0;
+    }
+    final prev = (await getStringList(snapshotGradeKeysKey) ?? []).toSet();
+    final n = list.where((k) => !prev.contains(k)).length;
+    await saveStringList(snapshotGradeKeysKey, list);
+    _instance._whatsChangedGradeChanges = n;
+    await saveInt('WHATSCHANGED_GradeChanges', n);
+    return n;
   }
 
   static bool? getHasCachedFirstWeekEpoch(){return _instance._hasCachedFirstWeekEpoch;}

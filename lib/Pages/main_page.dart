@@ -79,9 +79,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   }
 
   /// Page indices (bottom 0–3; Payments drawer-only).
+  static const int viewMarkbook = 1;
   static const int viewPeriods = 2;
   static const int viewMail = 3;
   static const int viewPayments = 4;
+
+  /// Drawer / banner: open mail with unread filter and clear the new-mail chip.
+  static void openWhatsChangedMails() {
+    _instance?._openWhatsChangedMails();
+  }
+
+  /// Drawer / banner: open markbook and clear the grade-change chip.
+  static void openWhatsChangedMarkbook() {
+    _instance?._openWhatsChangedMarkbook();
+  }
 
   bool _showBlur = false;
   void setBlur(bool state){
@@ -167,6 +178,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   /// True when at least one home surface is painting from cache without a fresh network paint.
   bool showingCachedData = false;
 
+  /// Pending What’s Changed counts (mirrored from [storage.DataCache] after refresh).
+  int whatsChangedNewMails = 0;
+  int whatsChangedGradeChanges = 0;
+
   int currentSemester = -1;
   int countActivePeriods = 0;
   int countFuturePeriods = 0;
@@ -222,6 +237,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     api.SessionGuard.startSessionWallClock();
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
+
+    whatsChangedNewMails = storage.DataCache.getWhatsChangedNewMails();
+    whatsChangedGradeChanges = storage.DataCache.getWhatsChangedGradeChanges();
 
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
       final hasConn = results.any((r) => r != ConnectivityResult.none);
@@ -1349,6 +1367,114 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     );
   }
 
+  /// Calendar strip / shared: “N new messages” / “N grade changes” after a refresh diff.
+  Widget buildWhatsChangedBanner() {
+    if (whatsChangedNewMails <= 0 && whatsChangedGradeChanges <= 0) {
+      return const SizedBox.shrink();
+    }
+    final lang = AppStrings.getLanguagePack();
+    final theme = AppColors.getTheme();
+    final chips = <Widget>[];
+    if (whatsChangedNewMails > 0) {
+      chips.add(
+        Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: ActionChip(
+            avatar: Icon(Icons.mark_email_unread_rounded, size: 16, color: theme.primary),
+            label: Text(
+              AppStrings.getStringWithParams(
+                lang.whatsChanged_NewMessages,
+                [whatsChangedNewMails],
+              ),
+              style: TextStyle(color: theme.primary, fontSize: 12, fontWeight: FontWeight.w700),
+            ),
+            backgroundColor: theme.primary.withValues(alpha: 0.1),
+            side: BorderSide(color: theme.primary.withValues(alpha: 0.25)),
+            onPressed: () {
+              AppHaptics.lightImpact();
+              _openWhatsChangedMails();
+            },
+          ),
+        ),
+      );
+    }
+    if (whatsChangedGradeChanges > 0) {
+      chips.add(
+        ActionChip(
+          avatar: Icon(Icons.grade_rounded, size: 16, color: theme.secondary),
+          label: Text(
+            AppStrings.getStringWithParams(
+              lang.whatsChanged_GradeChanges,
+              [whatsChangedGradeChanges],
+            ),
+            style: TextStyle(color: theme.secondary, fontSize: 12, fontWeight: FontWeight.w700),
+          ),
+          backgroundColor: theme.secondary.withValues(alpha: 0.1),
+          side: BorderSide(color: theme.secondary.withValues(alpha: 0.25)),
+          onPressed: () {
+            AppHaptics.lightImpact();
+            _openWhatsChangedMarkbook();
+          },
+        ),
+      );
+    }
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: chips),
+      ),
+    );
+  }
+
+  void _syncWhatsChangedFromCache() {
+    final mails = storage.DataCache.getWhatsChangedNewMails();
+    final grades = storage.DataCache.getWhatsChangedGradeChanges();
+    if (mails == whatsChangedNewMails && grades == whatsChangedGradeChanges) return;
+    if (mounted) {
+      setState(() {
+        whatsChangedNewMails = mails;
+        whatsChangedGradeChanges = grades;
+      });
+    } else {
+      whatsChangedNewMails = mails;
+      whatsChangedGradeChanges = grades;
+    }
+  }
+
+  Future<void> _openWhatsChangedMails() async {
+    await storage.DataCache.clearWhatsChangedNewMails();
+    _syncWhatsChangedFromCache();
+    setMailUnreadOnly(true);
+    switchView(viewMail);
+  }
+
+  Future<void> _openWhatsChangedMarkbook() async {
+    await storage.DataCache.clearWhatsChangedGradeChanges();
+    _syncWhatsChangedFromCache();
+    switchView(viewMarkbook);
+  }
+
+  Future<void> _recordMailWhatsChanged() async {
+    await storage.DataCache.diffAndSaveMailSnapshot(mailEntries.map((e) => e.ID));
+    _syncWhatsChangedFromCache();
+  }
+
+  Future<void> _recordMarkbookWhatsChanged() async {
+    final termId = storage.DataCache.getSelectedTermId() ?? '';
+    final keys = markbookEntries.map(
+      (s) => storage.DataCache.gradeSnapshotKey(
+        subjectCode: s.subjectCode.isNotEmpty ? s.subjectCode : s.name,
+        grade: s.grade,
+        termId: termId,
+      ),
+    );
+    await storage.DataCache.diffAndSaveGradeSnapshot(keys);
+    _syncWhatsChangedFromCache();
+  }
+
   void _setShowingCached(bool value) {
     if (showingCachedData == value) return;
     if (mounted) {
@@ -1885,6 +2011,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
         storage.saveString('MarkbookCacheTime', DateTime.now().toString());
         storage.saveString('MarkbookCacheTermId', currentTerm);
         storage.DataCache.setHasCachedMarkbook(1);
+        await _recordMarkbookWhatsChanged();
         _setShowingCached(false);
       } else if (!paintedFromCache) {
         markbookEntries = [];
@@ -2145,6 +2272,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       }
       storage.saveString('MailCacheTime', DateTime.now().toString());
       storage.DataCache.setHasCachedMail(1);
+      await _recordMailWhatsChanged();
       _setShowingCached(false);
     } catch (e) {
       debugPrint('fetchMails network: $e');
@@ -2639,6 +2767,7 @@ class CalendarPageWidget extends StatelessWidget{
             children: <Widget>[
               topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               homePage.buildCacheHonestyBanner(),
+              homePage.buildWhatsChangedBanner(),
               ..._extraCalendarSections(),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),

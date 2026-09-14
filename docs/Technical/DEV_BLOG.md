@@ -196,6 +196,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+- **Plan item 9 — What’s Changed:** after refresh, snapshot mail `messageId`s + grade triples; drawer + calendar strip show new-mail / grade-change counts; first install silent (no false banner). No version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-14 — student card claim / bank / profile (item 12)
 
 **[2026-09-14]**
@@ -209,7 +213,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **5** / **7** / **8** / **12** / **13** shipped; next backlog starts at item **6** (parallel: **6, 9–11**, **14**).
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** / **5** / **7** / **8** / **9** / **12** / **13** shipped; next backlog starts at item **6** (parallel: **6, 10–11**, **14**).
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Exam / course registration — **not built, not planned**.
