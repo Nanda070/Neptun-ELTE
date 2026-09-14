@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.3.4+1** — user-facing / Settings / docs = **1.3.4** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.4.0+1** — user-facing / Settings / docs = **1.4.0** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.4`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.4.0`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -76,10 +76,11 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.x.y** | Pre-final product line only. Feature line `x` advances when a planned foundation/feature block ships; patch `y` for bugfixes / auth / small tweaks within that line. |
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
-| **1.3.4** | **Current.** Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
+| **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
+| **1.4.0** | **Current.** Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
-| **1.4.0**, **1.4.1**, … | Next big feature block (e.g. mail search / ICS / maps), then patches. |
+| **1.4.1**, … | Patches on feature line **4**. Next big block after **1.4.x** → **1.5.0**. |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
@@ -196,7 +197,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.4` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.4.0` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 

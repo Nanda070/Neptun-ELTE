@@ -55,7 +55,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Мобильный клиент логинится и зовёт modern JWT API на **`https://neptun.elte.hu`**, не конкретный `hallgatoN`.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.3.4+1** — для пользователя / Settings / docs = **1.3.4** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.4.0+1** — для пользователя / Settings / docs = **1.4.0** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -67,7 +67,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.3.4`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.4.0`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -76,10 +76,11 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.x.y** | Только до финальной линии. Feature-line `x` растёт, когда отгружается запланированный блок foundation/фич; patch `y` — багфиксы / auth / мелкие правки внутри линии. |
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
-| **1.3.4** | **Текущая.** Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
+| **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
+| **1.4.0** | **Текущая.** Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
-| **1.4.0**, **1.4.1**, … | Следующий крупный блок (напр. поиск почты / ICS / maps), затем патчи. |
+| **1.4.1**, … | Патчи на линии **4**. Следующий крупный блок после **1.4.x** → **1.5.0**. |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
@@ -196,7 +197,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.3.4` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.4.0` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 

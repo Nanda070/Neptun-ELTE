@@ -207,6 +207,8 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **Plan item 12:** `StudentCardPage` (drawer + Settings) shows HAR-honest **claim status**, bank **visibility flags** (owner / bank name / default / foreign / valid / OTP — **never** IBAN/SWIFT), optional `GetGeneralUserData` + contacts. Cache `STUDENT_CardCacheJson` for offline non-secret flags + existing photo cache.
 - **Honesty:** **no QR**, no invented card number / expiry (HWEB `/administrations/student-card` is claim-only). No version bump. Owner **Nanda**.
+- **Release 1.4.0** (`pubspec` **1.4.0+1**): feature line **4** — ships plan items **5** (ghost what-if), **6** (today/ZH/ICS export/class-notif granularity), **7** (payments honesty + ≤1/day notifs), **8** (maps deep-link), **9** (What’s Changed), **12** (student card claim/bank/profile — **no QR**), **13** (home shortcuts Calendar/Mail/Payments). GitHub Release **v1.4.0** + unsigned IPA via Actions. Owner **Nanda**.
+
 
 ---
 
