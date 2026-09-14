@@ -11,7 +11,7 @@ on:
       release_tag:
         description: "GitHub release tag to attach the IPA to (empty = artifact only)"
         required: false
-        default: "v1.3.3"
+        default: "v1.3.4"
   release:
     types: [published]
   push:

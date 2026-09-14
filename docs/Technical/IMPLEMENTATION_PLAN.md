@@ -11,8 +11,8 @@ Last sync with the codebase: **September 2026**. Sources: `lib/**`, `docs/Techni
 
 | | |
 |--|--|
-| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3 shipped** (Sep 2026). Items **4–14** still backlog |
-| **Release** | Current marketing version **1.3.3** (`pubspec` **1.3.3+1**). Feature line **3** = plan items **1–3** done; patch **3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
+| **Status** | Foundation **1a / 1b / 1c / 1 / 2 / 3** + mail item **4 shipped** (Sep 2026). Items **5–14** still backlog |
+| **Release** | Current marketing version **1.3.4** (`pubspec` **1.3.4+1**). Feature line **3** = plan items **1–3** done; patch **4** = mail search + unread filter (item **4**). **1.3.3** = post-2FA immediate session-expired logout fix. Next big feature block → **1.4.0**; final product → **2.0.0**. User-facing / Settings / docs use three numbers only — do not advertise `+build`. See [TECHNICAL § Versioning](TECHNICAL.md#versioning). |
 | **Order** | Implement in the numbered group order below. Later items assume earlier honesty (**1a** logout re-login, **1b** background wall-clock, **1c** nav IA, session, cache, markbook math, mail IDs). |
 | **Live ELTE login** | Portal + TOTP + OuterLogin path exists in code. Treat as **working MVP, not exhaustively re-tested** on every device. Email OTP is HAR-known, UI thin. If Student web is **full**, bridge fails after correct 2FA. |
 | **HAR-gated** | **Tanterv graph / Academic Progress** still blocked (no curriculum XHR). **Student-card QR / number / expiry** still missing. **Bank + card-claim (NEK/FIR) + profile field names** captured 2026-09-13 (incomplete — user did not click every control). Exam / course registration is **not planned**. |
@@ -45,7 +45,7 @@ Document what the code **actually** does.
 | Credits in header | This-term credits **and** accumulated completed credits (dedupe `subjectCode` via `getGradeHistoryAcrossTerms`). Diploma / official KKI **not** shown. |
 | Calendar week | `GetCalendarEvents` with **Mon 00:00 – Sun 23:59:59**. Events outside the window dropped. Period banners (`eventType == 6`) stay out of day lists; they go to a strip. |
 | ICS | **Import** parser exists (`lib/API/ics_calendar.dart`, `SetupPageCalendarLogin`). **No setup-hub button.** **Export does not exist.** |
-| Mail | Inbox + pagination (20) + unread count + mark-read + HU→EN/RU translate. **No search. No unread-only filter.** `filterType=0` is hardcoded. |
+| Mail | Inbox + pagination (20) + unread count + mark-read + HU→EN/RU translate. **Local search** (subject / sender / loaded body) + **unread-only chip** (client-side). `filterType=0` stays hardcoded (HAR honesty — no server unread filter). |
 | Payments | `totalMoney` = sum of **`completed`** transaction `abs(ammount)` from the **last 50** `GetStudentPreviousTransactions`. Header string says “spent … Huf”. Collective invoices are a separate list. Payment notifs can schedule **one local notification per remaining day** (or 32 days if no deadline). |
 | Maps | Room codes `LD`/`LE`/`LK` **decode in-app** (`DecodableRoomText`). **No maps URL.** |
 | Curriculum | `URLs.CURRICULUMS_URL = "/api/GetCurriculums"` — **404** on live HWEB (old MobileService path). There is **no Tanterv menu**. Progress UI is **Studies → Advancement**. `GetStudentCurriculumTemplates` and `creditprogress` returned **empty** this term. Official average *labels* live on `RegistrySheet/GetStudentTrainingTermData`. `SubjectApplication/Curriculum` is a signup dropdown (seen, not planned). |
@@ -64,7 +64,7 @@ Document what the code **actually** does.
 |---------|------|
 | Bottom nav | **4 tabs:** Calendar, Markbook (Subjects), Periods, Mail / Messages |
 | Left drawer | Profile, balance, training, **Payments** (above Settings), Settings, … |
-| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.3.3`, no `+build`) at bottom |
+| Settings | … existing toggles; **Contacts** sheet + marketing version label (`1.3.4`, no `+build`) at bottom |
 
 Do not re-add Payments to the bottom bar.
 
@@ -89,7 +89,7 @@ Later work is cheaper if earlier items land first.
 
 | # | Item | Why after foundation |
 |---|------|----------------------|
-| 4 | Mail search + unread filter | Needs stable session + `MailEntry.ID` / unread flags. “What’s Changed” diffs those IDs. |
+| 4 | Mail search + unread filter | **DONE** (Sep 2026). Local search + unread chip; `filterType=0` unchanged. |
 
 ### Then parallel branches (after 1–4)
 
@@ -346,7 +346,7 @@ Later work is cheaper if earlier items land first.
 
 ---
 
-### 4. Mail search + unread filter
+### 4. Mail search + unread filter — **DONE**
 
 - **Why**  
   Inbox is a flat paginated list. Unread is a **count** in the header/drawer, not a filter. Search does not exist. Item 9 needs stable `messageId`s and a way to see “new unread”.
@@ -361,7 +361,8 @@ Later work is cheaper if earlier items land first.
   - Body: `GET /api/Messages/{id}/Posts`.  
   - UI: `MailsPageWidget`, `MailElementWidget` (popup mode 3), `MessageTranslator`.  
   - Cache: `CachedMails_$i` (`MailEntry.toString` uses `\u0000` separators), `CachedMailsLength`, `MailCacheTime`.  
-  - `MailEntry.ID` = `messageId`. `isRead` = `unreadedPostCount == 0`.
+  - `MailEntry.ID` = `messageId`. `isRead` = `unreadedPostCount == 0`.  
+  - **Shipped (item 4):** local search field + unread `FilterChip` on `MailsPageWidget`; filters loaded pages client-side; pagination accumulates into `mailEntries`; search query is never logged; API still `filterType=0`.
 
 - **What to build**  
   1. Local search over **already loaded** pages: subject, sender, optional body after load.  
@@ -380,7 +381,7 @@ Later work is cheaper if earlier items land first.
   Optional HAR: other `filterType` values, server-side search. Not a blocker.
 
 - **Done when**  
-  Typing part of a sender name hides other rows. Unread filter shows only 📬 cards. Cache + offline still filters locally.
+  Typing part of a sender name hides other rows. Unread filter shows only 📬 cards. Cache + offline still filters locally. **Met in 1.3.4.**
 
 - **Out of scope**  
   Compose / reply, attachments download manager, What’s Changed UI (item 9).

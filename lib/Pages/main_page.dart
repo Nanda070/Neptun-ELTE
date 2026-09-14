@@ -172,6 +172,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   int unreadMailCount = 0;
   int totalMailCount = 0;
   int allLoadedMailCount = 0;
+  /// Local inbox search (subject / sender / loaded body preview). Never logged.
+  String mailSearchQuery = '';
+  /// Client-side unread-only chip (`MailEntry.isRead`). API keeps `filterType=0`.
+  bool mailUnreadOnly = false;
+  late final TextEditingController mailSearchController;
+  /// True when the last network mail page returned a full page (20) — used when totalRowCount is unknown.
+  bool _lastMailPageWasFull = false;
 
   double bottomNavSwitchValue = 0.0;
   bool bottomNavCanNavigate = true;
@@ -306,38 +313,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       CurvedAnimation(parent: _confettiController, curve: Curves.linear)
     );
 
+    mailSearchController = TextEditingController();
     currentMailPageController = ScrollController();
     currentMailPageController.addListener(() {
-      //debug.log(currentMailPageController.position.atEdge.toString() + " " + currentMailPageController.position.userScrollDirection.toString());
-      if(currentMailPageController.position.atEdge && currentMailPageController.position.userScrollDirection == ScrollDirection.reverse && allLoadedMailCount < totalMailCount){
+      if(currentMailPageController.position.atEdge && currentMailPageController.position.userScrollDirection == ScrollDirection.reverse && canLoadMoreMails){
         if(currentMailLoadingDebounce){
           return;
         }
         currentMailLoadingDebounce = true;
         Future.delayed(Duration.zero, ()async{
-          setState((){
-            currentMailPage++;
-            mailList.add(Column(
-              children: [
-                CircularProgressIndicator(
-                  color: AppColors.getTheme().textColor,
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                Text(
-                 api.Generic.randomLoadingCommentMini(storage.DataCache.getNeedFamilyFriendlyComments()!),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.getTheme().textColor.withValues(alpha: .4),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w300
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-              ],
-            ),);
-          });
+          currentMailPage++;
           await fetchMails(force: true);
-          setupMails(clear: true);
+          rebuildMailList();
         }).whenComplete((){
           currentMailLoadingDebounce = false;
         });
@@ -614,6 +601,51 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       unreadMailCount = 0;
       totalMailCount = 0;
       allLoadedMailCount = 0;
+      _lastMailPageWasFull = false;
+    });
+  }
+
+  bool get canLoadMoreMails {
+    if (api.SessionGuard.isAuthBlocked || !storage.DataCache.getHasNetwork()) {
+      return false;
+    }
+    if (totalMailCount > 0) {
+      return mailEntries.length < totalMailCount;
+    }
+    return _lastMailPageWasFull;
+  }
+
+  List<api.MailEntry> filteredMailEntries() {
+    Iterable<api.MailEntry> list = mailEntries;
+    if (mailUnreadOnly) {
+      list = list.where((m) => !m.isRead);
+    }
+    final q = mailSearchQuery.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list.where((m) {
+        return m.subject.toLowerCase().contains(q) ||
+            m.senderName.toLowerCase().contains(q) ||
+            m.detail.toLowerCase().contains(q);
+      });
+    }
+    return list.toList();
+  }
+
+  void setMailSearchQuery(String value) {
+    mailSearchQuery = value;
+    rebuildMailList();
+  }
+
+  void setMailUnreadOnly(bool value) {
+    mailUnreadOnly = value;
+    rebuildMailList();
+  }
+
+  void rebuildMailList() {
+    setState(() {
+      mailList.clear();
+      allLoadedMailCount = mailEntries.length;
+      _setupMails();
     });
   }
 
@@ -644,7 +676,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
   void setupMails({bool clear = false}){
     setState(() {
-      _setupMails(clearLoader: clear);
+      mailList.clear();
+      allLoadedMailCount = mailEntries.length;
+      _setupMails();
     });
   }
 
@@ -1534,7 +1568,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     }
   }
 
-  void _setupMails({bool clearLoader = false}){
+  void _setupMails(){
+    final visible = filteredMailEntries();
+    final hasActiveFilter = mailUnreadOnly || mailSearchQuery.trim().isNotEmpty;
+
     if(mailEntries.isEmpty){
       mailList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
@@ -1555,22 +1592,37 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
           ),
         ),
       ));
+      return;
     }
 
-    if(clearLoader && mailList.isNotEmpty){
-      mailList.removeAt(mailList.length-1);
+    if (visible.isEmpty && hasActiveFilter) {
+      mailList.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: Center(
+          child: Text(
+            AppStrings.getLanguagePack().mail_filter_NoMatches,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer.withValues(alpha: 0.7),
+              fontWeight: FontWeight.w700,
+              fontSize: 18.0,
+            ),
+          ),
+        ),
+      ));
+      return;
     }
 
     int idx = 0;
-    var prevDate = DateTime.now();
+    var prevDate = DateTime.fromMillisecondsSinceEpoch(0);
     mailList.add(
         const Padding(padding: EdgeInsets.only(top: 10))
     );
-    for(var item in mailEntries){
-      allLoadedMailCount++;
+    for(var item in visible){
       final date = DateTime.fromMillisecondsSinceEpoch(item.sendDateMs);
       final currDate = DateTime(date.year, date.month, date.day);
-      if(mailEntries.length != ++idx && prevDate != currDate){
+      if(++idx == 1 || prevDate != currDate){
         prevDate = currDate;
         mailList.add(_getSeparatorLine('${currDate.year}. ${api.Generic.monthToText(date.month)}. ${date.day}.'));
       }
@@ -1579,11 +1631,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
           if(element.isRead){
             return;
           }
-          final indx = mailList.indexOf(element);
-          mailList.insert(indx, MailElementWidget(subject: element.subject, details: element.details, sender: element.sender, sendTime: element.sendTime, isRead: true, mailID: element.mailID, callback: (_){}));
-          mailList.remove(element);
-          unreadMailCount--;
+          for (final entry in mailEntries) {
+            if (entry.ID == element.mailID) {
+              entry.isRead = true;
+              break;
+            }
+          }
+          unreadMailCount = unreadMailCount > 0 ? unreadMailCount - 1 : 0;
           storage.saveInt('CachedMailsUnread', unreadMailCount);
+          mailList.clear();
+          allLoadedMailCount = mailEntries.length;
+          _setupMails();
           Future.delayed(Duration.zero, ()async{
             await api.MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
             if(currentMailPage == 1){
@@ -1958,8 +2016,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
         }
       }
       if (loaded.isEmpty && len > 0) return false;
-      if (!force) {
+      if (!force || currentMailPage <= 1) {
         mailEntries = loaded;
+        allLoadedMailCount = loaded.length;
+        _lastMailPageWasFull = loaded.length >= 20 && (totalMailCount == 0 || loaded.length < totalMailCount);
       }
       return hasCachedMails;
     }
@@ -1991,24 +2051,53 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
     try {
       final request = await api.MailRequest.getMails(currentMailPage);
-      if (request == null || request.isEmpty) {
+      if (request == null) {
         if (!paintedFromCache) paintedFromCache = await loadMailCache();
         _setShowingCached(paintedFromCache);
         return;
       }
-      mailEntries = request;
+      if (request.isEmpty && currentMailPage <= 1) {
+        if (!paintedFromCache) paintedFromCache = await loadMailCache();
+        _setShowingCached(paintedFromCache);
+        return;
+      }
 
-      if (force) {
+      _lastMailPageWasFull = request.length >= 20;
+      if (currentMailPage <= 1) {
+        mailEntries = request;
+      } else {
+        final seen = mailEntries.map((e) => e.ID).toSet();
+        for (final m in request) {
+          if (!seen.contains(m.ID)) {
+            mailEntries.add(m);
+            seen.add(m.ID);
+          }
+        }
+      }
+      allLoadedMailCount = mailEntries.length;
+
+      if (force && currentMailPage > 1) {
+        final apiTotal = api.MailRequest.lastTotalRowCount;
+        if (apiTotal > 0) {
+          totalMailCount = apiTotal;
+        }
         return;
       }
 
       final nums = await api.MailRequest.getUnreadMessagesAndAllMessages();
       unreadMailCount = nums[0];
-      totalMailCount = nums[1];
+      final apiTotal = api.MailRequest.lastTotalRowCount;
+      if (apiTotal > 0) {
+        totalMailCount = apiTotal;
+      } else if (nums[1] > 0) {
+        totalMailCount = nums[1];
+      } else if (totalMailCount < mailEntries.length) {
+        totalMailCount = mailEntries.length;
+      }
 
       storage.saveInt('CachedMailsLength', mailEntries.length);
-      storage.saveInt('CachedMailsUnread', nums[0]);
-      storage.saveInt('CachedMailsTotal', nums[1]);
+      storage.saveInt('CachedMailsUnread', unreadMailCount);
+      storage.saveInt('CachedMailsTotal', totalMailCount);
       for (int i = 0; i < mailEntries.length; i++) {
         storage.saveString('CachedMails_$i', mailEntries[i].toString());
       }
@@ -2237,6 +2326,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     mailEntries.clear();
     _fbController.dispose();
     currentMailPageController.dispose();
+    mailSearchController.dispose();
     blurController.dispose();
   }
 
@@ -3028,6 +3118,90 @@ class MailsPageWidget extends StatelessWidget{
     homePage.onMailRefresh();
   }
 
+  Widget _mailToolbar(BuildContext context) {
+    final theme = AppColors.getTheme();
+    final lang = AppStrings.getLanguagePack();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 8, 15, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: homePage.mailSearchController,
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.search,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              prefixIcon: Icon(Icons.search_rounded, color: theme.textColor.withValues(alpha: 0.55)),
+              suffixIcon: homePage.mailSearchQuery.isEmpty
+                  ? null
+                  : IconButton(
+                      icon: Icon(Icons.clear_rounded, color: theme.textColor.withValues(alpha: 0.55)),
+                      onPressed: () {
+                        homePage.mailSearchController.clear();
+                        homePage.setMailSearchQuery('');
+                      },
+                    ),
+              labelText: lang.mail_search_Hint,
+              labelStyle: TextStyle(
+                fontSize: 14,
+                color: theme.textColor.withValues(alpha: 0.55),
+                fontWeight: FontWeight.w400,
+              ),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: theme.textColor.withValues(alpha: 0.05),
+            ),
+            style: TextStyle(
+              fontSize: 15,
+              color: theme.textColor,
+              fontWeight: FontWeight.w600,
+            ),
+            onChanged: (value) {
+              AppHaptics.textEditingImpact();
+              homePage.setMailSearchQuery(value);
+            },
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilterChip(
+              selected: homePage.mailUnreadOnly,
+              showCheckmark: false,
+              avatar: Icon(
+                homePage.mailUnreadOnly ? Icons.mark_email_unread_rounded : Icons.mail_outline_rounded,
+                size: 18,
+                color: homePage.mailUnreadOnly ? theme.primary : theme.textColor.withValues(alpha: 0.7),
+              ),
+              label: Text(lang.mail_filter_UnreadOnly),
+              labelStyle: TextStyle(
+                color: homePage.mailUnreadOnly ? theme.primary : theme.textColor,
+                fontWeight: homePage.mailUnreadOnly ? FontWeight.w700 : FontWeight.w500,
+                fontSize: 13,
+              ),
+              selectedColor: theme.primary.withValues(alpha: 0.18),
+              backgroundColor: theme.textColor.withValues(alpha: 0.05),
+              side: BorderSide(
+                color: homePage.mailUnreadOnly
+                    ? theme.primary.withValues(alpha: 0.45)
+                    : theme.textColor.withValues(alpha: 0.12),
+              ),
+              onSelected: (selected) {
+                AppHaptics.lightImpact();
+                homePage.setMailUnreadOnly(selected);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -3044,6 +3218,7 @@ class MailsPageWidget extends StatelessWidget{
                 topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Messages, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_messages_UnreadMessages, [homePage.unreadMailCount]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 homePage.buildCacheHonestyBanner(),
                 HomePageState.getSeparatorLine(context),
+                _mailToolbar(context),
                 Expanded(
                     child: RefreshIndicator(
                         onRefresh: onRefresh,

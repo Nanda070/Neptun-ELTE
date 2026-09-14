@@ -187,6 +187,8 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **Bugfix — session expired right after 2FA:** stale `SESSION_StartedAtMs` or a race on resume / first API 401 could call `forceExpiredLogout` immediately on Home. `SessionGuard.prepareForLoginAttempt()` clears wall-clock at login start; `markParticipantSessionStarted()` persists a fresh stamp before `navigateToHomeRoot`; ~45 s post-login grace skips forced logout when an access token is still present. Owner **Nanda**.
 - **Release 1.3.3** (`pubspec` **1.3.3+1**): ships the post-2FA session fix. GitHub Release **v1.3.3** + unsigned IPA via Actions. Owner **Nanda**.
+- **Plan item 4 — mail search + unread filter:** local search over loaded pages (subject / sender / body preview) + unread-only `FilterChip`; pagination accumulates `mailEntries`; API stays `filterType=0` (HAR honesty). Offline/cache filters locally; search query never logged. Owner **Nanda**.
+- **Release 1.3.4** (`pubspec` **1.3.4+1**): ships mail item **4**. GitHub Release **v1.3.4** + unsigned IPA via Actions. Owner **Nanda**.
 
 ---
 
@@ -194,7 +196,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** foundation shipped; next backlog starts at mail item **4**.
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1** / **2** / **3** / **4** shipped; next backlog starts at item **5**.
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper + popup actions present; treat as **in progress** until thoroughly verified offline / failure paths.
 - **Large features:** student card is **claim-only** (no QR/wallet on `/administrations/student-card`). Tanterv **menu does not exist**; Advancement + `RegistrySheet/GetStudentTrainingTermData` give official average *schema* (values empty this term). Bank + profile fields already captured. Exam / course registration — **not built, not planned**.

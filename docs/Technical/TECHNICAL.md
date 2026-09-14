@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.3.3+1** — user-facing / Settings / docs = **1.3.3** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.3.4+1** — user-facing / Settings / docs = **1.3.4** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.3`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.3.4`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -75,7 +75,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 |------|---------|
 | **1.x.y** | Pre-final product line only. Feature line `x` advances when a planned foundation/feature block ships; patch `y` for bugfixes / auth / small tweaks within that line. |
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
-| **1.3.3** | **Current.** Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
+| **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
+| **1.3.4** | **Current.** Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
 | **1.4.0**, **1.4.1**, … | Next big feature block (e.g. mail search / ICS / maps), then patches. |
@@ -195,7 +196,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.3` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.3.4` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -280,7 +281,7 @@ On success, persist the API base login selected (do not overwrite with a stale l
 | 0 | bottom | Calendar — week timetable, classes/exams |
 | 1 | bottom | Markbook (Subjects) — credits, average, ghost grade |
 | 2 | bottom | Periods — registration, exams, subject signup |
-| 3 | bottom | Mail / Messages — inbox, unread, mark read |
+| 3 | bottom | Mail / Messages — inbox, local search, unread filter, mark read |
 | 4 | drawer only | Payments — fees and deadlines; drawer also shows balance |
 
 **Nav IA (plan 1c):** bottom = **Calendar \| Markbook \| Periods \| Mail**; **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (not in the drawer).
@@ -392,7 +393,7 @@ Subjects tab = markbook: taken subjects (with subject codes), credits, grades, g
 
 ### 10.3 Payments / periods / mail
 
-Charges and deadlines; **collective invoices** list + balance; periods with timers; inbox + mark read; full mail thread posts. Message detail: optional HU→EN/RU machine translate (`MessageTranslator`); first use on a device shows a 5s inaccuracy disclaimer snackbar (`hasSeenMailTranslateDisclaimer`).
+Charges and deadlines; **collective invoices** list + balance; periods with timers; inbox + **local search** (subject / sender / loaded body) + **unread-only chip** (client-side; API still `filterType=0`) + mark read; full mail thread posts. Message detail: optional HU→EN/RU machine translate (`MessageTranslator`); first use on a device shows a 5s inaccuracy disclaimer snackbar (`hasSeenMailTranslateDisclaimer`).
 
 **Payments UI chrome** (tab title, empty state, deadlines, currency symbol, notification bodies, drawer balance label) uses `LanguagePack` (EN/HU built-in; RU/TR JSON). **Transaction / invoice titles and statuses from Neptun** (`transactionPayingType`, `transactionStatus`, collective-invoice labels) usually remain **Hungarian** — that is server payload language, not a missing app string.
 

@@ -187,6 +187,8 @@
 
 - **Багфикс — «сессия истекла» сразу после 2FA:** устаревший `SESSION_StartedAtMs` или гонка resume / первого API 401 могли вызвать `forceExpiredLogout` на Home сразу после входа. `SessionGuard.prepareForLoginAttempt()` сбрасывает wall-clock в начале логина; `markParticipantSessionStarted()` сохраняет новый старт до `navigateToHomeRoot`; grace ~45 с после входа не форсирует logout, если access token ещё есть. Владелец **Nanda**.
 - **Релиз 1.3.3** (`pubspec` **1.3.3+1**): фикс сессии после 2FA. GitHub Release **v1.3.3** + unsigned IPA через Actions. Владелец **Nanda**.
+- **П. 4 — поиск почты + фильтр непрочитанных:** локальный поиск по загруженным страницам (тема / отправитель / превью тела) + чип unread; пагинация копит `mailEntries`; API остаётся `filterType=0` (честность HAR). Офлайн/кэш фильтрует локально; строка поиска в логи не пишется. Владелец **Nanda**.
+- **Релиз 1.3.4** (`pubspec` **1.3.4+1**): п. плана **4**. GitHub Release **v1.3.4** + unsigned IPA через Actions. Владелец **Nanda**.
 
 ---
 
@@ -194,7 +196,7 @@
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1** / **2** / **3** foundation сделаны; дальше бэклог с почты (**4**).
+- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1** / **2** / **3** / **4** сделаны; дальше бэклог с п. **5**.
 - **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
 - **Переводчик сообщений** (HU → EN/RU для тел писем) — helper + действия в popup есть; считать **in progress**, пока offline / failure не проверены тщательно.
 - **Крупные фичи:** студенческий — **только заявка** (нет QR/wallet на `/administrations/student-card`). Меню Tanterv **нет**; Advancement + `RegistrySheet/GetStudentTrainingTermData` дают *схему* официальных средних (в этом семестре значения пустые). Банк + профиль уже сняты. Запись на экзамен / курс — **не сделана, не планируем**.

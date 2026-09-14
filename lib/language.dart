@@ -204,6 +204,9 @@ class AppStrings{
       periodPage_ExpiredDays: '(%0 napja)',
       messagePage_SentBy: 'Küldte: %0',
       messagePage_Empty: '😥Nincs Üzeneted😥',
+      mail_search_Hint: 'Üzenetek keresése...',
+      mail_filter_UnreadOnly: 'Olvasatlan',
+      mail_filter_NoMatches: 'Nincs találat',
       popup_case0_GhostGradeHeader: '👻 Szellemjegy 👻',
       popup_case0_SelectGrade: 'Válassz jegyet...',
       popup_caseAll_OkButton: 'Ok',
@@ -513,6 +516,9 @@ class AppStrings{
       periodPage_ExpiredDays: '(%0 days ago)',
       messagePage_SentBy: 'Sent by: %0',
       messagePage_Empty: '😥You don\'t have any messages😥',
+      mail_search_Hint: 'Search messages...',
+      mail_filter_UnreadOnly: 'Unread',
+      mail_filter_NoMatches: 'No matching messages',
       popup_case0_GhostGradeHeader: '👻 Ghost grade 👻',
       popup_case0_SelectGrade: 'Select grade...',
       popup_caseAll_OkButton: 'Ok',
@@ -1085,6 +1091,9 @@ class LanguagePack{
 
   final String messagePage_SentBy;
   final String messagePage_Empty;
+  final String mail_search_Hint;
+  final String mail_filter_UnreadOnly;
+  final String mail_filter_NoMatches;
 
   final String popup_case0_GhostGradeHeader;
   final String popup_caseAll_OkButton;
@@ -1389,6 +1398,9 @@ class LanguagePack{
     required this.periodPage_Starts,
     required this.messagePage_SentBy,
     required this.messagePage_Empty,
+    required this.mail_search_Hint,
+    required this.mail_filter_UnreadOnly,
+    required this.mail_filter_NoMatches,
     required this.popup_case0_GhostGradeHeader,
     required this.popup_case0_SelectGrade,
     required this.popup_caseAll_OkButton,
@@ -1722,6 +1734,9 @@ class LanguagePack{
         periodPage_Starts: getStr('periodPage_Starts', en.periodPage_Starts),
         messagePage_SentBy: getStr('messagePage_SentBy', en.messagePage_SentBy),
         messagePage_Empty: getStr('messagePage_Empty', en.messagePage_Empty),
+        mail_search_Hint: getStr('mail_search_Hint', en.mail_search_Hint),
+        mail_filter_UnreadOnly: getStr('mail_filter_UnreadOnly', en.mail_filter_UnreadOnly),
+        mail_filter_NoMatches: getStr('mail_filter_NoMatches', en.mail_filter_NoMatches),
         popup_case0_GhostGradeHeader: getStr('popup_case0_GhostGradeHeader', en.popup_case0_GhostGradeHeader),
         popup_case0_SelectGrade: getStr('popup_case0_SelectGrade', en.popup_case0_SelectGrade),
         popup_caseAll_OkButton: getStr('popup_caseAll_OkButton', en.popup_caseAll_OkButton),
@@ -2054,6 +2069,9 @@ class LanguagePack{
       'periodPage_Starts':lang.periodPage_Starts,
       'messagePage_SentBy':lang.messagePage_SentBy,
       'messagePage_Empty':lang.messagePage_Empty,
+      'mail_search_Hint':lang.mail_search_Hint,
+      'mail_filter_UnreadOnly':lang.mail_filter_UnreadOnly,
+      'mail_filter_NoMatches':lang.mail_filter_NoMatches,
       'popup_case0_GhostGradeHeader':lang.popup_case0_GhostGradeHeader,
       'popup_case0_SelectGrade':lang.popup_case0_SelectGrade,
       'popup_caseAll_OkButton':lang.popup_caseAll_OkButton,

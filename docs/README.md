@@ -7,7 +7,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 | **Owner / Developer** | **Nanda** |
 | **Hub** | ELTE only (`https://neptun.elte.hu`) — no multi-university list |
 | **Display name** | Neptun ELTE |
-| **Version** | **1.3.3** (marketing) — scheme `1.<feature-line>.<patch>`; line **3** = plan items 1–3; patch **3** = post-2FA immediate session-expired fix; next big block → **1.4.0**; final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
+| **Version** | **1.3.4** (marketing) — scheme `1.<feature-line>.<patch>`; line **3** = plan items 1–3; patch **4** = mail search + unread filter (item **4**); **1.3.3** = post-2FA session-expired fix; next big block → **1.4.0**; final product → **2.0.0**. Settings shows three numbers only (no `+build`). ([full policy](Technical/TECHNICAL.md#versioning)) |
 | **Platforms** | Android · iOS |
 | **Languages** | English (default) · Hungarian · Russian · Turkish |
 | **Repo** | [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE) |
@@ -38,7 +38,7 @@ A modern mobile client for **ELTE Neptun** (Eötvös Loránd University) — tim
 - **Login like the website** — Neptun ID + password → 2FA (authenticator TOTP; email OTP on web may be thinner in-app) → student data APIs
 - **Timetable** — week view (Mon–Sun only; no next-Monday bleed); same-day break chips localized; next-48h = classes+exams only; upcoming tasks/ZH and exams sorted from now; period banners only in the period strip; calendar filters in Settings; training switcher when multiple trainings exist
 - **Markbook (Subjects)** — taken subjects with codes, credits, grades; **átlag** (credit-weighted) and **/30** (same numerator÷30, not átlag÷30); this-term + accumulated completed credits; app-computed honesty note; my courses + grade history across terms
-- **Messages** — Neptun inbox; full thread; optional HU→EN/RU machine translate (may be inaccurate)
+- **Messages** — Neptun inbox; local search (subject / sender / loaded body) + unread-only chip; full thread; optional HU→EN/RU machine translate (may be inaccurate)
 - **Payments** — fees, due dates, collective invoices / balance (drawer above Settings; UI chrome localized; some server titles may stay Hungarian)
 - **Periods** — registration and study periods (bottom tab)
 - **Navigation** — Bottom tabs: **Calendar \| Markbook \| Periods \| Mail**. **Payments** in the left drawer **above Settings**. Contacts + app version live at the bottom of Settings (plan **1c**). Figma mockups may still show 5 tabs — app IA is **4** bottom + Payments in drawer.

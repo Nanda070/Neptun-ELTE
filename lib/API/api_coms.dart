@@ -2900,6 +2900,9 @@ class PeriodsRequest{
 }
 
 class MailRequest{
+  /// Last known total inbox rows from GetReceivedMessages (0 if API omitted it).
+  static int lastTotalRowCount = 0;
+
   static Future<int> getUnreadMessageCount() async {
     if (storage.DataCache.getIsDemoAccount()!) {
       await storage.DataCache.setUnreadMailCount(1);
@@ -2946,12 +2949,14 @@ class MailRequest{
   static Future<List<MailEntry>?> getMails(int page) async{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
+      lastTotalRowCount = 2;
       return <MailEntry>[
         MailEntry(AppStrings.getLanguagePack().api_demo_MailSubject, AppStrings.getLanguagePack().api_demo_MailBody, AppStrings.getLanguagePack().api_demo_MailSender, now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false, "0"),
         MailEntry('DEMO', 'Demo Demo Demo', AppStrings.getLanguagePack().api_demo_MailSender, now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false, "1"),
       ];
     }
     else if(storage.DataCache.getHasICSFile() ?? false){
+      lastTotalRowCount = 0;
       return [];
     }
 
@@ -2964,13 +2969,15 @@ class MailRequest{
         int firstRow = actualPage * 20;
         int lastRow = firstRow + 20;
 
+        // Honesty: Sep 2026 HARs still use filterType=0 for inbox (no unread-only server filter).
         final url = Uri.parse("$baseUrl/api/Message/GetReceivedMessages?firstRow=$firstRow&lastRow=$lastRow&filterType=0");
         final responseRaw = await _APIRequest.getRequest(url, bearerToken: token!);
         final decoded = conv.json.decode(responseRaw);
 
         List<MailEntry> modernMails = [];
-        if (decoded['data'] != null && decoded['data']['receivedMessages'] != null) {
-          for (var item in decoded['data']['receivedMessages']) {
+        final data = decoded['data'];
+        if (data != null && data['receivedMessages'] != null) {
+          for (var item in data['receivedMessages']) {
             modernMails.add(MailEntry(
               item['subject'] ?? AppStrings.getLanguagePack().api_fallback_UnknownSubject,
               AppStrings.getLanguagePack().mail_preview_TapToLoadBody,
@@ -2979,6 +2986,15 @@ class MailRequest{
               item['unreadedPostCount'] == 0,
               item['messageId'].toString(),
             ));
+          }
+          final totalCandidate = data['totalRowCount'] ??
+              data['TotalRowCount'] ??
+              data['totalCount'] ??
+              data['TotalCount'];
+          if (totalCandidate is num) {
+            lastTotalRowCount = totalCandidate.toInt();
+          } else if (totalCandidate is String) {
+            lastTotalRowCount = int.tryParse(totalCandidate) ?? lastTotalRowCount;
           }
         }
         return modernMails;
@@ -2990,6 +3006,13 @@ class MailRequest{
 
     final request = await _getMailJson(page);
     List<MailEntry> mails = getMailEntrysJson(request);
+    try {
+      final decoded = conv.json.decode(request);
+      final total = decoded['TotalRowCount'];
+      if (total is num) {
+        lastTotalRowCount = total.toInt();
+      }
+    } catch (_) {}
     return mails;
   }
 
