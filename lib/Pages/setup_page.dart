@@ -19,7 +19,7 @@ import '../Misc/auto_updater.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
-import '../Misc/popup.dart';
+import 'two_factor_page.dart';
 
 /// Replace the entire nav stack with Home after login/2FA.
 void _navigateToHomeAfterLogin() => navigateToHomeRoot();
@@ -1389,35 +1389,11 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
           });
           if (!mounted) return;
           _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_2faInvalidCode, 5);
-          PopupWidgetHandler(
-            mode: 9,
-            callback: on2faCode,
-            onCloseCallback: () {
-              if (mounted) {
-                setState(() {
-                  _canProceed = true;
-                  _isLoading = false;
-                });
-              }
-            },
-          );
-          // Login has no Home blur layer — avoid touching a disposed HomePageState.
-          PopupWidgetHandler.doPopup(context, blur: () {}, closeBlur: () {});
+          // Opaque root route — not transparent popup (Android white-screen risk).
+          openTwoFactorCodePage(onCode: on2faCode);
         }
 
-        PopupWidgetHandler(
-          mode: 9,
-          callback: on2faCode,
-          onCloseCallback: () {
-            if (mounted) {
-              setState(() {
-                _canProceed = true;
-                _isLoading = false;
-              });
-            }
-          },
-        );
-        PopupWidgetHandler.doPopup(context, blur: () {}, closeBlur: () {});
+        openTwoFactorCodePage(onCode: on2faCode);
         return;
       }
       else if(value == api.InstitutesRequest.loginStudentWebFull){
@@ -1481,6 +1457,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.getTheme().rootBackground,
       body: GestureDetector(
         onHorizontalDragStart: (_){
           _horizontalDrag = 0;

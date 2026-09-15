@@ -263,6 +263,13 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Session policy unchanged:** still **10-minute** wall-clock + existing `SessionGuard` — not modified.
 - **Release 1.5.2** (`pubspec` **1.5.2+1**). Owner **Nanda**.
 
+### 2026-09-15 — Android OTP white-screen fix (still 1.5.2)
+
+**[2026-09-15]**
+
+- **Bug (Android-only):** after password, OTP/2FA step showed a **plain white screen** (iOS TOTP UI was fine). Root cause: 2FA used transparent popup mode 9 (`opaque: false`) gated on async `PackageInfo` + **`Language.getAllLanguages()`** (GitHub HTTP). On Android that delay / window-background bleed left a blank white view with no usable code field.
+- **Fix:** opaque full-screen `TwoFactorCodePage` via root `appNavigatorKey` (`lib/Pages/two_factor_page.dart`); popup open no longer waits on the language-list HTTP. Session policy **unchanged** (still **10 min**). APK re-uploaded to GitHub Release **v1.5.2** (`--clobber`). Owner **Nanda**.
+
 ---
 
 ## In progress / planned (honest)

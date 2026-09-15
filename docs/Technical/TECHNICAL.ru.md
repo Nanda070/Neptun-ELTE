@@ -232,7 +232,7 @@ Neptun-ELTE/
 | Шаг на сайте | Приложение |
 |--------------|------------|
 | `POST /Account/Login` | Та же форма (`LoginName`/`Password` + antiforgery) |
-| 2FA TOTP / email | `POST /Account/Login2FA` → popup mode 9 |
+| 2FA TOTP / email | `POST /Account/Login2FA` → непрозрачный `TwoFactorCodePage` (не transparent popup 9; фикс белого экрана Android в **1.5.2**) |
 | `ToNeptunHWeb` → `outerlogin?GUID=` | App постит HWeb, следует 302 |
 | `POST /api/Account/OuterLogin` | Сохраняет JWT; institute URL = **`https://hallgatoN.neptun.elte.hu`** |
 | Student REST | Bearer JWT на этом hallgato |
@@ -378,7 +378,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 **Срок JWT:** access-токены короткоживущие (~10–15 мин на практике в Neptun). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после входа на Home** (см. wall-clock выше). Без рабочего refresh token 401 тоже форсирует logout, а не пустые экраны «как будто вошёл».
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → popup 9 → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. Popup закрывается **до** HWEB-моста; при успехе setup вызывает `navigateToHomeRoot()` (`lib/app_navigator.dart` → корневой `pushAndRemoveUntil(HomePage)`), а не через локальный `BuildContext` логина — чтобы disposed route / отложенный `pop` popup не оставляли **чёрный экран**.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → непрозрачный `TwoFactorCodePage` через корневой `appNavigatorKey` (`lib/Pages/two_factor_page.dart`) → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. Маршрут 2FA закрывается **до** HWEB-моста; при успехе setup вызывает `navigateToHomeRoot()` (`lib/app_navigator.dart` → корневой `pushAndRemoveUntil(HomePage)`), а не через локальный `BuildContext` логина — чтобы disposed route не оставлял **чёрный экран** (iOS) или **белый фон окна** (Android; исправлено в **1.5.2**, login 2FA больше не через transparent popup mode 9).
 
 **2FA (old):** не поддерживается → обычно `0`.
 

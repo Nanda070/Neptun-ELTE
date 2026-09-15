@@ -232,7 +232,7 @@ Portal (`neptun.elte.hu` Potlap cookies) ≠ HWEB API host (`hallgatoN`). **`POS
 | Web step | App |
 |----------|-----|
 | Portal `POST /Account/Login` | Same form post (`LoginName`/`Password` + antiforgery) |
-| 2FA TOTP / email | `POST /Account/Login2FA` (`Phase=RequestTOTP` + `TOTPCode`, or email phases) → popup mode 9 |
+| 2FA TOTP / email | `POST /Account/Login2FA` (`Phase=RequestTOTP` + `TOTPCode`, or email phases) → opaque `TwoFactorCodePage` (not transparent popup 9; Android white-screen fix in **1.5.2**) |
 | `ToNeptunHWeb` → `outerlogin?GUID=` | App posts HWeb form, follows 302 |
 | `POST /api/Account/OuterLogin` | Saves JWT; sets institute URL to **`https://hallgatoN.neptun.elte.hu`** |
 | Student REST | Bearer JWT on that hallgato host (`/api/UserInfo`, calendar, …) |
@@ -378,7 +378,7 @@ Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `G
 
 **JWT lifetime:** Access tokens are short-lived (~10–15 min in practice on Neptun). Refresh may issue a new access token, but the app still force-logs out after **10 minutes from Home entry** (see wall clock above). Without a working refresh token, a 401 also forces logout rather than showing empty “logged in” screens.
 
-**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → popup 9 → user types 6-digit **TOTP** → `submitTwoFactorCode`. Popup closes **before** the HWEB bridge; on success setup calls `navigateToHomeRoot()` (`lib/app_navigator.dart` → root `pushAndRemoveUntil(HomePage)`), not a page-local `BuildContext`, so a disposed login route / delayed popup pop cannot leave a **black screen**.
+**2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` without `accessToken` (often HTTP 202) → code `2` → opaque `TwoFactorCodePage` via root `appNavigatorKey` (`lib/Pages/two_factor_page.dart`) → user types 6-digit **TOTP** → `submitTwoFactorCode`. The 2FA route pops **before** the HWEB bridge; on success setup calls `navigateToHomeRoot()` (`lib/app_navigator.dart` → root `pushAndRemoveUntil(HomePage)`), not a page-local `BuildContext`, so a disposed login route cannot leave a **black screen** (iOS) or **white window background** (Android; fixed in **1.5.2** by leaving transparent popup mode 9 for login 2FA).
 
 **2FA (old):** unsupported → usually `0`.
 

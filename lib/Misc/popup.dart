@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
+import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
@@ -81,27 +82,50 @@ class PopupWidgetHandler{
     }
     AppHaptics.lightImpact();
 
-    Future.wait([
-      PackageInfo.fromPlatform(),
-      Language.getAllLanguages(),
-    ]).then((values){
-      if (_instance == null || !_instance!._inUse || !context.mounted) {
+    // PackageInfo only — do NOT await Language.getAllLanguages() (GitHub HTTP).
+    // That network wait delayed/blocked OTP and other popups; a disposed login
+    // context after the gap left Android on the white window background.
+    PackageInfo.fromPlatform().then((pinfo) {
+      if (_instance == null || !_instance!._inUse) {
         PopupWidgetHandler._hasPopupActive = false;
+        _instance?._inUse = false;
         return;
       }
-      Navigator.of(context, rootNavigator: true).push(
-          PageRouteBuilder(
-              pageBuilder: (context, anim, anim2) => PopupWidgetState(topPadding: MediaQuery.of(context).padding, mode: _instance!.mode, pinfo: values[0] as PackageInfo),
-              opaque: false,
-              barrierDismissible: true,
-              transitionDuration: PopupWidgetHandler.animDuration,
-              reverseTransitionDuration: Duration.zero,
-              fullscreenDialog: true,
-              transitionsBuilder: (_, __, ___, widget){
-                return widget;
-              }
-          )
+      final nav = appNavigatorKey.currentState ??
+          (context.mounted ? Navigator.of(context, rootNavigator: true) : null);
+      if (nav == null) {
+        PopupWidgetHandler._hasPopupActive = false;
+        _instance!._inUse = false;
+        return;
+      }
+      final padding = appNavigatorKey.currentContext != null
+          ? MediaQuery.paddingOf(appNavigatorKey.currentContext!)
+          : (context.mounted ? MediaQuery.paddingOf(context) : EdgeInsets.zero);
+      // Mode 9 (2FA) should use [openTwoFactorCodePage]; keep opaque fallback.
+      final isTwoFactor = _instance!.mode == 9;
+      nav.push(
+        PageRouteBuilder(
+          pageBuilder: (context, anim, anim2) => PopupWidgetState(
+            topPadding: padding,
+            mode: _instance!.mode,
+            pinfo: pinfo,
+          ),
+          opaque: isTwoFactor,
+          barrierColor: isTwoFactor ? null : Colors.black54,
+          barrierDismissible: true,
+          transitionDuration: PopupWidgetHandler.animDuration,
+          reverseTransitionDuration: Duration.zero,
+          fullscreenDialog: true,
+          transitionsBuilder: (_, __, ___, widget) {
+            return widget;
+          },
+        ),
       );
+    }).catchError((_) {
+      PopupWidgetHandler._hasPopupActive = false;
+      if (_instance != null) {
+        _instance!._inUse = false;
+      }
     });
   }
 
@@ -2403,7 +2427,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
+    final popup = AnimatedBuilder(
         animation: popupController,
         builder: (context, _) {
           return Transform.scale(
@@ -2412,6 +2436,15 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           );
         }
     );
+    // Opaque 2FA fallback: fill with theme background (transparent Material alone
+    // under opaque:true looks blank/white on Android).
+    if (widget.mode == 9) {
+      return ColoredBox(
+        color: AppColors.getTheme().rootBackground,
+        child: popup,
+      );
+    }
+    return popup;
   }
 
   @override
