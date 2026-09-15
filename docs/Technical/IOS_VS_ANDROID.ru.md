@@ -15,13 +15,13 @@
 | Тема | Что есть на iOS | Сторона Android |
 |------|-----------------|-----------------|
 | Разрешение на уведомления | `DarwinInitializationSettings` + `requestPermissions(alert/badge/sound)` в `lib/notifications.dart`; `NSUserNotificationsUsageDescription` в `ios/Runner/Info.plist` | Вместо этого — Android notification + **exact-alarm** API (см. §2) |
-| Схемы внешних приложений | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` в Info.plist | В манифесте `<queries>` в основном для Custom Tabs; списка схем Telegram/Discord нет |
+| Схемы внешних приложений | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` в Info.plist | Манифест `<queries>`: Custom Tabs + `https`/`http`/`geo`/`mailto` (maps / mail). Telegram/Discord схем нет |
 | Haptics API | `HapticFeedback.*` при `Platform.isIOS` (`lib/haptics.dart`) | Пакет `vibration` + разрешение `VIBRATE` (паттерны, не Taptic Engine API) |
 | Нативная оболочка | `SceneDelegate` / UIScene; MethodChannel Quick Actions (**13**) в `AppDelegate` | `FlutterActivity` + MethodChannel static shortcuts (**13**) в `MainActivity` |
 | Установка / подпись (документация) | Automatic Signing в Xcode; доверие профилю разработчика на устройстве; Bundle ID **без** `_` (`com.nanda070.neptunmobile`) — Technical §14 | Другой ID и модель подписи (см. §2) |
 | Иконка на домашнем экране (debug) | **iOS 14+:** debug-сборка **не** открывается с иконки — для иконки нужен `--release` | Debug APK нормально ставится и запускается с лаунчера |
 
-Отдельной **продуктовой** функции только для iOS (логин, вкладки, кэш, темы, языки), которой нет на Android, **нет**. Пробелы iOS — в основном **дистрибуция / апдейтер / toast / exact alarms** (ниже).
+Отдельной **продуктовой** функции только для iOS (логин, вкладки, кэш, темы, языки, виджет «пары сегодня»), которой нет на Android, **нет**. Оставшиеся отличия — в основном **дистрибуция / апдейтер / toast / exact alarms / haptics API** (ниже).
 
 ---
 
@@ -56,7 +56,7 @@
 - ICS-парсер + `file_picker` / класс `SetupPageCalendarLogin` есть; **на хабе setup кнопки ICS нет** (dead UI на обеих)
 - Нативные плагины через Flutter plugins; плюс MethodChannel shortcuts (п. **13**) в `AppDelegate` / `MainActivity`
 - **Нет** `local_auth` / биометрии в `pubspec.yaml`
-- Homescreen widget: **iOS WidgetKit MVP** (пары сегодня из кэша); Android Glance отложен
+- Homescreen widget: **iOS WidgetKit** + **Android App Widget** MVP (пары сегодня из кэша календаря через `WidgetBridge`; без JWT). Тап → `neptunelte://shortcut/calendar`
 - Unit-тесты: тонкий smoke в `test/` (`elte_room_code_test.dart`; placeholder `widget_test.dart`) — в CI **пока не** гоняются
 - Display name **Neptun ELTE**; владелец **Nanda**
 - Разные ID намеренно: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`

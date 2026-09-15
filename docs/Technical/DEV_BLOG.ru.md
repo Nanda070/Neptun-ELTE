@@ -253,14 +253,26 @@
 
 ---
 
+## 2026-09-15 — релиз 1.5.2 (паритет Android)
+
+**[2026-09-15]**
+
+- **Паритет Android с iOS (поверхность ~1.5.1):** общие Flutter-фичи уже совпадали (auth portal+2FA+OuterLogin+JWT, shortcuts, maps, поиск почты, сравнение семестров, студенческий, календарь без «Следующие 48ч»). **Отдельных** Android-блокеров auth не найдено (тот же Dart `HttpClient` / portal; нет cleartext / WebView-гейта).
+- **Android App Widget MVP** (`TodayClassesWidgetProvider`): пары сегодня из кэша календаря через `WidgetBridge` → SharedPreferences JSON — **без JWT**. Тап → `neptunelte://shortcut/calendar`. Deep-link в манифесте + `<queries>` maps/mailto. RemoteViews (не Glance Compose) — та же честность, что iOS WidgetKit.
+- Release APK: `flutter build apk --release`; без `key.properties` — fallback на debug keystore. GitHub Release **v1.5.2** с APK (+ unsigned IPA через Actions).
+- **Политика сессии без изменений:** по-прежнему **10 минут** + существующий `SessionGuard` — не трогали.
+- **Релиз 1.5.2** (`pubspec` **1.5.2+1**). Владелец **Nanda**.
+
+---
+
 ## В работе / запланировано (честно)
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать). Нумерованные plan-файлы **удалены**.
+- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS WidgetKit + Android App Widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать). Нумерованные plan-файлы **удалены**.
 - **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
 - **Переводчик сообщений** (HU → EN/RU для тел писем) — helper при offline/ошибке возвращает `null` (оставляем оригинал) + disclaimer; считать **проверить на устройстве**, пока не прогнали тщательно.
-- **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**. Android-виджеты — **не** в **1.5.x** (только iOS MVP).
+- **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**.
 - Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — известен по HAR; **не** основной путь (сначала TOTP).
 - Signed IPA / TestFlight / App Store / Play production — **не** текущая цель. В CI только unsigned IPA + Android debug APK (нет analyze/test job).
 

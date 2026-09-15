@@ -7,4 +7,12 @@
     <string name="shortcut_mail_long">Open messages</string>
     <string name="shortcut_payments_short">Payments</string>
     <string name="shortcut_payments_long">Open payments</string>
+    <string name="widget_today_title">Today</string>
+    <string name="widget_stale">Stale</string>
+    <string name="widget_open_app">Open Neptun ELTE</string>
+    <string name="widget_no_classes">No classes today</string>
+    <string name="widget_no_cache">No cached timetable</string>
+    <string name="widget_footer_cached">Cached · open app to refresh</string>
+    <string name="widget_footer_stale">Stale cache · open app to refresh</string>
+    <string name="widget_description">Cached timetable for today. Open Neptun ELTE to refresh.</string>
 </resources>

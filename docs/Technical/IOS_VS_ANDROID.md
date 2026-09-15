@@ -15,13 +15,13 @@ Do **not** invent features here. If something is only planned, untested, or dead
 | Topic | What iOS has | Android side |
 |-------|----------------|--------------|
 | Notification permission UX | `DarwinInitializationSettings` + `requestPermissions(alert/badge/sound)` in `lib/notifications.dart`; `NSUserNotificationsUsageDescription` in `ios/Runner/Info.plist` | Uses Android notification + **exact-alarm** permission APIs instead (see §2) |
-| External app URL schemes | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` in Info.plist | Manifest `<queries>` mainly for Custom Tabs; no Telegram/Discord scheme list |
+| External app URL schemes | `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord` in Info.plist | Manifest `<queries>`: Custom Tabs + `https`/`http`/`geo`/`mailto` (maps / mail). No Telegram/Discord scheme list |
 | Haptics API | `HapticFeedback.*` when `Platform.isIOS` (`lib/haptics.dart`) | Uses `vibration` package + `VIBRATE` permission (patterns, not Taptic Engine API) |
 | Native shell | `SceneDelegate` / UIScene lifecycle; MethodChannel for Quick Actions (**13**) in `AppDelegate` | `FlutterActivity` + MethodChannel for static shortcuts (**13**) in `MainActivity` |
 | Device install / signing docs | Automatic Signing in Xcode; trust developer profile on device; Bundle ID **without** `_` (`com.nanda070.neptunmobile`) — see Technical §14 | Different ID and signing model (see §2) |
 | Debug home-screen icon | **iOS 14+:** debug build does **not** open from the home-screen icon — need `--release` for icon launch | Debug APK installs/launch normally from the launcher |
 
-There is **no** iOS-only product feature (login, tabs, cache, themes, languages) that Android lacks. Gaps on iOS are mostly **distribution / updater / toast / exact alarms** (below).
+There is **no** iOS-only product feature (login, tabs, cache, themes, languages, today’s-classes widget) that Android lacks. Remaining platform differences are mostly **distribution / updater / toast / exact alarms / haptics API** (below).
 
 ---
 
@@ -56,7 +56,7 @@ Short list — same Flutter product surface unless gated above:
 - ICS parser + `file_picker` / `SetupPageCalendarLogin` code exists; **setup hub has no ICS entry** (dead UI on both)
 - Home-screen shortcuts (plan **13**): Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Dart `lib/app_shortcuts.dart` via MethodChannel in `MainActivity` / `AppDelegate`
 - **No** `local_auth` / biometrics in `pubspec.yaml`
-- Homescreen widget: **iOS WidgetKit MVP** (today’s classes from cache); Android Glance deferred
+- Homescreen widget: **iOS WidgetKit** + **Android App Widget** MVP (today’s classes from calendar cache via `WidgetBridge`; no JWT). Tap → `neptunelte://shortcut/calendar`
 - Unit tests: thin smoke in `test/` (`elte_room_code_test.dart`; placeholder `widget_test.dart`) — **not** run in CI yet
 - Display name **Neptun ELTE**; owner **Nanda**
 - Different identifiers by design: iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`

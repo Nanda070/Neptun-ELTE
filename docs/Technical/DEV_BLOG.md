@@ -253,14 +253,26 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-15 — release 1.5.2 (Android parity)
+
+**[2026-09-15]**
+
+- **Android parity with iOS (~1.5.1 surface):** shared Flutter features already matched (auth portal+2FA+OuterLogin+JWT, shortcuts, maps, mail search, semester compare, student card, calendar without Next 48h). **No** Android-only auth blockers found (same Dart `HttpClient` / portal path; no cleartext / WebView gate).
+- **Android App Widget MVP** (`TodayClassesWidgetProvider`): today’s classes from calendar cache via `WidgetBridge` → SharedPreferences JSON — **no JWT**. Tap → `neptunelte://shortcut/calendar`. Manifest deep-link + maps/mailto `<queries>`. RemoteViews layout (not Glance Compose) — same honesty as iOS WidgetKit.
+- Release APK: `flutter build apk --release`; signing falls back to debug keystore when `key.properties` absent. GitHub Release **v1.5.2** attaches APK (+ unsigned IPA via Actions as usual).
+- **Session policy unchanged:** still **10-minute** wall-clock + existing `SessionGuard` — not modified.
+- **Release 1.5.2** (`pubspec` **1.5.2+1**). Owner **Nanda**.
+
+---
+
 ## In progress / planned (honest)
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (iOS widget MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress). Numbered plan files **deleted**.
+- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (iOS WidgetKit + Android App Widget MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress). Numbered plan files **deleted**.
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper returns `null` offline/failure (keep original) + disclaimer; treat as **verify on device** until thoroughly exercised.
-- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**. Android homescreen widgets — **not** in **1.5.x** (iOS-first MVP only).
+- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**.
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
 - Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI has unsigned IPA + Android debug APK only (no analyze/test job).
 

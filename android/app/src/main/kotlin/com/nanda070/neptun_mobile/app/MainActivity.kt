@@ -7,12 +7,13 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
     companion object {
-        private const val CHANNEL = "com.nanda070.neptun_mobile.app/shortcuts"
+        private const val SHORTCUTS_CHANNEL = "com.nanda070.neptun_mobile.app/shortcuts"
+        private const val WIDGET_CHANNEL = "com.nanda070.neptun_mobile.app/widget"
         private const val EXTRA_SHORTCUT_ID = "shortcut_id"
     }
 
     private var pendingShortcutId: String? = null
-    private var methodChannel: MethodChannel? = null
+    private var shortcutsChannel: MethodChannel? = null
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         captureShortcut(intent)
@@ -25,15 +26,15 @@ class MainActivity: FlutterActivity() {
         captureShortcut(intent)
         val id = pendingShortcutId
         if (id != null) {
-            methodChannel?.invokeMethod("shortcutActivated", id)
+            shortcutsChannel?.invokeMethod("shortcutActivated", id)
         }
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        methodChannel = MethodChannel(
+        shortcutsChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
-            CHANNEL,
+            SHORTCUTS_CHANNEL,
         ).also { channel ->
             channel.setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -44,6 +45,28 @@ class MainActivity: FlutterActivity() {
                     }
                     else -> result.notImplemented()
                 }
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            WIDGET_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "updateTodayClasses" -> {
+                    @Suppress("UNCHECKED_CAST")
+                    val args = call.arguments as? Map<String, Any?>
+                    val json = args?.get("json") as? String
+                    if (json.isNullOrBlank()) {
+                        result.error("bad_args", "json required", null)
+                        return@setMethodCallHandler
+                    }
+                    val updatedAt = args["updatedAt"] as? String
+                    // Timetable snapshot only — never tokens / passwords.
+                    TodayClassesWidgetProvider.savePayload(this, json, updatedAt)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
             }
         }
     }

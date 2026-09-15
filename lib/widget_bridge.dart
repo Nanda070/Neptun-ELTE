@@ -7,10 +7,10 @@ import 'package:flutter/services.dart';
 import 'API/api_coms.dart' as api;
 import 'storage.dart' as storage;
 
-/// Exports today's timetable classes to the iOS App Group for WidgetKit.
+/// Exports today's timetable classes to native homescreen widgets.
 ///
+/// iOS → App Group for WidgetKit; Android → SharedPreferences for App Widget.
 /// No JWT / passwords / tokens — title, times, and location only.
-/// Android widgets are deferred (plan item 14 MVP is iOS-first).
 class WidgetBridge {
   static const MethodChannel _channel =
       MethodChannel('com.nanda070.neptun_mobile.app/widget');
@@ -22,7 +22,7 @@ class WidgetBridge {
   /// When [preferEntries] is non-null it is treated as the current-week list
   /// (including an honest empty week). Otherwise reads `CachedCalendar_w1_*`.
   static Future<void> sync({List<api.CalendarEntry>? preferEntries}) async {
-    if (kIsWeb || !Platform.isIOS) return;
+    if (kIsWeb || !(Platform.isIOS || Platform.isAndroid)) return;
 
     try {
       List<api.CalendarEntry>? entries = preferEntries;
@@ -92,7 +92,7 @@ class WidgetBridge {
         'updatedAt': updatedAt,
       });
     } on MissingPluginException {
-      // Simulator / non-iOS shell without the channel.
+      // Simulator / shell without the channel.
     } on PlatformException catch (e) {
       debugPrint('WidgetBridge sync failed: ${e.message}');
     } catch (e) {

@@ -39,6 +39,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Widget / deep-link taps: neptunelte://shortcut/{calendar|mail|payments} -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="neptunelte"
+                    android:host="shortcut"/>
+            </intent-filter>
             <!-- Static home-screen shortcuts (plan item 13). -->
             <meta-data
                 android:name="android.app.shortcuts"
@@ -49,6 +58,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2"/>
+        <!-- Today's classes from calendar cache only (no JWT). -->
+        <receiver
+            android:name=".TodayClassesWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_today_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_today_classes_info"/>
+        </receiver>
         <receiver
             android:exported="false"
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
@@ -74,6 +95,23 @@
         <intent>
             <action
                 android:name="android.support.customtabs.action.CustomTabsService"/>
+        </intent>
+        <!-- Maps / https / mailto for url_launcher (Android 11+ package visibility). -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="http"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="geo"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
         </intent>
     </queries>
 </manifest>
