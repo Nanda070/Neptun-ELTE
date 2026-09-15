@@ -280,6 +280,17 @@
 - **Политика (только docs/rules, без бампа приложения):** с этого момента каждый **отгруженный Android APK / GitHub Release** должен иметь **новую маркетинговую `1.x.y`** и **новый** git-тег `v1.x.y`. Перезаливка APK на тот же тег (clobber) **не** включает автообновление в приложении (`AppUpdater` требует, чтобы `tag_name` был строго новее установленного `versionName`). Cursor-правило: `.cursor/rules/android-github-release-tags.mdc`. Чистые docs/chore коммиты без APK можно не тегировать. Владелец **Nanda**.
 
 ---
+
+## 2026-09-15 — релиз 1.5.3 (новая иконка)
+
+**[2026-09-15]**
+
+- **Новый брендинг launcher:** квадратный master (`assets/app_icon.png`) — книга + circuit **N** (+ герб) из обновлённого логотипа; Android adaptive foreground + белый фон; полный набор iOS `AppIcon` через `flutter_launcher_icons`. Splash / branding `assets/neptun2_logo.png` обновлён из того же источника (уже использовался в `flutter_native_splash`).
+- Исходник в `assets/branding/`. Политика сессии **без изменений** (по-прежнему **10 мин** / `SessionGuard` не трогали).
+- **Заметка:** фикс белого экрана OTP на Android раньше ушёл как перезаливка APK **1.5.2** (`--clobber` на **v1.5.2**); тег **1.5.3** нужен, чтобы sideload-пользователи получили обновление через in-app GitHub updater (новый `tag_name` > установленный `versionName`).
+- **Релиз 1.5.3** (`pubspec` **1.5.3+1**). GitHub Release **v1.5.3** + APK (+ unsigned IPA через Actions). Владелец **Nanda**.
+
+---
 ## В работе / запланировано (честно)
 
 **[ongoing]**

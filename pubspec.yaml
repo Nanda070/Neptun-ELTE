@@ -16,8 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.5.2+1
-# Marketing version is 1.5.2 (three numbers). +build is store/build only — prefer +1; do not advertise +N in Settings/docs.
+version: 1.5.3+1
+# Marketing version is 1.5.3 (three numbers). +build is store/build only — prefer +1; do not advertise +N in Settings/docs.
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
@@ -103,3 +104,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# Generate: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/app_icon.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/app_icon_foreground.png
+  adaptive_icon_foreground_inset: 16
+  remove_alpha_ios: true
+  min_sdk_android: 21

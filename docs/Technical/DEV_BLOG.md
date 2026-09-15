@@ -280,6 +280,17 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Policy (docs/rules only, no app bump):** from now on, every **shipped Android APK / GitHub Release** must use a **new marketing `1.x.y`** and a **new** git tag `v1.x.y`. Replacing an APK on the same tag (clobber) does **not** trigger in-app auto-update (`AppUpdater` requires `tag_name` strictly newer than installed `versionName`). Cursor rule: `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not tag unless an APK ships. Owner **Nanda**.
 
 ---
+
+## 2026-09-15 — release 1.5.3 (new app icon)
+
+**[2026-09-15]**
+
+- **New launcher branding:** cropped square master (`assets/app_icon.png`) from the ELTE Neptun book + circuit **N** (+ crest); Android adaptive foreground + white background; full iOS `AppIcon` set via `flutter_launcher_icons`. Splash / branding asset `assets/neptun2_logo.png` refreshed from the same source (project already used it for `flutter_native_splash`).
+- Source kept under `assets/branding/`. Session policy **unchanged** (still **10 min** / `SessionGuard` not touched).
+- **Note:** Android OTP white-screen fix shipped earlier as a **1.5.2** APK rebuild (`--clobber` on **v1.5.2**); this **1.5.3** tag is required so sideload users pick up via in-app GitHub updater (new `tag_name` > installed `versionName`).
+- **Release 1.5.3** (`pubspec` **1.5.3+1**). GitHub Release **v1.5.3** + APK (+ unsigned IPA via Actions). Owner **Nanda**.
+
+---
 ## In progress / planned (honest)
 
 **[ongoing]**
