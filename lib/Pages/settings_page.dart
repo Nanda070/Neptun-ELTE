@@ -172,10 +172,9 @@ class _SettingsPageState extends State<SettingsPage> {
             Navigator.pop(context);
           },
         ),
-        title: EmojiRichText(
-          text: AppStrings.getLanguagePack().topmenu_buttons_Settings,
-          defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 20),
-          emojiStyle: TextStyle(color: AppColors.getTheme().textColor, fontSize: 20, fontFamily: "Noto Color Emoji"),
+        title: Text(
+          stripLeadingEmoji(AppStrings.getLanguagePack().topmenu_buttons_Settings),
+          style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: ListView(

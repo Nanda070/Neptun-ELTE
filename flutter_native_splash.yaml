@@ -20,9 +20,9 @@ flutter_native_splash:
   # Optional parameters are listed below.  To enable a parameter, uncomment the line by removing
   # the leading # character.
 
-  # The image parameter allows you to specify an image used in the splash screen.  It must be a
-  # png file and should be sized for 4x pixel density.
-  image: assets/neptun2_logo.png
+  # No centered splash logo / app icon while entering the app (launcher icons stay
+  # separate via flutter_launcher_icons). Color-only splash.
+  # image: assets/neptun2_logo.png
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
@@ -48,13 +48,14 @@ flutter_native_splash:
   # Following are Android 12 specific parameter.
   android_12:
   # The image parameter sets the splash screen icon image.  If this parameter is not specified,
-  # the app's launcher icon will be used instead.
+  # the app's launcher icon will be used instead — we pass a solid #1f292b tile so the
+  # launcher icon is NOT shown on entry (user policy: no in-app / splash icon).
   # Please note that the splash screen will be clipped to a circle on the center of the screen.
   # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
   # 640 pixels in diameter.
   # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
   # 768 pixels in diameter.
-    image: assets/neptun2_logo.png
+    image: assets/splash_blank.png
 
   # Splash screen background color.
     color: "#1f292b"

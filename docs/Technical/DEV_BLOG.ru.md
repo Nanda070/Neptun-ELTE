@@ -299,6 +299,7 @@
 - **Баг — Android logout через 10 мин:** `SessionGuard.startSessionWallClock()` сбрасывал stamp при каждом входе на Home и гонял prefs (`cancel` писал `SESSION_StartedAtMs=0` vs новый старт). Длинные one-shot `Timer` на Android ненадёжны. **Фикс:** продолжать существующий stamp в окне; generation-guard на prefs; тикер **15 с** + lifecycle re-check на `resumed`/`inactive`. Политика по-прежнему **10 мин** wall-clock (не idle). Фон: если ОС убила процесс — expiry на следующем cold start/resume по сохранённому stamp.
 - **Баг — двойной emoji в Bug report:** `EmojiRichText` / tint `TextStyle.color` на Noto Color Emoji рисовал ghost-монохром под настоящим emoji (`🐞 Bug report`). **Фикс:** emoji-spans без tint в `EmojiRichText`; drawer Bug report / Settings / Logout через `EmojiRichText`.
 - **Релиз 1.5.4** (`pubspec` **1.5.4+1**). GitHub Release **v1.5.4** + APK (+ unsigned IPA через Actions). Владелец **Nanda**.
+- **Доработка (тот же 1.5.4):** в drawer Settings / Bug report / Logout был **Material leading icon + emoji в тексте** (не tint-ghost). Фикс: `stripLeadingEmoji` + обычный `Text` рядом с Material icons. Splash при входе больше не показывает launcher-иконку (color-only + solid Android 12 tile; `neptun2_logo.png` возвращён к брендингу до 1.5.3 и не используется как splash image). Launcher AppIcon / adaptive без изменений.
 
 ---
 ## В работе / запланировано (честно)

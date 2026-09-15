@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 
+/// Drop leading emoji / symbol runs so Material [Icon] rows are not doubled
+/// (e.g. gear icon + "⚙ Settings"). Keeps the first letter/digit onward.
+String stripLeadingEmoji(String raw) {
+  final chars = raw.characters;
+  final buf = StringBuffer();
+  var started = false;
+  final letterOrDigit = RegExp(r'\p{L}|\p{N}', unicode: true);
+  for (final c in chars) {
+    if (!started) {
+      if (!letterOrDigit.hasMatch(c)) continue;
+      started = true;
+    }
+    buf.write(c);
+  }
+  final out = buf.toString().trim();
+  return out.isEmpty ? raw.trim() : out;
+}
+
 class EmojiRichText extends StatelessWidget {
   final String text;
   final TextStyle defaultStyle;

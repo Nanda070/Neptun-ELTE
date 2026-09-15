@@ -684,10 +684,10 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                     ListTile(
                       leading: Icon(Icons.settings_rounded, color: AppColors.getTheme().textColor),
-                      title: EmojiRichText(
-                        text: AppStrings.getLanguagePack().topmenu_buttons_Settings,
-                        defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16),
-                        emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+                      // Material leading only — language pack still has "⚙ …"; strip so no double glyph.
+                      title: Text(
+                        stripLeadingEmoji(AppStrings.getLanguagePack().topmenu_buttons_Settings),
+                        style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
                       ),
                       onTap: () {
                         AppHaptics.lightImpact();
@@ -716,10 +716,9 @@ class _AppDrawerState extends State<AppDrawer> {
                       ),
                     ListTile(
                       leading: Icon(Icons.bug_report_rounded, color: AppColors.getTheme().textColor),
-                      title: EmojiRichText(
-                        text: AppStrings.getLanguagePack().topmenu_buttons_Bugreport,
-                        defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16),
-                        emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+                      title: Text(
+                        stripLeadingEmoji(AppStrings.getLanguagePack().topmenu_buttons_Bugreport),
+                        style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
                       ),
                       onTap: () {
                         AppHaptics.lightImpact();
@@ -739,10 +738,9 @@ class _AppDrawerState extends State<AppDrawer> {
             Divider(color: AppColors.getTheme().textColor.withValues(alpha: 0.1), height: 1),
             ListTile(
               leading: Icon(Icons.logout_rounded, color: AppColors.getTheme().errorRed),
-              title: EmojiRichText(
-                text: AppStrings.getLanguagePack().topmenu_buttons_Logout,
-                defaultStyle: TextStyle(color: AppColors.getTheme().errorRed, fontWeight: FontWeight.w700, fontSize: 16),
-                emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+              title: Text(
+                stripLeadingEmoji(AppStrings.getLanguagePack().topmenu_buttons_Logout),
+                style: TextStyle(color: AppColors.getTheme().errorRed, fontWeight: FontWeight.w700),
               ),
               onTap: () {
                 AppHaptics.lightImpact();
