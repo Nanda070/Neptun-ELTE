@@ -24,16 +24,23 @@ class SessionGuard {
   /// Persisted epoch ms so background suspend (paused Timer) still counts as wall clock.
   static const String _sessionStartedAtPrefsKey = 'SESSION_StartedAtMs';
 
+  /// Re-check interval while the isolate is alive. Long one-shot [Timer]s are often
+  /// delayed/paused on Android (Doze / background); a short ticker recovers in FG.
+  static const Duration _wallClockTickInterval = Duration(seconds: 15);
+
   static bool _authBlocked = false;
   static bool _handlingExpired = false;
   static String? _pendingUserMessage;
   static Future<void> Function(String message)? _onNavigateToLogin;
   static Timer? _sessionWallTimer;
+  static Timer? _sessionWallTicker;
   static DateTime? _sessionStartedAt;
   /// Set when login / 2FA succeeds — avoids stale [SESSION_StartedAtMs] or
   /// immediate 401 recovery forcing logout right after a fresh participant session.
   static DateTime? _authenticatedAt;
   static const Duration _postLoginGrace = Duration(seconds: 45);
+  /// Monotonic write gen so async prefs `0` from cancel cannot clobber a newer start.
+  static int _sessionPersistGen = 0;
 
   static bool get isAuthBlocked => _authBlocked;
 
@@ -68,36 +75,75 @@ class SessionGuard {
   static Future<void> markParticipantSessionStarted() async {
     _handlingExpired = false;
     clearAuthBlock();
-    cancelSessionWallClock();
+    _stopWallTimers();
     final now = DateTime.now();
     _sessionStartedAt = now;
     _authenticatedAt = now;
-    await storage.saveInt(
-      _sessionStartedAtPrefsKey,
-      now.millisecondsSinceEpoch,
-    );
+    await _persistSessionStartedAt(now.millisecondsSinceEpoch);
     _armSessionWallTimer();
   }
 
-  /// Start / restart the 10-minute wall clock from main-session entry (after login or cold start into Home).
-  /// Does **not** restart on token refresh — only on a new participant session.
-  /// Stores wall-clock timestamp so background time still counts (Timer alone pauses while suspended).
-  static void startSessionWallClock() {
-    cancelSessionWallClock();
-    final now = DateTime.now();
-    _sessionStartedAt = now;
-    if (_authenticatedAt == null ||
-        now.difference(_authenticatedAt!) > const Duration(seconds: 2)) {
-      _authenticatedAt = now;
+  /// Arm / continue the 10-minute wall clock after login or cold start into Home.
+  ///
+  /// Does **not** restart on token refresh. Does **not** reset an existing in-window
+  /// start (Home entry must not grant a fresh 10 min). Persists the stamp so
+  /// background time still counts (one-shot Timer alone often pauses while suspended).
+  static Future<void> startSessionWallClock() async {
+    if (_handlingExpired || _authBlocked) return;
+    _stopWallTimers();
+
+    DateTime? started = _sessionStartedAt;
+    if (started == null) {
+      final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+      if (ms != null && ms > 0) {
+        started = DateTime.fromMillisecondsSinceEpoch(ms);
+      }
     }
-    // Fire-and-forget persist; in-memory stamp is authoritative until resume reload.
-    storage.saveInt(_sessionStartedAtPrefsKey, now.millisecondsSinceEpoch);
+    final authAt = _authenticatedAt;
+    if (authAt != null && (started == null || started.isBefore(authAt))) {
+      started = authAt;
+    }
+
+    final now = DateTime.now();
+    if (started != null) {
+      final elapsed = now.difference(started);
+      if (elapsed >= sessionWallClockLimit) {
+        debug.log(
+          'SessionGuard: wall-clock already expired on start — forceExpiredLogout',
+        );
+        await forceExpiredLogout();
+        return;
+      }
+      _sessionStartedAt = started;
+      // Repair prefs if a prior cancel→start race wrote 0 after the real stamp.
+      await _persistSessionStartedAt(started.millisecondsSinceEpoch);
+      _armSessionWallTimer();
+      return;
+    }
+
+    // No stamp yet (legacy path) — begin wall clock now.
+    _sessionStartedAt = now;
+    _authenticatedAt ??= now;
+    await _persistSessionStartedAt(now.millisecondsSinceEpoch);
     _armSessionWallTimer();
+  }
+
+  static void _stopWallTimers() {
+    _sessionWallTimer?.cancel();
+    _sessionWallTicker?.cancel();
+    _sessionWallTimer = null;
+    _sessionWallTicker = null;
+  }
+
+  static Future<void> _persistSessionStartedAt(int ms) async {
+    final gen = ++_sessionPersistGen;
+    await storage.saveInt(_sessionStartedAtPrefsKey, ms);
+    // If a newer cancel/start raced past us, leave their write alone.
+    if (gen != _sessionPersistGen) return;
   }
 
   static void _armSessionWallTimer() {
-    _sessionWallTimer?.cancel();
-    _sessionWallTimer = null;
+    _stopWallTimers();
     final started = _sessionStartedAt;
     if (started == null) return;
     final remaining = sessionWallClockLimit - DateTime.now().difference(started);
@@ -114,22 +160,42 @@ class SessionGuard {
       debug.log('SessionGuard: wall-clock expired — forceExpiredLogout');
       forceExpiredLogout();
     });
+    // Belt-and-suspenders: Android may delay the one-shot Timer; tick catches it.
+    _sessionWallTicker = Timer.periodic(_wallClockTickInterval, (_) {
+      _tickSessionWallClock();
+    });
+  }
+
+  static void _tickSessionWallClock() {
+    if (_handlingExpired || _authBlocked) return;
+    final started = _sessionStartedAt;
+    if (started == null) return;
+    final elapsed = DateTime.now().difference(started);
+    if (elapsed >= sessionWallClockLimit) {
+      debug.log(
+        'SessionGuard: tick after ${elapsed.inSeconds}s — forceExpiredLogout',
+      );
+      forceExpiredLogout();
+    }
   }
 
   static void cancelSessionWallClock() {
-    _sessionWallTimer?.cancel();
-    _sessionWallTimer = null;
+    _stopWallTimers();
     _sessionStartedAt = null;
-    storage.saveInt(_sessionStartedAtPrefsKey, 0);
+    final gen = ++_sessionPersistGen;
+    storage.saveInt(_sessionStartedAtPrefsKey, 0).then((_) {
+      // Ignore stale completion if a newer start already persisted.
+      if (gen != _sessionPersistGen) return;
+    });
   }
 
   static void _clearAuthenticatedAt() {
     _authenticatedAt = null;
   }
 
-  /// Call on [AppLifecycleState.resumed]. If background/suspend time pushed the
-  /// session past 10 minutes, force logout; otherwise re-arm the foreground Timer
-  /// for the remaining wall-clock time (Timers often pause while backgrounded).
+  /// Call on [AppLifecycleState.resumed] (and safe on other lifecycle pulses).
+  /// If background/suspend time pushed the session past 10 minutes, force logout;
+  /// otherwise re-arm the foreground Timer for the remaining wall-clock time.
   static Future<void> checkSessionWallClockOnResume() async {
     if (_handlingExpired || _authBlocked) return;
     DateTime? started = _sessionStartedAt;
@@ -145,6 +211,8 @@ class SessionGuard {
     }
     if (started == null) return;
     _sessionStartedAt = started;
+    // Keep prefs honest after Android process death / SharedPreferences races.
+    await _persistSessionStartedAt(started.millisecondsSinceEpoch);
     final elapsed = DateTime.now().difference(started);
     if (elapsed >= sessionWallClockLimit) {
       debug.log(

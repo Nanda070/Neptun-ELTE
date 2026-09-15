@@ -37,18 +37,34 @@ class EmojiRichText extends StatelessWidget {
     final List<TextSpan> textSpans = [];
     final textHelper = getSeparatedText();
 
-
-    for(var txtHelper in textHelper){
+    for (var txtHelper in textHelper) {
       textSpans.add(TextSpan(
         text: txtHelper.text,
-        style: txtHelper.isEmoji ? emojiStyle : defaultStyle,
+        // Color emoji fonts (Noto / platform) paint their own glyphs. Applying
+        // [TextStyle.color] draws a tinted monochrome silhouette underneath →
+        // duplicate “ghost” emoji (e.g. 🐞 Bug report in drawer / Settings).
+        style: txtHelper.isEmoji ? _untintedEmojiStyle(emojiStyle) : defaultStyle,
       ));
     }
 
     return Text.rich(
-        TextSpan(
-            children: textSpans
-        )
+      TextSpan(children: textSpans),
+    );
+  }
+
+  /// Keep size / family from [emojiStyle] but drop color / foreground tint.
+  static TextStyle _untintedEmojiStyle(TextStyle style) {
+    return TextStyle(
+      inherit: false,
+      fontSize: style.fontSize,
+      fontFamily: style.fontFamily,
+      fontFamilyFallback: style.fontFamilyFallback,
+      height: style.height,
+      letterSpacing: style.letterSpacing,
+      wordSpacing: style.wordSpacing,
+      fontWeight: style.fontWeight,
+      fontStyle: style.fontStyle,
+      // Intentionally no [color] / [foreground] — prevents ghost duplicates.
     );
   }
 

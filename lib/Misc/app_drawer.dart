@@ -684,7 +684,11 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                     ListTile(
                       leading: Icon(Icons.settings_rounded, color: AppColors.getTheme().textColor),
-                      title: Text(AppStrings.getLanguagePack().topmenu_buttons_Settings, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      title: EmojiRichText(
+                        text: AppStrings.getLanguagePack().topmenu_buttons_Settings,
+                        defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16),
+                        emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+                      ),
                       onTap: () {
                         AppHaptics.lightImpact();
                         Navigator.pop(context); // closes drawer
@@ -712,7 +716,11 @@ class _AppDrawerState extends State<AppDrawer> {
                       ),
                     ListTile(
                       leading: Icon(Icons.bug_report_rounded, color: AppColors.getTheme().textColor),
-                      title: Text(AppStrings.getLanguagePack().topmenu_buttons_Bugreport, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      title: EmojiRichText(
+                        text: AppStrings.getLanguagePack().topmenu_buttons_Bugreport,
+                        defaultStyle: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600, fontSize: 16),
+                        emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+                      ),
                       onTap: () {
                         AppHaptics.lightImpact();
                         Navigator.pop(context);
@@ -731,7 +739,11 @@ class _AppDrawerState extends State<AppDrawer> {
             Divider(color: AppColors.getTheme().textColor.withValues(alpha: 0.1), height: 1),
             ListTile(
               leading: Icon(Icons.logout_rounded, color: AppColors.getTheme().errorRed),
-              title: Text(AppStrings.getLanguagePack().topmenu_buttons_Logout, style: TextStyle(color: AppColors.getTheme().errorRed, fontWeight: FontWeight.w700)),
+              title: EmojiRichText(
+                text: AppStrings.getLanguagePack().topmenu_buttons_Logout,
+                defaultStyle: TextStyle(color: AppColors.getTheme().errorRed, fontWeight: FontWeight.w700, fontSize: 16),
+                emojiStyle: TextStyle(fontSize: 16, fontFamily: "Noto Color Emoji"),
+              ),
               onTap: () {
                 AppHaptics.lightImpact();
                 Future.delayed(Duration.zero, ()async{

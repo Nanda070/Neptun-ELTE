@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The mobile client authenticates and calls modern JWT APIs on **`https://neptun.elte.hu`**, not a specific `hallgatoN` shell.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.5.3+1** — user-facing / Settings / docs = **1.5.3** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.5.4+1** — user-facing / Settings / docs = **1.5.4** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.3`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.4`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -77,14 +77,15 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.5.3** | **Current.** Patch on feature line **5** — new launcher / adaptive app icon (Android + iOS) from updated ELTE Neptun branding; splash uses refreshed `assets/neptun2_logo.png`. Session policy unchanged (still **10 min**). New git tag **v1.5.3** for Android GitHub auto-update (do not clobber **v1.5.2**). |
+| **1.5.4** | **Current.** Patch on feature line **5** — Android 10-min session wall-clock reliability (`SessionGuard` continue-from-stamp, prefs race fix, 15s ticker + lifecycle re-check); Bug report / emoji ghost duplicate fix (`EmojiRichText` untinted color-emoji spans). Policy still **10 min** wall-clock. New git tag **v1.5.4** (do not clobber **v1.5.3**). |
+| **1.5.3** | Patch — new launcher / adaptive app icon (Android + iOS) from updated ELTE Neptun branding; splash uses refreshed `assets/neptun2_logo.png`. Session policy unchanged (still **10 min**). Tag **v1.5.3**. |
 | **1.5.2** | Patch — Android functional parity with iOS: App Widget “Today’s classes” from calendar cache (no JWT), `neptunelte://` deep-link intent + maps/mailto `<queries>`, release APK signing fallback when `key.properties` absent; Android OTP/2FA white-screen fix (opaque `TwoFactorCodePage`). Session policy unchanged (still **10 min**). |
 | **1.5.1** | Patch — removes Calendar “Next 48 hours” strip (today / ZH / week / ICS / What’s Changed unchanged). Session policy unchanged. |
 | **1.5.0** | Feature line **5** — plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widget later in **1.5.2**). Item **11** (Academic Progress / tanterv) **dropped**. Numbered plan files deleted; backlog = TECHNICAL + DEV_BLOG. |
 | **1.4.0** | Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
-| **1.5.4**, … | Further patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
+| **1.5.5**, … | Further patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
@@ -204,7 +205,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.3` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.4` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -361,11 +362,11 @@ For 2FA, resend with `token` = code; optionally `Authorization: Bearer` from `tw
 
 Refresh / re-login on 401 lives in `_APIRequest` via `ensureValidSession` → `GetNewTokens` (when a refresh token exists). **Silent ELTE portal re-auth is disabled** (needs 2FA). If refresh fails, `SessionGuard.forceExpiredLogout` wipes **auth only** via `DataCache.sessionWipeKeepCache()` (password / JWT / refresh / device cookie / `HasLogin`; **keeps username + academic cache**), navigates to login via `navigateToLoginRoot()` (root `pushAndRemoveUntil(Splitter)` — **not** `popUntil` on a sole Home route, which could empty the navigator into a black screen), and shows `auth_sessionExpired_PleaseSignIn`. Manual / expired logout share that wipe. Portal leftovers: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, tighten `_looksLikeInvalidCredentials` (no bare `invalid` on HTML `is-invalid`) so same-process re-login is not stuck on false “invalid credentials” (**1a**). Full `dataWipe()` (prefs.clear including cache) remains available for hard reset — not used on normal logout.
 
-**App session wall clock (user-visible):** On successful login / 2FA, `SessionGuard.markParticipantSessionStarted()` (from `SetupPage`, before `navigateToHomeRoot`) clears stale `SESSION_StartedAtMs`, persists a fresh start time, and arms the **10-minute** `Timer`. Entering `HomePage` calls `startSessionWallClock()` again (same participant session). When the timer fires, the same `forceExpiredLogout` path runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). `prepareForLoginAttempt()` clears the wall clock at login start. Manual logout cancels the timer; token refresh does **not** extend the wall clock. This aligns UI logout with short-lived Neptun access JWTs (~10–15 min from **session entry**, not only 401).
+**App session wall clock (user-visible):** On successful login / 2FA, `SessionGuard.markParticipantSessionStarted()` (from `SetupPage`, before `navigateToHomeRoot`) clears stale `SESSION_StartedAtMs`, persists a fresh start time, and arms the **10-minute** wall clock. Entering `HomePage` calls `startSessionWallClock()` which **continues** the same stamp (does **not** grant a fresh 10 min). When the deadline is reached, `forceExpiredLogout` runs (wipe tokens, keep username + academic cache, snackbar, navigate to login). `prepareForLoginAttempt()` clears the wall clock at login start. Manual logout cancels timers; token refresh does **not** extend the wall clock. This aligns UI logout with short-lived Neptun access JWTs (~10–15 min from **session entry**, not only 401).
 
 **Post-login grace (1.3.3):** For ~45 s after `markParticipantSessionStarted`, `ensureValidSession` does **not** call `forceExpiredLogout` when refresh/silent re-auth fail but an access token is still present — avoids an immediate kick from a race or flaky first API after fresh 2FA. Resume wall-clock checks prefer the in-memory start and ignore prefs older than the last auth stamp.
 
-**Background wall clock (plan 1b shipped):** `HomePage` is a `WidgetsBindingObserver`. On `AppLifecycleState.resumed`, `SessionGuard.checkSessionWallClockOnResume()` compares `now` to the persisted session start; if `>= 10 min` → `forceExpiredLogout`; else re-arms the foreground `Timer` for the remaining duration. Do not rely on an in-memory `Timer` alone while the process is suspended. Foreground continuous 10 min still kicks as before.
+**Background / Android wall clock (1b + 1.5.4):** `HomePage` is a `WidgetsBindingObserver`. On `AppLifecycleState.resumed` / `inactive`, `SessionGuard.checkSessionWallClockOnResume()` compares `now` to the persisted session start; if `>= 10 min` → `forceExpiredLogout`; else re-arms the foreground one-shot `Timer` for the remaining duration **plus** a **15 s** periodic ticker (Android often delays/pauses long one-shot Timers). Persist writes use a generation counter so a fire-and-forget cancel `SESSION_StartedAtMs=0` cannot clobber a newer start (that race previously left Android cold starts without a wall-clock stamp). Honesty: if the OS kills the process while backgrounded, expiry is enforced on next cold start / resume via the persisted stamp — not while the isolate is dead.
 
 **Cache honesty (plan item 1 shipped):** Every home surface (calendar / markbook / periods / mail / payments) paints from `HasCached*` lists first when present; network refresh is silent. On dead session / offline / failed refresh, lists are **not** replaced with an empty spinner. UI may show `cache_showingFromCache` banner. Empty calendar weeks are cached as `len == 0` so freedays render without a loading spinner. Multi-term markbook walks skip when `SessionGuard.isAuthBlocked`.
 
@@ -539,7 +540,7 @@ On the phone: **Settings → General → VPN & Device Management** → trust the
 | Team (local) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (do not change — breaks Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.5.3**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.5.4**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
 
 **Why no underscore in the Bundle ID:** Automatic Signing names the profile `XC com nanda070 neptun_mobile app`. Underscores in that name are invalid → `The attribute 'name' is invalid` / no profiles.
 

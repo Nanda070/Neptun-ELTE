@@ -235,7 +235,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       // Replace-all — never popUntil the only Home route into a blank stack.
       navigateToLoginRoot();
     });
-    // Participant session entry: 10-minute wall-clock auto-logout (not JWT-401-only).
+    // Continue (do not reset) the 10-minute wall-clock from login / cold start.
+    // Fire-and-forget; SessionGuard awaits prefs internally.
     api.SessionGuard.startSessionWallClock();
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
@@ -2561,10 +2562,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // Wall-clock across background: Timer often pauses while suspended.
+    // Android often pauses/delays long Timers while inactive/paused/hidden;
+    // re-check wall-clock whenever we may return to a runnable state.
+    if (state == AppLifecycleState.resumed ||
+        state == AppLifecycleState.inactive) {
       api.SessionGuard.checkSessionWallClockOnResume();
-      // Refresh WidgetKit payload from calendar cache (no network / no JWT).
+    }
+    if (state == AppLifecycleState.resumed) {
+      // Refresh WidgetKit / App Widget payload from calendar cache (no JWT).
       WidgetBridge.sync(
         preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
       );
