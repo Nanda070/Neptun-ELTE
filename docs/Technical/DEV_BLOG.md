@@ -272,6 +272,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+
+## 2026-09-15 — ship policy: new tag for Android updater
+
+**[2026-09-15]**
+
+- **Policy (docs/rules only, no app bump):** from now on, every **shipped Android APK / GitHub Release** must use a **new marketing `1.x.y`** and a **new** git tag `v1.x.y`. Replacing an APK on the same tag (clobber) does **not** trigger in-app auto-update (`AppUpdater` requires `tag_name` strictly newer than installed `versionName`). Cursor rule: `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not tag unless an APK ships. Owner **Nanda**.
+
+---
 ## In progress / planned (honest)
 
 **[ongoing]**

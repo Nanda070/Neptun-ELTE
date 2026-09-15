@@ -88,6 +88,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
 
+**Android GitHub auto-update:** `AppUpdater` (`lib/Misc/auto_updater.dart`) prompts only when the latest Release `tag_name` is **strictly newer** than the installed `versionName`. Shipping a fix to sideload users requires a new marketing `1.x.y`, a **new** git tag `v1.x.y`, and a GitHub Release with the new APK — do **not** replace an APK on an existing same-version tag and expect auto-install. Policy: `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not bump/tag unless an APK ships.
+
 ---
 
 ## 2. Repository
@@ -612,7 +614,7 @@ flutter run -d android
 flutter build apk --release
 ```
 
-Play: `in_app_update` if `installerStore == com.android.vending`. Otherwise GitHub APK (`lib/Misc/auto_updater.dart`) — **Android only**.
+Play: `in_app_update` if `installerStore == com.android.vending`. Otherwise GitHub APK (`lib/Misc/auto_updater.dart`) — **Android only**. Auto-update compares Release `tag_name` to installed `versionName` (**strictly newer** only); same-tag APK clobber does not prompt. Each APK ship needs a new `1.x.y` + `v1.x.y` Release.
 
 Release signing: local `android/key.properties` + keystore (gitignored). If absent, release builds fall back to the **debug** keystore so sideload beta APKs still produce.
 

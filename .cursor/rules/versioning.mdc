@@ -22,3 +22,7 @@ Owner: **Nanda**. Canonical detail: `docs/Technical/TECHNICAL.md` § Versioning 
 Update together: `pubspec.yaml`, Android `versionName` fallback, iOS `MARKETING_VERSION` if hardcoded, Settings fallback string, README EN+RU identity row, TECHNICAL EN+RU § Versioning + product overview version line, DEV_BLOG EN+RU entry. Settings UI must show `PackageInfo.version` **without** `+buildNumber`.
 
 Do **not** expect `IMPLEMENTATION_PLAN*` — those files were deleted; backlog lives in TECHNICAL + DEV_BLOG.
+
+## Android GitHub auto-updater
+
+Any fix/feature that must reach sideload Android users via `lib/Misc/auto_updater.dart` needs a **new marketing `1.x.y`**, a **new git tag `v1.x.y`**, and a GitHub Release with the new APK. Clobbering the same tag does **not** trigger update (`tag_name` must be strictly newer than installed `versionName`). See `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not bump/tag unless shipping an APK.

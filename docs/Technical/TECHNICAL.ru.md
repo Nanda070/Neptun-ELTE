@@ -88,6 +88,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
 
+**Автообновление Android с GitHub:** `AppUpdater` (`lib/Misc/auto_updater.dart`) предлагает обновление только если `tag_name` последнего Release **строго новее** установленного `versionName`. Чтобы фикс дошёл до sideload-пользователей — новая маркетинговая `1.x.y`, **новый** git-тег `v1.x.y` и GitHub Release с новым APK; **не** перезаливать APK на тот же тег в расчёте на автоустановку. Политика: `.cursor/rules/android-github-release-tags.mdc`. Чистые docs/chore коммиты без APK можно не бампить/не тегировать.
+
 ---
 
 ## 2. Репозиторий
@@ -612,7 +614,7 @@ flutter run -d android
 flutter build apk --release
 ```
 
-Play: `in_app_update`, если `installerStore == com.android.vending`. Иначе GitHub APK (`lib/Misc/auto_updater.dart`) — **только Android**.
+Play: `in_app_update`, если `installerStore == com.android.vending`. Иначе GitHub APK (`lib/Misc/auto_updater.dart`) — **только Android**. Автообновление сравнивает `tag_name` Release с установленным `versionName` (**только строго новее**); clobber APK на том же теге не вызывает диалог. Каждый ship APK — новая `1.x.y` + Release `v1.x.y`.
 
 Подпись release: локальный `android/key.properties` + keystore (в gitignore). Если нет — release падает на **debug** keystore, чтобы sideload beta APK всё равно собирался.
 

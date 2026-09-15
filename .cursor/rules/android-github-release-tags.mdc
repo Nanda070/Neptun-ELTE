@@ -1,0 +1,33 @@
+---
+description: Android GitHub auto-update requires a new marketing version + git tag per APK ship
+alwaysApply: true
+---
+
+# Android GitHub release tags (auto-updater)
+
+Owner: **Nanda**. Related: `.cursor/rules/versioning.mdc`, `lib/Misc/auto_updater.dart`.
+
+## User policy (RU intent)
+
+«Все будущие коммиты на GitHub должны быть с новым тегом и версией, чтобы на Android всегда была авто-установка.»
+
+## Interpretation (default)
+
+- **Means every shipped Android build / GitHub Release that attaches an APK** — not literally every git commit.
+- Pure docs / chore / rule-only commits may stay on the current `1.x.y` **without** a product tag, unless the user asks to tag that commit too.
+- If a fix/feature must reach sideload Android users via the in-app GitHub updater → treat it as a **product release**.
+
+## Required for each Android APK ship
+
+1. Bump marketing version `1.x.y` (patch or feature line) — follow `versioning.mdc` + `keep-docs-current.mdc`.
+2. Create a **new** git tag `v1.x.y` (never reuse / clobber an existing tag expecting updater pickup).
+3. Publish a GitHub Release for that tag with the new APK (and IPA if shipping).
+
+## Why
+
+`AppUpdater` prompts only when latest release `tag_name` is **strictly newer** than installed `versionName`. Replacing the APK on the same tag (e.g. clobber `v1.5.2`) does **not** trigger auto-update.
+
+## Do not
+
+- Expect auto-update after `--clobber` / re-upload on the same `v1.x.y`.
+- Ship user-facing Android fixes on GitHub without a new `1.x.y` + `v1.x.y`.
