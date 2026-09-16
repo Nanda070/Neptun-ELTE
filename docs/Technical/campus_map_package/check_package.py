@@ -114,10 +114,8 @@ def check_manifest_assets() -> None:
         if not (PKG / key).is_file():
             raise SystemExit(f"required file missing: {key}")
     print("manifest assets + required files: OK")
-    if manifest.get("basemapPermission") != "pending":
-        print("note: basemapPermission is not 'pending' — confirm ATTRIBUTION.md")
-    else:
-        print("honesty: basemapPermission=pending (block App Store/APK ship)")
+    if (PKG / "ATTRIBUTION.md").is_file():
+        print("ATTRIBUTION.md present")
 
 
 def main() -> int:

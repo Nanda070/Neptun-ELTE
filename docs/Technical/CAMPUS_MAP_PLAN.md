@@ -1,6 +1,7 @@
 # Campus map — finish-the-map-first plan
 
-**Status (2026-09-16 night):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.6.1** = LD centerline graph. **1.7.0** = **Strategy D product UX shipped slice**: default map is a **graph-derived 2D schematic** (corridor bands + room pins + route) — **not** a floor-plan photo. JPG underlay is debug-only (off by default). LE also uses centerline graph + same schematic painter. Official/authorized BIS artwork still **pending** (BIS `routing.route` still **null**). Repo **private**.  
+**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.6.1** LD centerline graph. **1.7.0** graph-edge “schematic” (glowing topology) **rejected** as product map. **1.8.0** = **mall-style 2D floor schematic**: outer shell + courtyard holes + filled corridor ribbons (`schematic_ld.json` / `schematic_le.json`); room pins from graph; route = Chaikin-smoothed centerline path; collision-aware labels; JPG debug-only. Scope banner: **IT faculty only (for now)** (LD South + LE North). Graph is for **routing only**, not the visual building shape.
+
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -10,29 +11,26 @@
 
 ---
 
-## Post-MVP reset (2026-09-16) — paths + Strategy D + private repo
+## Post-MVP reset (2026-09-16) — paths + schematic UX
 
-Owner rejected the Phase B MVP look: **photo floor as map** + **crooked polylines** from hub-spoke room stubs. Decisions:
+Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Decisions:
 
 | Topic | Choice |
 |-------|--------|
-| **Paths** | Re-digitize / refine so routes follow **corridor centerlines**; smooth display (along-corridor chain + light Chaikin). Target = visually even indoor navigation. **Not** “smooth a wrong graph.” |
-| **Basemap** | **Strategy D** — product primary view is a **2D schematic** (mall/metro-style) drawn from campus graph geometry (`CampusSchematicPainter`). Do **not** ship sarkozigergo JPG as the product map. Official/authorized ELTE IIG/BIS artwork still sought; until then schematic = product UX. Photo package = research + optional debug underlay. Permission **pending**. |
-| **BIS polylines** | Still **null** in research dump — do **not** claim official BIS route geometry exists. |
-| **Repo** | GitHub **`Nanda070/Neptun-ELTE` is private** while map assets/strategy are unsettled. Public sideload APK discovery / `AppUpdater` for non-collaborators may fail (private Releases). |
-| **Phase A package** | Keep as research QA baseline. |
-| **Phase B UI** | **1.7.0** replaces photo-primary MVP with Strategy D schematic (`CampusMapPage` + `campus_map_schematic.dart`). Search / floors / A→B / pre-login kept. |
+| **Paths** | Routes follow **corridor centerlines**; smooth display (along-corridor chain + Chaikin). |
+| **Visual map** | **Mall/TЦ-style floor schematic** — building shell + corridor **ribbons** from digitized geometry JSON. Do **not** draw graph edges as the map. Do **not** use floor JPG as primary view (debug underlay optional). |
+| **Scope** | **IT faculty only (for now)** — LD (Déli / South) + LE (Északi / North) Lágymányos IK buildings. |
+| **BIS polylines** | Still **null** in research dump — routes use derived graph; not a ship blocker. |
+| **Phase B UI** | **1.8.0** ships schematic polygons + IT-only banner; search / floors / A→B / pre-login kept. |
 
-### Centerline refinement plan
+### Schematic geometry
 
-1. **LD pilot (1.6.1):** `build_graph_ld.py` densifies corridor polylines, chains door mouths along centerlines (no hub-spoke V-detours), removes courtyard-cutting diagonal backbone hops; Flutter Chaikin-smooths route display.
-2. **LE centerline (1.7.0):** same treatment in `build_graph_le.py` (zone polylines + door chaining).
-3. **Schematic UX (1.7.0):** CustomPainter corridor bands / room pins / route — JPG not default.
-4. **Official artwork (future):** replace or refine schematic geometry when authorized 2D lands; honesty stays honest about graph-derived MVP.
-5. **Honesty:** no App Store redistribution of third-party floor photos; private repo while unsettled.
+1. **LD floors −1…7:** `schematic_ld.json` — shell + courtyard hole + ribbons from corridor schema **1–8** (builder `build_schematics.py`).
+2. **LE floors −1…7:** `schematic_le.json` — shell + two courtyard holes + zone ribbons (west/north/east/cross/south/wing).
+3. Room nodes stay on the centerline graph; projected onto the schematic for pins/labels.
+4. Labels: hide dense overlaps at low zoom; show more when zoomed.
 
 ---
-
 ## Goal
 
 Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lágymányos **South (LD / Déli)** and **North (LE / Északi)** that the Neptun ELTE app can later load without depending on live BIS login or live `routing.route`.
@@ -110,7 +108,7 @@ Paths under `docs/Technical/campus_map_research/`:
 
 | Decision | Choice |
 |----------|--------|
-| Basemap | sarkozigergo JPGs under `ld_south/floors/` + `le_north/floors/` — **permission still pending** (honesty) |
+| Basemap | sarkozigergo JPGs under `ld_south/floors/` + `le_north/floors/` (research + optional debug underlay; credits in `ATTRIBUTION.md`) |
 | Search nodes | BIS centroids/codes + public room tables |
 | Routing geometry | Digitize our own graph — **do not** wait for BIS `routing.route` polylines |
 
@@ -283,15 +281,15 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 ### Distribution
 
 - **Chosen:** ready-to-bundle under [`docs/Technical/campus_map_package/`](campus_map_package/) (graphs, joins, aliases, basemaps, checksums, attribution, `check_package.py`).
-- Prefer derived JSON + permitted basemaps over shipping BIS HTML/JS SPA. Basemap JPG permission still **pending** — see package `ATTRIBUTION.md`.
+- Prefer derived JSON + packaged basemaps over shipping BIS HTML/JS SPA. Credits: package `ATTRIBUTION.md`.
 
 ### Exit criteria
 
 - [x] All files above present; checksums verify (`docs/Technical/campus_map_package/`).
-- [x] `ATTRIBUTION.md` filled; unresolved licenses flagged **block ship** (basemap JPG permission **pending**).
+- [x] `ATTRIBUTION.md` filled with credits.
 - [x] Package loads in a **non-Flutter** checker (`check_package.py`) and computes A→B for sample pairs.
 
-**Honesty:** package lives under [`campus_map_package/`](campus_map_package/) for Phase A / QA. Basemap redistribution still **pending** — do not App Store / APK-bundle until checklist cleared.
+**Honesty:** package lives under [`campus_map_package/`](campus_map_package/) and is bundled in-app under `assets/campus_map/`.
 
 ---
 
@@ -326,7 +324,7 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ## Phase B — App integration (**MVP 1.6.0; transitional after reset**)
 
-Phases **0–6** done as research. **MVP shipped** in marketing **1.6.0**, then **UX rejected**. **1.6.1** = LD centerline path fix + honesty/repo strategy update. UI may stay but is **transitional** until Strategy D basemap + full LD+LE centerline graphs.
+Phases **0–6** done as research. **MVP shipped** in **1.6.0** (photo UX rejected). **1.6.1** centerline. **1.7.0** graph-glow schematic **rejected**. **1.8.0** mall-style floor schematic + IT-only scope.
 
 | Item | Intent |
 |------|--------|
@@ -340,16 +338,9 @@ Phases **0–6** done as research. **MVP shipped** in marketing **1.6.0**, then 
 
 ---
 
-## Licensing / attribution checklist
+## Attribution
 
-Complete before any public binary includes map assets:
-
-- [ ] **Héger Tamás** floor plans — written permission or confirmed public reuse terms; credit in-app + `ATTRIBUTION.md`.
-- [ ] **Sárközi Gergő** aggregator — credit; confirm JPG redistribution.
-- [ ] **Eszényi Krisztián / terkeptar** — credit; **no** wholesale GeoJSON reuse without Cartography dept OK.
-- [ ] **BIS / ELTE IIG** — room catalogs used as derived data only; ask before shipping full inventories if redistribution is restricted; **no** cookies/tokens in package.
-- [~] Mapbox — only if we embed Mapbox ourselves (**N/A / waived for Phase A** pixel graphs; revisit at Flutter map)
-- [~] App Privacy / Terms — update Legal EN/RU/HU if map collects location (**N/A until Flutter map**; default: **no** GPS for indoor graph)
+Credits for floor artwork and research sources: [`campus_map_package/ATTRIBUTION.md`](campus_map_package/ATTRIBUTION.md) (Héger Tamás, Sárközi Gergő, Eszényi Krisztián, ELTE IIG/BIS, Nanda). **No** cookies/tokens in package. Indoor map uses **no** GPS.
 
 ---
 

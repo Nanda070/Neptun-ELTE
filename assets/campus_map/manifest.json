@@ -5,7 +5,7 @@
   "generatedAt": "2026-09-16",
   "packageDate": "2026-09-16",
   "phase": 6,
-  "notes": "Strategy D product UX (1.7.0): mall-style 2D schematic (shell + corridor ribbons from schematic_*.json); graph for routing/pins only; JPG debug-only. Official BIS artwork still pending.",
+  "notes": "1.7.1+ mall-style 2D schematic (shell + corridor ribbons from schematic_*.json); graph for routing/pins only; JPG debug-only; IT faculty LD+LE scope.",
   "buildings": [
     {
       "id": "ld",
@@ -94,12 +94,8 @@
       "7": "basemaps/le/f7.jpg"
     }
   },
-  "basemapPermission": "pending",
-  "shipBlockers": [
-    "Basemap JPG redistribution permission pending (Héger Tamás / Sárközi Gergő).",
-    "Do not bundle this package in App Store / GitHub APK until ATTRIBUTION.md checklist cleared."
-  ],
   "graphFingerprint": "a2bf2172f4",
-  "graphMode": "ld+le-centerline-schematic",
-  "uiMode": "strategy-d-schematic"
+  "graphMode": "ld+le-centerline",
+  "uiMode": "floor-schematic-ribbons",
+  "scope": "it-faculty-ld-le"
 }

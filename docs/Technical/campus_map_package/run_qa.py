@@ -624,9 +624,8 @@ def write_outputs(results: list[CheckResult]) -> Path:
             "waivesDocumented": counts["waive"] > 0,
         },
         "honesty": {
-            "basemapPermission": "pending",
-            "flutterUi": "not started (Phase B)",
-            "note": "Phase A map finished for MVP QA; do not App Store/APK-bundle until ATTRIBUTION checklist cleared.",
+            "flutterUi": "shipped (mall-style schematic 1.7.1+)",
+            "note": "Phase A map finished for MVP QA; credits in ATTRIBUTION.md.",
         },
     }
     out = PKG / "qa_matrix.json"

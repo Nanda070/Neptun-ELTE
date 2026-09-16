@@ -6,8 +6,8 @@ import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/Misc/elte_room_code.dart';
 
-/// Indoor campus map — mall-style 2D floor schematic (not graph-edge glow).
-/// Works without Neptun login. Scope: IT faculty LD+LE only (for now).
+/// Indoor campus map — mall-style floor schematic (not graph-edge glow).
+/// Works without Neptun login. Scope: IT faculty LD+LE.
 class CampusMapPage extends StatefulWidget {
   const CampusMapPage({super.key, this.initialBuildingId = 'ld'});
 
@@ -32,6 +32,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
   bool _showPhotoDebug = false;
   final _transform = TransformationController();
   double _viewScale = 1.0;
+  String? _selectedRoomId;
 
   @override
   void initState() {
@@ -77,19 +78,6 @@ class _CampusMapPageState extends State<CampusMapPage> {
   }
 
   CampusBuildingGraph? get _graph => _pkg?.graphs[_buildingId];
-
-  String _honestyBannerText(LanguagePack lang) {
-    final m = _pkg?.manifest;
-    if (m == null) return lang.campusMap_HonestyBanner;
-    final date = (m['packageDate'] ?? m['generatedAt'] ?? '').toString();
-    final mode = (m['uiMode'] ?? m['graphMode'] ?? '').toString();
-    final meta = [
-      if (date.isNotEmpty) date,
-      if (mode.isNotEmpty) mode,
-    ].join(' · ');
-    if (meta.isEmpty) return lang.campusMap_HonestyBanner;
-    return '${lang.campusMap_HonestyBanner}\n$meta';
-  }
 
   void _onSearchChanged(String q) {
     final pkg = _pkg;
@@ -198,7 +186,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
               : Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -217,16 +205,6 @@ class _CampusMapPageState extends State<CampusMapPage> {
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                           ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                      child: Text(
-                        _honestyBannerText(lang),
-                        style: TextStyle(
-                          color: theme.textColor.withValues(alpha: 0.65),
-                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -331,6 +309,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                 _buildingId = 'ld';
                 _pathNodeIds = null;
                 _floorLevel = 0;
+                _selectedRoomId = null;
               });
             },
           ),
@@ -344,6 +323,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                 _buildingId = 'le';
                 _pathNodeIds = null;
                 _floorLevel = 0;
+                _selectedRoomId = null;
               });
             },
           ),
@@ -369,7 +349,10 @@ class _CampusMapPageState extends State<CampusMapPage> {
                 selected: _floorLevel == f.level,
                 onSelected: (_) {
                   AppHaptics.lightImpact();
-                  setState(() => _floorLevel = f.level);
+                  setState(() {
+                    _floorLevel = f.level;
+                    _selectedRoomId = null;
+                  });
                 },
               ),
             ),
@@ -470,35 +453,65 @@ class _CampusMapPageState extends State<CampusMapPage> {
             maxScale: 6,
             child: AspectRatio(
               aspectRatio: floor.basemapWidth / floor.basemapHeight,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (_showPhotoDebug)
-                    Opacity(
-                      opacity: 0.22,
-                      child: Image.asset(
-                        pkg.basemapAsset(_buildingId, _floorLevel),
-                        fit: BoxFit.fill,
-                        filterQuality: FilterQuality.low,
-                      ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: (details) {
+                      final w = constraints.maxWidth;
+                      final h = constraints.maxHeight;
+                      if (w <= 0 || h <= 0) return;
+                      final bx = details.localPosition.dx * floor.basemapWidth / w;
+                      final by = details.localPosition.dy * floor.basemapHeight / h;
+                      CampusRoom? best;
+                      var bestD = 28.0 * 28.0; // ~28px hit in basemap space scaled
+                      final hitR = (28.0 * floor.basemapWidth / w);
+                      final hit2 = hitR * hitR;
+                      for (final r in g.rooms.values) {
+                        if (r.floorId != floor.id) continue;
+                        final dx = r.x - bx;
+                        final dy = r.y - by;
+                        final d = dx * dx + dy * dy;
+                        if (d < hit2 && d < bestD) {
+                          bestD = d;
+                          best = r;
+                        }
+                      }
+                      setState(() => _selectedRoomId = best?.id);
+                    },
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        if (_showPhotoDebug)
+                          Opacity(
+                            opacity: 0.22,
+                            child: Image.asset(
+                              pkg.basemapAsset(_buildingId, _floorLevel),
+                              fit: BoxFit.fill,
+                              filterQuality: FilterQuality.low,
+                            ),
+                          ),
+                        CustomPaint(
+                          painter: CampusSchematicPainter(
+                            graph: g,
+                            floor: floor,
+                            schematic: schematic,
+                            pathNodeIds: _pathNodeIds,
+                            fromRoomId: fromRoomId,
+                            toRoomId: toRoomId,
+                            selectedRoomId: _selectedRoomId,
+                            corridorColor: corridor,
+                            routeColor: route,
+                            labelColor: theme.textColor,
+                            surfaceColor: surface,
+                            outlineColor: theme.textColor,
+                            viewScale: _viewScale,
+                          ),
+                        ),
+                      ],
                     ),
-                  CustomPaint(
-                    painter: CampusSchematicPainter(
-                      graph: g,
-                      floor: floor,
-                      schematic: schematic,
-                      pathNodeIds: _pathNodeIds,
-                      fromRoomId: fromRoomId,
-                      toRoomId: toRoomId,
-                      corridorColor: corridor,
-                      routeColor: route,
-                      labelColor: theme.textColor,
-                      surfaceColor: surface,
-                      outlineColor: theme.textColor,
-                      viewScale: _viewScale,
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ),
@@ -506,7 +519,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
           child: Text(
-            '${floor.labelEn} · ${lang.campusMap_SchematicMode} · ${lang.campusMap_ItFacultyOnlyShort}',
+            floor.labelEn,
             style: TextStyle(color: theme.textColor.withValues(alpha: 0.55), fontSize: 11),
           ),
         ),

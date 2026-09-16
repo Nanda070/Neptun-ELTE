@@ -12,7 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
-Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research-пакет фазы A сохранён; Phase B MVP **1.6.0** фото-UX отвергнут. **1.6.1** LD centerline. **1.7.0** = **Strategy D schematic UX** (2D-схема из графа: коридоры/комнаты/маршрут; JPG не primary; LE тоже centerline) + репо **private**. Официальный BIS artwork ещё pending; `routing.route` всё ещё **null**. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research-пакет фазы A сохранён; Phase B MVP **1.6.0** фото-UX отвергнут. **1.6.1** LD centerline. **1.7.0** = **Strategy D schematic UX** (2D-схема из графа: коридоры/комнаты/маршрут; JPG не primary; LE тоже centerline) + репо **private**. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -56,7 +56,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.7.1+1** — для пользователя / Settings / docs = **1.7.1** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.7.2+1** — для пользователя / Settings / docs = **1.7.2** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -78,8 +78,9 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.7.1** | **Текущая.** Патч — mall-style schematic JSON (оболочка здания + ленты коридоров); JPG только debug. Тег **v1.7.1**. |
-| **1.7.0** | Feature-line **7** — **Strategy D** product UX: по умолчанию **2D-схема** из графа (`CampusSchematicPainter`: полосы коридоров, пины комнат, гладкий маршрут); JPG этажа только debug. Centerline-графы LD+LE. Официальный BIS artwork ещё pending; репо **private**. Тег **v1.7.0**. |
+| **1.7.2** | **Текущая.** Патч — чистые лейблы, этаж-зависимые коридоры, короткий чип IK, docs scrub. Тег **v1.7.2**.
+| **1.7.1** | Патч — mall-style schematic JSON (оболочка здания + ленты коридоров); JPG только debug. Тег **v1.7.1**. |
+| **1.7.0** | Feature-line **7** — **Strategy D** product UX: по умолчанию **2D-схема** из графа (`CampusSchematicPainter`: полосы коридоров, пины комнат, гладкий маршрут); JPG этажа только debug. Centerline-графы LD+LE. Тег **v1.7.0**. |
 | **1.6.1** | Патч линии **6** — LD centerline + Chaikin; honesty стратегии D (фото не финал); LE тогда ещё hub. Тег **v1.6.1**. |
 | **1.6.0** | Feature-line **6** — **фаза B** indoor-карты MVP: pre-login Map, LD/LE, этажи, поиск, A→B Dijkstra, пакет в `assets/campus_map/`. UX позже отвергнут (кривые пути + фото этажа). Basemap permission **pending**. Тег **v1.6.0**. |
 | **1.5.12** | Патч — iOS внешние Maps для LD/LE/LK: native `maps:` URI (+ https fallback), `maps`/`comgooglemaps` в `LSApplicationQueriesSchemes`, **Открыть карту** всегда видно (не только после decode), `TextButton` чтобы тап строки списка не перехватывал. Тег **v1.5.12**. |
@@ -485,7 +486,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Strategy D schematic (1.7.0)** | Пакет + `CampusMapPage` (pre-login + drawer): LD/LE 2D-схема (коридоры + пины + маршрут), этажи, поиск, A→B. Фото JPG **не** primary (только debug-подложка). Centerline LD+LE. Официальный BIS artwork ещё pending; `routing.route` **null**. Репо **private**. Внешний Open map сохранён. |
+| Indoor-карта кампуса | **Strategy D schematic (1.7.1+)** | Пакет + `CampusMapPage`: LD/LE схема этажа (оболочка + ленты), пины, маршрут, лейблы, баннер **только IK**. JPG debug-only. Граф для маршрутов. Внешний Open map сохранён. |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |

@@ -414,6 +414,12 @@
 
 ---
 
+## 2026-09-16 — релиз 1.7.2 (строки «только IK» + docs)
+
+**[2026-09-16]**
+
+- **Релиз 1.7.2** (`pubspec` **1.7.2+1**): патч линии **7**. Чистые лейблы комнат (offset, zoom, tap — без sticker bomb); этаж-зависимые коридоры; убран tech honesty banner и «(for now)» / «2D schematic»; короткий чип IK; docs без ship-blocker pending. GitHub Release **v1.7.2**. Владелец **Nanda**.
+
 ## 2026-09-16 — релиз 1.7.1 (mall-style schematic polygons)
 
 **[2026-09-16, ~20:15]**
@@ -520,7 +526,7 @@ python3 docs/Technical/campus_map_package/run_qa.py
 ### Честность (должна быть видна везде)
 
 1. **Графы — приблизительная MVP-оцифровка** — хабы коридоров расставлены визуально на CRS basemap ~800×800; это не survey-grade BIM и не живые полилинии BIS. Достаточно для демо A→B фазы A и QA; уточнение — когда/если поедет фаза B.
-2. **Разрешение на перераспространение JPG basemap всё ещё PENDING** (арт Héger Tamás / агрегатор Sárközi Gergő — см. [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md)). Пакет может жить в репо для фазы A/QA; **block ship** в App Store / GitHub Release APK, пока чеклист не закрыт.
+2. Кредиты basemap в [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md); product map использует схему (JPG не primary).
 3. **Нет Flutter indoor Map UI** — фаза **B** отложена. Product README не должен обещать in-app indoor A→B; «Открыть карту» в расписании — только внешние Maps.
 4. **Join coverage на графе частичный:** почти у всех educational-комнат есть Neptun join-строка; только ~14–15% уже сидят на MVP graph pin (полная матрица в [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only комнаты — факты каталога, не walkable pin.
 5. **BIS**-дамп: rooms/floors/entities импортированы; cookies/токены **не** в git; геометрия `routing.route` по-прежнему null.
@@ -623,7 +629,7 @@ Product + technical docs приведены к фактам «фазы 0–6 г�
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта** — transitional UI; **стратегия D** официальная/разрешённая 2D basemap ещё не получена; LE centerline-pass; полная переоцифровка LD+LE — большой объём. Basemap JPG permission **pending**. Репо **private** (caveat updater для публичного sideload). Полилинии BIS routing всё ещё **null**.
+- **Indoor-карта** — **1.7.1** mall-style схема (IK LD+LE); дальнейшая оцифровка опциональна. Полилинии BIS routing в research всё ещё **null**.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.

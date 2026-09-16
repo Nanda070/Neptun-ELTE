@@ -386,9 +386,9 @@ class AppStrings{
       roomCode_OpenMap: 'Térkép megnyitása',
       campusMap_Title: 'Campus térkép',
       campusMap_HonestyBanner:
-          '2D emeleti séma — folyosósávok + terempinek; útvonal a centerline-gráfon. Csak IK (LD+LE), egyelőre.',
-      campusMap_ItFacultyOnly: 'Egyelőre csak az Informatikai Kar (IK) — LD Déli + LE Északi',
-      campusMap_ItFacultyOnlyShort: 'Csak IK (egyelőre)',
+          'Lágymányos Informatikai Kar beltéri térképe (LD + LE).',
+      campusMap_ItFacultyOnly: 'Informatikai Kar — LD Déli + LE Északi',
+      campusMap_ItFacultyOnlyShort: 'Informatikai Kar',
       campusMap_HubButton: 'Campus térkép',
       campusMap_HubButtonDescription:
           'Beltéri A→B az IK Lágymányos Déli (LD) és Északi (LE) tömbjeiben. Neptun bejelentkezés nélkül.',
@@ -402,7 +402,7 @@ class AppStrings{
       campusMap_NoPath: 'Nincs útvonal ezek között a termek között',
       campusMap_CrossBuildingHint: 'Az indítás és a cél legyen ugyanabban az épületben (LD vagy LE)',
       campusMap_FloorsOnPath: 'Emeletek az úton',
-      campusMap_SchematicMode: '2D séma (nem fotó)',
+      campusMap_SchematicMode: 'Beltéri térkép',
       campusMap_PhotoDebugToggle: 'Fotó-alárajz (debug)',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
@@ -793,9 +793,9 @@ class AppStrings{
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
       campusMap_Title: 'Campus map',
       campusMap_HonestyBanner:
-          '2D floor schematic — corridor ribbons + room pins; route on centerline graph. IT faculty (LD+LE) only for now.',
-      campusMap_ItFacultyOnly: 'IT faculty only (for now) — LD South + LE North (IK / Informatika)',
-      campusMap_ItFacultyOnlyShort: 'IT faculty only (for now)',
+          'Lágymányos IT faculty indoor map (LD + LE).',
+      campusMap_ItFacultyOnly: 'IT faculty — LD South + LE North',
+      campusMap_ItFacultyOnlyShort: 'IT faculty',
       campusMap_HubButton: 'Campus map',
       campusMap_HubButtonDescription:
           'Indoor A→B for IT faculty Lágymányos South (LD) and North (LE). No Neptun login required.',
@@ -809,7 +809,7 @@ class AppStrings{
       campusMap_NoPath: 'No path found between these rooms',
       campusMap_CrossBuildingHint: 'Pick start and end in the same building (LD or LE)',
       campusMap_FloorsOnPath: 'Floors on path',
-      campusMap_SchematicMode: '2D schematic (not photo)',
+      campusMap_SchematicMode: 'Indoor map',
       campusMap_PhotoDebugToggle: 'Photo underlay (debug)',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
@@ -1817,10 +1817,10 @@ class LanguagePack{
     this.roomCode_OpenMap = 'Open map',
     this.campusMap_Title = 'Campus map',
     this.campusMap_HonestyBanner =
-        '2D floor schematic — corridor ribbons + room pins; route on centerline graph. IT faculty (LD+LE) only for now.',
+        'Lágymányos IT faculty indoor map (LD + LE).',
     this.campusMap_ItFacultyOnly =
-        'IT faculty only (for now) — LD South + LE North (IK / Informatika)',
-    this.campusMap_ItFacultyOnlyShort = 'IT faculty only (for now)',
+        'IT faculty — LD South + LE North',
+    this.campusMap_ItFacultyOnlyShort = 'IT faculty',
     this.campusMap_HubButton = 'Campus map',
     this.campusMap_HubButtonDescription =
         'Indoor A→B for IT faculty Lágymányos South (LD) and North (LE). No Neptun login required.',
@@ -1834,7 +1834,7 @@ class LanguagePack{
     this.campusMap_NoPath = 'No path found between these rooms',
     this.campusMap_CrossBuildingHint = 'Pick start and end in the same building (LD or LE)',
     this.campusMap_FloorsOnPath = 'Floors on path',
-    this.campusMap_SchematicMode = '2D schematic (not photo)',
+    this.campusMap_SchematicMode = 'Indoor map',
     this.campusMap_PhotoDebugToggle = 'Photo underlay (debug)',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
@@ -2262,8 +2262,20 @@ class LanguagePack{
         campusMap_FloorsOnPath: getStr('campusMap_FloorsOnPath', en.campusMap_FloorsOnPath),
         campusMap_SchematicMode: getStr('campusMap_SchematicMode', en.campusMap_SchematicMode),
         campusMap_PhotoDebugToggle: getStr('campusMap_PhotoDebugToggle', en.campusMap_PhotoDebugToggle),
-        campusMap_ItFacultyOnly: getStr('campusMap_ItFacultyOnly', en.campusMap_ItFacultyOnly),
-        campusMap_ItFacultyOnlyShort: getStr('campusMap_ItFacultyOnlyShort', en.campusMap_ItFacultyOnlyShort),
+        campusMap_ItFacultyOnly: () {
+          final v = getStr('campusMap_ItFacultyOnly', en.campusMap_ItFacultyOnly);
+          if (v != en.campusMap_ItFacultyOnly) return v;
+          if (countryId == 'ru') return 'Факультет информатики — LD Юг + LE Север';
+          if (countryId == 'tr') return 'Bilişim Fakültesi — LD Güney + LE Kuzey';
+          return v;
+        }(),
+        campusMap_ItFacultyOnlyShort: () {
+          final v = getStr('campusMap_ItFacultyOnlyShort', en.campusMap_ItFacultyOnlyShort);
+          if (v != en.campusMap_ItFacultyOnlyShort) return v;
+          if (countryId == 'ru') return 'Факультет информатики';
+          if (countryId == 'tr') return 'Bilişim Fakültesi';
+          return v;
+        }(),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),

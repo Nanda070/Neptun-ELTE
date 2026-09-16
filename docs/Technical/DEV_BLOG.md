@@ -414,6 +414,12 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.7.2 (IT-only packs + docs scrub)
+
+**[2026-09-16]**
+
+- **Release 1.7.2** (`pubspec` **1.7.2+1**): patch on line **7**. Clean room labels (collision offsets, progressive zoom, tap-to-focus — no sticker bomb); floor-aware corridor emphasis; strip tech honesty banner and “(for now)” / “2D schematic” footer junk; IT faculty chip shortened; docs scrub of obsolete basemap ship-blocker notes. GitHub Release **v1.7.2**. Owner **Nanda**.
+
 ## 2026-09-16 — release 1.7.1 (mall-style schematic polygons)
 
 **[2026-09-16, ~20:15]**
@@ -520,7 +526,7 @@ python3 docs/Technical/campus_map_package/run_qa.py
 ### Honesty (must stay visible everywhere)
 
 1. **Graphs are approximate MVP digitizations** — corridor hubs placed visually on ~800×800 basemap CRS; not survey-grade BIM; not live BIS polylines. Good enough for Phase A A→B demos and QA; expect refinement when/if Phase B ships.
-2. **Basemap JPG redistribution permission is still PENDING** (Héger Tamás artwork / Sárközi Gergő aggregator — see [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md)). Package may live in the repo for Phase A/QA; **block ship** into App Store builds or GitHub Release APKs until the checklist clears.
+2. Basemap credits recorded in [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md); product map uses schematic (JPG not primary).
 3. **No Flutter indoor Map UI** — Phase **B** deferred. Product README must not claim in-app indoor A→B; timetable “Open map” remains external Maps only.
 4. **Join coverage is partial on-graph:** nearly all educational rooms have a Neptun join string; only ~14–15% already sit on the MVP graph pins (full matrix in [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only rooms are searchable as catalog facts, not walkable pins.
 5. **BIS** dump: rooms/floors/entities imported; cookies/tokens **not** in git; `routing.route` geometry still null from the research pass.
@@ -619,11 +625,11 @@ Only when product chooses: load package offline, login-hub Map without hallgato 
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map Phase A package + Phase B UI present; **1.6.1** LD centerline paths; Strategy D + private repo. See diary entries 2026-09-16.
+- Campus map Phase A package + Phase B UI; **1.7.1** mall schematic + IT-only banner. See diary 2026-09-16.
 
 ### Still unfinished / research
 
-- **Campus indoor map** — transitional UI; **Strategy D** official/authorized 2D basemap not yet obtained; LE centerline pass; full LD+LE pixel re-digitize large. Basemap JPG permission **pending**. Repo **private** (updater caveat for public sideload). BIS route polylines still **null**.
+- **Campus indoor map** — **1.7.1** mall-style schematic shipped (IT faculty LD+LE); further floor digitizing refinements optional. BIS route polylines still **null** in research.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

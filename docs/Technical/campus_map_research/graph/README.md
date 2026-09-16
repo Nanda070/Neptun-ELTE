@@ -98,7 +98,7 @@ See [`samples/le_routes.md`](samples/le_routes.md). Expect:
 ## Remaining gaps
 
 - Per-door pixel refinement on each floor JPG (optional polish).
-- **Strategy D official artwork** — product UX already uses graph schematic (**1.7.0**); replace/refine geometry when authorized ELTE 2D lands. BIS `routing.route` still **null**.
+- **Schematic UX (1.7.1):** mall-style floor polygons in `schematic_*.json`; graph for routing. BIS `routing.route` null in research.
 - Confirm lift/stair landings per floor against artwork (MVP assumes all shafts on all floors).
 - Join tables / aliases → **Phase 4 done** ([`../joins/`](../joins/)).
 - Package + checksums → **Phase 5 done**; QA → **Phase 6 done** ([`../../campus_map_package/QA_REPORT.md`](../../campus_map_package/QA_REPORT.md)).

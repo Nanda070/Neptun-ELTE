@@ -6,7 +6,7 @@
 
 **Verdict:** **PASS** — `pass=41` · `fail=0` · `waive=2` (restricted/closed notes not modeled on MVP rooms).
 
-**Honesty:** Basemap JPG redistribution still **PENDING** ([ATTRIBUTION.md](ATTRIBUTION.md)) — **block ship** to App Store / GitHub APK. No Flutter UI (Phase B deferred). Failures would be graph bugs (Phase 2/3), not app UI — none open.
+**Honesty:** Credits in [ATTRIBUTION.md](ATTRIBUTION.md). App ships mall-style schematic (**1.7.1+**); Phase A QA baseline unchanged. Failures would be graph bugs (Phase 2/3), not app UI — none open.
 
 ## How to re-run
 

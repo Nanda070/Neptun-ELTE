@@ -1,38 +1,36 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус (ночь 2026-09-16):** фазы **0–6** research-пакет остаются. **Фаза B MVP (1.6.0)** фото-UX **отвергнута**. **1.6.1** = LD centerline-граф. **1.7.0** = **отгруженный срез Strategy D**: карта по умолчанию — **2D-схема из графа** (полосы коридоров + пины комнат + маршрут), **не** фото плана этажа. JPG-подложка только debug (выкл. по умолчанию). LE тоже centerline + тот же schematic painter. Официальный/разрешённый artwork BIS ещё **pending** (`routing.route` всё ещё **null**). Репо **private**.  
-**Владелец:** Nanda.  
-**Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
+**Статус (2026-09-16):** фазы **0–6** research-пакет остаются. **Фаза B MVP (1.6.0)** фото-UX **отвергнута**. **1.6.1** LD centerline-граф. **1.7.0** «схема» из рёбер графа (светящаяся топология) **отвергнута**. **1.8.0** = **mall-style 2D-схема этажа**: оболочка здания + дворы + заполненные ленты коридоров (`schematic_ld.json` / `schematic_le.json`); пины комнат из графа; маршрут = сглаженный centerline; лейблы с учётом коллизий; JPG только debug. Баннер: **пока только факультет информатики / IK** (LD Юг + LE Север). Граф — **только для маршрутизации**, не как форма здания.
+
+**Владелец:** Nanda. 
+**Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение. 
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
 
-> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/)  
+> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/) 
 > Уже в приложении (только внешний deep-link): `lib/Misc/elte_room_code.dart` — **не** indoor A→B.
 
 ---
 
-## Сброс после MVP (2026-09-16) — пути + стратегия D + private repo
+## Сброс после MVP (2026-09-16) — пути + schematic UX
 
-Владелец отверг вид фазы B MVP: **фото этажа как карта** + **кривые полилинии** из hub-spoke stubs комнат. Решения:
+Владелец отверг фото-карту фазы B и вид **1.7.0** (свечение рёбер графа). Решения:
 
 | Тема | Выбор |
 |------|--------|
-| **Пути** | Переоцифровка / уточнение: маршруты по **осевым коридоров**; сглаженный display (цепочка вдоль коридора + лёгкий Chaikin). Цель — визуально ровная indoor-навигация. **Не** «сгладить неверный граф». |
-| **Basemap** | **Стратегия D** — основной вид продукта = **2D-схема** (mall/metro) из геометрии campus-графа (`CampusSchematicPainter`). **Не** отгружать JPG sarkozigergo как карту продукта. Официальный ELTE IIG/BIS artwork всё ещё ищем; до него схема = product UX. Фото-пакет = research + опциональная debug-подложка. Permission **pending**. |
-| **Полилинии BIS** | В research-дампе всё ещё **null** — **не** утверждать, что официальная геометрия BIS routing есть. |
-| **Репо** | GitHub **`Nanda070/Neptun-ELTE` — private**, пока ассеты/стратегия карты не устоялись. Публичный sideload APK / `AppUpdater` для не-collaborators может не работать (private Releases). |
-| **Пакет фазы A** | Оставить как research QA baseline. |
-| **UI фазы B** | **1.7.0** заменяет photo-primary MVP на Strategy D schematic (`CampusMapPage` + `campus_map_schematic.dart`). Поиск / этажи / A→B / pre-login сохранены. |
+| **Пути** | Маршруты по **осевым коридоров**; сглаженный display (цепочка + Chaikin). |
+| **Визуальная карта** | **Схема этажа в стиле ТЦ** — оболочка + **ленты** коридоров из vector JSON. **Не** рисовать рёбра графа как карту. **Не** JPG как primary (debug-подложка опциональна). |
+| **Охват** | **Пока только IK / факультет информатики** — LD (Déli) + LE (Északi). |
+| **Полилинии BIS** | В research всё ещё **null** — маршруты по derived-графу; не ship-blocker. |
+| **UI фазы B** | **1.8.0** — schematic-полигоны + баннер «только IK»; поиск / этажи / A→B / pre-login сохранены. |
 
-### План уточнения centerline
+### Геометрия схемы
 
-1. **Пилот LD (1.6.1):** `build_graph_ld.py` уплотняет полилинии коридоров, цепляет door mouths вдоль осевых (без V-обходов через hub), убирает диагональные courtyard-hops; Flutter Chaikin сглаживает маршрут.
-2. **LE centerline (1.7.0):** тот же pass в `build_graph_le.py` (zone polylines + door chaining).
-3. **Schematic UX (1.7.0):** CustomPainter — полосы коридоров / пины комнат / маршрут; JPG не default.
-4. **Официальный artwork (позже):** заменить/уточнить геометрию схемы, когда будет authorized 2D; honesty про graph-derived MVP остаётся.
-5. **Честность:** без App Store redistribution чужих фото этажей; private repo пока unsettled.
+1. **LD −1…7:** `schematic_ld.json` — оболочка + двор + ленты по схеме коридоров **1–8** (`build_schematics.py`).
+2. **LE −1…7:** `schematic_le.json` — оболочка + два двора + zone-ленты.
+3. Комнаты остаются на centerline-графе; пины/лейблы на схеме.
+4. Лейблы: скрывать плотные пересечения при малом зуме; показывать больше при зуме.
 
 ---
-
 ## Цель
 
 Подготовить **полный, атрибутируемый, прошедший QA пакет indoor-маршрутизации** для ELTE Lágymányos **Юг (LD / Déli)** и **Север (LE / Északi)**, который Neptun ELTE сможет позже загрузить **без** живого логина BIS и **без** живого `routing.route`.
@@ -288,7 +286,7 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 ### Критерии выхода
 
 - [x] Все файлы выше на месте; checksums сходятся (`docs/Technical/campus_map_package/`).
-- [x] `ATTRIBUTION.md` заполнен; нерешённые лицензии помечены как **block ship** (разрешение на JPG basemap **pending**).
+- [x] `ATTRIBUTION.md` заполнен (кредиты).
 - [x] Пакет грузится в **не-Flutter** checker (`check_package.py`) и считает A→B для сэмплов.
 
 **Честность:** пакет лежит в [`campus_map_package/`](campus_map_package/) для Phase A / QA. Перераспространение basemap всё ещё **pending** — не бандлить в App Store / APK, пока чеклист не закрыт.
