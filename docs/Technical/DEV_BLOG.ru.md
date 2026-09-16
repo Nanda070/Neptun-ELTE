@@ -413,6 +413,14 @@
 - `.cursor/rules/keep-docs-current.mdc` больше не требует `IOS_VS_ANDROID*` в обязательном списке. Только docs; без bump версии / тега / APK. Владелец **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: план карты кампуса (сначала карта)
+
+**[2026-09-16]**
+
+- Добавлены [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): сначала пакет графа LD/LE + QA, **потом** Flutter UI карты (фаза B отложена). Кросс-ссылки из `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Только docs; без Dart / bump версии. Владелец **Nanda**.
+
+---
 ## В работе / запланировано (честно)
 
 **[ongoing]**
@@ -423,6 +431,7 @@
 - **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**.
 - Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **есть в коде**, UI не вызывает; сначала TOTP.
 - Signed IPA / TestFlight / App Store / Play production — **не** текущая цель. В CI только unsigned IPA + Android debug APK (нет analyze/test job).
+- **Indoor-карта кампуса** — [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md): фаза A (оцифровка LD, затем LE, пакет, QA) **в работе**; Flutter UI карты **не начат**, пока карта не закончена.
 
 ---
 

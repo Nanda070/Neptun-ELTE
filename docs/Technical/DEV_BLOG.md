@@ -413,6 +413,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - `.cursor/rules/keep-docs-current.mdc` no longer lists `IOS_VS_ANDROID*` as mandatory. Docs-only; no version bump / tag / APK. Owner **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: campus map plan (map first)
+
+**[2026-09-16]**
+
+- Added [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): finish LD/LE indoor graph package + QA **before** Flutter Map UI (Phase B deferred). Cross-linked from `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Docs-only; no Dart / version bump. Owner **Nanda**.
+
+---
 ## In progress / planned (honest)
 
 **[ongoing]**
@@ -423,6 +431,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**.
 - Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **exists in code**, unused by UI; TOTP-first.
 - Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI has unsigned IPA + Android debug APK only (no analyze/test job).
+- **Campus indoor map** — [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md): Phase A (digitize LD then LE, package, QA) **in progress**; Flutter Map UI **not started** until map finished.
 
 ---
 

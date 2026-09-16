@@ -2,10 +2,14 @@
 
 Research material for future **2D A→B** indoor routing (LD/LE) in Neptun ELTE. **Not wired into the app yet.** Mix of public student/dept pages and an authenticated dump of official **BIS** (`bis.elte.hu`). Credit authors / ask ELTE before shipping artwork or geometry.
 
+**Product decision (2026-09-16):** finish the map data/graph completely first — see the plan **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)** ([RU](../CAMPUS_MAP_PLAN.ru.md)). Flutter Map UI is Phase B only (after LD + LE package + QA).
+
 ## Reports
 
 | Doc | Language |
 |------|----------|
+| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B |
+| [CAMPUS_MAP_PLAN.ru.md](../CAMPUS_MAP_PLAN.ru.md) | RU — same facts |
 | [BIS_IMPORT_REPORT.md](./BIS_IMPORT_REPORT.md) | EN — auth, APIs, rooms/floors import, A→B status, inventory, recommended path |
 | [BIS_IMPORT_REPORT.ru.md](./BIS_IMPORT_REPORT.ru.md) | RU — same facts |
 
@@ -89,11 +93,13 @@ Sample layer files saved under `eszaki_route_planner/layers/` (ground floor + ba
 
 ## Suggested next steps for Neptun ELTE A→B (LD first)
 
+Canonical phased plan: **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)** (map data first; app later). Short reminder:
+
 1. Seed searchable nodes from `bis/south/rooms_educational.json` (centroids + `LD-…` codes); cross-check with `ld_south/rooms.json` Neptun hints.
 2. Use `ld_south/floors/*.jpg` as basemaps; digitize corridor graph (schema 1–8 + lift/stair hubs).
 3. Optionally study North planner UX; ask Cartography dept before reusing their GeoJSON.
 4. Optional: second BIS pass after a manual UI route to capture non-null `routing.route` geometry.
-5. Entry screen “Map” can open in-app LD picker without Neptun login; deep-link BIS only for users who can authenticate.
+5. **After** `graph_ld.json` / `graph_le.json` + QA: login-hub Map + A→B UI (Phase B in the plan) — not started now.
 
 ## License / honesty
 

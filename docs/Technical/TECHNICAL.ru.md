@@ -12,6 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
+Indoor-карта кампуса (LD/LE A→B): **сначала данные карты** — [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md); Flutter UI отложен, пока пакет графа не готов. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -140,7 +141,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` + `CAMPUS_MAP_PLAN*` (EN + RU); research в `campus_map_research/` |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -211,7 +212,7 @@ Neptun-ELTE/
 | `SetupPageURLInput` | Старый ручной URL (на хабе не показывается) |
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
-| `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
+| `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → foreground JWT maintenance + sync опционального фонового keep-alive |
 | `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.10` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
@@ -765,6 +766,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (пакет графа LD/LE + QA до Flutter UI); research-дамп в `campus_map_research/` |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
