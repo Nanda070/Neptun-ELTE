@@ -22,7 +22,8 @@ class EmojiRichText extends StatelessWidget {
   final String text;
   final TextStyle defaultStyle;
   final TextStyle emojiStyle;
-  const EmojiRichText({super.key, required this.text, required this.defaultStyle, required this.emojiStyle});
+  final TextAlign textAlign;
+  const EmojiRichText({super.key, required this.text, required this.defaultStyle, required this.emojiStyle, this.textAlign = TextAlign.start});
 
   List<EmojiRichTextHelper> getSeparatedText(){
     List<EmojiRichTextHelper> construct = [];
@@ -67,6 +68,7 @@ class EmojiRichText extends StatelessWidget {
 
     return Text.rich(
       TextSpan(children: textSpans),
+      textAlign: textAlign,
     );
   }
 

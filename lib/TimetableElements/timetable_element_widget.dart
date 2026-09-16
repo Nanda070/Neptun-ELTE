@@ -618,12 +618,6 @@ class WeekoffseterElementWidget extends StatelessWidget{
   final HomePageState homePage;
 
   WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging, required this.homePage, required this.isLoading}){
-    final startMonth = from != null ? api.Generic.monthToText(from!.month) : "_";
-    final startDay = from != null ? from!.day : "";
-
-    final endMonth = api.Generic.monthToText(to.month);
-    final endDay = to.day;
-
     displayString = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_StudyWeek, [week]);
 
     if(isLoading){
@@ -631,15 +625,16 @@ class WeekoffseterElementWidget extends StatelessWidget{
       return;
     }
 
-    if(startMonth == "_"){
+    if(from == null){
       displayString2 = AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekEmpty;
       return;
     }
-    if("$startMonth $startDay" == "$endMonth $endDay"){
-      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekOneDay, [endMonth, endDay, api.Generic.dayToText(to.weekday)]);
+    final dateRange = api.Generic.calendarWeekDateRange(from!, to);
+    if(from!.year == to.year && from!.month == to.month && from!.day == to.day){
+      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekOneDay, [dateRange, api.Generic.dayToText(to.weekday)]);
     }
     else{
-      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekFull, [startMonth, startDay, endMonth, endDay]);
+      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekFull, [dateRange]);
     }
   }
 
@@ -719,6 +714,8 @@ class WeekoffseterElementWidget extends StatelessWidget{
                       child: Text(
                         displayString,
                         textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: AppColors.getTheme().textColor,
                           fontWeight: FontWeight.w700,
@@ -740,17 +737,25 @@ class WeekoffseterElementWidget extends StatelessWidget{
                   color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
                   borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
                 ),
-                child: EmojiRichText(
-                  text: displayString2,
-                  defaultStyle: TextStyle(
-                    color: AppColors.getTheme().textColor.withValues(alpha: .6),
-                    fontWeight: FontWeight.w300,
-                    fontSize: 12.0,
-                  ),
-                  emojiStyle: TextStyle(
-                      color: AppColors.getTheme().textColor,
-                      fontSize: 12.0,
-                      fontFamily: "Noto Color Emoji"
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                    child: EmojiRichText(
+                      text: displayString2,
+                      textAlign: TextAlign.center,
+                      defaultStyle: TextStyle(
+                        color: AppColors.getTheme().textColor.withValues(alpha: .6),
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12.0,
+                      ),
+                      emojiStyle: TextStyle(
+                          color: AppColors.getTheme().textColor,
+                          fontSize: 12.0,
+                          fontFamily: "Noto Color Emoji"
+                      ),
+                    ),
                   ),
                 ),
               ),
