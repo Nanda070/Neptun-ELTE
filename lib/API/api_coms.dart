@@ -17,17 +17,30 @@ import '../storage.dart';
 
 /// Session expiry / logout coordination. Prevents "logged in" UI with dead JWT.
 class SessionGuard {
-  /// Foreground proactive `GetNewTokens` cadence (HALLGATO_SESSION_PLAN v1).
-  static const Duration foregroundTokenMaintenanceInterval =
-      Duration(minutes: 3, seconds: 30);
+  /// App policy: force logout this long after entering the main (participant) session.
+  /// Independent of JWT refresh — aligns roughly with short-lived Neptun access tokens (~10–15 min).
+  static const Duration sessionWallClockLimit = Duration(minutes: 10);
+
+  /// Persisted epoch ms so background suspend (paused Timer) still counts as wall clock.
+  static const String _sessionStartedAtPrefsKey = 'SESSION_StartedAtMs';
+
+  /// Re-check interval while the isolate is alive. Long one-shot [Timer]s are often
+  /// delayed/paused on Android (Doze / background); a short ticker recovers in FG.
+  static const Duration _wallClockTickInterval = Duration(seconds: 15);
 
   static bool _authBlocked = false;
   static bool _handlingExpired = false;
   static String? _pendingUserMessage;
   static Future<void> Function(String message)? _onNavigateToLogin;
-  /// Set when login / 2FA succeeds — post-login grace for flaky first API / 401 recovery.
+  static Timer? _sessionWallTimer;
+  static Timer? _sessionWallTicker;
+  static DateTime? _sessionStartedAt;
+  /// Set when login / 2FA succeeds — avoids stale [SESSION_StartedAtMs] or
+  /// immediate 401 recovery forcing logout right after a fresh participant session.
   static DateTime? _authenticatedAt;
   static const Duration _postLoginGrace = Duration(seconds: 45);
+  /// Monotonic write gen so async prefs `0` from cancel cannot clobber a newer start.
+  static int _sessionPersistGen = 0;
 
   static bool get isAuthBlocked => _authBlocked;
 
@@ -51,7 +64,9 @@ class SessionGuard {
     return m;
   }
 
+  /// Clear persisted wall-clock before a new login attempt (stale stamp after expiry).
   static void prepareForLoginAttempt() {
+    cancelSessionWallClock();
     _authenticatedAt = null;
     clearAuthBlock();
   }
@@ -60,15 +75,153 @@ class SessionGuard {
   static Future<void> markParticipantSessionStarted() async {
     _handlingExpired = false;
     clearAuthBlock();
-    _authenticatedAt = DateTime.now();
+    _stopWallTimers();
+    final now = DateTime.now();
+    _sessionStartedAt = now;
+    _authenticatedAt = now;
+    await _persistSessionStartedAt(now.millisecondsSinceEpoch);
+    _armSessionWallTimer();
   }
 
-  /// Proactive JWT refresh while the app is foreground-resumed ([HomePage] timer).
-  static Future<void> runForegroundTokenMaintenance() =>
-      _APIRequest.runForegroundTokenMaintenance();
+  /// Arm / continue the 10-minute wall clock after login or cold start into Home.
+  ///
+  /// Does **not** restart on token refresh. Does **not** reset an existing in-window
+  /// start (Home entry must not grant a fresh 10 min). Persists the stamp so
+  /// background time still counts (one-shot Timer alone often pauses while suspended).
+  static Future<void> startSessionWallClock() async {
+    if (_handlingExpired || _authBlocked) return;
+    _stopWallTimers();
+
+    DateTime? started = _sessionStartedAt;
+    if (started == null) {
+      final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+      if (ms != null && ms > 0) {
+        started = DateTime.fromMillisecondsSinceEpoch(ms);
+      }
+    }
+    final authAt = _authenticatedAt;
+    if (authAt != null && (started == null || started.isBefore(authAt))) {
+      started = authAt;
+    }
+
+    final now = DateTime.now();
+    if (started != null) {
+      final elapsed = now.difference(started);
+      if (elapsed >= sessionWallClockLimit) {
+        debug.log(
+          'SessionGuard: wall-clock already expired on start — forceExpiredLogout',
+        );
+        await forceExpiredLogout();
+        return;
+      }
+      _sessionStartedAt = started;
+      // Repair prefs if a prior cancel→start race wrote 0 after the real stamp.
+      await _persistSessionStartedAt(started.millisecondsSinceEpoch);
+      _armSessionWallTimer();
+      return;
+    }
+
+    // No stamp yet (legacy path) — begin wall clock now.
+    _sessionStartedAt = now;
+    _authenticatedAt ??= now;
+    await _persistSessionStartedAt(now.millisecondsSinceEpoch);
+    _armSessionWallTimer();
+  }
+
+  static void _stopWallTimers() {
+    _sessionWallTimer?.cancel();
+    _sessionWallTicker?.cancel();
+    _sessionWallTimer = null;
+    _sessionWallTicker = null;
+  }
+
+  static Future<void> _persistSessionStartedAt(int ms) async {
+    final gen = ++_sessionPersistGen;
+    await storage.saveInt(_sessionStartedAtPrefsKey, ms);
+    // If a newer cancel/start raced past us, leave their write alone.
+    if (gen != _sessionPersistGen) return;
+  }
+
+  static void _armSessionWallTimer() {
+    _stopWallTimers();
+    final started = _sessionStartedAt;
+    if (started == null) return;
+    final remaining = sessionWallClockLimit - DateTime.now().difference(started);
+    if (remaining <= Duration.zero) {
+      debug.log('SessionGuard: wall-clock already expired — forceExpiredLogout');
+      forceExpiredLogout();
+      return;
+    }
+    debug.log(
+      'SessionGuard: wall-clock logout in ${remaining.inSeconds}s '
+      '(from $started)',
+    );
+    _sessionWallTimer = Timer(remaining, () {
+      debug.log('SessionGuard: wall-clock expired — forceExpiredLogout');
+      forceExpiredLogout();
+    });
+    // Belt-and-suspenders: Android may delay the one-shot Timer; tick catches it.
+    _sessionWallTicker = Timer.periodic(_wallClockTickInterval, (_) {
+      _tickSessionWallClock();
+    });
+  }
+
+  static void _tickSessionWallClock() {
+    if (_handlingExpired || _authBlocked) return;
+    final started = _sessionStartedAt;
+    if (started == null) return;
+    final elapsed = DateTime.now().difference(started);
+    if (elapsed >= sessionWallClockLimit) {
+      debug.log(
+        'SessionGuard: tick after ${elapsed.inSeconds}s — forceExpiredLogout',
+      );
+      forceExpiredLogout();
+    }
+  }
+
+  static void cancelSessionWallClock() {
+    _stopWallTimers();
+    _sessionStartedAt = null;
+    final gen = ++_sessionPersistGen;
+    storage.saveInt(_sessionStartedAtPrefsKey, 0).then((_) {
+      // Ignore stale completion if a newer start already persisted.
+      if (gen != _sessionPersistGen) return;
+    });
+  }
 
   static void _clearAuthenticatedAt() {
     _authenticatedAt = null;
+  }
+
+  /// Call on [AppLifecycleState.resumed] (and safe on other lifecycle pulses).
+  /// If background/suspend time pushed the session past 10 minutes, force logout;
+  /// otherwise re-arm the foreground Timer for the remaining wall-clock time.
+  static Future<void> checkSessionWallClockOnResume() async {
+    if (_handlingExpired || _authBlocked) return;
+    DateTime? started = _sessionStartedAt;
+    if (started == null) {
+      final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+      if (ms != null && ms > 0) {
+        started = DateTime.fromMillisecondsSinceEpoch(ms);
+      }
+    }
+    final authAt = _authenticatedAt;
+    if (authAt != null && (started == null || started.isBefore(authAt))) {
+      started = authAt;
+    }
+    if (started == null) return;
+    _sessionStartedAt = started;
+    // Keep prefs honest after Android process death / SharedPreferences races.
+    await _persistSessionStartedAt(started.millisecondsSinceEpoch);
+    final elapsed = DateTime.now().difference(started);
+    if (elapsed >= sessionWallClockLimit) {
+      debug.log(
+        'SessionGuard: resume after ${elapsed.inMinutes} min — forceExpiredLogout',
+      );
+      await forceExpiredLogout();
+      return;
+    }
+    _armSessionWallTimer();
   }
 
   /// Full auth leftover wipe shared by manual + expired logout (and login start).
@@ -84,13 +237,14 @@ class SessionGuard {
 
   /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
   static Future<void> userInitiatedLogout() async {
+    cancelSessionWallClock();
     _clearAuthenticatedAt();
     _authBlocked = true;
     await _wipeAuthLeftovers();
   }
 
   /// Cold-start gate (shortcuts / Splitter): usable participant session only if
-  /// [HasLogin] and access token present (no client wall-clock expiry).
+  /// [HasLogin], access token present, and wall-clock not already expired.
   /// On failure, wipes auth (keeps academic cache) and sets the pending
   /// sign-in message — never open Home with a dead JWT.
   static Future<bool> isColdStartSessionUsable() async {
@@ -108,13 +262,35 @@ class SessionGuard {
       _authBlocked = true;
       return false;
     }
+    final ms = await storage.getInt(_sessionStartedAtPrefsKey);
+    if (ms != null && ms > 0) {
+      final started = DateTime.fromMillisecondsSinceEpoch(ms);
+      if (DateTime.now().difference(started) >= sessionWallClockLimit) {
+        debug.log(
+          'SessionGuard: cold start wall-clock expired — wipe, skip Home',
+        );
+        _pendingUserMessage =
+            AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
+        cancelSessionWallClock();
+        _clearAuthenticatedAt();
+        _authBlocked = true;
+        try {
+          await _wipeAuthLeftovers();
+        } catch (e) {
+          debug.log('isColdStartSessionUsable wipe (expired): $e');
+        }
+        return false;
+      }
+    }
     return true;
   }
 
-  /// Access token dead and refresh/silent re-auth cannot restore session.
+  /// Access token dead and refresh/silent re-auth cannot restore session,
+  /// or the 10-minute session wall clock fired.
   static Future<void> forceExpiredLogout() async {
     if (_handlingExpired) return;
     _handlingExpired = true;
+    cancelSessionWallClock();
     _clearAuthenticatedAt();
     _authBlocked = true;
     final msg = AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
