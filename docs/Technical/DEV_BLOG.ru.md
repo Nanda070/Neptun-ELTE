@@ -328,6 +328,14 @@
 
 ---
 
+## 2026-09-16 — plan: mail + calendar bugs
+
+**[2026-09-16, 08:45]**
+
+- Расширены [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU-пара: **запланированные багфиксы** (epoch/`ERROR` на Mail при cold entry до refresh; layout/формат заголовка недели календаря). Только docs; без Dart и без bump версии. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: удаление матрицы IOS_VS_ANDROID
 
 **[2026-09-16, 08:15]**

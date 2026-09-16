@@ -328,6 +328,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — plan: mail + calendar bugs
+
+**[2026-09-16, 08:45]**
+
+- Extended [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU twin with **planned bug fixes** (mail epoch/`ERROR` on cold Mail tab until refresh; calendar week header/subtitle layout + formatting). Docs-only; no Dart, no version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
 
 **[2026-09-16, 08:15]**

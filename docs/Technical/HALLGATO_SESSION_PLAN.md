@@ -144,6 +144,70 @@ Numbered steps only — **no code in this task**.
 
 ---
 
+## Planned bug fixes (same release wave or follow-up)
+
+**Status:** documented only — **not implemented** (16 September 2026). May ship with hallgato session maintenance or as a separate patch; **do not change `SessionGuard` for these items** unless a fix explicitly requires it.
+
+### 1. Mail — epoch date and `ERROR` placeholders on cold entry
+
+**Symptom (repro):**
+
+1. Cold-start the app (or return after kill) and sign in if needed.
+2. Open the bottom **Mail / Messages** tab without pull-to-refresh.
+3. List shows grouped date **1970. january. 1.** (Unix epoch) and rows with subject / sender / preview **`ERROR`** (see user screenshot, September 2026).
+4. **Pull-to-refresh** (or otherwise force mail reload) → real subjects, senders, and dates appear.
+
+**Expected:** First paint on Mail should show cached mail or a loading/empty state — not sentinel `ERROR` rows and epoch dates.
+
+**Investigation hints (read-only):**
+
+| Area | Location |
+|------|----------|
+| Mail fetch + 24 h “fresh cache” early return | `HomePageState.fetchMails` — `lib/Pages/main_page.dart` |
+| Cache load uses `ERROR` + `sendDateMs: 0` until `fillWithExisting` | same file, `loadMailCache()` |
+| Persisted rows | `CachedMails_*`, `MailCacheTime`, `DataCache.getHasCachedMail()` — `lib/storage.dart` |
+| Parse / model | `api.MailEntry`, `MailRequest.getMails` — `lib/API/api_coms.dart` |
+| List UI | `lib/MailElements/mail_element_widget.dart` |
+
+**Likely causes to verify:**
+
+- **Stale or corrupt mail cache** painted while `MailCacheTime` is still “fresh” (< 24 h) → `fetchMails` returns **without** network (`cacheFresh && paintedFromCache` path).
+- **`fillWithExisting` failure** leaves default `ERROR` and **`sendDateMs == 0`** → UI formats as 1970-01-01.
+- **Cold-start ordering:** Mail tab loads before auth/network ready; first attempt falls back to bad cache; manual refresh runs `force` path and succeeds.
+
+**Fix direction (future):** Invalidate or skip cache when parsed entries are invalid; do not treat “fresh” timestamp alone as sufficient; ensure first successful API fetch after login replaces cache; optional empty/loading UI instead of ERROR sentinels.
+
+---
+
+### 2. Calendar — education week header and “classes this week” subtitle
+
+**Symptom (repro):**
+
+1. Open **Calendar** tab.
+2. Week navigator shows header like **`3. education week`** (lowercase “education week” per EN string).
+3. Subtitle like **`Classes this week: september 14. - september 18.`** with awkward wrap (**`september 18.`** alone on the second line), lowercase month names, trailing periods after day numbers — looks broken vs polished target (screenshot, September 2026).
+
+**Expected:** Readable week title and a single-line (or intentionally wrapped) date range; locale-appropriate capitalization and date formatting; layout that uses available width (no orphan line break mid-range).
+
+**Investigation hints (read-only):**
+
+| Area | Location |
+|------|----------|
+| Week header + subtitle strings | `calendarPage_weekNav_*` — `lib/language.dart` (+ RU/TR JSON packs) |
+| Subtitle assembly (`monthToText`, day params) | `WeekoffseterElementWidget` — `lib/TimetableElements/timetable_element_widget.dart` |
+| Education week number for viewed page | `HomePageState` calendar week logic — `lib/Pages/main_page.dart` |
+| Month name helper | `api.Generic.monthToText` — `lib/API/api_coms.dart` |
+
+**Likely causes to verify:**
+
+- **Layout:** subtitle is plain `EmojiRichText` without `maxLines` / width constraints → bad wrap on narrow widths.
+- **Copy / i18n:** EN template uses lowercase month tokens from `monthToText` and punctuation (`%1.`) — may need `DateFormat` / per-locale capitalization instead of manual strings.
+- **Separate from** education-week **number** tuning (`szorgalmi` anchor) — this item is **UI + formatting**, not week-index math (unless subtitle `from`/`to` dates are wrong).
+
+**Fix direction (future):** Layout pass on `WeekoffseterElementWidget` (centered subtitle, soft wrap, or `FittedBox` / `Text.rich` with non-breaking span around date range); align month/day formatting with HU/EN/RU expectations.
+
+---
+
 ## References (code today)
 
 | Area | Location |

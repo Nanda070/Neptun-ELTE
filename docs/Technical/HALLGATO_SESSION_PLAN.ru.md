@@ -144,6 +144,70 @@
 
 ---
 
+## Запланированные исправления багов (та же волна релиза или follow-up)
+
+**Статус:** только документировано — **не реализовано** (16 сентября 2026). Может выехать вместе с hallgato session maintenance или отдельным патчем; **`SessionGuard` для этих пунктов не менять**, если фикс явно не требует.
+
+### 1. Почта — дата эпохи и плейсхолдеры `ERROR` при cold entry
+
+**Симптом (воспроизведение):**
+
+1. Cold start (или возврат после kill), при необходимости войти.
+2. Открыть нижнюю вкладку **Mail / Сообщения** без pull-to-refresh.
+3. В списке дата **1970. january. 1.** (Unix epoch) и строки с темой / отправителем / превью **`ERROR`** (скриншот пользователя, сентябрь 2026).
+4. **Pull-to-refresh** (или принудительная перезагрузка почты) → появляются реальные темы, отправители и даты.
+
+**Ожидание:** Первый кадр на Mail — кэш писем или loading/empty, а не sentinel `ERROR` и epoch.
+
+**Подсказки для расследования (только чтение):**
+
+| Область | Где |
+|---------|-----|
+| Fetch + early return при «свежем» кэше 24 ч | `HomePageState.fetchMails` — `lib/Pages/main_page.dart` |
+| Загрузка кэша: `ERROR` + `sendDateMs: 0` до `fillWithExisting` | там же, `loadMailCache()` |
+| Persist | `CachedMails_*`, `MailCacheTime`, `DataCache.getHasCachedMail()` — `lib/storage.dart` |
+| Parse / модель | `api.MailEntry`, `MailRequest.getMails` — `lib/API/api_coms.dart` |
+| UI списка | `lib/MailElements/mail_element_widget.dart` |
+
+**Вероятные причины:**
+
+- **Устаревший/битый кэш** при «свежем» `MailCacheTime` (< 24 ч) → `fetchMails` выходит **без** сети.
+- **Сбой `fillWithExisting`** → остаются `ERROR` и **`sendDateMs == 0`** → UI показывает 1970-01-01.
+- **Порядок при cold start:** вкладка Mail до готовности auth/сети; refresh с `force` потом успешен.
+
+**Направление фикса (будущее):** не доверять только timestamp кэша; сбрасывать/пропускать невалидные записи; после login гарантировать замену кэша успешным API; loading/empty вместо ERROR.
+
+---
+
+### 2. Календарь — заголовок education week и подпись «classes this week»
+
+**Симптом (воспроизведение):**
+
+1. Вкладка **Calendar**.
+2. Навигатор недели: **`3. education week`** (в EN строка с lowercase).
+3. Подпись **`Classes this week: september 14. - september 18.`** с неудачным переносом (**`september 18.`** на второй строке), месяцы lowercase, точки после чисел — выглядит сломанным (скриншот, сентябрь 2026).
+
+**Ожидание:** Читаемый заголовок недели и диапазон дат в одну строку (или осознанный wrap); capitalization и формат по локали; layout без «осиротевшей» части диапазона.
+
+**Подсказки (только чтение):**
+
+| Область | Где |
+|---------|-----|
+| Строки `calendarPage_weekNav_*` | `lib/language.dart` (+ RU/TR JSON) |
+| Сборка подписи | `WeekoffseterElementWidget` — `lib/TimetableElements/timetable_element_widget.dart` |
+| Номер education week | логика недели в `HomePageState` — `lib/Pages/main_page.dart` |
+| Имена месяцев | `api.Generic.monthToText` — `lib/API/api_coms.dart` |
+
+**Вероятные причины:**
+
+- **Layout:** `EmojiRichText` без ограничений ширины → плохой wrap.
+- **i18n:** шаблон EN + `monthToText` → lowercase и `%1.`; возможно нужен `DateFormat`.
+- **Отдельно** от настройки номера недели (`szorgalmi`) — здесь **UI + форматирование**.
+
+**Направление фикса (будущее):** правка layout в `WeekoffseterElementWidget`; единый формат дат HU/EN/RU.
+
+---
+
 ## Ссылки (код сегодня)
 
 | Область | Расположение |
