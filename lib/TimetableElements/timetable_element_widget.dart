@@ -693,16 +693,17 @@ class WeekoffseterElementWidget extends StatelessWidget{
         color: Colors.black.withValues(alpha: 0.01),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                margin: const EdgeInsets.only(top: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
-                  borderRadius: BorderRadius.circular(21),
-                ),
-                child: Row(
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
+              borderRadius: BorderRadius.circular(21),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -724,42 +725,37 @@ class WeekoffseterElementWidget extends StatelessWidget{
                       ),
                     ),
                     IconButton(
-                        onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
-                        icon: const Icon(Icons.arrow_forward_rounded)
+                      onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
+                      icon: const Icon(Icons.arrow_forward_rounded),
                     ),
                   ],
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                margin: const EdgeInsets.only(bottom: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.getTheme().textColor.withValues(alpha: 0.03),
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.center,
-                    child: EmojiRichText(
-                      text: displayString2,
-                      textAlign: TextAlign.center,
-                      defaultStyle: TextStyle(
-                        color: AppColors.getTheme().textColor.withValues(alpha: .6),
-                        fontWeight: FontWeight.w300,
-                        fontSize: 12.0,
-                      ),
-                      emojiStyle: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.center,
+                      child: EmojiRichText(
+                        text: displayString2,
+                        textAlign: TextAlign.center,
+                        defaultStyle: TextStyle(
+                          color: AppColors.getTheme().textColor.withValues(alpha: .6),
+                          fontWeight: FontWeight.w300,
+                          fontSize: 12.0,
+                        ),
+                        emojiStyle: TextStyle(
                           color: AppColors.getTheme().textColor,
                           fontSize: 12.0,
-                          fontFamily: "Noto Color Emoji"
+                          fontFamily: "Noto Color Emoji",
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

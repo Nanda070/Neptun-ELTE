@@ -309,7 +309,7 @@ Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 - **i18n:** шаблон EN + `monthToText` → lowercase и `%1.`; возможно нужен `DateFormat`.
 - **Отдельно** от настройки номера недели (`szorgalmi`) — здесь **UI + форматирование**.
 
-**Отгруженный фикс:** layout `WeekoffseterElementWidget` + строки `calendarPage_weekNav_*` (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); заголовок education week и диапазон дат в подписи.
+**Отгруженный фикс:** layout `WeekoffseterElementWidget` + строки `calendarPage_weekNav_*` (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); заголовок education week и диапазон дат в подписи. **1.5.8** — одна карточка + фикс EN `${to.day}` в `calendarWeekDateRange` (`lib/API/api_coms.dart`).
 
 ---
 

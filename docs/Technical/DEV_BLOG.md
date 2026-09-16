@@ -372,6 +372,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.8 (calendar week navigator UI + date range)
+
+**[2026-09-16]**
+
+- **Release 1.5.8** (`pubspec` **1.5.8+1**): Calendar education-week header + subtitle are one rounded card (`WeekoffseterElementWidget`); EN same-month range uses `${to.day}` (was `$to.day`, which printed `DateTime.toString()` + literal `.day`). `calendarWeekDateRange` normalizes to date-only. GitHub Release **v1.5.8** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.5.7 (background keep-alive + remember password)
 
 **[2026-09-16]**

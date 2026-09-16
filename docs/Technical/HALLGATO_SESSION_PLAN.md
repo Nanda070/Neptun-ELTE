@@ -309,7 +309,7 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 - **Copy / i18n:** EN template uses lowercase month tokens from `monthToText` and punctuation (`%1.`) — may need `DateFormat` / per-locale capitalization instead of manual strings.
 - **Separate from** education-week **number** tuning (`szorgalmi` anchor) — this item is **UI + formatting**, not week-index math (unless subtitle `from`/`to` dates are wrong).
 
-**Shipped fix:** `WeekoffseterElementWidget` layout + `calendarPage_weekNav_*` copy (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); improved education-week title and date-range subtitle formatting.
+**Shipped fix:** `WeekoffseterElementWidget` layout + `calendarPage_weekNav_*` copy (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); improved education-week title and date-range subtitle formatting. **1.5.8** — unified single-card chrome + `calendarWeekDateRange` `${to.day}` EN fix (`lib/API/api_coms.dart`).
 
 ---
 

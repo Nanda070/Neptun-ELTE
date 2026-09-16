@@ -4317,8 +4317,16 @@ class CashinEntry{
       return value[0].toUpperCase() + value.substring(1);
     }
 
+    static DateTime _calendarDateOnly(DateTime date) {
+      if (date.year < 1 || date.month < 1 || date.month > 12 || date.day < 1 || date.day > 31) {
+        return DateTime.now();
+      }
+      return DateTime(date.year, date.month, date.day);
+    }
+
     /// Calendar week subtitle: locale-appropriate month/day (not generic [monthToText] punctuation).
     static String calendarWeekDateLabel(DateTime date) {
+      date = _calendarDateOnly(date);
       final lang = AppStrings.getCurrentLangCode();
       final month = monthToText(date.month);
       final day = date.day;
@@ -4333,6 +4341,8 @@ class CashinEntry{
     }
 
     static String calendarWeekDateRange(DateTime from, DateTime to) {
+      from = _calendarDateOnly(from);
+      to = _calendarDateOnly(to);
       if (from.year == to.year &&
           from.month == to.month &&
           from.day == to.day) {
@@ -4348,7 +4358,7 @@ class CashinEntry{
             return '${from.day}\u00A0–\u00A0${to.day} $monthRaw';
           default:
             final month = _capitalizeFirst(monthRaw);
-            return '$month ${from.day}\u2013$to.day';
+            return '$month ${from.day}\u2013${to.day}';
         }
       }
       const rangeSep = '\u00A0–\u00A0';
