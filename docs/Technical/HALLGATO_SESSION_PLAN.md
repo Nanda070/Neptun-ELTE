@@ -76,8 +76,9 @@ While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance e
 
 ## Target behavior — app closed / long background
 
-- **No** periodic requests while the Flutter isolate is not running (no WorkManager / background_fetch for session keep-alive in **v1** of this plan).
-- Long background: refresh JWT may expire on the server; user may need full login when they return — **acceptable**; the app cannot guarantee keep-alive without background execution.
+- **Default (v1 core):** **no** periodic requests while the Flutter isolate is not running. Only foreground **3–4 min** `GetNewTokens` applies (see above).
+- Long background with default settings: refresh JWT may expire on the server; user may need full login when they return — **acceptable**; keep-alive is not guaranteed without optional background maintenance (below).
+- **Optional:** user may enable background keep-alive in Settings — see [Optional background keep-alive (Settings, default OFF)](#optional-background-keep-alive-settings-default-off).
 
 ### Cold start scenarios (after plan is implemented)
 
@@ -96,6 +97,107 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 ---
 
+## Optional background keep-alive (Settings, default OFF)
+
+**Status:** design / optional tier — **not** part of v1 core shipping criteria unless product explicitly promotes it. **Default: OFF.**
+
+### User control
+
+- **Settings toggle** — e.g. “Keep session alive in background” (exact copy TBD in `language.dart` EN/RU/HU).
+- When **off** (default): behavior matches [Target behavior — app closed / long background](#target-behavior--app-closed--long-background) — foreground maintenance only.
+- When **on**: best-effort hallgato session maintenance while the app is **not** in `AppLifecycleState.resumed`.
+
+### Platform mechanisms (implementation choice — document in TECHNICAL when shipped)
+
+| Platform | Candidate | Notes |
+|----------|-----------|--------|
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) (or equivalent) | Periodic / expedited work subject to Doze, App Standby, OEM killers; not real-time. |
+| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) and/or **BGTaskScheduler** | Intervals are **system-controlled**; often **15+ minutes** or longer; no guarantee of 3–4 min cadence in background. |
+
+**Design constraint — battery:** use **conservative** intervals in background (e.g. align with OS minimum practical cadence — **not** the same 3–4 min as foreground). Coalesce with the same `GetNewTokens` helper as foreground maintenance; **no** aggressive polling or parallel timers. Document honestly that **OS may defer or skip** tasks; background maintenance is **best-effort**, not a SLA.
+
+### Behavior when enabled
+
+- Run **`POST …/api/Account/GetNewTokens`** (same as foreground primary mechanism) when a background task fires and auth is not blocked.
+- Respect existing refresh lock (`_isRefreshingToken`); skip tick if a foreground refresh is in flight.
+- **401/403** on background refresh: prefer **not** to show UI from a headless task — persist “refresh dead” state or defer to next foreground open → login + TOTP (exact UX TBD; must not fight `SessionGuard` rules when implemented).
+- **Network errors:** retry on next OS-scheduled run; do not spam ELTE.
+
+### Risks and store policy
+
+| Topic | Notes |
+|-------|--------|
+| **Battery** | User-opt-in; conservative schedule; explain in Settings subtitle that background refresh uses battery and may be irregular. |
+| **OS killing tasks** | Android/iOS may never run work while force-stopped, low battery, or restricted background data — user may still need TOTP after long absence. |
+| **ELTE traffic pattern** | Frequent background refresh from many users could look unlike normal app use — keep intervals conservative; monitor 429 in testing. |
+| **Play / App Store** | Declare background modes / permissions only if implemented; justify as **optional** session maintenance the user explicitly enabled (not tracking, not ads). |
+
+### Open questions (plan-only)
+
+- Minimum interval that is both battery-safe and worth shipping?
+- Single combined plugin vs platform channels?
+- Should background refresh run only when refresh JWT is within N minutes of suspected expiry (requires optional JWT `exp` parsing)?
+
+---
+
+## Portal / HWEB “activity” (research — optional, lower priority)
+
+**Status:** **possible future approach**, **on par with** (not replacing) foreground **3–4 min** `GetNewTokens`. **No implementation** in current plan wave; **research + optional**, **lower priority** than proactive JWT refresh.
+
+### Honesty
+
+- Student-data REST today: **GET + Bearer JWT** on assigned `hallgatoN` — portal cookies are **not** sent on those GETs.
+- Portal / HWEB session state in the app is largely **in-memory** for login flows; there is no shipped “keep portal alive” loop.
+- “Fake activity” might mean **best-effort** HTTP requests to portal or HWEB endpoints **only if** research proves they extend **anything** relevant to hallgato refresh or ELTE session lifetime.
+
+**Unknown / unproven:** whether such requests extend refresh JWT TTL, reduce 2FA prompts, or only create noise. Treat as **hypothesis** until captured HAR + live tests document server behavior.
+
+### If ever pursued (not v1)
+
+- Same tier as optional background keep-alive — **never** a substitute for `GetNewTokens`.
+- Must not store or replay credentials beyond existing auth design; no automated 2FA.
+- Rate limits and ELTE ToS / abuse perception — document before any experiment.
+
+### Open questions
+
+- Which portal URLs (if any) correlate with longer refresh validity?
+- Does HWEB polling affect hallgato JWT at all?
+- Legal/product: is synthetic “activity” acceptable to document openly to users?
+
+---
+
+## Optional password retention in Settings (opt-in, default OFF)
+
+**Status:** design / optional convenience — **not** v1 core unless product ships it with foreground maintenance.
+
+### User control
+
+- **Settings toggle** alongside existing nickname / username preference — e.g. “Remember password on this device” (**default OFF**, opt-in only).
+- When **off** (default): match today’s intent — password cleared on logout and on existing session-expiry wipe paths (`neptun_password` in `flutter_secure_storage` via `DataCache` in `lib/storage.dart`).
+- When **on:** persist password in secure storage (`neptun_password`) across session end **until** user disables the toggle or performs **manual logout** (manual logout should still wipe password unless product explicitly chooses otherwise — **recommend wipe on manual logout even when toggle on** for clear user expectation).
+
+### Relationship to 2FA and silent re-auth
+
+- **2FA cannot be automated** — no stored TOTP seed, no bypass of ELTE Login2FA.
+- Saved password is **convenience only** after refresh dies or user returns from long background: pre-fill login field; user still enters **TOTP** whenever ELTE requires Login2FA.
+- Does **not** change `trySilentReauth()` (**false** for ELTE) unless a separate, explicitly scoped product decision adds password-based re-login **with** mandatory 2FA UI — out of scope here.
+
+### Policy interaction (planned wall-clock removal)
+
+- When **10-minute wall-clock** is removed, session end on token failure should **not** delete `neptun_password` if user opted in — only tokens / auth flags cleared via existing wipe paths; password retained for next login convenience.
+- Document in TECHNICAL when shipped: which `DataCache` / logout methods respect the toggle.
+
+### Security tradeoffs (must appear in Settings copy or linked privacy note)
+
+| Topic | Notes |
+|-------|--------|
+| **Stolen unlocked phone** | Password at rest in secure storage is recoverable to anyone with device access + unlocked app or backup extraction — opt-in only. |
+| **MITM** | Already documented for login traffic; stored password does not worsen transport if user only uses official ELTE endpoints — still high value secret on device. |
+| **Shared device** | Recommend default OFF; warn in toggle description. |
+| **Manual logout** | Should clear password (recommended) so “logout” means logout even if toggle was on. |
+
+---
+
 ## ELTE constraints
 
 - Portal has **no** “remember this device” for skipping 2FA on later logins (user confirmed).
@@ -110,20 +212,21 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 | **Refresh JWT TTL** | Unknown until live decode of JWT `exp` (or server docs). Plan may add optional `exp` parsing later — **not** required for v1 doc. |
 | **Rate limits** | ELTE / hallgato may throttle frequent `GetNewTokens`; 3–4 min interval is a balance — monitor 429 / errors in testing. |
 | **Device session length** | Longer-lived sessions on device if wall-clock is removed — user stays “logged in” until refresh dies or manual logout. |
-| **Background** | Cannot refresh while killed; user may need TOTP after long absence even if they were “active” yesterday. |
-| **Security** | Refresh token in secure storage remains high value; maintenance does not store password for silent ELTE re-login (and must not). |
+| **Background** | With default Settings, cannot refresh while killed; optional background keep-alive is best-effort and OS-deferred — user may still need TOTP after long absence. |
+| **Optional background** | Battery drain, task cancellation, uneven ELTE load if intervals too aggressive — see [Optional background keep-alive](#optional-background-keep-alive-settings-default-off). |
+| **Portal / HWEB activity** | Unproven benefit; could trigger rate limits or policy questions — research only. |
+| **Security** | Refresh token in secure storage remains high value. **v1 core** does not store password for silent ELTE re-login. **Optional** password retention (opt-in) increases impact of device compromise — see [Optional password retention](#optional-password-retention-in-settings-opt-in-default-off). |
 
 ---
 
-## Explicitly out of scope (v1)
+## Explicitly out of scope (v1 core)
 
-Do **not** implement or document as part of v1 shipping criteria:
+**v1 core** shipping criteria = foreground **3–4 min** `GetNewTokens` + planned wall-clock removal + cold-start token gating. Do **not** require for v1 core:
 
 - Auto-2FA / stored TOTP seed
-- Background **WorkManager** / `background_fetch` session keep-alive
-- Fake portal or HWEB activity pings
-
-**Optional future note:** background refresh could reduce TOTP frequency for power users but adds OS policy, battery, and security review — defer unless product asks.
+- **Enabled-by-default** background keep-alive (optional toggle may ship later — [Optional background keep-alive](#optional-background-keep-alive-settings-default-off))
+- **Enabled-by-default** password retention (optional opt-in may ship later — [Optional password retention](#optional-password-retention-in-settings-opt-in-default-off))
+- Production portal or HWEB “activity” pings without research sign-off — [Portal / HWEB “activity”](#portal--hweb-activity-research--optional-lower-priority)
 
 ---
 
@@ -141,6 +244,12 @@ Numbered steps only — **no code in this task**.
 8. **TECHNICAL + DEV_BLOG + honesty table** — state JWT-maintenance policy; bump marketing version only when shipping to users (Android APK → new tag per repo rules).
 9. **Manual test matrix** — foreground 20+ min without TOTP; background 30+ min; kill app with valid refresh; kill with dead refresh; airplane mode during maintenance tick.
 10. **Widgets regression** — confirm widget sync still cache-only, no JWT.
+11. **Settings — background keep-alive** — add localized strings + toggle (default **off**); persist pref key (name TBD, e.g. `settings_backgroundSessionKeepAlive`); gate registration of WorkManager / iOS background task only when on; subtitle explaining battery + irregular schedule.
+12. **Background plugin choice** — Android: WorkManager periodic task with conservative interval; iOS: `background_fetch` and/or BGTaskScheduler; document chosen package + minimum interval + deferral behavior in TECHNICAL § session.
+13. **Battery / ELTE policy** — no foreground-equivalent 3–4 min polling in background; single coalesced `GetNewTokens` per task; backoff on errors; no duplicate timer while app is `resumed` (foreground scheduler owns that window).
+14. **Settings — password retention** — toggle (default **off**); wire to `neptun_password` read/write in `DataCache` / login flow; on token-failure logout respect opt-in (retain password); on manual logout wipe password (recommended); Settings security copy EN/RU/HU.
+15. **Store / manifest** — Android permissions + iOS `UIBackgroundModes` / BGTask identifiers only if background toggle ships; Play / App Store justification text aligned with optional user-enabled maintenance.
+16. **Portal / HWEB research** — if pursued: spike doc with HAR, endpoints, and pass/fail before any user-facing “activity” feature; keep lower priority than steps 2–10.
 
 ---
 

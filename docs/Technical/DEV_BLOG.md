@@ -336,6 +336,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — plan: optional background, portal research, password toggle
+
+**[2026-09-16]**
+
+- Extended **HALLGATO_SESSION_PLAN** EN+RU: optional Settings **background keep-alive** (WorkManager / BGTask, default off, battery-conservative); **portal/HWEB activity** as unproven lower-priority research; **opt-in password retention** (`neptun_password`, 2FA still manual). Checklist steps 11–16. Docs-only; no Dart / SessionGuard / version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
 
 **[2026-09-16, 08:15]**
