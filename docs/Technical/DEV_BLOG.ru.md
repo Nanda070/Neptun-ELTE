@@ -367,7 +367,15 @@
 
 **[2026-09-16]**
 
-- **Поддерживать сессию в фоне** (`SETTING_BackgroundHallgatoKeepAlive`, default **выкл**): Android `workmanager` **15 мин**; iOS `background_fetch` (система **15+ мин**). `HallgatoBackgroundKeepAlive` + `runBackgroundTokenMaintenance()` — тот же `GetNewTokens` и mutex refresh; headless **401/403** без UI до foreground. Выкл / logout → отмена задач. EN/HU/RU; TECHNICAL + HALLGATO EN+RU. Отдельный bump/тег не делали (волна **1.5.6**). Владелец **Nanda**.
+- **Поддерживать сессию в фоне** (`SETTING_BackgroundHallgatoKeepAlive`, default **выкл**): Android `workmanager` **15 мин**; iOS `background_fetch` (система **15+ мин**). `HallgatoBackgroundKeepAlive` + `runBackgroundTokenMaintenance()` — тот же `GetNewTokens` и mutex refresh; headless **401/403** без UI до foreground. Выкл / logout → отмена задач. EN/HU/RU; TECHNICAL + HALLGATO EN+RU. Владелец **Nanda**.
+
+---
+
+## 2026-09-16 — релиз 1.5.7 (фоновый keep-alive + запомнить пароль)
+
+**[2026-09-16]**
+
+- **Релиз 1.5.7** (`pubspec` **1.5.7+1**): опциональный фоновый hallgato JWT keep-alive + запомнить пароль в Настройках (оба default off; код пароля восстановлен после среза 1.5.6). Logout отменяет фоновые задачи через `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Владелец **Nanda**.
 
 ---
 

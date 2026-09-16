@@ -4,6 +4,7 @@ import 'package:neptun2/app_navigator.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/storage.dart';
 import 'package:provider/provider.dart';
+import 'API/api_coms.dart' as api;
 import 'Pages/main_page.dart';
 import 'Pages/startup_page.dart';
 import 'language.dart';
@@ -19,6 +20,9 @@ void main() {
     await AppStrings.loadBundledLanguagePacks();
     AppStrings.initialize();
     await HallgatoBackgroundKeepAlive.initialize();
+    api.SessionGuard.registerAuthWipedHook(
+      HallgatoBackgroundKeepAlive.cancelScheduledTasks,
+    );
     registerAppRoots(
       loginRoot: (_) => const Splitter(),
       homeRoot: (_) => const HomePage(),

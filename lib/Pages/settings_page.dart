@@ -58,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _appVersionLabel = '1.5.6';
+        _appVersionLabel = '1.5.7';
       });
     }
   }
@@ -479,6 +479,23 @@ class _SettingsPageState extends State<SettingsPage> {
               AppHaptics.lightImpact();
               await DataCache.setBackgroundHallgatoKeepAlive(b ? 1 : 0);
               await HallgatoBackgroundKeepAlive.syncScheduledTasks();
+              setState(() {});
+            },
+          ),
+          SwitchListTile(
+            title: Text(
+              AppStrings.getLanguagePack().settings_rememberPasswordOnDevice,
+              style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              AppStrings.getLanguagePack().settings_rememberPasswordOnDevice_Subtitle,
+              style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.55), fontSize: 13),
+            ),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getRememberPasswordOnDevice() ?? false,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setRememberPasswordOnDevice(b ? 1 : 0);
               setState(() {});
             },
           ),

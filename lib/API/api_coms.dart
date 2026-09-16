@@ -77,22 +77,40 @@ class SessionGuard {
     _authenticatedAt = null;
   }
 
+  static Future<void> Function()? _onAuthWiped;
+
+  /// Optional hook (e.g. cancel background keep-alive) after auth leftovers wipe.
+  static void registerAuthWipedHook(Future<void> Function()? hook) {
+    _onAuthWiped = hook;
+  }
+
   /// Full auth leftover wipe shared by manual + expired logout (and login start).
   /// Keeps academic cache (calendar / markbook / mail / payments / periods / terms)
   /// so home surfaces can show last data after re-login (plan item 1).
-  static Future<void> _wipeAuthLeftovers() async {
+  /// [wipePassword] false only when Settings opt-in remember-password is on and
+  /// this is automatic session death (not manual log out).
+  static Future<void> _wipeAuthLeftovers({bool wipePassword = true}) async {
     _APIRequest.resetRefreshLock();
     await InstitutesRequest.eltePortalLogoutBestEffort();
     InstitutesRequest.resetEltePortalState();
     CalendarRequest.clearTrainingIdCache();
-    await storage.DataCache.sessionWipeKeepCache();
+    await storage.DataCache.sessionWipeKeepCache(wipePassword: wipePassword);
+    try {
+      await _onAuthWiped?.call();
+    } catch (e) {
+      debug.log('SessionGuard auth-wiped hook: $e');
+    }
   }
 
+  static bool get _wipePasswordOnSessionDeath =>
+      !(storage.DataCache.getRememberPasswordOnDevice() ?? false);
+
   /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
+  /// Always clears `neptun_password` (opt-in remember-password does not apply).
   static Future<void> userInitiatedLogout() async {
     _clearAuthenticatedAt();
     _authBlocked = true;
-    await _wipeAuthLeftovers();
+    await _wipeAuthLeftovers(wipePassword: true);
   }
 
   /// Cold-start gate (shortcuts / Splitter): usable participant session only if
@@ -107,7 +125,7 @@ class SessionGuard {
       _pendingUserMessage =
           AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
       try {
-        await _wipeAuthLeftovers();
+        await _wipeAuthLeftovers(wipePassword: _wipePasswordOnSessionDeath);
       } catch (e) {
         debug.log('isColdStartSessionUsable wipe (no token): $e');
       }
@@ -118,6 +136,7 @@ class SessionGuard {
   }
 
   /// Access token dead and refresh/silent re-auth cannot restore session.
+  /// Respects opt-in remember-password for secure-storage retention (pre-fill only).
   static Future<void> forceExpiredLogout() async {
     if (_handlingExpired) return;
     _handlingExpired = true;
@@ -126,7 +145,7 @@ class SessionGuard {
     final msg = AppStrings.getLanguagePack().auth_sessionExpired_PleaseSignIn;
     _pendingUserMessage = msg;
     try {
-      await _wipeAuthLeftovers();
+      await _wipeAuthLeftovers(wipePassword: _wipePasswordOnSessionDeath);
     } catch (e) {
       debug.log('forceExpiredLogout wipe error: $e');
     }

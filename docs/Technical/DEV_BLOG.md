@@ -367,7 +367,15 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-16]**
 
-- Shipped **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`, default **off**): Android `workmanager` periodic **15 min**; iOS `background_fetch` (system-deferred **15+ min**). `HallgatoBackgroundKeepAlive` + `SessionGuard.runBackgroundTokenMaintenance()` shares `GetNewTokens` / refresh mutex with foreground; headless **401/403** defers UI to next foreground. Toggle off or logged out → tasks cancelled. EN/HU/RU Settings strings; TECHNICAL + HALLGATO EN+RU. No separate version bump / tag (bundle with **1.5.6** session wave unless split release). Owner **Nanda**.
+- Shipped **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`, default **off**): Android `workmanager` periodic **15 min**; iOS `background_fetch` (system-deferred **15+ min**). `HallgatoBackgroundKeepAlive` + `SessionGuard.runBackgroundTokenMaintenance()` shares `GetNewTokens` / refresh mutex with foreground; headless **401/403** defers UI to next foreground. Toggle off or logged out → tasks cancelled. EN/HU/RU Settings strings; TECHNICAL + HALLGATO EN+RU. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.7 (background keep-alive + remember password)
+
+**[2026-09-16]**
+
+- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + remember-password Settings (both default off; password code restored after 1.5.6 session-core cut). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Owner **Nanda**.
 
 ---
 

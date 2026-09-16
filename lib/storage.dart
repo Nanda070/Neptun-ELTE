@@ -75,14 +75,20 @@ class DataCache{
   /// can paint instantly after re-login (plan item 1). Prefer this over [dataWipe]
   /// unless a full reset is required.
   /// Wipes JWT / login flags; keeps academic cache and username.
-  static Future<void> sessionWipeKeepCache() async {
+  /// When [wipePassword] is false (opt-in remember password), keeps `neptun_password`.
+  static Future<void> sessionWipeKeepCache({bool wipePassword = true}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final keepUsername = (_instance._username != null && _instance._username!.isNotEmpty)
         ? _instance._username!
         : (await getString('Username') ?? '');
 
-    await _secureStorage.delete(key: 'neptun_password');
-    _instance._password = '';
+    if (wipePassword) {
+      await _secureStorage.delete(key: 'neptun_password');
+      _instance._password = '';
+    } else {
+      final kept = await _secureStorage.read(key: 'neptun_password');
+      _instance._password = kept ?? '';
+    }
     await _secureStorage.delete(key: 'neptun_jwt_token');
     await _secureStorage.delete(key: 'neptun_refresh_token');
     await prefs.remove('Password');
@@ -232,6 +238,8 @@ class DataCache{
   late bool? _persistentSetting_needBetterHaptics = true;
   /// Optional hallgato JWT refresh while app is backgrounded (default OFF).
   late bool? _persistentSetting_backgroundHallgatoKeepAlive = false;
+  /// Opt-in: keep `neptun_password` across session expiry for login pre-fill (default OFF).
+  late bool? _persistentSetting_rememberPasswordOnDevice = false;
   late int? _persistentSetting_userSelectedLanguage = -1;
   String? _persistentSetting_userSelectedLanguageCode;
 
@@ -367,6 +375,9 @@ class DataCache{
 
     tmp = await getInt('SETTING_BackgroundHallgatoKeepAlive');
     _persistentSetting_backgroundHallgatoKeepAlive = tmp != null && tmp != 0;
+
+    tmp = await getInt('SETTING_RememberPasswordOnDevice');
+    _persistentSetting_rememberPasswordOnDevice = tmp != null && tmp != 0;
 
     tmp = await getInt('SETTING_UserWeekOffset');
     _persistentSetting_weekOffset = tmp ?? 0;
@@ -656,6 +667,18 @@ class DataCache{
     final on = value != null && value != 0;
     _instance._persistentSetting_backgroundHallgatoKeepAlive = on;
     await saveInt('SETTING_BackgroundHallgatoKeepAlive', on ? 1 : 0);
+  }
+
+  static bool? getRememberPasswordOnDevice() =>
+      _instance._persistentSetting_rememberPasswordOnDevice;
+
+  static Future<void> setRememberPasswordOnDevice(int? value) async {
+    final on = value != null && value != 0;
+    _instance._persistentSetting_rememberPasswordOnDevice = on;
+    await saveInt('SETTING_RememberPasswordOnDevice', on ? 1 : 0);
+    if (!on) {
+      await setPassword(null);
+    }
   }
 
   static bool? getNeedExamNotifications(){return _instance._persistentSetting_showExamNotifications;}

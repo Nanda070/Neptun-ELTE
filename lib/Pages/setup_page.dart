@@ -1203,6 +1203,9 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
 
     _username = PageDTO.username ?? storage.DataCache.getUsername() ?? "";
     _password = PageDTO.password ?? "";
+    if (_password.isEmpty && (storage.DataCache.getRememberPasswordOnDevice() ?? false)) {
+      _password = storage.DataCache.getPassword() ?? "";
+    }
 
     _usernameController = TextEditingController(text: _username);
     _passwordController = TextEditingController(text: _password);

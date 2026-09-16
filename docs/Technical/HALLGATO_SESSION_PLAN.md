@@ -1,6 +1,6 @@
 # Hallgato session maintenance — design plan
 
-**Status:** **v1 core shipped in app 1.5.6** (16 September 2026). Optional Settings tiers (background keep-alive, password retention, portal activity) remain **design only**.  
+**Status:** **v1 core shipped in app 1.5.6** (16 September 2026). **Background keep-alive** + **password retention** Settings toggles shipped (**1.5.7**, both default OFF). Portal/HWEB activity remains **design only**.  
 **Owner:** Nanda.  
 **Canonical twin:** [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 

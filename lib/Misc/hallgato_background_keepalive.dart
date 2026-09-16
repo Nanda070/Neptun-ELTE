@@ -109,12 +109,21 @@ class HallgatoBackgroundKeepAlive {
     }
   }
 
+  /// Cancel platform tasks (logout / toggle off / not logged in).
+  static Future<void> cancelScheduledTasks() => _cancelAll();
+
   static Future<void> _cancelAll() async {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid && _workmanagerInitialized) {
       await wm.Workmanager().cancelByUniqueName(_workUniqueName);
+    } else if (Platform.isAndroid) {
+      try {
+        await wm.Workmanager().cancelByUniqueName(_workUniqueName);
+      } catch (_) {}
     }
     if (Platform.isIOS) {
-      await BackgroundFetch.stop();
+      try {
+        await BackgroundFetch.stop();
+      } catch (_) {}
     }
   }
 
