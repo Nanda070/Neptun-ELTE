@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — docs: campus map Phase 4 (joins + aliases)
+
+**[2026-09-16]**
+
+- Phase 4 Neptun↔BIS joins + named-hall aliases: [`campus_map_research/joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, coverage report). Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: campus map Phase 3 (LE graph MVP)
 
 **[2026-09-16]**
@@ -473,11 +481,11 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map **research dump** + **map-first plan**; Phase **0–2 done** (LD MVP graph); app Map UI not started.
+- Campus map **research dump** + **map-first plan**; Phase **0–4 done** (LD/LE MVP graphs + joins/aliases); app Map UI not started.
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase A** — Phase 4 join tables + aliases next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
+- **Campus indoor map Phase A** — Phase 5 package next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

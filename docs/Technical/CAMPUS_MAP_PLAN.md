@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–3 done** (LD + LE MVP graphs). Next: **Phase 4** join tables + aliases. **Phase B (Flutter app)** deferred until graphs are packaged + QA’d.  
+**Status:** **Phase 0–4 done** (LD + LE MVP graphs + joins/aliases). Next: **Phase 5** package deliverable. **Phase B (Flutter app)** deferred until graphs are packaged + QA’d.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -62,6 +62,7 @@ Paths under `docs/Technical/campus_map_research/`:
 | **Phase 1 schema** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
 | **Phase 2 LD graph** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
 | **Phase 3 LE graph** | `graph/graph_le.json` · `graph/samples/le_routes.md` · `graph/build_graph_le.py` |
+| **Phase 4 joins** | `joins/joins_ld.json` · `joins/joins_le.json` · `joins/aliases.json` · `joins/search_fixtures.json` · `joins/JOIN_COVERAGE.md` · `joins/build_joins.py` |
 | LD basemap JPGs | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | LD public room table | `ld_south/rooms.json` (~134 labeled rooms; corridor schema 1–8) |
 | LE basemap JPGs | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -206,26 +207,34 @@ Document at least **5** LD routes with expected floor changes, e.g.:
 
 ## Phase 4 — Join tables + search aliases
 
+**Status:** **DONE** — **2026-09-16**. Canonical: [`campus_map_research/joins/`](campus_map_research/joins/README.md).
+
 **Purpose:** users type Neptun codes and hall names; graph resolves to nodes.
 
 ### Join
 
 | Source A | Source B | Output |
 |----------|----------|--------|
-| Neptun-style (`LD 0.821`, `LD-0-805`, timetable strings) | BIS `LD-…` / room id | `joins_ld.json` / rows in package |
-| Same for LE | BIS North codes | `joins_le.json` |
+| Neptun-style (`LD 0.821`, `LD-0-805`, timetable strings) | BIS `LD-…` / room id | [`joins/joins_ld.json`](campus_map_research/joins/joins_ld.json) |
+| Same for LE (incl. LK-prefixed North codes) | BIS North codes | [`joins/joins_le.json`](campus_map_research/joins/joins_le.json) |
 
-Confidence tags: automatic exact match vs manual override. Unmatched educational rooms stay searchable by BIS code only until joined.
+Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (or Phase 2/3 `bisRoomId`); `heuristic` = derived Neptun form / educational-only (often `roomId` null). Regenerator: `joins/build_joins.py`.
+
+**Coverage (honest):** LD educational **100%** have a Neptun join row; **~14.5%** already pin to MVP graph `roomId`. LE educational **~99.8%** joined; **~14.1%** on graph. Full matrix: [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md).
 
 ### Aliases (named halls)
 
-Seed from sarkozigergo / BIS names, e.g. Bolyai, Fejér Lipót, Rényi, Erdős Pál, Turán Pál, Déli Hali, … — map each alias → `roomId` or `nodeId`.
+[`joins/aliases.json`](campus_map_research/joins/aliases.json) — Bolyai, Fejér Lipót, Rényi, Erdős Pál, Turán Pál, Ortvay, Eötvös, … → `roomId`/`nodeId`. Colloquial **Déli Hali** kept with `roomId` null (no BIS educational room).
+
+### Search fixtures
+
+[`joins/search_fixtures.json`](campus_map_research/joins/search_fixtures.json) — query → expected pin for Phase 6 QA (includes educational-only negatives).
 
 ### Exit criteria
 
-- [ ] Join coverage report: % of educational rooms with Neptun code match (target: document % honestly; aim high for LD educational subset).
-- [ ] Alias list for known named halls on LD (+ LE).
-- [ ] Search fixture list (query → expected node) for QA Phase 6.
+- [x] Join coverage report: % of educational rooms with Neptun code match (documented honestly).
+- [x] Alias list for known named halls on LD (+ LE).
+- [x] Search fixture list (query → expected node) for QA Phase 6.
 
 ---
 

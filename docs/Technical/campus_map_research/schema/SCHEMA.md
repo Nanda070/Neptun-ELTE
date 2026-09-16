@@ -12,8 +12,10 @@ This schema describes the **map data package** (buildings, floors, rooms, graph 
 |------|------|
 | `SCHEMA.md` | This document (canonical field rules) |
 | `schema.example.ld.floor0.json` | One LD ground-floor sample (illustrative graph + real room codes) |
-| `joins_ld.stub.json` | Sample Neptun ↔ BIS join rows (Phase 4 fills the rest) |
+| `joins_ld.stub.json` | Sample Neptun ↔ BIS join rows (Phase 1 stub) |
 | `joins_ld.stub.csv` | Same joins as CSV for spreadsheet editing |
+
+**Phase 4 full joins** live under [`../joins/`](../joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`).
 
 ## Package root
 
@@ -118,7 +120,7 @@ Walkable graph vertex. Rooms attach via a **room** node (or a short stub edge fr
 | `confidence` | string | yes | `exact` \| `heuristic` \| `manual` |
 | `notes` | string | no | |
 
-Full join tables are Phase **4**. Stubs under this folder are samples only.
+Full join tables are Phase **4** — see [`../joins/`](../joins/). Stubs under this folder are samples only.
 
 ---
 

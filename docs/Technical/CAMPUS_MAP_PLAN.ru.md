@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **Фазы 0–3 готовы** (MVP-графы LD + LE). Далее: **фаза 4** — join-таблицы + алиасы. **Фаза B (Flutter-приложение)** отложена, пока графы не упакованы и не прошли QA.  
+**Статус:** **Фазы 0–4 готовы** (MVP-графы LD + LE + joins/алиасы). Далее: **фаза 5** — упаковка deliverable. **Фаза B (Flutter-приложение)** отложена, пока графы не упакованы и не прошли QA.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
@@ -62,6 +62,7 @@
 | **Схема фазы 1** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
 | **Граф LD фазы 2** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
 | **Граф LE фазы 3** | `graph/graph_le.json` · `graph/samples/le_routes.md` · `graph/build_graph_le.py` |
+| **Joins фазы 4** | `joins/joins_ld.json` · `joins/joins_le.json` · `joins/aliases.json` · `joins/search_fixtures.json` · `joins/JOIN_COVERAGE.md` · `joins/build_joins.py` |
 | Basemap JPG LD | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | Публичная таблица комнат LD | `ld_south/rooms.json` (~134 подписанных комнат; схема коридоров 1–8) |
 | Basemap JPG LE | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -206,26 +207,34 @@
 
 ## Фаза 4 — Join-таблицы + поисковые алиасы
 
+**Статус:** **ГОТОВО** — **2026-09-16**. Канон: [`campus_map_research/joins/`](campus_map_research/joins/README.md).
+
 **Зачем:** пользователь вводит коды Neptun и имена залов; граф резолвит в узлы.
 
 ### Join
 
 | Источник A | Источник B | Выход |
 |------------|------------|-------|
-| Neptun-стиль (`LD 0.821`, `LD-0-805`, строки расписания) | BIS `LD-…` / room id | `joins_ld.json` / строки в пакете |
-| То же для LE | Коды BIS Север | `joins_le.json` |
+| Neptun-стиль (`LD 0.821`, `LD-0-805`, строки расписания) | BIS `LD-…` / room id | [`joins/joins_ld.json`](campus_map_research/joins/joins_ld.json) |
+| То же для LE (вкл. LK-префиксы Севера) | Коды BIS Север | [`joins/joins_le.json`](campus_map_research/joins/joins_le.json) |
 
-Теги confidence: точный автомат vs ручной override. Несматченные educational-комнаты остаются searchable по коду BIS, пока не join.
+Confidence: `exact` = публичный/graph `codeBis` совпал с educational `roomNumber` (или `bisRoomId` фаз 2/3); `heuristic` = выведенный Neptun / educational-only (часто `roomId` null). Регенератор: `joins/build_joins.py`.
+
+**Покрытие (честно):** LD educational **100%** имеют Neptun join-строку; **~14.5%** уже на MVP-графе. LE educational **~99.8%** joined; **~14.1%** на графе. Полная матрица: [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md).
 
 ### Алиасы (именные залы)
 
-Сид из sarkozigergo / имён BIS, напр. Bolyai, Fejér Lipót, Rényi, Erdős Pál, Turán Pál, Déli Hali, … — каждый алиас → `roomId` или `nodeId`.
+[`joins/aliases.json`](campus_map_research/joins/aliases.json) — Bolyai, Fejér Lipót, Rényi, Erdős Pál, Turán Pál, Ortvay, Eötvös, … → `roomId`/`nodeId`. Разговорное **Déli Hali** с `roomId` null (нет educational-комнаты BIS).
+
+### Search-фикстуры
+
+[`joins/search_fixtures.json`](campus_map_research/joins/search_fixtures.json) — запрос → ожидаемый pin для QA фазы 6 (вкл. educational-only негативы).
 
 ### Критерии выхода
 
-- [ ] Отчёт покрытия join: % educational-комнат с матчем Neptun-кода (цель: честно задокументировать %; стремиться высоко для LD educational subset).
-- [ ] Список алиасов известных именных залов LD (+ LE).
-- [ ] Список search-фикстур (запрос → ожидаемый узел) для QA фазы 6.
+- [x] Отчёт покрытия join: % educational-комнат с матчем Neptun-кода (честно задокументирован).
+- [x] Список алиасов известных именных залов LD (+ LE).
+- [x] Список search-фикстур (запрос → ожидаемый узел) для QA фазы 6.
 
 ---
 
