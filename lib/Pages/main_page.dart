@@ -238,7 +238,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     });
     _startForegroundTokenMaintenance();
     // Foreground owns JWT maintenance while resumed — do not leave BG tasks armed.
-    Future.microtask(HallgatoBackgroundKeepAlive.cancelScheduledTasks);
+    // Also refresh tokens immediately (periodic timer waits a full 3m30 for first tick).
+    Future.microtask(() async {
+      await HallgatoBackgroundKeepAlive.cancelScheduledTasks();
+      await _onResumeSessionMaintenance();
+    });
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
 
@@ -2414,6 +2418,33 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     _foregroundTokenMaintenanceTimer = null;
   }
 
+  /// After AFK: refresh JWT immediately (do not wait for first 3m30 periodic
+  /// tick), then refresh calendar + mail so empty/stale paint is not left up.
+  /// Auth failure → [SessionGuard.forceExpiredLogout] inside maintenance.
+  Future<void> _onResumeSessionMaintenance() async {
+    if (!mounted || api.SessionGuard.isAuthBlocked) return;
+    try {
+      await api.SessionGuard.runForegroundTokenMaintenance();
+    } catch (e) {
+      debugPrint('Resume token maintenance: $e');
+    }
+    if (!mounted || api.SessionGuard.isAuthBlocked) return;
+    if (!(storage.DataCache.getHasLogin() ?? false)) return;
+    try {
+      await fetchCalendar(allowCache: true, silentRefreshIfOnline: true);
+      if (mounted) setupCalendar(false);
+    } catch (e) {
+      debugPrint('Resume calendar refresh: $e');
+    }
+    if (!mounted || api.SessionGuard.isAuthBlocked) return;
+    try {
+      await fetchMails();
+      if (mounted) setupMails();
+    } catch (e) {
+      debugPrint('Resume mail refresh: $e');
+    }
+  }
+
   bool _calendarDebounce = false;
   bool isLoadingCalendar = true;
 
@@ -2595,8 +2626,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     switch (state) {
       case AppLifecycleState.resumed:
         _startForegroundTokenMaintenance();
-        // Cancel WorkManager / iOS fetch while foreground timer runs.
-        Future.microtask(HallgatoBackgroundKeepAlive.cancelScheduledTasks);
+        // Cancel WorkManager / iOS fetch while foreground timer runs; refresh
+        // tokens immediately (Timer.periodic would wait a full 3m30 for first tick).
+        Future.microtask(() async {
+          await HallgatoBackgroundKeepAlive.cancelScheduledTasks();
+          await _onResumeSessionMaintenance();
+        });
         WidgetBridge.sync(
           preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
         );

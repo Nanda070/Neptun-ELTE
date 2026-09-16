@@ -109,10 +109,10 @@ Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 
 | Платформа | Отгрузка | Заметки |
 |-----------|----------|---------|
-| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Период **45 мин** (батарея **1.5.9**; пол ОС 15 мин); сеть + `requiresBatteryNotLow` + `requiresDeviceIdle`; **без** обязательной зарядки; Doze/OEM могут откладывать. |
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Период **45 мин** (надёжность **1.5.10**; пол ОС 15 мин); сеть + `requiresBatteryNotLow`; **без** `requiresDeviceIdle` (в **1.5.9** idle почти блокировал запуски); initial delay **15 мин**; **без** обязательной зарядки; Doze/OEM могут откладывать. |
 | **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; минимум **45 мин**; система может отложить или **не** запустить (force-quit / выкл. Background Refresh). |
 
-**Ограничение — батарея (1.5.9):** длиннее интервалы (**45 мин**) вместо пола 15 мин — меньше гарантий refresh, меньше расход. Отмена WorkManager / BGFetch в `resumed` (foreground 3м30с основной). Coalesce: skip фона, если последний успешный `GetNewTokens` был в течение **25 мин**. Без `requiresCharging`. Честно: **ОС может откладывать или пропускать**; фон — **best-effort**, не SLA.
+**Ограничение — батарея / надёжность (1.5.9 → 1.5.10):** длиннее интервалы (**45 мин**) вместо пола 15 мин. **1.5.10** снимает `requiresDeviceIdle` и ставит Android initial delay **15 мин**. Отмена WorkManager / BGFetch в `resumed` (foreground основной; **сразу** GetNewTokens при resume). Coalesce **25 мин**. Без `requiresCharging`. Честно: **ОС может откладывать или пропускать**; фон — **best-effort**, не SLA.
 
 ### Поведение при включении
 
@@ -242,9 +242,9 @@ Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 9. **Ручная матрица тестов** — **не автоматизировано** — foreground 20+ min; фон 30+ min; kill с живым/мёртвым refresh; offline на тике.
 10. **Регрессия виджетов** — **без изменений** — кэш-only, без JWT.
 11. **Настройки — фоновый keep-alive** — **готово (1.5.7)** — `SETTING_BackgroundHallgatoKeepAlive`, строки, default **выкл**; `HallgatoBackgroundKeepAlive.syncScheduledTasks()` регистрирует WorkManager / iOS fetch только при вкл + login.
-12. **Выбор фонового плагина** — **готово (1.5.7)**; **батарея (1.5.9)** — Android `workmanager` **45 мин** + battery-not-low + idle; iOS `background_fetch` **45+ мин**; TECHNICAL § Session recovery.
-13. **Политика батареи / ELTE** — **готово (1.5.7 / 1.5.9)** — длинный фон; общий `GetNewTokens` + mutex; отмена BG в `resumed`; coalesce 25 мин; без обязательной зарядки.
-14. **Настройки — сохранение пароля** — **готово (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard` (ручной / expiry / cold-start); pre-fill входа; строки EN/HU/RU. (**1.5.6** откатил Dart; восстановлено в **1.5.7**.)
+12. **Выбор фонового плагина** — **готово (1.5.7)**; **батарея (1.5.9)** / **надёжность (1.5.10)** — Android `workmanager` **45 мин** + battery-not-low + сеть (idle снят); iOS `background_fetch` **45+ мин**; TECHNICAL § Session recovery.
+13. **Политика батареи / ELTE** — **готово (1.5.7 / 1.5.9 / 1.5.10)** — длинный фон; общий `GetNewTokens` + mutex; отмена BG в `resumed`; сразу refresh при resume; coalesce 25 мин; без зарядки; без device-idle.
+14. **Настройки — сохранение пароля** — **готово (1.5.7)**; **ручной logout (1.5.10)** — toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); пароль сохраняется при ручном Log out если ВКЛ; pre-fill; строки EN/HU/RU.
 15. **Store / manifest** — **готово (1.5.7)** — iOS `UIBackgroundModes` = `fetch` для опционального фона; Android WorkManager при toggle on.
 16. **Исследование portal / HWEB** — при продолжении: spike с HAR, endpoints, pass/fail до user-facing «activity»; приоритет ниже шагов 2–10.
 

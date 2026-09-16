@@ -372,6 +372,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.10 (session keep-alive reliability)
+
+**[2026-09-16]**
+
+- **Release 1.5.10** (`pubspec` **1.5.10+1**): fix three session bugs from **1.5.8/1.5.9**. (1) Background keep-alive: drop `requiresDeviceIdle` (blocked nearly all WorkManager/BGFetch runs); keep network + battery-not-low + **45 min** period with **15 min** Android initial delay; re-arm on background; `WAKE_LOCK` declared. (2) On `resumed`: **immediate** `GetNewTokens` then calendar+mail refresh (do not wait for first 3m30 `Timer.periodic` tick); auth failure → `forceExpiredLogout`. (3) Remember-password ON keeps `neptun_password` across **manual** Log out too (still wipe JWTs/HasLogin). Docs EN+RU. GitHub Release **v1.5.10** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.5.9 (battery-minimized background keep-alive)
 
 **[2026-09-16]**

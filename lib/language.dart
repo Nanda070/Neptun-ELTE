@@ -394,10 +394,10 @@ class AppStrings{
       settings_fontScale_Label: 'Betűméret',
       settings_rememberPasswordOnDevice: 'Jelszó megjegyzése ezen az eszközön',
       settings_rememberPasswordOnDevice_Subtitle:
-          'Kényelmi funkció: a jelszó biztonságos tárolóban marad kijelentkezés után is (2FA továbbra is kell). Megosztott eszközön kapcsold ki. Kézi kijelentkezés mindig törli a jelszót.',
+          'Kényelmi funkció: a jelszó biztonságos tárolóban marad kijelentkezés és lejárat után is (2FA továbbra is kell). Megosztott eszközön kapcsold ki.',
       settings_backgroundHallgatoKeepAlive: 'Munkamenet ébren tartása háttérben',
       settings_backgroundHallgatoKeepAlive_Subtitle:
-          'Opcionális: ritkán (kb. 15+ perc) frissíti a hallgatói JWT-t, amikor az app nincs előtérben. Több akkumulátor; az OS késleltetheti vagy kihagyhatja. Alapból ki.',
+          'Opcionális: kb. 45 percenként frissíti a hallgatói JWT-t, amikor az app nincs előtérben (hálózat + nem alacsony akkumulátor). Több akkumulátor; az OS késleltetheti vagy kihagyhatja. Alapból ki.',
       mail_error_Prefix: 'Hiba: %0',
       mail_error_EmptyMessage: 'Üres üzenet.',
       popup_case9_2faHeader: 'Kétlépcsős azonosítás',
@@ -782,10 +782,10 @@ class AppStrings{
       settings_fontScale_Label: 'Font scale',
       settings_rememberPasswordOnDevice: 'Remember password on this device',
       settings_rememberPasswordOnDevice_Subtitle:
-          'Convenience only: keeps your password in secure storage after session expiry (2FA still required). Turn off on shared devices. Manual log out always clears the password.',
+          'Convenience only: keeps your password in secure storage after log out and session expiry (2FA still required). Turn off on shared devices.',
       settings_backgroundHallgatoKeepAlive: 'Keep session alive in background',
       settings_backgroundHallgatoKeepAlive_Subtitle:
-          'Optional: occasionally (about 15+ min) refreshes your hallgato JWT while the app is not in the foreground. Uses more battery; the OS may defer or skip runs. Off by default.',
+          'Optional: about every 45 min refreshes your hallgato JWT while the app is not in the foreground (network + battery not low). Uses more battery; the OS may defer or skip runs. Off by default.',
       mail_error_Prefix: 'Error: %0',
       mail_error_EmptyMessage: 'Empty message.',
       popup_case9_2faHeader: 'Two-step authentication',

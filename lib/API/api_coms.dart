@@ -95,8 +95,8 @@ class SessionGuard {
   /// Full auth leftover wipe shared by manual + expired logout (and login start).
   /// Keeps academic cache (calendar / markbook / mail / payments / periods / terms)
   /// so home surfaces can show last data after re-login (plan item 1).
-  /// [wipePassword] false only when Settings opt-in remember-password is on and
-  /// this is automatic session death (not manual log out).
+  /// [wipePassword] false when Settings opt-in remember-password is on
+  /// (manual log out **and** automatic session death — 1.5.10).
   static Future<void> _wipeAuthLeftovers({bool wipePassword = true}) async {
     _APIRequest.resetRefreshLock();
     await InstitutesRequest.eltePortalLogoutBestEffort();
@@ -110,15 +110,17 @@ class SessionGuard {
     }
   }
 
+  /// When remember-password is OFF (or unset), wipe password on any session end.
   static bool get _wipePasswordOnSessionDeath =>
       !(storage.DataCache.getRememberPasswordOnDevice() ?? false);
 
-  /// Manual logout from drawer/settings: wipe session + portal jar, keep username.
-  /// Always clears `neptun_password` (opt-in remember-password does not apply).
+  /// Manual logout from drawer/settings: wipe JWTs / HasLogin / portal jar.
+  /// Keeps username; keeps `neptun_password` when remember-password opt-in is ON
+  /// (login pre-fill; 2FA still manual). Wipe password only when toggle is OFF.
   static Future<void> userInitiatedLogout() async {
     _clearAuthenticatedAt();
     _authBlocked = true;
-    await _wipeAuthLeftovers(wipePassword: true);
+    await _wipeAuthLeftovers(wipePassword: _wipePasswordOnSessionDeath);
   }
 
   /// Cold-start gate (shortcuts / Splitter): usable participant session only if

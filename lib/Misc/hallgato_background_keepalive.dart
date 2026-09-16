@@ -11,13 +11,15 @@ import 'package:workmanager/workmanager.dart' as wm;
 
 /// Optional hallgato JWT maintenance while the app is not foreground-resumed.
 ///
-/// **Battery / OS honesty:** Android periodic is **45 min** (was 15) with
-/// network + battery-not-low + device-idle — fewer guaranteed refreshes, less
-/// drain. iOS minimum fetch interval **45 min**; the OS may defer or never run
-/// (Low Power, Background App Refresh off, force-quit). Do **not** require
-/// charging (would make keep-alive too weak). Foreground 3 min 30 s remains
-/// primary; background tasks are cancelled while `resumed` and coalesced via
-/// [SessionGuard] last-success timestamp.
+/// **Battery / OS honesty (1.5.10):** Android periodic is **45 min** with
+/// network + battery-not-low only — **no** `requiresDeviceIdle` (1.5.9 idle
+/// blocked nearly all runs on phones that rarely enter true idle). First
+/// WorkManager tick after arming uses a **15 min** initial delay so AFK
+/// sessions can refresh before the full period. iOS minimum fetch interval
+/// **45 min**; the OS may defer or never run (Low Power, Background App
+/// Refresh off, force-quit). Do **not** require charging. Foreground 3 min
+/// 30 s remains primary; background tasks are cancelled while `resumed` and
+/// coalesced via [SessionGuard] last-success timestamp.
 ///
 /// Uses the same [SessionGuard.runBackgroundTokenMaintenance] helper as
 /// foreground maintenance; shares [_APIRequest] refresh mutex — no parallel
@@ -34,6 +36,10 @@ class HallgatoBackgroundKeepAlive {
   /// Android WorkManager period. Longer than the OS 15 min floor to cut battery
   /// cost; tradeoff vs 15 min: less refresh guarantee while backgrounded.
   static const Duration androidPeriod = Duration(minutes: 45);
+
+  /// First Android tick sooner than [androidPeriod] so mid-length AFK can still
+  /// refresh before the refresh JWT dies.
+  static const Duration androidInitialDelay = Duration(minutes: 15);
 
   /// iOS Background Fetch minimum interval (minutes). System may schedule later
   /// or never.
@@ -66,7 +72,7 @@ class HallgatoBackgroundKeepAlive {
           requiresBatteryNotLow: true,
           requiresCharging: false,
           requiresStorageNotLow: false,
-          requiresDeviceIdle: true,
+          requiresDeviceIdle: false,
           requiredNetworkType: bg.NetworkType.ANY,
         ),
         _onBackgroundFetchEvent,
@@ -79,6 +85,9 @@ class HallgatoBackgroundKeepAlive {
   /// True when the OS should own JWT maintenance (app not actively resumed).
   static bool get _lifecycleAllowsBackgroundRegistration {
     final life = WidgetsBinding.instance.lifecycleState;
+    // null = binding not fully up yet (cold start before first frame) — treat
+    // as background-eligible so startup sync can arm when toggle is on.
+    if (life == null) return true;
     return life == AppLifecycleState.paused ||
         life == AppLifecycleState.hidden ||
         life == AppLifecycleState.detached;
@@ -115,18 +124,19 @@ class HallgatoBackgroundKeepAlive {
         _workUniqueName,
         _workTaskName,
         frequency: androidPeriod,
-        initialDelay: androidPeriod,
+        initialDelay: androidInitialDelay,
         constraints: wm.Constraints(
           networkType: wm.NetworkType.connected,
           requiresBatteryNotLow: true,
           requiresCharging: false,
-          requiresDeviceIdle: true,
+          requiresDeviceIdle: false,
         ),
         existingWorkPolicy: wm.ExistingPeriodicWorkPolicy.update,
       );
       debug.log(
         'HallgatoBackgroundKeepAlive: WorkManager periodic registered '
-        '(${androidPeriod.inMinutes} min, batteryNotLow+idle)',
+        '(${androidPeriod.inMinutes} min, initial '
+        '${androidInitialDelay.inMinutes} min, batteryNotLow+network)',
       );
     }
 

@@ -55,7 +55,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.5.9+1** — для пользователя / Settings / docs = **1.5.9** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.5.10+1** — для пользователя / Settings / docs = **1.5.10** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -67,7 +67,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.9`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.10`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -77,7 +77,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.9** | **Текущая.** Патч — щадящий для батареи опциональный **фоновый hallgato keep-alive**: Android WorkManager **45 мин** (было 15) + сеть + `requiresBatteryNotLow` + `requiresDeviceIdle` (без обязательной зарядки); iOS Background Fetch минимум **45 мин**; отмена OS-задач в `resumed`; coalesce, если последний успешный `GetNewTokens` был в течение **25 мин**. Тег **v1.5.9**. |
+| **1.5.10** | **Текущая.** Патч — надёжность session maintenance: убран WorkManager / BGFetch **`requiresDeviceIdle`** (в 1.5.9 idle почти блокировал все фоновые запуски); сеть + battery-not-low + период **45 мин** + Android initial delay **15 мин**; на `resumed` **сразу** `GetNewTokens` и refresh календаря/почты (не ждать следующий тик 3м30с); remember-password сохраняет пароль и при **ручном** Log out. Тег **v1.5.10**. |
+| **1.5.9** | Патч — щадящий для батареи опциональный **фоновый hallgato keep-alive**: Android WorkManager **45 мин** (было 15) + сеть + `requiresBatteryNotLow` + `requiresDeviceIdle` (без обязательной зарядки); iOS Background Fetch минимум **45 мин**; отмена OS-задач в `resumed`; coalesce, если последний успешный `GetNewTokens` был в течение **25 мин**. Тег **v1.5.9**. |
 | **1.5.8** | Патч на линии **5** — навигатор **учебной недели** в календаре: одна карточка (`WeekoffseterElementWidget`) + фикс EN диапазона в одном месяце (`${to.day}`, не `$to.day`). Тег **v1.5.8**. |
 | **1.5.7** | Патч — опциональный **фоновый hallgato keep-alive** в Настройках (`SETTING_BackgroundHallgatoKeepAlive`, default off; Android WorkManager 15 мин / iOS Background Fetch 15+ мин; общий `GetNewTokens`) + **восстановление** opt-in **Запомнить пароль** (`SETTING_RememberPasswordOnDevice`; Dart-пути кратко были на `main`, **откачены в 1.5.6**, восстановлены здесь). На базе **1.5.6** session v1. Тег **v1.5.7**. |
 | **1.5.6** | [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) **v1 core**: снят клиентский **10-минутный** wall-clock; проактивный `POST /api/Account/GetNewTokens` каждые **3 мин 30 с** в `AppLifecycleState.resumed`; пауза в фоне; реактивный GET 401 без изменений; grace ~45 с сохранён. Тег **v1.5.6**. |
@@ -90,7 +91,7 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.4.0** | Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
-| **1.5.9**, … | Дальнейшие патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
+| **1.5.10**, … | Дальнейшие патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
@@ -211,7 +212,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.9` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.10` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -377,13 +378,13 @@ UI setup:
 
 ### Восстановление сессии и поддержка JWT
 
-Refresh / повторный логин при **401/403 GET** — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). Иначе `trySilentReauth()` — для ELTE **всегда false** (нужна интерактивная 2FA). Иначе `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache(wipePassword: …)` (JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**; пароль — см. opt-in ниже), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Путь **POST не ретраит 401**. **Ручной выход** всегда стирает пароль; **истечение сессии / провал токена** учитывает opt-in. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
+Refresh / повторный логин при **401/403 GET** — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). Иначе `trySilentReauth()` — для ELTE **всегда false** (нужна интерактивная 2FA). Иначе `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache(wipePassword: …)` (JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**; пароль — см. opt-in ниже), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Путь **POST не ретраит 401**. **Ручной выход** и **истечение сессии** оба учитывают opt-in remember-password (пароль сохраняется при ВКЛ). Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
 
 **Политика окончания сессии (1.5.6 / HALLGATO v1 core):** Нет клиентского **10-минутного wall-clock**. Выход — **ручной logout** или мёртвый refresh (`GetNewTokens` → 401/403 или пустые токены при проактивном или реактивном refresh). Клиент **не** парсит JWT `exp`. `markParticipantSessionStarted()` задаёт только post-login grace — **не** пишет `SESSION_StartedAtMs` и не ставит таймеры.
 
-**Проактивный refresh на foreground (1.5.6):** В `AppLifecycleState.resumed` `HomePage` каждые **3 мин 30 с** (`SessionGuard.foregroundTokenMaintenanceInterval`) вызывает `runForegroundTokenMaintenance()` → `runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` при `getIsModernApi()` и refresh token. Таймер **отменяется** на `paused` / `detached` / `hidden` (на кратком `inactive` остаётся). Общий lock `_isRefreshingToken` с `ensureValidSession`. **401/403** на foreground maintenance → `forceExpiredLogout`; сеть/временные ошибки → следующий tick.
+**Проактивный refresh на foreground (1.5.6 + resume 1.5.10):** В `AppLifecycleState.resumed` `HomePage` каждые **3 мин 30 с** (`SessionGuard.foregroundTokenMaintenanceInterval`) вызывает `runForegroundTokenMaintenance()` → `runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` при `getIsModernApi()` и refresh token. На каждом **`resumed`** — также **немедленный** maintenance (не ждать первый тик `Timer.periodic`), затем refresh календаря + почты, если ещё logged in. Таймер **отменяется** на `paused` / `detached` / `hidden` (на кратком `inactive` остаётся). Общий lock `_isRefreshingToken` с `ensureValidSession`. **401/403** на foreground maintenance → `forceExpiredLogout`; сеть/временные ошибки → следующий tick.
 
-**Опциональный фоновый keep-alive (Настройки, по умолчанию ВЫКЛ; батарея 1.5.9):** «Поддерживать сессию в фоне» (`SETTING_BackgroundHallgatoKeepAlive`). При вкл., login + refresh token **и** lifecycle `paused` / `hidden` / `detached`: **Android** `workmanager` (**45 мин**; сеть + не низкий заряд + device idle; **без** обязательной зарядки), **iOS** `background_fetch` (минимум **45 мин**, система может отложить или не запустить). В `resumed` фоновые задачи **отменяются** (foreground 3м30с — основной). Headless → `runBackgroundTokenMaintenance()`; skip, если последний успешный proactive refresh был в течение **25 мин** (coalesce). Mutex refresh; **401/403** без UI. Выкл / logout → отмена. Tradeoff vs бывших 15 мин: меньше гарантий refresh, меньше батареи. Не SLA.
+**Опциональный фоновый keep-alive (Настройки, по умолчанию ВЫКЛ; надёжность 1.5.10):** «Поддерживать сессию в фоне» (`SETTING_BackgroundHallgatoKeepAlive`). При вкл., login + refresh token **и** lifecycle `paused` / `hidden` / `detached` (или null на cold start): **Android** `workmanager` (**45 мин**; initial delay **15 мин**; сеть + не низкий заряд; **без** device idle — в **1.5.9** idle почти блокировал запуски; **без** обязательной зарядки), **iOS** `background_fetch` (минимум **45 мин**, система может отложить или не запустить). В `resumed` фоновые задачи **отменяются**. Headless → `runBackgroundTokenMaintenance()`; skip, если последний успешный proactive refresh был в течение **25 мин** (coalesce). Mutex refresh; **401/403** без UI. Выкл / logout → отмена. Не SLA; OEM Doze всё ещё может откладывать.
 
 **Grace после входа (1.3.3):** ~45 с после `markParticipantSessionStarted` `ensureValidSession` **не** вызывает `forceExpiredLogout`, если refresh/тихий re-auth провалились, но access token ещё есть.
 
@@ -391,7 +392,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
-**Опциональное сохранение пароля (1.5.7):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` / cold-start wipe (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. (**Честность:** кратко было на `main`, Dart-пути **откачены в 1.5.6**; **1.5.7** восстанавливает.) Portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
+**Опциональное сохранение пароля (1.5.7; ручной logout 1.5.10):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` / cold-start wipe **и** при **ручном Log out** (pre-fill поля входа; **2FA вручную**). Выключение toggle очищает пароль. JWT / `HasLogin` всегда стираются. (**Честность:** кратко было на `main`, Dart-пути **откачены в 1.5.6**; **1.5.7** восстанавливает; **1.5.10** сохраняет пароль при ручном logout при opt-in.) Portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
 ---
 
@@ -471,7 +472,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
 | Тихий re-auth ELTE | **Отключён** | `trySilentReauth()` возвращает false; пароль хранится, но 2FA интерактивна |
 | Записи student-data | **Только mark-read** | Студенческий / платежи / compose почты / запись на экзамен — не записи |
-| Keep-alive сессии | **Foreground + опциональный фон (1.5.6+)** | Foreground 3 мин 30 с в `resumed`; опционально Настройки (`workmanager` / `background_fetch`, **45 мин** + coalesce / отмена в resumed с **1.5.9**, default off). Виджеты только кэш, без JWT |
+| Keep-alive сессии | **Foreground + опциональный фон (1.5.6+)** | Foreground 3 мин 30 с в `resumed` + **сразу** refresh при resume (**1.5.10**); опционально Настройки (`workmanager` / `background_fetch`, **45 мин** + сеть/battery-not-low, idle снят в **1.5.10**, default off). Виджеты только кэш, без JWT |
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
@@ -498,7 +499,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences). Cookie **портала** ELTE (`_elteCookies`) — **только в памяти**, не persist; стираются `resetEltePortalState()` при logout.
 
-`sessionWipeKeepCache(wipePassword: …)` — wipe auth при logout / истечении: стирает токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш**; пароль — когда `wipePassword: true` (default). `SessionGuard`: `wipePassword: true` при ручном logout и при выкл. toggle; `false` только при автоматической смерти сессии с opt-in. `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
+`sessionWipeKeepCache(wipePassword: …)` — wipe auth при logout / истечении: стирает токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш**; пароль — когда `wipePassword: true` (default). `SessionGuard` передаёт `wipePassword: false`, когда toggle remember-password **вкл** (ручной logout **и** автоматическая смерть сессии); `true` когда toggle выкл. `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
 
 Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -743,7 +744,7 @@ Release на iPhone: `--release` (см. §14).
 | Нет deep-link / auto-OTP из Authenticator | TOTP вводится вручную; Microsoft Authenticator снаружи |
 | Helper email OTP есть; UI не вызывает | `elteRequestEmailOtp` реализует портальный `GetEmail` / `CodePrefix`; UI сначала TOTP (экрана email OTP нет) |
 | SessionGuard JWT maintenance, не wall-clock | Нет 10-мин таймера; logout при ручном выходе / мёртвом refresh; `exp` не декодируется |
-| Фоновый keep-alive | Опционально в Настройках (default off): **45 мин** + battery-not-low + idle (**1.5.9**); coalesce 25 мин; отмена в resumed; foreground 3 мин 30 с остаётся основным |
+| Фоновый keep-alive | Опционально в Настройках (default off): **45 мин** + battery-not-low + сеть (**1.5.10**, idle снят); Android initial delay 15 мин; coalesce 25 мин; отмена в resumed; сразу GetNewTokens при resume; foreground 3 мин 30 с остаётся основным |
 | `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
 | `loginStudentWebFull` ≠ invalid password | Переполнение HWEB после верного 2FA красилось как неверный пароль (`submitTwoFactor` → `false` → `_paintRed`) |
 | Хаб ELTE → `https://neptun.elte.hu` | Портальный логин + 2FA. После `/ToNeptunWeb/ToNeptunHWeb` JWT REST на балансируемых `hallgato1…N` — один узел не хардкодить |
@@ -763,7 +764,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
-| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; portal/HWEB — только дизайн |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

@@ -372,6 +372,14 @@
 
 ---
 
+## 2026-09-16 — релиз 1.5.10 (надёжность session keep-alive)
+
+**[2026-09-16]**
+
+- **Релиз 1.5.10** (`pubspec` **1.5.10+1**): три фикса сессии после **1.5.8/1.5.9**. (1) Фоновый keep-alive: снят `requiresDeviceIdle` (почти блокировал все запуски); сеть + battery-not-low + период **45 мин** + Android initial delay **15 мин**; re-arm в фоне; `WAKE_LOCK`. (2) На `resumed`: **сразу** `GetNewTokens`, затем refresh календаря+почты (не ждать первый тик 3м30); auth failure → `forceExpiredLogout`. (3) Remember-password ВКЛ сохраняет `neptun_password` и при **ручном** Log out (JWT/HasLogin всё равно стираются). Docs EN+RU. GitHub Release **v1.5.10** + APK + unsigned IPA. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — релиз 1.5.9 (щадящий для батареи фоновый keep-alive)
 
 **[2026-09-16]**

@@ -238,7 +238,8 @@ class DataCache{
   late bool? _persistentSetting_needBetterHaptics = true;
   /// Optional hallgato JWT refresh while app is backgrounded (default OFF).
   late bool? _persistentSetting_backgroundHallgatoKeepAlive = false;
-  /// Opt-in: keep `neptun_password` across session expiry for login pre-fill (default OFF).
+  /// Opt-in: keep `neptun_password` across session expiry **and** manual log out
+  /// for login pre-fill (default OFF). Toggle off clears stored password.
   late bool? _persistentSetting_rememberPasswordOnDevice = false;
   late int? _persistentSetting_userSelectedLanguage = -1;
   String? _persistentSetting_userSelectedLanguageCode;

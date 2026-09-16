@@ -55,8 +55,9 @@ While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance e
 
 | State | Maintenance timer |
 |-------|-------------------|
-| `resumed` | Start or resume periodic maintenance |
-| `inactive`, `paused`, `detached`, `hidden` | Pause / cancel timer — **no** proactive `GetNewTokens` |
+| `resumed` | **Immediate** `GetNewTokens` (**1.5.10**) + start periodic maintenance every 3m30; refresh calendar/mail |
+| `inactive` | Keep foreground timer (brief OS overlay) |
+| `paused`, `detached`, `hidden` | Pause / cancel timer; re-arm optional background keep-alive |
 | Process killed | No maintenance (see cold start below) |
 
 **Integration point:** `HomePage` `WidgetsBindingObserver` — starts/stops the maintenance `Timer` on `resumed` vs background states (wall-clock removed in **1.5.6**).
@@ -109,10 +110,10 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 
 | Platform | Shipped | Notes |
 |----------|---------|--------|
-| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Periodic **45 min** (battery tune **1.5.9**; OS floor still 15 min); `requiresBatteryNotLow` + `requiresDeviceIdle` + network; **not** charging-required; Doze / OEM may defer further. |
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Periodic **45 min** (reliability **1.5.10**; OS floor still 15 min); `requiresBatteryNotLow` + network; **no** `requiresDeviceIdle` (idle blocked nearly all runs in **1.5.9**); **15 min** initial delay; **not** charging-required; Doze / OEM may defer further. |
 | **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; minimum **45 min**; system may defer or **never** run (force-quit / Background App Refresh off). |
 
-**Design constraint — battery (1.5.9):** prefer **longer** background intervals (**45 min**) over the OS 15 min floor — tradeoff: less refresh guarantee while backgrounded, less drain. Cancel WorkManager / BGFetch while `resumed` (foreground 3m30s owns maintenance). Coalesce: skip background tick if last successful `GetNewTokens` (fg or bg) was within **25 min**. **No** charging-required (too weak). Document honestly that **OS may defer or skip** tasks; background maintenance is **best-effort**, not a SLA.
+**Design constraint — battery / reliability (1.5.9 → 1.5.10):** prefer **longer** background intervals (**45 min**) over the OS 15 min floor — tradeoff: less refresh guarantee while backgrounded, less drain. **1.5.10** drops `requiresDeviceIdle` (too strict) and uses a **15 min** Android initial delay. Cancel WorkManager / BGFetch while `resumed` (foreground owns maintenance; **immediate** GetNewTokens on resume). Coalesce: skip background tick if last successful `GetNewTokens` (fg or bg) was within **25 min**. **No** charging-required. Document honestly that **OS may defer or skip** tasks; background maintenance is **best-effort**, not a SLA.
 
 ### Behavior when enabled
 
@@ -173,7 +174,7 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 
 - **Settings toggle** alongside existing nickname / username preference — e.g. “Remember password on this device” (**default OFF**, opt-in only).
 - When **off** (default): match today’s intent — password cleared on logout and on existing session-expiry wipe paths (`neptun_password` in `flutter_secure_storage` via `DataCache` in `lib/storage.dart`).
-- When **on:** persist password in secure storage (`neptun_password`) across session end **until** user disables the toggle or performs **manual logout** (manual logout should still wipe password unless product explicitly chooses otherwise — **recommend wipe on manual logout even when toggle on** for clear user expectation).
+- When **on:** persist password in secure storage (`neptun_password`) across session end **and** **manual logout** (**1.5.10** product choice — pre-fill after Log out; wipe only when toggle OFF or `dataWipe`).
 
 ### Relationship to 2FA and silent re-auth
 
@@ -193,7 +194,7 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 | **Stolen unlocked phone** | Password at rest in secure storage is recoverable to anyone with device access + unlocked app or backup extraction — opt-in only. |
 | **MITM** | Already documented for login traffic; stored password does not worsen transport if user only uses official ELTE endpoints — still high value secret on device. |
 | **Shared device** | Recommend default OFF; warn in toggle description. |
-| **Manual logout** | Should clear password (recommended) so “logout” means logout even if toggle was on. |
+| **Manual logout** | **1.5.10:** keep password when toggle ON (pre-fill); wipe JWTs / HasLogin always. Toggle OFF or `dataWipe` clears password. |
 
 ---
 
@@ -242,9 +243,9 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 9. **Manual test matrix** — **not automated** — foreground 20+ min; background 30+ min; kill with valid/dead refresh; airplane mode during tick.
 10. **Widgets regression** — **unchanged** — cache-only, no JWT.
 11. **Settings — background keep-alive** — **done (1.5.7)** — `SETTING_BackgroundHallgatoKeepAlive`, localized strings, default **off**; `HallgatoBackgroundKeepAlive.syncScheduledTasks()` gates WorkManager / iOS background fetch only when on + logged in.
-12. **Background plugin choice** — **done (1.5.7)**; **battery tune (1.5.9)** — Android `workmanager` **45 min** + battery-not-low + idle; iOS `background_fetch` **45+ min** (system-deferred); TECHNICAL § Session recovery.
-13. **Battery / ELTE policy** — **done (1.5.7 / 1.5.9)** — longer background cadence; shared `GetNewTokens` + refresh mutex; cancel BG while `resumed`; 25 min coalesce; no charging-required.
-14. **Settings — password retention** — **done (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **off**); `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` manual vs expired/cold-start matrix; login pre-fill; EN/HU/RU strings. (**1.5.6** reverted Dart; restored in **1.5.7**.)
+12. **Background plugin choice** — **done (1.5.7)**; **battery tune (1.5.9)** / **reliability (1.5.10)** — Android `workmanager` **45 min** + battery-not-low + network (idle removed); iOS `background_fetch` **45+ min**; TECHNICAL § Session recovery.
+13. **Battery / ELTE policy** — **done (1.5.7 / 1.5.9 / 1.5.10)** — longer background cadence; shared `GetNewTokens` + mutex; cancel BG while `resumed`; immediate resume refresh; 25 min coalesce; no charging-required; no device-idle.
+14. **Settings — password retention** — **done (1.5.7)**; **manual logout keep (1.5.10)** — toggle (`SETTING_RememberPasswordOnDevice`, default **off**); keep password on manual logout when ON; login pre-fill; EN/HU/RU strings.
 15. **Store / manifest** — **done (1.5.7)** — iOS `UIBackgroundModes` includes `fetch` for optional background keep-alive; Android WorkManager registration when toggle on; optional user-enabled maintenance only.
 16. **Portal / HWEB research** — if pursued: spike doc with HAR, endpoints, and pass/fail before any user-facing “activity” feature; keep lower priority than steps 2–10.
 
