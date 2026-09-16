@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус (2026-09-16):** Research-пакет фаз **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic/ленты **заменены**. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + ≈78.5° plan-rotation; **1.8.2** = fitBounds/underlay по hull + denser tiles + catalog-bbox fill (**2972/3670**). Граф A→B affine≈WGS; чип IK.
+**Статус (2026-09-16):** Research-пакет фаз **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic/ленты **заменены**. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + ≈78.5° plan-rotation; **1.8.2** = hull + bbox; **1.8.3** = denser z19 MVT, без catalog-bbox, светлая палитра BIS + подписи в полигоне (**2573/3112**). Граф A→B affine≈WGS; чип IK.
 
 
 **Владелец:** Nanda. 

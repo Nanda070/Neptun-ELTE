@@ -1,67 +1,78 @@
 {
   "generatedAt": "2026-09-16",
-  "totalPolygons": 2972,
+  "versionNote": "1.8.3 \u2014 MVT FootPrint z19; catalog-bbox dropped; official BIS light palette",
+  "totalPolygons": 2573,
   "catalogTotal": 3112,
   "footprintFromMvt": 2573,
-  "bboxFillCount": 399,
+  "bboxFillCount": 0,
+  "skippedNoFootprint": 399,
   "buildings": {
     "ld": {
       "file": "assets/campus_map/polygons_ld.json",
-      "bytes": 579803,
-      "polygons": 1576,
+      "bytes": 632023,
+      "polygons": 1375,
       "catalog": 1661,
       "mvt": 1375,
-      "bboxFill": 201,
+      "bboxFill": 0,
+      "skippedNoFootprint": 201,
+      "skippedByType": {
+        "technical": 201
+      },
       "floors": {
-        "-1": 254,
-        "0": 172,
-        "1": 188,
-        "2": 142,
-        "3": 156,
-        "4": 162,
-        "5": 173,
-        "6": 172,
-        "7": 157
+        "-1": 149,
+        "0": 143,
+        "1": 169,
+        "2": 134,
+        "3": 148,
+        "4": 156,
+        "5": 169,
+        "6": 161,
+        "7": 146
       },
       "rotationAngle": 78.49973776890022,
       "bbox": [
-        19.061717772352004,
-        47.471747727815654,
-        19.063440519133014,
-        47.472915157235285
+        19.061731923959606,
+        47.47174503561399,
+        19.063384424422704,
+        47.4728768154966
       ],
       "hasFloorHulls": true
     },
     "le": {
       "file": "assets/campus_map/polygons_le.json",
-      "bytes": 519775,
-      "polygons": 1396,
+      "bytes": 759394,
+      "polygons": 1198,
       "catalog": 1451,
       "mvt": 1198,
-      "bboxFill": 198,
+      "bboxFill": 0,
+      "skippedNoFootprint": 198,
+      "skippedByType": {
+        "corridor": 1,
+        "technical": 197
+      },
       "floors": {
-        "-1": 215,
-        "0": 233,
-        "1": 188,
-        "2": 121,
-        "3": 163,
-        "4": 126,
-        "5": 148,
-        "6": 123,
-        "7": 79
+        "-1": 145,
+        "0": 189,
+        "1": 176,
+        "2": 113,
+        "3": 146,
+        "4": 116,
+        "5": 138,
+        "6": 109,
+        "7": 66
       },
       "rotationAngle": 78.49970420702536,
       "bbox": [
-        19.06104459,
-        47.473816746,
-        19.062840205719347,
-        47.47535845
+        19.061070208731152,
+        47.473819208010525,
+        19.062707592946104,
+        47.47536649899534
       ],
       "hasFloorHulls": true
     }
   },
   "uiMode": "bis-footprint-polygons",
   "routeCrs": "graph-basemapPx affine\u2192WGS84 using room centroidWgs control points (approximate)",
-  "polygonCrs": "WGS84; MVT reanchored to catalog centroids; technical/missing filled via catalog bbox; floor hull underlay+fitBounds",
-  "fixNote": "BIS MVT rooms layer has 0 technical FootPrints. Step C denser z17/z18 tiles added no technical. Catalog bbox rectangles fill those holes; floor entity hull used for view fit + underlay (1.8.2)."
+  "polygonCrs": "WGS84; MVT z19 reanchored to catalog centroids; no bbox fill; floor hull underlay+fitBounds",
+  "fillNote": "BIS MVT rooms layer has 0 technical FootPrints after denser z17\u201319 refetch. Catalog-bbox squares dropped. Continuous silhouette via floorPlate hull underlay."
 }

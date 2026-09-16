@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-09-16 — релиз 1.8.3 (светлый вид карты BIS)
+
+- **Релиз 1.8.3** (`pubspec` **1.8.3+1**): патч линии **8**. Официальный вид этажа BIS: pale yellow educational, tan коридоры, blue/pink сервисы; сплошная заливка + hull floorPlate; denser z17–19 MVT (всё ещё **0** technical); **без catalog-bbox**; подписи `roomNumber` в полигонах; тап → карточка; A→B сохранён. Покрытие **2573/3112**. Docs EN+RU. GitHub Release **v1.8.3**. Владелец **Nanda**.
+
 ## 2026-09-16 — релиз 1.8.2 (hull + покрытие карты)
 
 - **Релиз 1.8.2** (`pubspec` **1.8.2+1**): патч линии **8**. Лестница A–E: contiguous силуэт LD ground (дыры = missing rooms, не projection); denser BIS MVT (всё ещё **0** `technical`); catalog-bbox fill → **2972/3670**; fitBounds + underlay по hull этажа; футер `Ground · LD N комнат` (глобал вторично). Docs EN+RU. GitHub Release **v1.8.2**. Владелец **Nanda**.

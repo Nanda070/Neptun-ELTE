@@ -1,22 +1,27 @@
-# Step A — LD ground vs BIS hull (2026-09-16)
+# Step A — LD ground vs BIS hull (updated 1.8.3)
 
 ## Verdict
 
-**Contiguous Déli silhouette: YES** after 1.8.1 reanchor. Room rings form one cluster (~107×114 m) matching official ground hull (~115×129 m). No second ~300 m north cluster / blank projection gap.
+**Contiguous Déli silhouette: YES** (plan rotation + hull fitBounds). Room rings form one cluster matching official ground hull.
 
-## What’s still wrong
+## Coverage (LD floor 0)
 
-| Issue | Evidence |
-|-------|----------|
-| **Holes inside footprint** | Grid fill of hull ≈ **57%** (bbox-cell proxy). Black gaps between rooms. |
-| **Not a projection bug** | Poly span ≈ hull span; centroids lie in hull. |
-| **Missing roomTypes** | Ground catalog **177**, bundled polys **143**. Gap **34** = **29 technical** + **5** null/`?` (ramps, outdoor bins). Captured MVT/`deli_rooms.geojson` has **0** `technical` rooms. |
-| **Official BIS** | Uses `floorPlateColor` underlay under rooms (style) — plan holds shape even when rooms sparse. |
+| Metric | 1.8.2 (before) | 1.8.3 (after) |
+|--------|----------------|---------------|
+| Catalog rooms (switcher) | 177 | 177 |
+| Bundled polygons | 172 (143 MVT + 29 bbox) | **143 MVT only** |
+| Catalog-bbox fakes | 29 technical squares | **0** (dropped) |
+| Missing vs catalog | 5 null/`?` + 0 with bbox | **34** (29 technical + 5 other) — no fake rooms |
+| Continuous fill | hull underlay + bbox squares | **hull underlay** (floorPlate) only |
+
+## Why bbox dropped
+
+BIS MVT `rooms` layer exposes **0** `technical` FootPrints even after denser z17–19 refetch. Catalog bbox rectangles formed ugly diagonal square chains; official look uses true FootPrints + warm `floorPlateColor` underlay.
+
+## Official palette (app 1.8.3)
+
+From BIS legend HTML: Educational `#FFFFBE`, Hallway `#E0DBD1`, Social `#A0A0FF`, Administrative `#EDA8A7`, Misc `#6E9B8C`, Outdoor `#FF6419`, floorPlate `#EADCD1`.
 
 ## Artifact
 
-`VERIFY_LD_GROUND_A.svg` — gray = BIS floor hull, colored = app polys, red dots = missing catalog centroids.
-
-## Next (ladder)
-
-B view transform → C fetch technical/all types → D hull underlay → E per-floor footer.
+`VERIFY_LD_GROUND_A.svg` — prior silhouette check still valid for cluster/hull alignment.

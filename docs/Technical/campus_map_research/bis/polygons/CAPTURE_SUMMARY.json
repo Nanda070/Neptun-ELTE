@@ -277,5 +277,24 @@
     "bboxFillLd": 201,
     "bboxFillLe": 198,
     "bundledTotal": 2972
+  },
+  "stepD_183": {
+    "tileCount": 150,
+    "mvtUniqueCodes": 2623,
+    "mvtRoomTypesObserved": {
+      "social": 403,
+      "corridor": 481,
+      "educational": 1488,
+      "administrative": 216,
+      "outdoor": 2,
+      "misc": 33
+    },
+    "mvtZoomPreferred": {
+      "19": 2623
+    },
+    "technicalInMvt": 0,
+    "bboxFillDropped": true,
+    "bundledTotal": 2573,
+    "skippedNoFootprint": 399
   }
 }

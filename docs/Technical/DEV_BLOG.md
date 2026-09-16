@@ -7,6 +7,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.8.3 (BIS light map look)
+
+- **Release 1.8.3** (`pubspec` **1.8.3+1**): patch on line **8**. Match official BIS floor look: pale yellow educational, tan hallways, blue/pink services; near-opaque continuous fills + floorPlate hull; denser z17–19 MVT (still **0** technical); **drop catalog-bbox** fake rooms; `roomNumber` labels inside polygons (declutter); tap → name card; A→B overlay kept. Coverage **2573/3112**. Docs EN+RU. GitHub Release **v1.8.3**. Owner **Nanda**.
+
 ## 2026-09-16 — release 1.8.2 (campus map hull + coverage)
 
 - **Release 1.8.2** (`pubspec` **1.8.2+1**): patch on line **8**. Ladder A–E: verified contiguous LD ground silhouette (holes = missing rooms, not projection); denser BIS MVT tiles (still **0** `technical`); catalog-bbox fill → **2972/3670**; floor-hull **fitBounds** + underlay; footer `Ground · LD N rooms` (global secondary). Docs EN+RU. GitHub Release **v1.8.2**. Owner **Nanda**.

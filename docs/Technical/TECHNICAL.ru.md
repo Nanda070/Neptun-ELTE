@@ -12,7 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
-Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research фазы A сохранён; Phase B **1.6.0** фото-UX отвергнут; **1.7.x** schematic UX заменён. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + plan-rotation; **1.8.2** = fitBounds/underlay по hull этажа + denser tiles + catalog-bbox fill для technical без MVT (**2972/3670**). Полигоны: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).  
+Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research фазы A сохранён; Phase B **1.6.0** фото-UX отвергнут; **1.7.x** schematic UX заменён. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + plan-rotation; **1.8.2** = hull + bbox; **1.8.3** = denser z19 MVT, **без catalog-bbox**, официальная светлая палитра BIS, подписи в полигоне (**2573/3112**). Полигоны: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -56,7 +56,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.8.2+1** — для пользователя / Settings / docs = **1.8.2** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.8.3+1** — для пользователя / Settings / docs = **1.8.3** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -68,7 +68,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.8.2`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.8.3`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.8.2** | **Текущая.** Патч — полнота + силуэт плана: denser BIS MVT (по-прежнему **0** technical FootPrint); catalog-bbox fill; **hull этажа** fitBounds + underlay; футер `Ground · LD N комнат` (глобально **2972/3670** вторично). Тег **v1.8.2**. |
+| **1.8.3** | **Текущая.** Патч — официальный светлый вид BIS: denser z17–19 MVT (всё ещё **0** technical); **без catalog-bbox**; pale yellow / tan / blue-pink; подписи roomNumber в полигоне; hull floorPlate; **2573/3112**. Тег **v1.8.3**. |
+| **1.8.2** | Hull fitBounds/underlay + catalog-bbox (**2972**). Заменён **1.8.3** (bbox убраны). Тег **v1.8.2**. |
 | **1.8.1** | Патч — фикс позиций полигонов: MVT Y ставил многие LD-комнаты ~300 м севернее корпуса Déli (два кластера + пустой разрыв). Кольца **привязаны** к centroid каталога BIS (форма без изменений); вид plan-align через `rotationAngle` ≈78.5°; uniform scale. Тег **v1.8.1**. |
 | **1.8.0** | Feature-line **8** — карта кампуса: **полигоны BIS FootPrint** (заливки roomType; карточка по тапу; этаж/корпус). A→B поверх через affine basemapPx→WGS (приблизительно). В бандле `polygons_ld/le.json` (**2571** из каталога **3670**). Тег **v1.8.0**.
 | **1.7.2** | Патч — чистые лейблы, этаж-зависимые коридоры, короткий чип IK, docs scrub. Тег **v1.7.2**.
@@ -489,7 +490,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Полигоны BIS FootPrint (1.8.2)** | Пакет + `CampusMapPage`: цветные FootPrint; reanchor + ≈78.5°; **hull этажа** fitBounds + underlay; catalog-bbox для technical без MVT; карточка; этаж/корпус; A→B (affine ≈). **2972** vs **3670**. Футер по этажу. Чип IK. Внешний Open map сохранён. |
+| Indoor-карта кампуса | **Полигоны BIS FootPrint (1.8.3)** | Пакет + `CampusMapPage`: официальная светлая палитра (pale yellow / tan / blue-pink); reanchor + ≈78.5°; **hull этажа** fitBounds + underlay; **только MVT** (без catalog-bbox); подписи roomNumber; карточка по тапу; A→B. **2573** / **3112**. Чип IK. Внешний Open map сохранён. |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |

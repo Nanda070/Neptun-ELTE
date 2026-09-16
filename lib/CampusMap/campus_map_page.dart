@@ -435,9 +435,9 @@ class _CampusMapPageState extends State<CampusMapPage> {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surface = isDark
-        ? theme.textColor.withValues(alpha: 0.06)
-        : const Color(0xFFF1F5F9);
+    // Always paint the floor canvas in the official BIS warm light palette
+    // (pale yellow rooms / tan corridors); app chrome may still follow theme.
+    final surface = bisMapSurface(dark: isDark);
     final route = theme.onSecondaryContainer;
 
     if (polySet == null || polyFloor == null || polyFloor.rooms.isEmpty) {

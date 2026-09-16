@@ -12,7 +12,7 @@ Last sync with the codebase: **16 September 2026** (repo **Neptun-ELTE**, displa
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
 **Backlog** (remaining work): this file’s [honesty table](#11-honesty-full-vs-thin) + [§20 decisions](#20-why-we-chose-this) and the Dev Blog [“In progress / planned”](DEV_BLOG.md#in-progress--planned-honest) section. Numbered `IMPLEMENTATION_PLAN.md` / `.ru.md` were **deleted** after **1.5.0** (plan item **11** Academic Progress / tanterv was **dropped** earlier — do not rebuild).  
-Indoor campus map (LD/LE A→B): [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md). Phase A research package kept; Phase B **1.6.0** photo UX rejected; **1.7.x** schematic UX superseded. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + plan rotation; **1.8.2** = floor-hull fitBounds/underlay + denser tiles + catalog-bbox fill for MVT-missing technical rooms (**2972/3670**). Research polygons: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).
+Indoor campus map (LD/LE A→B): [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md). Phase A research package kept; Phase B **1.6.0** photo UX rejected; **1.7.x** schematic UX superseded. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + plan rotation; **1.8.2** = hull + bbox fill; **1.8.3** = denser z19 MVT, **drop catalog-bbox**, official BIS light palette, in-polygon labels (**2573/3112**). Research polygons: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
@@ -56,7 +56,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The app authenticates on the **portal**, then sets the institute URL to the assigned **`hallgatoN`** and calls modern JWT REST **there**. Do not hardcode `N`.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.8.2+1** — user-facing / Settings / docs = **1.8.2** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.8.3+1** — user-facing / Settings / docs = **1.8.3** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -68,7 +68,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.8.2`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.8.3`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.8.2** | **Current.** Patch — campus map completeness + plan shape: denser BIS MVT tiles (still **0** technical FootPrints); catalog-bbox fill for missing rooms; **floor hull** fitBounds + underlay; footer `Ground · LD N rooms` (global **2972/3670** secondary). Tag **v1.8.2**. |
+| **1.8.3** | **Current.** Patch — official BIS light map look: denser z17–19 MVT (still **0** technical); **drop catalog-bbox** fakes; pale yellow / tan / blue-pink palette; roomNumber-in-polygon labels; hull floorPlate underlay; **2573/3112**. Tag **v1.8.3**. |
+| **1.8.2** | Hull fitBounds/underlay + catalog-bbox fill (**2972** then). Superseded by **1.8.3** (bbox dropped). Tag **v1.8.2**. |
 | **1.8.1** | Patch — campus map polygon **position fix**: MVT absolute Y had put many LD rooms ~300 m north of the Déli hull (two clusters + blank gap). Rings **reanchored** to BIS catalog centroids (shapes unchanged); viewer plan-aligns with building `rotationAngle` ≈78.5°; uniform scale. Tag **v1.8.1**. |
 | **1.8.0** | Feature line **8** — campus map primary view = **BIS FootPrint room polygons** (WGS84 fills by roomType; tap card; floor/building filter). Graph A→B overlay via per-floor affine basemapPx→WGS (approximate). Bundled `polygons_ld/le.json` (**2571** of catalog **3670**). Tag **v1.8.0**. |
 | **1.7.2** | Patch — clean room labels (offsets/zoom/tap), floor-aware corridors, shorter IT-faculty chip (no tech banner / “for now”), docs scrub. Tag **v1.7.2**.
@@ -223,7 +224,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → foreground JWT maintenance + optional background keep-alive sync |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.8.2` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.8.3` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -489,7 +490,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Today’s classes from calendar cache; no JWT. Shared `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Mail translator | **Working** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
-| Campus indoor map | **BIS FootPrint polygons (1.8.2)** | Package + `CampusMapPage`: colored BIS room footprints; catalog-centroid reanchor + ≈78.5° plan rotation; **floor hull** fitBounds + underlay; catalog-bbox fill where MVT lacks technical; tap card; floor/building filter; A→B graph line on WGS (affine approx). **2972** bundled polygons vs **3670** catalog. Per-floor footer counts. IT faculty chip. External Open map kept. |
+| Campus indoor map | **BIS FootPrint polygons (1.8.3)** | Package + `CampusMapPage`: official light palette (pale yellow educational, tan corridor, blue/pink services); catalog-centroid reanchor + ≈78.5° plan rotation; **floor hull** fitBounds + underlay; **MVT-only** (no catalog-bbox fakes); roomNumber labels in polygon; tap card; A→B overlay. **2573** / **3112**. IT faculty chip. External Open map kept. |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |

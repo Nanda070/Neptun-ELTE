@@ -260,36 +260,70 @@ class PixelToWgsAffine {
   }
 }
 
-/// BIS-like room type fills (educational / corridor / admin / …).
+/// Official BIS legend fills (from captured Diorama filter UI).
+///
+/// Light mode matches the live map: pale yellow rooms, tan hallways,
+/// blue social / pink administrative. Dark mode keeps the same hues, dimmed.
 Color bisRoomFill(String type, {required bool dark}) {
   switch (type) {
     case 'educational':
-      return dark ? const Color(0xFF3B82F6) : const Color(0xFF93C5FD);
+      // Legend: rgb(255, 255, 190)
+      return dark ? const Color(0xFFC4C46A) : const Color(0xFFFFFFBE);
     case 'corridor':
-      return dark ? const Color(0xFF64748B) : const Color(0xFFE2E8F0);
+      // Legend Hallway: rgb(224, 219, 209)
+      return dark ? const Color(0xFF8A8378) : const Color(0xFFE0DBD1);
     case 'administrative':
-      return dark ? const Color(0xFFD97706) : const Color(0xFFFDE68A);
+      // Legend: rgb(237, 168, 167) — pink services
+      return dark ? const Color(0xFFB86A69) : const Color(0xFFEDA8A7);
     case 'social':
-      return dark ? const Color(0xFF059669) : const Color(0xFFA7F3D0);
+      // Legend: rgb(160, 160, 255) — blue services
+      return dark ? const Color(0xFF6E6ECC) : const Color(0xFFA0A0FF);
     case 'technical':
-      return dark ? const Color(0xFF78716C) : const Color(0xFFD6D3D1);
+      // No legend chip; use muted teal adjacent to Miscellaneous.
+      return dark ? const Color(0xFF4F6F64) : const Color(0xFF6E9B8C);
     case 'outdoor':
-      return dark ? const Color(0xFF65A30D) : const Color(0xFFD9F99D);
+      // Legend: rgb(255, 100, 25)
+      return dark ? const Color(0xFFC44E14) : const Color(0xFFFF6419);
     case 'misc':
+      // Legend Miscellaneous: rgb(110, 155, 140)
+      return dark ? const Color(0xFF4F6F64) : const Color(0xFF6E9B8C);
     default:
-      return dark ? const Color(0xFF94A3B8) : const Color(0xFFCBD5E1);
+      return dark ? const Color(0xFF7A756E) : const Color(0xFFE8E4DE);
   }
 }
 
 Color bisFloorHullFill({required bool dark}) {
-  // Official BIS uses a warm floorPlate under rooms.
-  return dark ? const Color(0xFF3F3A36) : const Color(0xFFE8DFD4);
+  // Official style: floorPlateColor = hsl(26, 38%, 87%) ≈ #EADCD1
+  return dark ? const Color(0xFF3F3A36) : const Color(0xFFEADCD1);
+}
+
+Color bisMapSurface({required bool dark}) {
+  // Warm off-white canvas behind the floor plate (not cool slate).
+  return dark ? const Color(0xFF2A2623) : const Color(0xFFF7F3EE);
 }
 
 Color bisRoomStroke(String type, {required bool dark}) {
-  return dark
-      ? Colors.white.withValues(alpha: 0.35)
-      : const Color(0xFF334155).withValues(alpha: 0.45);
+  if (dark) {
+    return Colors.white.withValues(alpha: 0.28);
+  }
+  // Thin dark strokes matching legend chip borders.
+  switch (type) {
+    case 'educational':
+      return const Color(0xFFDFDF00).withValues(alpha: 0.55);
+    case 'corridor':
+      return const Color(0xFF827457).withValues(alpha: 0.55);
+    case 'administrative':
+      return const Color(0xFFA82422).withValues(alpha: 0.45);
+    case 'social':
+      return const Color(0xFF0000D0).withValues(alpha: 0.35);
+    case 'outdoor':
+      return const Color(0xFF8C2E00).withValues(alpha: 0.5);
+    case 'misc':
+    case 'technical':
+      return const Color(0xFF364E46).withValues(alpha: 0.45);
+    default:
+      return const Color(0xFF5C5348).withValues(alpha: 0.4);
+  }
 }
 
 /// Primary campus map: filled BIS FootPrint polygons + graph route line.
@@ -414,12 +448,13 @@ class CampusPolygonPainter extends CustomPainter {
     for (final room in ordered) {
       final fill = Paint()
         ..style = PaintingStyle.fill
+        // Near-opaque continuous fill like official BIS 2D.
         ..color = bisRoomFill(room.type, dark: dark).withValues(
-          alpha: room.code == selectedCode ? 0.95 : 0.82,
+          alpha: room.code == selectedCode ? 1.0 : 0.96,
         );
       final stroke = Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = room.code == selectedCode ? 2.2 : 0.7
+        ..strokeWidth = room.code == selectedCode ? 2.0 : 0.55
         ..color = room.code == selectedCode
             ? routeColor
             : bisRoomStroke(room.type, dark: dark);
@@ -500,29 +535,32 @@ class CampusPolygonPainter extends CustomPainter {
 
   void _paintLabels(Canvas canvas, Size size, List<CampusRoomPolygon> rooms) {
     final zoom = viewScale;
-    final maxLabels = zoom < 1.2
-        ? 10
-        : zoom < 2.0
-            ? 28
-            : zoom < 3.5
-                ? 60
-                : 120;
+    final maxLabels = zoom < 1.15
+        ? 12
+        : zoom < 1.8
+            ? 36
+            : zoom < 3.0
+                ? 80
+                : 160;
     final candidates = <CampusRoomPolygon>[];
     for (final r in rooms) {
       if (r.type == 'corridor' || r.type == 'outdoor') continue;
       if (r.code == selectedCode ||
           _isEndpoint(r) ||
           r.type == 'educational' ||
-          r.type == 'administrative') {
+          r.type == 'administrative' ||
+          r.type == 'social' ||
+          zoom >= 2.2) {
         candidates.add(r);
       }
     }
     candidates.sort((a, b) {
       int score(CampusRoomPolygon r) {
-        var s = 0;
-        if (r.code == selectedCode) s += 100;
-        if (_isEndpoint(r)) s += 50;
-        if (r.type == 'educational') s += 10;
+        var s = _approxScreenArea(r, size).round();
+        if (r.code == selectedCode) s += 100000;
+        if (_isEndpoint(r)) s += 50000;
+        if (r.type == 'educational') s += 500;
+        if (r.type == 'administrative' || r.type == 'social') s += 200;
         return s;
       }
       return score(b).compareTo(score(a));
@@ -530,51 +568,80 @@ class CampusPolygonPainter extends CustomPainter {
 
     final placed = <Rect>[];
     var drawn = 0;
-    final fontSize = zoom < 1.5 ? 9.0 : (zoom < 2.5 ? 10.5 : 12.0);
+    final fontSize = zoom < 1.5 ? 8.5 : (zoom < 2.5 ? 10.0 : 11.5);
     for (final r in candidates) {
       if (drawn >= maxLabels && r.code != selectedCode && !_isEndpoint(r)) {
         continue;
       }
-      final local = projector.toLocal(r.centroidLng, r.centroidLat);
-      final p = _map(local, size);
-      final text = r.shortLabel;
+      final polyBox = _screenBounds(r, size);
+      if (polyBox == null) continue;
+      // roomNumber centered in polygon when the ring is large enough.
+      final text = r.number.trim().isNotEmpty ? r.number : r.shortLabel;
+      final force = r.code == selectedCode || _isEndpoint(r);
       final tp = TextPainter(
         text: TextSpan(
           text: text,
           style: TextStyle(
-            color: labelColor.withValues(alpha: r.code == selectedCode ? 1 : 0.85),
+            color: dark
+                ? Colors.white.withValues(alpha: force ? 1 : 0.9)
+                : const Color(0xFF3F3A36).withValues(alpha: force ? 1 : 0.88),
             fontSize: fontSize,
-            fontWeight:
-                r.code == selectedCode ? FontWeight.w800 : FontWeight.w600,
-            shadows: [
-              Shadow(
-                color: surfaceColor.withValues(alpha: 0.9),
-                blurRadius: 3,
-              ),
-            ],
+            fontWeight: force ? FontWeight.w800 : FontWeight.w600,
+            height: 1.0,
           ),
         ),
         textDirection: TextDirection.ltr,
         maxLines: 1,
         ellipsis: '…',
-      )..layout(maxWidth: 72);
+      )..layout(maxWidth: math.max(24, polyBox.width - 4));
+
+      // Skip if label cannot fit inside the polygon (unless selected/endpoint).
+      if (!force &&
+          (tp.width + 4 > polyBox.width || tp.height + 2 > polyBox.height)) {
+        continue;
+      }
+
+      final center = polyBox.center;
       final rect = Rect.fromCenter(
-        center: p,
+        center: center,
         width: tp.width + 4,
         height: tp.height + 2,
       );
       var overlaps = false;
       for (final q in placed) {
-        if (q.overlaps(rect.inflate(2))) {
+        if (q.overlaps(rect.inflate(1.5))) {
           overlaps = true;
           break;
         }
       }
-      if (overlaps && r.code != selectedCode && !_isEndpoint(r)) continue;
+      if (overlaps && !force) continue;
       tp.paint(canvas, Offset(rect.left + 2, rect.top + 1));
       placed.add(rect);
       drawn++;
     }
+  }
+
+  Rect? _screenBounds(CampusRoomPolygon room, Size size) {
+    double minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+    var any = false;
+    for (final ring in room.rings) {
+      for (final wgs in ring) {
+        final p = _map(projector.toLocalOffset(wgs), size);
+        minX = math.min(minX, p.dx);
+        maxX = math.max(maxX, p.dx);
+        minY = math.min(minY, p.dy);
+        maxY = math.max(maxY, p.dy);
+        any = true;
+      }
+    }
+    if (!any) return null;
+    return Rect.fromLTRB(minX, minY, maxX, maxY);
+  }
+
+  double _approxScreenArea(CampusRoomPolygon room, Size size) {
+    final b = _screenBounds(room, size);
+    if (b == null) return 0;
+    return b.width * b.height;
   }
 
   bool _isEndpoint(CampusRoomPolygon r) {
