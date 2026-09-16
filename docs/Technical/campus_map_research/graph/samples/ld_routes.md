@@ -6,16 +6,19 @@ Paths are Dijkstra on pixel weights (stairs costlier than lifts).
 ## 1 same-floor corridor neighbors
 
 - **From → To:** `0-821` → `0-805`
-- **Cost (px-equiv):** 259.8
-- **Hops:** 4
+- **Cost (px-equiv):** 128.3
+- **Hops:** 7
 - **Vertical kinds:** none
-- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
+- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
 - **Node id list:**
 
 ```
 ld-n-ld-f0-room-0-821
 ld-n-ld-f0-door-0-821
-ld-n-ld-f0-c8-hub
+ld-n-ld-f0-door-0-820
+ld-n-ld-f0-cl8-t0
+ld-n-ld-f0-door-0-818
+ld-n-ld-f0-door-0-817
 ld-n-ld-f0-door-0-805
 ld-n-ld-f0-room-0-805
 ```
@@ -23,10 +26,10 @@ ld-n-ld-f0-room-0-805
 ## 2 ground entrance → mid classroom
 
 - **From → To:** `entrance-west@f0` → `0-412`
-- **Cost (px-equiv):** 794.1
-- **Hops:** 7
+- **Cost (px-equiv):** 794.0
+- **Hops:** 8
 - **Vertical kinds:** none
-- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
+- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
 - **Node id list:**
 
 ```
@@ -36,6 +39,7 @@ ld-n-ld-f0-c1-w
 ld-n-ld-f0-c1-hub
 ld-n-ld-f0-c1-e
 ld-n-ld-f0-c4-hub
+ld-n-ld-f0-cl4-t0
 ld-n-ld-f0-door-0-412
 ld-n-ld-f0-room-0-412
 ```
@@ -43,22 +47,28 @@ ld-n-ld-f0-room-0-412
 ## 3 basement ↔ floor 1 (vertical)
 
 - **From → To:** `00-112` → `1-105`
-- **Cost (px-equiv):** 688.6
-- **Hops:** 10
+- **Cost (px-equiv):** 548.5
+- **Hops:** 16
 - **Vertical kinds:** ['verticalLift', 'verticalLift']
-- **Floors visited:** `['ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f0', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1']`
+- **Floors visited:** `['ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f-1', 'ld-f0', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1', 'ld-f1']`
 - **Node id list:**
 
 ```
 ld-n-ld-f-1-room-00-112
 ld-n-ld-f-1-door-00-112
-ld-n-ld-f-1-c1-hub
+ld-n-ld-f-1-door-00-113
+ld-n-ld-f-1-door-00-114
+ld-n-ld-f-1-door-00-115
+ld-n-ld-f-1-cl1-t0
 ld-n-ld-f-1-c1-w
 ld-n-ld-f-1-lift-B
 ld-n-ld-f0-lift-B
 ld-n-ld-f1-lift-B
 ld-n-ld-f1-c1-w
-ld-n-ld-f1-c1-hub
+ld-n-ld-f1-cl1-t0
+ld-n-ld-f1-door-1-110
+ld-n-ld-f1-door-1-108
+ld-n-ld-f1-door-1-106
 ld-n-ld-f1-door-1-105
 ld-n-ld-f1-room-1-105
 ```
@@ -66,20 +76,23 @@ ld-n-ld-f1-room-1-105
 ## 4 named halls Bolyai → Rényi
 
 - **From → To:** `0-821` → `0-412`
-- **Cost (px-equiv):** 790.1
-- **Hops:** 8
+- **Cost (px-equiv):** 757.6
+- **Hops:** 11
 - **Vertical kinds:** none
-- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
+- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
 - **Node id list:**
 
 ```
 ld-n-ld-f0-room-0-821
 ld-n-ld-f0-door-0-821
-ld-n-ld-f0-c8-hub
-ld-n-ld-f0-c1-w
-ld-n-ld-f0-c1-hub
-ld-n-ld-f0-c1-e
+ld-n-ld-f0-door-0-820
+ld-n-ld-f0-cl8-t0
+ld-n-ld-f0-c8-n
+ld-n-ld-f0-stair-nw
+ld-n-ld-f0-c3-hub
+ld-n-ld-f0-stair-ne
 ld-n-ld-f0-c4-hub
+ld-n-ld-f0-cl4-t0
 ld-n-ld-f0-door-0-412
 ld-n-ld-f0-room-0-412
 ```
@@ -87,19 +100,25 @@ ld-n-ld-f0-room-0-412
 ## 5 cross-corridor 2 → 4
 
 - **From → To:** `0-220` → `0-412`
-- **Cost (px-equiv):** 588.3
-- **Hops:** 7
+- **Cost (px-equiv):** 611.8
+- **Hops:** 13
 - **Vertical kinds:** none
-- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
+- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0']`
 - **Node id list:**
 
 ```
 ld-n-ld-f0-room-0-220
 ld-n-ld-f0-door-0-220
+ld-n-ld-f0-door-0-221
+ld-n-ld-f0-door-0-222
+ld-n-ld-f0-cl2-t0
+ld-n-ld-f0-cl2-t1
 ld-n-ld-f0-c2-hub
+ld-n-ld-f0-stair-nw
 ld-n-ld-f0-c3-hub
 ld-n-ld-f0-stair-ne
 ld-n-ld-f0-c4-hub
+ld-n-ld-f0-cl4-t0
 ld-n-ld-f0-door-0-412
 ld-n-ld-f0-room-0-412
 ```
@@ -107,15 +126,21 @@ ld-n-ld-f0-room-0-412
 ## 6 cross-floor lift/stair 0 → 3
 
 - **From → To:** `0-821` → `3-219`
-- **Cost (px-equiv):** 720.8
-- **Hops:** 10
+- **Cost (px-equiv):** 744.1
+- **Hops:** 18
 - **Vertical kinds:** ['verticalLift', 'verticalLift', 'verticalLift']
-- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f1', 'ld-f2', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3']`
+- **Floors visited:** `['ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f0', 'ld-f1', 'ld-f2', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3', 'ld-f3']`
 - **Node id list:**
 
 ```
 ld-n-ld-f0-room-0-821
 ld-n-ld-f0-door-0-821
+ld-n-ld-f0-door-0-822
+ld-n-ld-f0-door-0-823
+ld-n-ld-f0-door-0-825
+ld-n-ld-f0-door-0-826
+ld-n-ld-f0-door-0-827
+ld-n-ld-f0-cl8-t1
 ld-n-ld-f0-c8-hub
 ld-n-ld-f0-lift-A
 ld-n-ld-f1-lift-A
@@ -123,6 +148,8 @@ ld-n-ld-f2-lift-A
 ld-n-ld-f3-lift-A
 ld-n-ld-f3-c1-w
 ld-n-ld-f3-c2-hub
+ld-n-ld-f3-cl2-t1
+ld-n-ld-f3-cl2-t0
 ld-n-ld-f3-door-3-219
 ld-n-ld-f3-room-3-219
 ```

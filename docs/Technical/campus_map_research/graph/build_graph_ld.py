@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Build Phase 2 LD (South / Déli) corridor graph — semi-manual MVP.
+"""Build Phase 2 LD (South / Déli) corridor graph — centerline-first MVP.
 
 Places a shared corridor-1–8 backbone + vertical shafts on every floor JPG
-(800×800), stubs every rooms.json entry to the nearest corridor node, and
-writes graph_ld.json + sample routes. Pixel positions are approximate
-(visual hubs + corridor-digit heuristics), not CV-traced.
+(800×800), densifies corridor centerlines, stubs rooms onto those polylines
+(chained along the corridor — not hub-spoke), and writes graph_ld.json +
+sample routes. Pixel positions remain approximate (visual hubs + corridor-
+digit heuristics), not CV-traced. Target: visually even indoor paths.
 """
 
 from __future__ import annotations
@@ -94,6 +95,8 @@ CORRIDOR_POLY = {
 }
 
 # Same-floor backbone edges between named hubs (undirected).
+# Prefer axis-aligned / along-corridor links; avoid courtyard-cutting diagonals
+# (those produced visibly crooked Dijkstra polylines in the hub-spoke MVP).
 BACKBONE_EDGES = [
     ("entrance-west", "c8-hub"),
     ("c8-hub", "c8-n"),
@@ -103,34 +106,56 @@ BACKBONE_EDGES = [
     ("c8-hub", "lift-A"),
     ("c8-hub", "lift-B"),
     ("c8-hub", "c1-w"),
-    ("c8-n", "c2-hub"),
-    ("c8-s", "c7-hub"),
+    # C8 ↔ west ring via stair landings (not long diagonals c8-n↔c2 / c8-s↔c7)
+    ("c8-n", "stair-nw"),
+    ("stair-nw", "c2-hub"),
+    ("c8-s", "stair-sw"),
+    ("stair-sw", "c7-hub"),
     ("c2-hub", "c1-w"),
     ("c7-hub", "c1-w"),
     ("c1-w", "c1-hub"),
     ("c1-hub", "c1-e"),
     ("c1-e", "entrance-dunapart"),
-    ("c2-hub", "c3-hub"),
-    ("c3-hub", "c4-hub"),
-    ("c4-hub", "c1-e"),
-    ("c7-hub", "c6-hub"),
-    ("c6-hub", "c5-hub"),
-    ("c5-hub", "c1-e"),
-    ("c4-hub", "c5-hub"),  # east spine
-    ("c2-hub", "c7-hub"),  # west of courtyards via C1-w already; extra direct
-    ("c3-hub", "entrance-north"),
-    ("stair-nw", "c2-hub"),
+    # Courtyard ring via corner stairs (follow corridor geometry)
     ("stair-nw", "c3-hub"),
-    ("stair-ne", "c3-hub"),
+    ("c3-hub", "stair-ne"),
     ("stair-ne", "c4-hub"),
-    ("stair-sw", "c7-hub"),
+    ("c4-hub", "c1-e"),
     ("stair-sw", "c6-hub"),
-    ("stair-se", "c6-hub"),
+    ("c6-hub", "stair-se"),
     ("stair-se", "c5-hub"),
+    ("c5-hub", "c1-e"),
+    ("c4-hub", "c5-hub"),  # east spine (near-vertical)
+    ("c3-hub", "entrance-north"),
     ("lift-A", "c1-w"),
     ("lift-B", "c1-w"),
     ("stair-main", "c1-w"),
 ]
+
+# Extra waypoints along each corridor poly (t in (0,1)) so routes stay on
+# centerlines between hubs / door mouths. Keys = corridor digit.
+CENTERLINE_WAYPOINTS = {
+    1: [0.25, 0.5, 0.75],
+    2: [0.33, 0.66],
+    3: [0.25, 0.5, 0.75],
+    4: [0.33, 0.66],
+    5: [0.33, 0.66],
+    6: [0.25, 0.5, 0.75],
+    7: [0.33, 0.66],
+    8: [0.2, 0.4, 0.6, 0.8],
+}
+
+# Which named hub anchors each corridor poly (for attaching centerline chains).
+CORRIDOR_ANCHOR_HUBS = {
+    1: ["c1-w", "c1-hub", "c1-e"],
+    2: ["c2-hub"],
+    3: ["c3-hub"],
+    4: ["c4-hub"],
+    5: ["c5-hub"],
+    6: ["c6-hub"],
+    7: ["c7-hub"],
+    8: ["c8-hub", "c8-n", "c8-s"],
+}
 
 HUB_KIND = {
     "entrance-west": "entrance",
@@ -360,19 +385,50 @@ def build():
                 }
             )
 
-    # --- rooms + stubs ---
-    corridor_hub_key = {
-        1: "c1-hub",
-        2: "c2-hub",
-        3: "c3-hub",
-        4: "c4-hub",
-        5: "c5-hub",
-        6: "c6-hub",
-        7: "c7-hub",
-        8: "c8-hub",
-    }
+    # --- densified corridor centerline waypoints (per floor) ---
+    # Collect (floorId, corridor) → list of (t, node_id, xy) for chaining.
+    centerline_pts = defaultdict(list)  # (fid, corridor) -> [(t, nid, xy)]
 
+    for fl in FLOORS:
+        fid = fl["id"]
+        for corridor, ts in CENTERLINE_WAYPOINTS.items():
+            poly = CORRIDOR_POLY[corridor]
+            for ti, t in enumerate(ts):
+                xy = point_on_poly(poly, t)
+                xy = (max(20, min(780, xy[0])), max(20, min(780, xy[1])))
+                nid = f"ld-n-{fid}-cl{corridor}-t{ti}"
+                add_node(
+                    {
+                        "id": nid,
+                        "floorId": fid,
+                        "kind": "corridor",
+                        "coord": px(xy),
+                        "label": f"c{corridor}-cl-{ti}",
+                    }
+                )
+                centerline_pts[(fid, corridor)].append((t, nid, xy))
+            # Attach corridor chain to its anchor hubs (nearest point).
+            for hub_key in CORRIDOR_ANCHOR_HUBS.get(corridor, []):
+                hx, hy = HUBS[hub_key]
+                best = min(
+                    centerline_pts[(fid, corridor)],
+                    key=lambda item: dist(item[2], (hx, hy)),
+                )
+                add_edge(
+                    {
+                        "id": f"ld-e-{fid}-cl{corridor}-{hub_key}",
+                        "from": f"ld-n-{fid}-{hub_key}",
+                        "to": best[1],
+                        "weight": round(dist((hx, hy), best[2]), 1),
+                        "bidirectional": True,
+                        "kind": "corridor",
+                    }
+                )
+
+    # --- rooms + stubs (door mouths chained along centerline, not hub-spoke) ---
     stub_count = 0
+    door_pts = defaultdict(list)  # (fid, corridor) -> [(t, attach_id, along_xy)]
+
     for r in public["rooms"]:
         code_bis, corridor, ordinal = parse_room_code(r["code"])
         if not code_bis:
@@ -382,7 +438,8 @@ def build():
         fid = fl["id"]
         corridor = corridor or 8
         poly = CORRIDOR_POLY.get(corridor, CORRIDOR_POLY[8])
-        along = point_on_poly(poly, room_t(ordinal or 0))
+        t_along = room_t(ordinal or 0)
+        along = point_on_poly(poly, t_along)
         door = offset_toward_room(along, corridor, ordinal or 0)
         # clamp into image
         door = (
@@ -447,18 +504,7 @@ def build():
                 "label": f"door mouth {code_bis}",
             }
         )
-        hub_key = corridor_hub_key.get(corridor, "c8-hub")
-        hub_id = f"ld-n-{fid}-{hub_key}"
-        add_edge(
-            {
-                "id": f"ld-e-{fid}-hub-{attach_key}",
-                "from": hub_id,
-                "to": attach_id,
-                "weight": round(dist(HUBS[hub_key], along), 1),
-                "bidirectional": True,
-                "kind": "corridor",
-            }
-        )
+        door_pts[(fid, corridor)].append((t_along, attach_id, along))
 
         room_node_id = f"ld-n-{fid}-room-{id_token}"
         add_node(
@@ -482,6 +528,46 @@ def build():
             }
         )
         stub_count += 1
+
+    # Chain door mouths + waypoints along each corridor poly (sorted by t).
+    # Always process corridors that have waypoints OR doors so empty-room
+    # floors still keep densified centerlines connected (not orphan hubs).
+    all_corridor_keys = set(centerline_pts.keys()) | set(door_pts.keys())
+    for key in sorted(all_corridor_keys):
+        fid, corridor = key
+        chain = list(centerline_pts.get(key, [])) + list(door_pts.get(key, []))
+        chain.sort(key=lambda item: (item[0], item[1]))
+        for i in range(len(chain) - 1):
+            _t0, n0, p0 = chain[i]
+            _t1, n1, p1 = chain[i + 1]
+            if n0 == n1:
+                continue
+            add_edge(
+                {
+                    "id": f"ld-e-{fid}-cl{corridor}-chain-{i}",
+                    "from": n0,
+                    "to": n1,
+                    "weight": max(0.1, round(dist(p0, p1), 1)),
+                    "bidirectional": True,
+                    "kind": "corridor",
+                }
+            )
+        doors = door_pts.get(key, [])
+        # Safety: if a corridor has doors but no waypoints, pin ends to hub.
+        if doors and not centerline_pts.get(key):
+            anchors = CORRIDOR_ANCHOR_HUBS.get(corridor, ["c8-hub"])
+            for _attach_t, attach_id, along in (doors[0], doors[-1]):
+                hub_key = min(anchors, key=lambda h: dist(HUBS[h], along))
+                add_edge(
+                    {
+                        "id": f"ld-e-{fid}-fallback-{attach_id.split('-')[-1]}",
+                        "from": f"ld-n-{fid}-{hub_key}",
+                        "to": attach_id,
+                        "weight": round(dist(HUBS[hub_key], along), 1),
+                        "bidirectional": True,
+                        "kind": "corridor",
+                    }
+                )
 
     # --- vertical edges between consecutive floors ---
     levels = [f["level"] for f in FLOORS]
@@ -508,11 +594,12 @@ def build():
         "packageKind": "buildingGraph",
         "generatedAt": "2026-09-16",
         "notes": (
-            "Phase 2 LD MVP graph. Corridor hubs visually placed on 800×800 "
-            "basemap CRS (x→Dunapart/east, y→south). Room stubs estimated from "
-            "corridor digit in room code + ordinal along corridor polyline — "
-            "semi-manual / approximate, not CV-traced. Attic T omitted. "
-            "Basemap permission still pending."
+            "Phase 2 LD graph (centerline pass 2026-09-16). Corridor hubs on "
+            "800×800 basemap CRS (x→Dunapart/east, y→south). Door mouths and "
+            "waypoints chained along corridor polylines (not hub-spoke) so "
+            "same-corridor A→B follows the centerline. Room offsets still "
+            "heuristic — not CV-traced. Attic T omitted. Basemap permission "
+            "still pending. Not a final product map (Strategy D)."
         ),
         "building": {
             "id": "ld",

@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — релиз 1.6.1 (LD centerline-пути + стратегия D + private repo)
+
+**[2026-09-16, ~19:30]**
+
+- **Релиз 1.6.1** (`pubspec` **1.6.1+1**): владелец отверг UX Phase B MVP (фото этажа + кривые hub-spoke пути). **Пути:** граф LD пересобран — door mouths цепочкой вдоль осевых коридоров (не V через hub); убраны диагональные courtyard-hops; Flutter path painter сглаживает Chaikin. LE пока hub-heuristic (далее). **Basemap стратегия D:** JPG sarkozigergo не финальная карта продукта — искать официальную/разрешённую 2D-схему (ELTE IIG/BIS); фото-пакет transitional; permission pending. Геометрия BIS `routing.route` всё ещё **null**. **Репо:** `Nanda070/Neptun-ELTE` сделан **private** (публичный sideload `AppUpdater` может не работать для не-collaborators). Docs EN+RU синхронизированы. GitHub Release **v1.6.1**. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — релиз 1.6.0 (карта кампуса фаза B MVP)
 
 **[2026-09-16, ~19:15]**
@@ -588,18 +596,18 @@ Product + technical docs приведены к фактам «фазы 0–6 г�
 
 **[ongoing]**
 
-### Сделано / работает на main (~1.6.0)
+### Сделано / работает на main (~1.6.1)
 
 - Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
 - Опциональный **фоновый keep-alive** в Settings (default выкл; **45 мин**; idle снят в **1.5.10**) + **Запомнить пароль** (default выкл; сохраняется при ручном logout при вкл.).
 - UI навигатора учебной недели (**1.5.8**) + фикс битого кэша почты / epoch-`ERROR` (**1.5.6**).
 - **Переводчик** почты HU→EN/RU — **работает** (failure → оригинал; disclaimer один раз).
 - Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как раньше; п. **11** (tanterv) **снят**.
-- Карта кампуса **фаза A (0–6) готова** для MVP: research-дамп + схема + графы LD/LE + joins/алиасы + [`campus_map_package/`](campus_map_package/) + QA **41/0/2** ([QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI не начат. См. **подробный дневник** записью 2026-09-16 выше.
+- Карта кампуса: пакет фазы A + UI фазы B; **1.6.1** LD centerline-пути; стратегия D + private repo. См. дневник 2026-09-16.
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза B (Flutter UI)** — отложена. MVP-пакет фазы A + QA готовы. Разрешение на JPG basemap всё ещё **pending** (не бандлить в APK/App Store). В приложении — только внешний Maps deep-link.
+- **Indoor-карта** — transitional UI; **стратегия D** официальная/разрешённая 2D basemap ещё не получена; LE centerline-pass; полная переоцифровка LD+LE — большой объём. Basemap JPG permission **pending**. Репо **private** (caveat updater для публичного sideload). Полилинии BIS routing всё ещё **null**.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.

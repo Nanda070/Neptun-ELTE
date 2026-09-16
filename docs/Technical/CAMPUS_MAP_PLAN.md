@@ -1,12 +1,34 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–6 done** — Phase A **map finished** for MVP (LD + LE package + [QA_REPORT.md](campus_map_package/QA_REPORT.md)). **Phase B (Flutter) MVP shipped in 1.6.0**. Basemap JPG permission still **pending** (block App Store redistribution claims; sideload/dev OK with honesty banner).  
+**Status (2026-09-16 evening):** Phase **0–6** research package remains; Phase **B MVP (1.6.0)** shipped but **UX rejected** (raster floor photo + crooked hub-spoke paths). **New direction:** corridor-**centerline** smooth paths + **Strategy D** basemap (seek official/authorized 2D schematic — do **not** treat sarkozigergo JPG as the product map) + GitHub repo **private** while assets/strategy unsettled. Incremental centerline pass on **LD** in **1.6.1** (LE still hub-heuristic). Basemap JPG permission still **pending**.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
 
 > Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md) · Package: [`campus_map_package/`](campus_map_package/)  
 > Related shipped maps (external deep-link only): `lib/Misc/elte_room_code.dart` — **not** indoor A→B.
+
+---
+
+## Post-MVP reset (2026-09-16) — paths + Strategy D + private repo
+
+Owner rejected the Phase B MVP look: **photo floor as map** + **crooked polylines** from hub-spoke room stubs. Decisions:
+
+| Topic | Choice |
+|-------|--------|
+| **Paths** | Re-digitize / refine so routes follow **corridor centerlines**; smooth display (along-corridor chain + light Chaikin). Target = visually even indoor navigation. **Not** “smooth a wrong graph.” |
+| **Basemap** | **Strategy D** — pursue proper official / authorized **2D schematic or vector** (ELTE IIG / BIS or permitted export). Do **not** ship sarkozigergo JPG as the final product map. Photo package stays **research / transitional** only. Permission **pending**. |
+| **BIS polylines** | Still **null** in research dump — do **not** claim official BIS route geometry exists. |
+| **Repo** | GitHub **`Nanda070/Neptun-ELTE` is private** while map assets/strategy are unsettled. Public sideload APK discovery / `AppUpdater` for non-collaborators may fail (private Releases). |
+| **Phase A package** | Keep as research QA baseline. |
+| **Phase B UI** | May remain in app as **transitional** (`CampusMapPage`); honesty banner updated; to be replaced when Strategy D basemap + full centerline graphs land. |
+
+### Centerline refinement plan
+
+1. **LD pilot (done in 1.6.1):** `build_graph_ld.py` densifies corridor polylines, chains door mouths along centerlines (no hub-spoke V-detours), removes courtyard-cutting diagonal backbone hops; Flutter path painter Chaikin-smooths display. Full pixel-perfect door CV still **out of scope**.
+2. **LE next:** same centerline treatment in `build_graph_le.py` (still hub-heuristic until then).
+3. **Basemap D:** contact ELTE IIG / BIS for authorized 2D plans; until then product map = transitional.
+4. **Honesty:** no App Store redistribution of third-party floor photos; private repo while unsettled.
 
 ---
 
@@ -178,7 +200,7 @@ Document at least **5** LD routes with expected floor changes, e.g.:
 - [x] ≥5 A→B samples pass (path exists, sensible length, no wall-crossing).
 - [x] Draft artifact `graph_ld.json` exists (may live under research until Phase 5 packaging).
 
-**Honesty:** hub/door pixels are **semi-manual / approximate** (corridor-digit stubs + visual hubs), not CV-perfect doors. Attic `T` omitted. Refine pixels later; connectivity is complete for MVP.
+**Honesty:** hub/door pixels remain **semi-manual / approximate**. **1.6.1** LD builder chains door mouths along corridor centerlines (not hub-spoke). Attic `T` omitted. LE still on older hub-heuristic until the same pass. Full LD+LE pixel re-digitize is large and ongoing.
 
 ---
 
@@ -301,9 +323,9 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ---
 
-## Phase B — App integration (**MVP shipped 1.6.0**)
+## Phase B — App integration (**MVP 1.6.0; transitional after reset**)
 
-Phases **0–6** done. **MVP shipped** in marketing **1.6.0**: `lib/CampusMap/campus_map_page.dart` + `assets/campus_map/` (graphs, joins, aliases, basemaps).
+Phases **0–6** done as research. **MVP shipped** in marketing **1.6.0**, then **UX rejected**. **1.6.1** = LD centerline path fix + honesty/repo strategy update. UI may stay but is **transitional** until Strategy D basemap + full LD+LE centerline graphs.
 
 | Item | Intent |
 |------|--------|
@@ -313,7 +335,7 @@ Phases **0–6** done. **MVP shipped** in marketing **1.6.0**: `lib/CampusMap/ca
 | Packaging in app | Load Phase 5 JSON + assets from bundle or first-run download. |
 | Optional | Deep-link / WebView to BIS for users with ELTE login — secondary, not a substitute for our graph. |
 
-**Exit criteria for Phase B** (MVP met in **1.6.0**; polish later): pre-login Map, LD/LE, floor switcher, search, A→B path draw, honesty banner. Tag **v1.6.0**.
+**Exit criteria for Phase B MVP** (met in **1.6.0**; **not** accepted as product UX): pre-login Map, LD/LE, floor switcher, search, A→B path draw, honesty banner. Tag **v1.6.0**. Product direction after reset: see [Post-MVP reset](#post-mvp-reset-2026-09-16--paths--strategy-d--private-repo).
 
 ---
 

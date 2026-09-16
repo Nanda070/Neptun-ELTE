@@ -67,17 +67,20 @@
       "building": "ld",
       "category": "same-floor",
       "status": "pass",
-      "detail": "0-821→0-805 neighbors: hops=4 cost=259.8",
+      "detail": "0-821→0-805 neighbors: hops=7 cost=128.3",
       "evidence": {
         "start": "ld-n-ld-f0-room-0-821",
         "goal": "ld-n-ld-f0-room-0-805",
-        "hops": 4,
-        "cost": 259.8,
+        "hops": 7,
+        "cost": 128.3,
         "verticalKinds": [],
         "pathPreview": [
           "ld-n-ld-f0-room-0-821",
           "ld-n-ld-f0-door-0-821",
-          "ld-n-ld-f0-c8-hub",
+          "ld-n-ld-f0-door-0-820",
+          "ld-n-ld-f0-cl8-t0",
+          "ld-n-ld-f0-door-0-818",
+          "ld-n-ld-f0-door-0-817",
           "ld-n-ld-f0-door-0-805",
           "ld-n-ld-f0-room-0-805"
         ]
@@ -88,22 +91,23 @@
       "building": "ld",
       "category": "same-floor",
       "status": "pass",
-      "detail": "0-220→0-412 cross-corridor: hops=7 cost=588.3",
+      "detail": "0-220→0-412 cross-corridor: hops=13 cost=611.8",
       "evidence": {
         "start": "ld-n-ld-f0-room-0-220",
         "goal": "ld-n-ld-f0-room-0-412",
-        "hops": 7,
-        "cost": 588.3,
+        "hops": 13,
+        "cost": 611.8,
         "verticalKinds": [],
         "pathPreview": [
           "ld-n-ld-f0-room-0-220",
           "ld-n-ld-f0-door-0-220",
+          "ld-n-ld-f0-door-0-221",
+          "ld-n-ld-f0-door-0-222",
+          "ld-n-ld-f0-cl2-t0",
+          "ld-n-ld-f0-cl2-t1",
           "ld-n-ld-f0-c2-hub",
-          "ld-n-ld-f0-c3-hub",
-          "ld-n-ld-f0-stair-ne",
-          "ld-n-ld-f0-c4-hub",
-          "ld-n-ld-f0-door-0-412",
-          "ld-n-ld-f0-room-0-412"
+          "ld-n-ld-f0-stair-nw",
+          "…"
         ]
       }
     },
@@ -112,22 +116,22 @@
       "building": "ld",
       "category": "same-floor",
       "status": "pass",
-      "detail": "Bolyai→Rényi same floor: hops=8 cost=790.1",
+      "detail": "Bolyai→Rényi same floor: hops=11 cost=757.6",
       "evidence": {
         "start": "ld-n-ld-f0-room-0-821",
         "goal": "ld-n-ld-f0-room-0-412",
-        "hops": 8,
-        "cost": 790.1,
+        "hops": 11,
+        "cost": 757.6,
         "verticalKinds": [],
         "pathPreview": [
           "ld-n-ld-f0-room-0-821",
           "ld-n-ld-f0-door-0-821",
-          "ld-n-ld-f0-c8-hub",
-          "ld-n-ld-f0-c1-w",
-          "ld-n-ld-f0-c1-hub",
-          "ld-n-ld-f0-c1-e",
-          "ld-n-ld-f0-c4-hub",
-          "ld-n-ld-f0-door-0-412",
+          "ld-n-ld-f0-door-0-820",
+          "ld-n-ld-f0-cl8-t0",
+          "ld-n-ld-f0-c8-n",
+          "ld-n-ld-f0-stair-nw",
+          "ld-n-ld-f0-c3-hub",
+          "ld-n-ld-f0-stair-ne",
           "…"
         ]
       }
@@ -137,12 +141,12 @@
       "building": "ld",
       "category": "cross-stair",
       "status": "pass",
-      "detail": "0-206→2-107 lifts forbidden: hops=10 cost=810.9",
+      "detail": "0-206→2-107 lifts forbidden: hops=19 cost=761.5",
       "evidence": {
         "start": "ld-n-ld-f0-room-0-206",
         "goal": "ld-n-ld-f2-room-2-107",
-        "hops": 10,
-        "cost": 810.9,
+        "hops": 19,
+        "cost": 761.5,
         "verticalKinds": [
           "verticalStair",
           "verticalStair"
@@ -150,12 +154,12 @@
         "pathPreview": [
           "ld-n-ld-f0-room-0-206",
           "ld-n-ld-f0-door-0-206",
-          "ld-n-ld-f0-c2-hub",
-          "ld-n-ld-f0-stair-nw",
-          "ld-n-ld-f1-stair-nw",
-          "ld-n-ld-f2-stair-nw",
-          "ld-n-ld-f2-c2-hub",
-          "ld-n-ld-f2-c1-w",
+          "ld-n-ld-f0-door-0-215",
+          "ld-n-ld-f0-door-0-220",
+          "ld-n-ld-f0-door-0-221",
+          "ld-n-ld-f0-door-0-222",
+          "ld-n-ld-f0-cl2-t0",
+          "ld-n-ld-f0-cl2-t1",
           "…"
         ]
       }
@@ -165,12 +169,12 @@
       "building": "ld",
       "category": "cross-lift",
       "status": "pass",
-      "detail": "0-206→2-107 stairs forbidden: hops=10 cost=767.5",
+      "detail": "0-206→2-107 stairs forbidden: hops=19 cost=718.1",
       "evidence": {
         "start": "ld-n-ld-f0-room-0-206",
         "goal": "ld-n-ld-f2-room-2-107",
-        "hops": 10,
-        "cost": 767.5,
+        "hops": 19,
+        "cost": 718.1,
         "verticalKinds": [
           "verticalLift",
           "verticalLift"
@@ -178,12 +182,12 @@
         "pathPreview": [
           "ld-n-ld-f0-room-0-206",
           "ld-n-ld-f0-door-0-206",
-          "ld-n-ld-f0-c2-hub",
-          "ld-n-ld-f0-c1-w",
-          "ld-n-ld-f0-lift-B",
-          "ld-n-ld-f1-lift-B",
-          "ld-n-ld-f2-lift-B",
-          "ld-n-ld-f2-c1-w",
+          "ld-n-ld-f0-door-0-215",
+          "ld-n-ld-f0-door-0-220",
+          "ld-n-ld-f0-door-0-221",
+          "ld-n-ld-f0-door-0-222",
+          "ld-n-ld-f0-cl2-t0",
+          "ld-n-ld-f0-cl2-t1",
           "…"
         ]
       }
@@ -193,12 +197,12 @@
       "building": "ld",
       "category": "entrance",
       "status": "pass",
-      "detail": "west entrance→0-412: hops=7 cost=794.1",
+      "detail": "west entrance→0-412: hops=8 cost=794.0",
       "evidence": {
         "start": "ld-n-ld-f0-entrance-west",
         "goal": "ld-n-ld-f0-room-0-412",
-        "hops": 7,
-        "cost": 794.1,
+        "hops": 8,
+        "cost": 794.0,
         "verticalKinds": [],
         "pathPreview": [
           "ld-n-ld-f0-entrance-west",
@@ -207,8 +211,9 @@
           "ld-n-ld-f0-c1-hub",
           "ld-n-ld-f0-c1-e",
           "ld-n-ld-f0-c4-hub",
+          "ld-n-ld-f0-cl4-t0",
           "ld-n-ld-f0-door-0-412",
-          "ld-n-ld-f0-room-0-412"
+          "…"
         ]
       }
     },

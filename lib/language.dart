@@ -386,7 +386,7 @@ class AppStrings{
       roomCode_OpenMap: 'Térkép megnyitása',
       campusMap_Title: 'Campus térkép',
       campusMap_HonestyBanner:
-          'MVP beltéri térkép (közelítő folyosók). A basemap képek újrafelhasználási engedélye még pending — sideload/dev. Nem hivatalos ELTE BIS.',
+          'Átmeneti beltéri térkép (folyosó-középvonal; fotó-basemap nem végleges). Engedély pending — sideload/dev. Nem hivatalos ELTE BIS.',
       campusMap_HubButton: 'Campus térkép',
       campusMap_HubButtonDescription:
           'Beltéri A→B a Lágymányos Déli (LD) és Északi (LE) tömbökben. Neptun bejelentkezés nélkül.',
@@ -789,7 +789,7 @@ class AppStrings{
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
       campusMap_Title: 'Campus map',
       campusMap_HonestyBanner:
-          'MVP indoor map (approximate corridors). Basemap artwork redistribution permission still pending — sideload/dev use. Not official ELTE BIS.',
+          'Transitional indoor map (corridor-centerline paths; photo basemap not final). Permission pending — sideload/dev. Not official ELTE BIS.',
       campusMap_HubButton: 'Campus map',
       campusMap_HubButtonDescription:
           'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
@@ -1805,7 +1805,7 @@ class LanguagePack{
     this.roomCode_OpenMap = 'Open map',
     this.campusMap_Title = 'Campus map',
     this.campusMap_HonestyBanner =
-        'MVP indoor map (approximate corridors). Basemap artwork redistribution permission still pending — sideload/dev use. Not official ELTE BIS.',
+        'Transitional indoor map (corridor-centerline paths; photo basemap not final). Permission pending — sideload/dev. Not official ELTE BIS.',
     this.campusMap_HubButton = 'Campus map',
     this.campusMap_HubButtonDescription =
         'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',

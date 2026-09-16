@@ -1,18 +1,17 @@
 # Corridor graphs (Phase 2 LD + Phase 3 LE)
 
-**Status:** LD + LE MVP done **2026-09-16**.  
-**Owner:** Nanda.  
+**Status:** LD centerline pass **2026-09-16 (1.6.1)** · LE still hub-heuristic MVP · Owner **Nanda**.  
 **Schema:** [`../schema/SCHEMA.md`](../schema/SCHEMA.md) (`schemaVersion` **1**).  
-**Plan:** [CAMPUS_MAP_PLAN.md](../../CAMPUS_MAP_PLAN.md).
+**Plan:** [CAMPUS_MAP_PLAN.md](../../CAMPUS_MAP_PLAN.md) (post-MVP reset: centerline paths + Strategy D).
 
 ## Artifacts
 
 | File | Role |
 |------|------|
-| [`graph_ld.json`](graph_ld.json) | Full LD building graph (floors −1…7) |
-| [`build_graph_ld.py`](build_graph_ld.py) | Reproducible LD builder |
+| [`graph_ld.json`](graph_ld.json) | Full LD building graph (floors −1…7) — **centerline-chained** door mouths |
+| [`build_graph_ld.py`](build_graph_ld.py) | Reproducible LD builder (centerline densify + chain) |
 | [`samples/ld_routes.md`](samples/ld_routes.md) | ≥5 Dijkstra A→B for LD QA |
-| [`graph_le.json`](graph_le.json) | Full LE building graph (floors −1…7) |
+| [`graph_le.json`](graph_le.json) | Full LE building graph (floors −1…7) — hub-heuristic until next pass |
 | [`build_graph_le.py`](build_graph_le.py) | Reproducible LE builder |
 | [`samples/le_routes.md`](samples/le_routes.md) | ≥5 Dijkstra A→B for LE QA |
 
@@ -25,19 +24,20 @@ python3 docs/Technical/campus_map_research/graph/build_graph_le.py
 
 ---
 
-## LD (South / Déli) — Phase 2
+## LD (South / Déli) — Phase 2 + centerline pass
 
 ### Approximation level (honesty)
 
-This is a **semi-manual / approximate** MVP — **not** computer-vision tracing of every door:
+Still **semi-manual / approximate** — **not** CV door tracing — but **1.6.1** fixes the worst crooked-path cause:
 
 1. **Basemap size:** every student-floor JPG is **800×800**. Overview `delitomb_0.jpg` is 481×481 (schema reference only).
 2. **CRS:** `basemapPx`, origin top-left; **x increases toward Dunapart (east)**, **y increases south**. Shared hub template across floors.
 3. **Corridor hubs (1–8):** placed from visual inspection of `delitomb_0.jpg` + ground / −1 / 1 floor JPGs.
-4. **Room stubs:** every entry in [`../ld_south/rooms.json`](../ld_south/rooms.json) (**134**) gets a door-mouth + room node. Position = corridor digit from code + ordinal along polyline — **estimated**.
-5. **BIS:** optional `centroidWgs` / ids when `roomNumber` matches; **routing stays in pixel space**.
-6. **Vertical:** shafts `ld-lift-A/B`, `ld-stair-main`, four courtyard-corner stairs — consecutive −1↔0↔…↔7. Stair weight **90**, lift **40**.
-7. **Attic `T`:** omitted.
+4. **Centerline chain (1.6.1):** densified waypoints on `CORRIDOR_POLY` + door mouths sorted by `t` and **chained along the corridor** (no hub-spoke V-detours). Diagonal courtyard backbone hops removed.
+5. **Room stubs:** every entry in [`../ld_south/rooms.json`](../ld_south/rooms.json) (**134**) gets a door-mouth + room node. Position = corridor digit + ordinal along polyline — **estimated**.
+6. **BIS:** optional `centroidWgs` / ids when `roomNumber` matches; **routing stays in pixel space**. Official BIS route polylines still **null**.
+7. **Vertical:** shafts `ld-lift-A/B`, `ld-stair-main`, four courtyard-corner stairs — consecutive −1↔0↔…↔7. Stair weight **90**, lift **40**.
+8. **Attic `T`:** omitted.
 
 ### Coverage (LD)
 
@@ -45,8 +45,8 @@ This is a **semi-manual / approximate** MVP — **not** computer-vision tracing 
 |--------|------:|
 | Floors | **9** (−1…7) |
 | Rooms / stubs | **134** / **134** |
-| Nodes | **475** |
-| Edges | **639** |
+| Nodes | **~664** (after centerline densify) |
+| Edges | **~819** |
 | Same-floor components | **1 connected component per floor** |
 
 ### QA samples (LD)
@@ -59,7 +59,7 @@ See [`samples/ld_routes.md`](samples/ld_routes.md).
 
 ### Approximation level (honesty)
 
-Same MVP bar as LD — **semi-manual / approximate**:
+Same original MVP bar as LD **before** the centerline pass — **semi-manual / approximate** hub-spoke (LE centerline still **TODO**):
 
 1. **Basemap size:** student-floor JPGs **800×800** under [`../le_north/floors/`](../le_north/floors/).
 2. **CRS:** `basemapPx`, origin top-left. On LE artwork **Dunapart is LEFT (west)**; **x→east**, **y↓**. Shared hub template across floors −1…7 (footprint consistent enough for routing).
@@ -70,7 +70,7 @@ Same MVP bar as LD — **semi-manual / approximate**:
 7. **Vertical:** `le-lift-A/B`, `le-stair-main`, NW/NE/SW + wing stairs — consecutive −1↔0↔…↔7. Stair **90**, lift **40**.
 8. **Out of Phase 3:** BIS floors `-4`…`-2` and `8`…`11` (no public JPG in this set).
 
-Prefer **complete connectivity** now; refine door pixels later (Figma / QGIS). Do **not** re-ship terkeptar GeoJSON without Cartography permission.
+Prefer **complete connectivity** now; apply the same centerline chain as LD next. Do **not** re-ship terkeptar GeoJSON without Cartography permission.
 
 ### Coverage (LE)
 
@@ -96,13 +96,15 @@ See [`samples/le_routes.md`](samples/le_routes.md). Expect:
 | 6 | `0.81` → `3.67` | Multi-floor, prefers lift |
 | 7 | `039` → `115` | LK / hajóorr wing path |
 
-## Remaining gaps (post Phase 6)
+## Remaining gaps
 
+- **LE centerline pass** (same as LD 1.6.1).
 - Per-door pixel refinement on each floor JPG (optional polish).
+- **Strategy D** official/authorized 2D basemap (photo JPG not final product map).
 - Confirm lift/stair landings per floor against artwork (MVP assumes all shafts on all floors).
 - Join tables / aliases → **Phase 4 done** ([`../joins/`](../joins/)).
 - Package + checksums → **Phase 5 done**; QA → **Phase 6 done** ([`../../campus_map_package/QA_REPORT.md`](../../campus_map_package/QA_REPORT.md)).
-- Basemap redistribution permission still **pending** (**block ship**).
-- Flutter Map UI → **Phase B** only.
+- Basemap redistribution permission still **pending** (**block ship** as final artwork).
+- Repo **private** while strategy/assets unsettled.
 
 *Owner / developer: **Nanda**.*

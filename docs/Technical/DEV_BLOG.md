@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.6.1 (LD centerline paths + Strategy D + private repo)
+
+**[2026-09-16, ~19:30]**
+
+- **Release 1.6.1** (`pubspec` **1.6.1+1**): owner rejected Phase B MVP UX (raster floor photo + crooked hub-spoke paths). **Paths:** LD graph rebuilt so door mouths chain along corridor centerlines (not hub V-detours); diagonal courtyard backbone hops removed; Flutter path painter Chaikin-smooths display. LE still hub-heuristic (next). **Basemap Strategy D:** do not treat sarkozigergo JPG as final product map — seek official/authorized 2D schematic (ELTE IIG/BIS); photo package transitional; permission still pending. BIS `routing.route` geometry still **null**. **Repo:** `Nanda070/Neptun-ELTE` set **private** (public sideload `AppUpdater` may fail for non-collaborators). Docs EN+RU synced. GitHub Release **v1.6.1**. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.6.0 (campus map Phase B MVP)
 
 **[2026-09-16, ~19:15]**
@@ -588,18 +596,18 @@ Only when product chooses: load package offline, login-hub Map without hallgato 
 
 **[ongoing]**
 
-### Done / working on main (~1.6.0)
+### Done / working on main (~1.6.1)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
 - Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map **Phase A (0–6) done** for MVP: research dump + schema + LD/LE graphs + joins/aliases + [`campus_map_package/`](campus_map_package/) + QA **41/0/2** ([QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI not started. See **detailed diary** entry 2026-09-16 above.
+- Campus map Phase A package + Phase B UI present; **1.6.1** LD centerline paths; Strategy D + private repo. See diary entries 2026-09-16.
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase B (Flutter UI)** — deferred. Phase A MVP package + QA done. Basemap JPG permission still **pending** (block APK/App Store bundling). Shipped app = external Maps deep-link only.
+- **Campus indoor map** — transitional UI; **Strategy D** official/authorized 2D basemap not yet obtained; LE centerline pass; full LD+LE pixel re-digitize large. Basemap JPG permission **pending**. Repo **private** (updater caveat for public sideload). BIS route polylines still **null**.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

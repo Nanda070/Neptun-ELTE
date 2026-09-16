@@ -466,6 +466,25 @@ class _PathPainter extends CustomPainter {
   final List<Offset> points;
   final Color color;
 
+  /// Chaikin corner-cutting — softens display along corridor-centerline nodes.
+  /// Does not invent geometry off the graph; endpoints stay fixed.
+  static List<Offset> _smooth(List<Offset> pts, {int iterations = 2}) {
+    if (pts.length < 3) return pts;
+    var cur = pts;
+    for (var n = 0; n < iterations; n++) {
+      final next = <Offset>[cur.first];
+      for (var i = 0; i < cur.length - 1; i++) {
+        final p = cur[i];
+        final q = cur[i + 1];
+        next.add(Offset(0.75 * p.dx + 0.25 * q.dx, 0.75 * p.dy + 0.25 * q.dy));
+        next.add(Offset(0.25 * p.dx + 0.75 * q.dx, 0.25 * p.dy + 0.75 * q.dy));
+      }
+      next.add(cur.last);
+      cur = next;
+    }
+    return cur;
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     if (points.length < 2) return;
@@ -475,9 +494,10 @@ class _PathPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
-    final path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (var i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
+    final drawPts = _smooth(points);
+    final path = Path()..moveTo(drawPts.first.dx, drawPts.first.dy);
+    for (var i = 1; i < drawPts.length; i++) {
+      path.lineTo(drawPts[i].dx, drawPts[i].dy);
     }
     canvas.drawPath(path, paint);
   }

@@ -379,7 +379,7 @@
   "studentCard_Emails": "E-posta",
   "studentCard_Phones": "Telefon",
   "campusMap_Title": "Kampüs haritası",
-  "campusMap_HonestyBanner": "MVP iç mekan haritası (yaklaşık koridorlar). Basemap izinleri hâlâ pending — sideload/dev. Resmi ELTE BIS değil.",
+  "campusMap_HonestyBanner": "Geçici iç mekan haritası (koridor orta hatları; foto basemap nihai değil). İzin pending — sideload/dev. Resmi ELTE BIS değil.",
   "campusMap_HubButton": "Kampüs haritası",
   "campusMap_HubButtonDescription": "Lágymányos Güney (LD) ve Kuzey (LE) için iç mekan A→B. Neptun girişi gerekmez.",
   "campusMap_SearchFrom": "Başlangıç oda / salon ara…",

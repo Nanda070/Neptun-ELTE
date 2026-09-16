@@ -2,9 +2,9 @@
 
 Ready-to-host / ready-to-bundle indoor routing package for ELTE Lágymányos **LD (South)** + **LE (North)**.
 
-**Status:** Phase **0–6 done** (map finished for MVP) · QA **2026-09-16** · Owner **Nanda**  
-**Not Flutter.** App integration is **Phase B** (deferred).  
-**Basemap permission:** **PENDING** — see [ATTRIBUTION.md](ATTRIBUTION.md) (**block ship** to App Store / APK).
+**Status:** Phase **0–6** research package + QA **2026-09-16** · Phase B MVP UX **rejected** · **1.6.1** LD corridor-**centerline** graph in package/app · **Strategy D** (seek official 2D; photo basemap transitional) · GitHub repo **private** · Owner **Nanda**  
+**Basemap permission:** **PENDING** — see [ATTRIBUTION.md](ATTRIBUTION.md) (**block ship** to App Store / APK as final artwork).  
+**Honesty:** BIS `routing.route` polylines still **null** in research. LE graph still hub-heuristic until the same centerline pass.
 
 Plan: [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) · Research: [campus_map_research/](../campus_map_research/README.md) · QA: [QA_REPORT.md](QA_REPORT.md)
 

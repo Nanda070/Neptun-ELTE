@@ -383,7 +383,7 @@
   "studentCard_Emails": "Email",
   "studentCard_Phones": "Телефон",
   "campusMap_Title": "Карта кампуса",
-  "campusMap_HonestyBanner": "MVP indoor-карта (приблизительные коридоры). Разрешение на basemap ещё pending — sideload/dev. Не официальный ELTE BIS.",
+  "campusMap_HonestyBanner": "Переходная indoor-карта (пути по осевым коридоров; фото-basemap не финал). Разрешение pending — sideload/dev. Не официальный ELTE BIS.",
   "campusMap_HubButton": "Карта кампуса",
   "campusMap_HubButtonDescription": "Indoor A→B для Lágymányos Юг (LD) и Север (LE). Без входа в Neptun.",
   "campusMap_SearchFrom": "Поиск старта (аудитория / зал)…",
