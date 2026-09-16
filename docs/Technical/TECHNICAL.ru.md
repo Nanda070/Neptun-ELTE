@@ -119,7 +119,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Полный продуктовый README
 │   ├── LICENSE                    # Канонический LGPL-3.0-only
-│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG + session plan (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -135,7 +135,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | TECHNICAL + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -382,6 +382,8 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 **Wall-clock в фоне / Android (1b + 1.5.4):** `HomePage` — `WidgetsBindingObserver`. На `AppLifecycleState.resumed` / `inactive` `SessionGuard.checkSessionWallClockOnResume()` сравнивает `now` с сохранённым стартом; если `>= 10 мин` → `forceExpiredLogout`, иначе перезаводит one-shot `Timer` на остаток **плюс** периодический тикер **15 с** (на Android длинные one-shot Timer часто задерживаются/паузятся). Persist пишет с generation counter, чтобы fire-and-forget cancel `SESSION_StartedAtMs=0` не затирал новый старт (эта гонка раньше оставляла Android cold start без wall-clock stamp). Честно: если ОС убила процесс в фоне, expiry проверяется при следующем cold start / resume по сохранённому stamp — не пока isolate мёртв. **Нет** `workmanager` / `background_fetch` для сессии Neptun. Виджеты синхронизируют кэш календаря **без JWT**.
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
+
+**Запланированная поддержка сессии hallgato (не отгружено):** только дизайн — [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) — проактивный `POST /api/Account/GetNewTokens` каждые **3–4 мин** в `resumed`, снятие клиентского **10-минутного** wall-clock после реализации, cold start через refresh вместо таймера. **Сейчас в отгрузке** по-прежнему **10 мин** wall-clock и реактивный refresh только при 401 на GET, пока план не попадёт в код.
 
 ---
 
@@ -753,6 +755,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | План поддержки JWT hallgato (только дизайн; не отгружено) |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

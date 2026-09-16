@@ -18,6 +18,8 @@ After **any** feature, fix, rename, platform change, or new behavior, update **a
 | `docs/Technical/TECHNICAL.ru.md` | RU | Same facts as EN TECHNICAL |
 | `docs/Technical/DEV_BLOG.md` | EN | Chronological Dev Blog (development diary + remaining backlog notes) |
 | `docs/Technical/DEV_BLOG.ru.md` | RU | Same stages as EN Dev Blog |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` | EN | Planned hallgato session maintenance (design; update when shipped) |
+| `docs/Technical/HALLGATO_SESSION_PLAN.ru.md` | RU | Same facts as EN session plan |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | EN / RU / HU | Privacy, Terms, Cookies — index from product README, **not** per-folder README files |
 | `docs/LICENSE` | — | Canonical LGPL-3.0-only; root `LICENSE` mirrors it |
 

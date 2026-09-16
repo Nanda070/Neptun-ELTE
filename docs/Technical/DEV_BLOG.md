@@ -320,6 +320,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — docs: hallgato session maintenance plan
+
+**[2026-09-16]**
+
+- Added design-only **HALLGATO_SESSION_PLAN** EN+RU (`docs/Technical/`) — foreground proactive `GetNewTokens` every 3–4 min, planned removal of 10-min `SessionGuard` wall-clock; **no app code change**, no version bump / tag / APK. TECHNICAL EN+RU pointer in session section. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
 
 **[2026-09-16, 08:15]**

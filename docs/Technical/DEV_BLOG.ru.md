@@ -320,6 +320,14 @@
 
 ---
 
+## 2026-09-16 — docs: план поддержки сессии hallgato
+
+**[2026-09-16]**
+
+- Добавлен только дизайн **HALLGATO_SESSION_PLAN** EN+RU (`docs/Technical/`) — проактивный `GetNewTokens` каждые 3–4 мин на foreground, запланированное снятие 10-мин wall-clock `SessionGuard`; **без правок кода**, без bump версии / тега / APK. Указатель в TECHNICAL EN+RU в секции сессии. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: удаление матрицы IOS_VS_ANDROID
 
 **[2026-09-16, 08:15]**

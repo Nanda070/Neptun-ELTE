@@ -119,7 +119,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Product README (full)
 │   ├── LICENSE                    # Canonical LGPL-3.0-only text
-│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG + session plan (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -135,7 +135,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | TECHNICAL + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -382,6 +382,8 @@ Refresh / re-login on **401/403 GET** lives in `_APIRequest` via `ensureValidSes
 **Background / Android wall clock (1b + 1.5.4):** `HomePage` is a `WidgetsBindingObserver`. On `AppLifecycleState.resumed` / `inactive`, `SessionGuard.checkSessionWallClockOnResume()` compares `now` to the persisted session start; if `>= 10 min` → `forceExpiredLogout`; else re-arms the foreground one-shot `Timer` for the remaining duration **plus** a **15 s** periodic ticker (Android often delays/pauses long one-shot Timers). Persist writes use a generation counter so a fire-and-forget cancel `SESSION_StartedAtMs=0` cannot clobber a newer start (that race previously left Android cold starts without a wall-clock stamp). Honesty: if the OS kills the process while backgrounded, expiry is enforced on next cold start / resume via the persisted stamp — not while the isolate is dead. **No** `workmanager` / `background_fetch` for the Neptun session. Widgets sync calendar cache **without JWT**.
 
 **Cache honesty (plan item 1 shipped):** Every home surface (calendar / markbook / periods / mail / payments) paints from `HasCached*` lists first when present; network refresh is silent. On dead session / offline / failed refresh, lists are **not** replaced with an empty spinner. UI may show `cache_showingFromCache` banner. Empty calendar weeks are cached as `len == 0` so freedays render without a loading spinner. Multi-term markbook walks skip when `SessionGuard.isAuthBlocked`.
+
+**Planned hallgato session maintenance (not shipped):** Design-only doc [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) — foreground proactive `POST /api/Account/GetNewTokens` every **3–4 min** while `resumed`, remove the **10-minute** client wall-clock when implemented, cold-start via refresh instead of timer. **Current shipped behavior** remains the **10-minute wall-clock** and reactive refresh on GET 401 only until that plan lands in code.
 
 ---
 
@@ -753,6 +755,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Planned hallgato JWT maintenance (design only; not shipped) |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
