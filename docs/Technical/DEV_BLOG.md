@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.7.0 (Strategy D schematic map UX)
+
+**[2026-09-16, ~20:00]**
+
+- **Release 1.7.0** (`pubspec` **1.7.0+1**): feature line **7** — **Strategy D product UX**. Default campus map is a **graph-derived 2D schematic** (`CampusSchematicPainter`: corridor bands, room pins/labels, lift/stair markers, Chaikin-smoothed route) — **not** a floor-plan photo. JPG underlay is debug-only (off by default). LE centerline graph shipped (same chaining as LD). Pre-login Map / floors / search / A→B kept. Honesty: schematic MVP from campus graph; official BIS artwork still pending; `routing.route` still **null**; repo **private**. Docs EN+RU + CAMPUS_MAP_PLAN synced. GitHub Release **v1.7.0**. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.6.1 (LD centerline paths + Strategy D + private repo)
 
 **[2026-09-16, ~19:30]**

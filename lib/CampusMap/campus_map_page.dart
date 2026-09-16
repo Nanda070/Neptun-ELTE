@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:neptun2/CampusMap/campus_map_package.dart';
+import 'package:neptun2/CampusMap/campus_map_schematic.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/Misc/elte_room_code.dart';
 
-/// Indoor campus map (Phase B MVP). Works without Neptun login.
+/// Indoor campus map — Strategy D schematic UX (graph-derived 2D, not floor photo).
+/// Works without Neptun login.
 class CampusMapPage extends StatefulWidget {
   const CampusMapPage({super.key, this.initialBuildingId = 'ld'});
 
@@ -26,6 +28,8 @@ class _CampusMapPageState extends State<CampusMapPage> {
   final _searchCtrl = TextEditingController();
   List<CampusSearchHit> _searchHits = const [];
   bool _pickingFrom = true;
+  /// Debug-only: faint JPG underlay. OFF by default (Strategy D).
+  bool _showPhotoDebug = false;
 
   @override
   void initState() {
@@ -61,6 +65,21 @@ class _CampusMapPageState extends State<CampusMapPage> {
   }
 
   CampusBuildingGraph? get _graph => _pkg?.graphs[_buildingId];
+
+  String _honestyBannerText(LanguagePack lang) {
+    final m = _pkg?.manifest;
+    if (m == null) return lang.campusMap_HonestyBanner;
+    final date = (m['packageDate'] ?? m['generatedAt'] ?? '').toString();
+    final fp = (m['graphFingerprint'] ?? '').toString();
+    final mode = (m['graphMode'] ?? 'schematic').toString();
+    final meta = [
+      if (date.isNotEmpty) date,
+      if (mode.isNotEmpty) mode,
+      if (fp.isNotEmpty) 'fp:$fp',
+    ].join(' · ');
+    if (meta.isEmpty) return lang.campusMap_HonestyBanner;
+    return '${lang.campusMap_HonestyBanner}\n$meta';
+  }
 
   void _onSearchChanged(String q) {
     final pkg = _pkg;
@@ -134,6 +153,17 @@ class _CampusMapPageState extends State<CampusMapPage> {
         foregroundColor: theme.textColor,
         title: Text(lang.campusMap_Title, style: TextStyle(color: theme.textColor)),
         actions: [
+          IconButton(
+            tooltip: lang.campusMap_PhotoDebugToggle,
+            onPressed: () {
+              AppHaptics.lightImpact();
+              setState(() => _showPhotoDebug = !_showPhotoDebug);
+            },
+            icon: Icon(
+              _showPhotoDebug ? Icons.image_outlined : Icons.account_tree_outlined,
+              color: theme.textColor.withValues(alpha: _showPhotoDebug ? 1 : 0.7),
+            ),
+          ),
           if (_from != null || _to != null || _pathNodeIds != null)
             IconButton(
               tooltip: lang.campusMap_Clear,
@@ -160,7 +190,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                       child: Text(
-                        lang.campusMap_HonestyBanner,
+                        _honestyBannerText(lang),
                         style: TextStyle(
                           color: theme.textColor.withValues(alpha: 0.65),
                           fontSize: 12,
@@ -358,26 +388,16 @@ class _CampusMapPageState extends State<CampusMapPage> {
     if (floor == null) {
       return Center(child: Text(lang.campusMap_LoadError, style: TextStyle(color: theme.textColor)));
     }
-    final asset = pkg.basemapAsset(_buildingId, _floorLevel);
-    final pathPts = <Offset>[];
-    if (_pathNodeIds != null) {
-      for (final id in _pathNodeIds!) {
-        final n = g.nodes[id];
-        if (n == null) continue;
-        if (n.floorId != floor.id) continue;
-        pathPts.add(Offset(n.x, n.y));
-      }
-    }
 
-    CampusRoom? pinRoom;
+    String? fromRoomId;
+    String? toRoomId;
     if (_from != null && _from!.buildingId == _buildingId) {
       final f = g.floorById(_from!.room.floorId);
-      if (f?.level == _floorLevel) pinRoom = _from!.room;
+      if (f?.level == _floorLevel) fromRoomId = _from!.room.id;
     }
-    CampusRoom? pinTo;
     if (_to != null && _to!.buildingId == _buildingId) {
       final f = g.floorById(_to!.room.floorId);
-      if (f?.level == _floorLevel) pinTo = _to!.room;
+      if (f?.level == _floorLevel) toRoomId = _to!.room.id;
     }
 
     final floorsOnPath = <int>{};
@@ -389,6 +409,15 @@ class _CampusMapPageState extends State<CampusMapPage> {
         if (fl != null) floorsOnPath.add(fl.level);
       }
     }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark
+        ? theme.textColor.withValues(alpha: 0.06)
+        : const Color(0xFFF4F7FB);
+    final corridor = isDark
+        ? theme.textColor.withValues(alpha: 0.55)
+        : const Color(0xFF64748B);
+    final route = theme.onSecondaryContainer;
 
     return Column(
       children: [
@@ -402,32 +431,37 @@ class _CampusMapPageState extends State<CampusMapPage> {
           ),
         Expanded(
           child: InteractiveViewer(
-            minScale: 0.6,
-            maxScale: 5,
+            minScale: 0.55,
+            maxScale: 6,
             child: AspectRatio(
               aspectRatio: floor.basemapWidth / floor.basemapHeight,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final sx = constraints.maxWidth / floor.basemapWidth;
-                  final sy = constraints.maxHeight / floor.basemapHeight;
-                  Offset map(Offset p) => Offset(p.dx * sx, p.dy * sy);
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(asset, fit: BoxFit.fill, filterQuality: FilterQuality.medium),
-                      CustomPaint(
-                        painter: _PathPainter(
-                          points: pathPts.map(map).toList(),
-                          color: theme.onSecondaryContainer,
-                        ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (_showPhotoDebug)
+                    Opacity(
+                      opacity: 0.22,
+                      child: Image.asset(
+                        pkg.basemapAsset(_buildingId, _floorLevel),
+                        fit: BoxFit.fill,
+                        filterQuality: FilterQuality.low,
                       ),
-                      if (pinRoom != null)
-                        _pin(map(Offset(pinRoom.x, pinRoom.y)), Colors.green.shade700, 'A'),
-                      if (pinTo != null)
-                        _pin(map(Offset(pinTo.x, pinTo.y)), Colors.red.shade700, 'B'),
-                    ],
-                  );
-                },
+                    ),
+                  CustomPaint(
+                    painter: CampusSchematicPainter(
+                      graph: g,
+                      floor: floor,
+                      pathNodeIds: _pathNodeIds,
+                      fromRoomId: fromRoomId,
+                      toRoomId: toRoomId,
+                      corridorColor: corridor,
+                      routeColor: route,
+                      labelColor: theme.textColor,
+                      surfaceColor: surface,
+                      outlineColor: theme.textColor,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -435,74 +469,11 @@ class _CampusMapPageState extends State<CampusMapPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
           child: Text(
-            floor.labelEn,
+            '${floor.labelEn} · ${lang.campusMap_SchematicMode}',
             style: TextStyle(color: theme.textColor.withValues(alpha: 0.55), fontSize: 11),
           ),
         ),
       ],
     );
   }
-
-  Widget _pin(Offset p, Color color, String label) {
-    return Positioned(
-      left: p.dx - 10,
-      top: p.dy - 22,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
-            child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800)),
-          ),
-          Icon(Icons.location_on, color: color, size: 22),
-        ],
-      ),
-    );
-  }
-}
-
-class _PathPainter extends CustomPainter {
-  _PathPainter({required this.points, required this.color});
-  final List<Offset> points;
-  final Color color;
-
-  /// Chaikin corner-cutting — softens display along corridor-centerline nodes.
-  /// Does not invent geometry off the graph; endpoints stay fixed.
-  static List<Offset> _smooth(List<Offset> pts, {int iterations = 2}) {
-    if (pts.length < 3) return pts;
-    var cur = pts;
-    for (var n = 0; n < iterations; n++) {
-      final next = <Offset>[cur.first];
-      for (var i = 0; i < cur.length - 1; i++) {
-        final p = cur[i];
-        final q = cur[i + 1];
-        next.add(Offset(0.75 * p.dx + 0.25 * q.dx, 0.75 * p.dy + 0.25 * q.dy));
-        next.add(Offset(0.25 * p.dx + 0.75 * q.dx, 0.25 * p.dy + 0.75 * q.dy));
-      }
-      next.add(cur.last);
-      cur = next;
-    }
-    return cur;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (points.length < 2) return;
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-    final drawPts = _smooth(points);
-    final path = Path()..moveTo(drawPts.first.dx, drawPts.first.dy);
-    for (var i = 1; i < drawPts.length; i++) {
-      path.lineTo(drawPts[i].dx, drawPts[i].dy);
-    }
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _PathPainter oldDelegate) =>
-      oldDelegate.points != points || oldDelegate.color != color;
 }

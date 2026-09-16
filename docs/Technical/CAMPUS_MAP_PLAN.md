@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status (2026-09-16 evening):** Phase **0–6** research package remains; Phase **B MVP (1.6.0)** shipped but **UX rejected** (raster floor photo + crooked hub-spoke paths). **New direction:** corridor-**centerline** smooth paths + **Strategy D** basemap (seek official/authorized 2D schematic — do **not** treat sarkozigergo JPG as the product map) + GitHub repo **private** while assets/strategy unsettled. Incremental centerline pass on **LD** in **1.6.1** (LE still hub-heuristic). Basemap JPG permission still **pending**.  
+**Status (2026-09-16 night):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.6.1** = LD centerline graph. **1.7.0** = **Strategy D product UX shipped slice**: default map is a **graph-derived 2D schematic** (corridor bands + room pins + route) — **not** a floor-plan photo. JPG underlay is debug-only (off by default). LE also uses centerline graph + same schematic painter. Official/authorized BIS artwork still **pending** (BIS `routing.route` still **null**). Repo **private**.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -17,18 +17,19 @@ Owner rejected the Phase B MVP look: **photo floor as map** + **crooked polyline
 | Topic | Choice |
 |-------|--------|
 | **Paths** | Re-digitize / refine so routes follow **corridor centerlines**; smooth display (along-corridor chain + light Chaikin). Target = visually even indoor navigation. **Not** “smooth a wrong graph.” |
-| **Basemap** | **Strategy D** — pursue proper official / authorized **2D schematic or vector** (ELTE IIG / BIS or permitted export). Do **not** ship sarkozigergo JPG as the final product map. Photo package stays **research / transitional** only. Permission **pending**. |
+| **Basemap** | **Strategy D** — product primary view is a **2D schematic** (mall/metro-style) drawn from campus graph geometry (`CampusSchematicPainter`). Do **not** ship sarkozigergo JPG as the product map. Official/authorized ELTE IIG/BIS artwork still sought; until then schematic = product UX. Photo package = research + optional debug underlay. Permission **pending**. |
 | **BIS polylines** | Still **null** in research dump — do **not** claim official BIS route geometry exists. |
 | **Repo** | GitHub **`Nanda070/Neptun-ELTE` is private** while map assets/strategy are unsettled. Public sideload APK discovery / `AppUpdater` for non-collaborators may fail (private Releases). |
 | **Phase A package** | Keep as research QA baseline. |
-| **Phase B UI** | May remain in app as **transitional** (`CampusMapPage`); honesty banner updated; to be replaced when Strategy D basemap + full centerline graphs land. |
+| **Phase B UI** | **1.7.0** replaces photo-primary MVP with Strategy D schematic (`CampusMapPage` + `campus_map_schematic.dart`). Search / floors / A→B / pre-login kept. |
 
 ### Centerline refinement plan
 
-1. **LD pilot (done in 1.6.1):** `build_graph_ld.py` densifies corridor polylines, chains door mouths along centerlines (no hub-spoke V-detours), removes courtyard-cutting diagonal backbone hops; Flutter path painter Chaikin-smooths display. Full pixel-perfect door CV still **out of scope**.
-2. **LE next:** same centerline treatment in `build_graph_le.py` (still hub-heuristic until then).
-3. **Basemap D:** contact ELTE IIG / BIS for authorized 2D plans; until then product map = transitional.
-4. **Honesty:** no App Store redistribution of third-party floor photos; private repo while unsettled.
+1. **LD pilot (1.6.1):** `build_graph_ld.py` densifies corridor polylines, chains door mouths along centerlines (no hub-spoke V-detours), removes courtyard-cutting diagonal backbone hops; Flutter Chaikin-smooths route display.
+2. **LE centerline (1.7.0):** same treatment in `build_graph_le.py` (zone polylines + door chaining).
+3. **Schematic UX (1.7.0):** CustomPainter corridor bands / room pins / route — JPG not default.
+4. **Official artwork (future):** replace or refine schematic geometry when authorized 2D lands; honesty stays honest about graph-derived MVP.
+5. **Honesty:** no App Store redistribution of third-party floor photos; private repo while unsettled.
 
 ---
 

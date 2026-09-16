@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — релиз 1.7.0 (Strategy D schematic UX карты)
+
+**[2026-09-16, ~20:00]**
+
+- **Релиз 1.7.0** (`pubspec` **1.7.0+1**): feature-line **7** — **Strategy D product UX**. Карта кампуса по умолчанию — **2D-схема из графа** (`CampusSchematicPainter`: полосы коридоров, пины/лейблы комнат, маркеры лифт/лестница, Chaikin-маршрут) — **не** фото плана этажа. JPG-подложка только debug (выкл.). Centerline-граф LE тоже отгружен. Pre-login Map / этажи / поиск / A→B сохранены. Honesty: schematic MVP из campus-графа; официальный BIS artwork ещё pending; `routing.route` всё ещё **null**; репо **private**. Docs EN+RU + CAMPUS_MAP_PLAN синхронизированы. GitHub Release **v1.7.0**. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — релиз 1.6.1 (LD centerline-пути + стратегия D + private repo)
 
 **[2026-09-16, ~19:30]**

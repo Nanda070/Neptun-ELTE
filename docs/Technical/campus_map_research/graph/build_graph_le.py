@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build Phase 3 LE (North / Északi) corridor graph — semi-manual MVP.
+"""Build Phase 3 LE (North / Északi) corridor graph — centerline-first MVP.
 
 Places a shared double-courtyard loop + south-wing (hajóorr) backbone and
-vertical shafts on every student-floor JPG (800×800), stubs every
-le_north/rooms.json entry to the nearest corridor zone, and writes
-graph_le.json + sample routes. Pixel positions are approximate (visual hubs
-+ room-number zone heuristics), not CV-traced. LK rooms folded into LE.
+vertical shafts on every student-floor JPG (800×800), densifies zone
+centerlines, stubs rooms onto those polylines (chained along the corridor —
+not hub-spoke), and writes graph_le.json + sample routes. Pixel positions
+remain approximate (visual hubs + room-number zone heuristics), not
+CV-traced. LK rooms folded into LE.
 """
 
 from __future__ import annotations
@@ -113,6 +114,29 @@ ZONE_HUB = {
     "cross": "cross-mid",
     "south": "loop-s",
     "wing": "wing-mid",
+}
+
+# Extra waypoints along each zone poly (t in (0,1)) so routes stay on
+# centerlines between hubs / door mouths.
+CENTERLINE_WAYPOINTS = {
+    "west": [0.25, 0.5, 0.75],
+    "north": [0.25, 0.5, 0.75],
+    "east": [0.25, 0.5, 0.75],
+    "east-s": [0.33, 0.66],
+    "cross": [0.25, 0.5, 0.75],
+    "south": [0.25, 0.5, 0.75],
+    "wing": [0.33, 0.66],
+}
+
+# Which named hub anchors each zone poly (for attaching centerline chains).
+ZONE_ANCHOR_HUBS = {
+    "west": ["loop-w-n", "loop-w", "loop-w-s"],
+    "north": ["loop-nw", "loop-n", "loop-ne"],
+    "east": ["loop-e-n", "loop-e", "loop-e-s"],
+    "east-s": ["loop-e-s", "loop-se"],
+    "cross": ["cross-w", "cross-mid", "cross-e"],
+    "south": ["loop-sw", "loop-s", "loop-se"],
+    "wing": ["wing-n", "wing-mid", "wing-s"],
 }
 
 BACKBONE_EDGES = [
@@ -475,8 +499,48 @@ def build():
                 }
             )
 
+    # --- densified zone centerline waypoints (per floor) ---
+    centerline_pts = defaultdict(list)  # (fid, zone) -> [(t, nid, xy)]
+
+    for fl in FLOORS:
+        fid = fl["id"]
+        for zone, ts in CENTERLINE_WAYPOINTS.items():
+            poly = ZONE_POLY[zone]
+            for ti, t in enumerate(ts):
+                xy = point_on_poly(poly, t)
+                xy = (max(20, min(780, xy[0])), max(20, min(780, xy[1])))
+                nid = f"le-n-{fid}-cl{zone}-t{ti}"
+                add_node(
+                    {
+                        "id": nid,
+                        "floorId": fid,
+                        "kind": "corridor",
+                        "coord": px(xy),
+                        "label": f"{zone}-cl-{ti}",
+                    }
+                )
+                centerline_pts[(fid, zone)].append((t, nid, xy))
+            for hub_key in ZONE_ANCHOR_HUBS.get(zone, []):
+                hx, hy = HUBS[hub_key]
+                best = min(
+                    centerline_pts[(fid, zone)],
+                    key=lambda item: dist(item[2], (hx, hy)),
+                )
+                add_edge(
+                    {
+                        "id": f"le-e-{fid}-cl{zone}-{hub_key}",
+                        "from": f"le-n-{fid}-{hub_key}",
+                        "to": best[1],
+                        "weight": round(dist((hx, hy), best[2]), 1),
+                        "bidirectional": True,
+                        "kind": "corridor",
+                    }
+                )
+
     stub_count = 0
     skipped = []
+    door_pts = defaultdict(list)  # (fid, zone) -> [(t, attach_id, along_xy)]
+
     for r in public["rooms"]:
         code_bis, level, ordinal, display_rest, bare = parse_le_room(r["code"])
         if not code_bis or level is None:
@@ -489,7 +553,8 @@ def build():
         fid = fl["id"]
         zone = zone_for(ordinal or 0, display_rest or r["code"], bare)
         poly = ZONE_POLY[zone]
-        along = point_on_poly(poly, room_t(ordinal or 0))
+        t_along = room_t(ordinal or 0)
+        along = point_on_poly(poly, t_along)
         door = offset_toward_room(along, zone, ordinal or 0)
         door = (max(20, min(780, door[0])), max(20, min(780, door[1])))
         along = (max(20, min(780, along[0])), max(20, min(780, along[1])))
@@ -531,6 +596,7 @@ def build():
             }
         rooms_out.append(room_obj)
 
+        # corridor attachment node (door mouth on centerline)
         attach_key = f"door-{id_token}"
         attach_id = f"le-n-{fid}-{attach_key}"
         add_node(
@@ -542,18 +608,7 @@ def build():
                 "label": f"door mouth {code_bis}",
             }
         )
-        hub_key = ZONE_HUB[zone]
-        hub_id = f"le-n-{fid}-{hub_key}"
-        add_edge(
-            {
-                "id": f"le-e-{fid}-hub-{attach_key}",
-                "from": hub_id,
-                "to": attach_id,
-                "weight": round(dist(HUBS[hub_key], along), 1),
-                "bidirectional": True,
-                "kind": "corridor",
-            }
-        )
+        door_pts[(fid, zone)].append((t_along, attach_id, along))
 
         room_node_id = f"le-n-{fid}-room-{id_token}"
         add_node(
@@ -577,6 +632,43 @@ def build():
             }
         )
         stub_count += 1
+
+    # Chain door mouths + waypoints along each zone poly (sorted by t).
+    all_zone_keys = set(centerline_pts.keys()) | set(door_pts.keys())
+    for key in sorted(all_zone_keys):
+        fid, zone = key
+        chain = list(centerline_pts.get(key, [])) + list(door_pts.get(key, []))
+        chain.sort(key=lambda item: (item[0], item[1]))
+        for i in range(len(chain) - 1):
+            _t0, n0, p0 = chain[i]
+            _t1, n1, p1 = chain[i + 1]
+            if n0 == n1:
+                continue
+            add_edge(
+                {
+                    "id": f"le-e-{fid}-cl{zone}-chain-{i}",
+                    "from": n0,
+                    "to": n1,
+                    "weight": max(0.1, round(dist(p0, p1), 1)),
+                    "bidirectional": True,
+                    "kind": "corridor",
+                }
+            )
+        doors = door_pts.get(key, [])
+        if doors and not centerline_pts.get(key):
+            anchors = ZONE_ANCHOR_HUBS.get(zone, [ZONE_HUB[zone]])
+            for _attach_t, attach_id, along in (doors[0], doors[-1]):
+                hub_key = min(anchors, key=lambda h: dist(HUBS[h], along))
+                add_edge(
+                    {
+                        "id": f"le-e-{fid}-fallback-{attach_id.split('-')[-1]}",
+                        "from": f"le-n-{fid}-{hub_key}",
+                        "to": attach_id,
+                        "weight": round(dist(HUBS[hub_key], along), 1),
+                        "bidirectional": True,
+                        "kind": "corridor",
+                    }
+                )
 
     levels = [f["level"] for f in FLOORS]
     for i in range(len(levels) - 1):
@@ -602,13 +694,13 @@ def build():
         "packageKind": "buildingGraph",
         "generatedAt": "2026-09-16",
         "notes": (
-            "Phase 3 LE MVP graph. Double-courtyard loop + south-wing (hajóorr) "
-            "hubs visually placed on 800×800 basemap CRS (Dunapart LEFT/west, "
-            "x→east, y↓). Room stubs estimated from room-number zone heuristic "
-            "+ ordinal along zone polyline — semi-manual / approximate, not "
-            "CV-traced. LK bare codes folded into LE. BIS floors outside −1…7 "
-            "omitted. Basemap permission still pending. rooms.json floor field "
-            "often '?' — level inferred from code."
+            "Phase 3 LE graph (centerline pass 2026-09-16). Double-courtyard "
+            "loop + south-wing (hajóorr) hubs on 800×800 basemap CRS (Dunapart "
+            "LEFT/west, x→east, y↓). Door mouths and waypoints chained along "
+            "zone polylines (not hub-spoke) so same-zone A→B follows the "
+            "centerline. Room offsets still heuristic — not CV-traced. LK bare "
+            "codes folded into LE. BIS floors outside −1…7 omitted. Basemap "
+            "permission still pending. Not a final product map (Strategy D)."
         ),
         "building": {
             "id": "le",

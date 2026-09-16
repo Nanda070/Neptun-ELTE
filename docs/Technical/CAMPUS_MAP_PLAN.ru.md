@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус (вечер 2026-09-16):** фазы **0–6** research-пакет остаются; **фаза B MVP (1.6.0)** отгружена, но **UX отвергнут** (фото этажа + кривые hub-spoke пути). **Новое направление:** гладкие пути по **осевым коридоров** + basemap **стратегия D** (официальная/разрешённая 2D-схема — **не** считать JPG sarkozigergo финальной картой продукта) + GitHub-репозиторий **private**, пока ассеты/стратегия не устоялись. Инкрементальный centerline-pass для **LD** в **1.6.1** (LE пока hub-heuristic). Разрешение на JPG basemap всё ещё **pending**.  
+**Статус (ночь 2026-09-16):** фазы **0–6** research-пакет остаются. **Фаза B MVP (1.6.0)** фото-UX **отвергнута**. **1.6.1** = LD centerline-граф. **1.7.0** = **отгруженный срез Strategy D**: карта по умолчанию — **2D-схема из графа** (полосы коридоров + пины комнат + маршрут), **не** фото плана этажа. JPG-подложка только debug (выкл. по умолчанию). LE тоже centerline + тот же schematic painter. Официальный/разрешённый artwork BIS ещё **pending** (`routing.route` всё ещё **null**). Репо **private**.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
@@ -17,18 +17,19 @@
 | Тема | Выбор |
 |------|--------|
 | **Пути** | Переоцифровка / уточнение: маршруты по **осевым коридоров**; сглаженный display (цепочка вдоль коридора + лёгкий Chaikin). Цель — визуально ровная indoor-навигация. **Не** «сгладить неверный граф». |
-| **Basemap** | **Стратегия D** — искать официальную / разрешённую **2D-схему или vector** (ELTE IIG / BIS или permitted export). **Не** отгружать JPG sarkozigergo как финальную карту продукта. Фото-пакет остаётся **research / transitional**. Permission **pending**. |
+| **Basemap** | **Стратегия D** — основной вид продукта = **2D-схема** (mall/metro) из геометрии campus-графа (`CampusSchematicPainter`). **Не** отгружать JPG sarkozigergo как карту продукта. Официальный ELTE IIG/BIS artwork всё ещё ищем; до него схема = product UX. Фото-пакет = research + опциональная debug-подложка. Permission **pending**. |
 | **Полилинии BIS** | В research-дампе всё ещё **null** — **не** утверждать, что официальная геометрия BIS routing есть. |
 | **Репо** | GitHub **`Nanda070/Neptun-ELTE` — private**, пока ассеты/стратегия карты не устоялись. Публичный sideload APK / `AppUpdater` для не-collaborators может не работать (private Releases). |
 | **Пакет фазы A** | Оставить как research QA baseline. |
-| **UI фазы B** | Может остаться в приложении как **переходный** (`CampusMapPage`); honesty-баннер обновлён; заменить при basemap D + полных centerline-графах. |
+| **UI фазы B** | **1.7.0** заменяет photo-primary MVP на Strategy D schematic (`CampusMapPage` + `campus_map_schematic.dart`). Поиск / этажи / A→B / pre-login сохранены. |
 
 ### План уточнения centerline
 
-1. **Пилот LD (готово в 1.6.1):** `build_graph_ld.py` уплотняет полилинии коридоров, цепляет door mouths вдоль осевых (без V-обходов через hub), убирает диагональные courtyard-hops; Flutter path painter сглаживает Chaikin. Полный CV дверей — **вне scope**.
-2. **Далее LE:** тот же pass в `build_graph_le.py` (пока hub-heuristic).
-3. **Basemap D:** запрос у ELTE IIG / BIS на authorized 2D; до тех пор продукт = transitional.
-4. **Честность:** без App Store redistribution чужих фото этажей; private repo пока unsettled.
+1. **Пилот LD (1.6.1):** `build_graph_ld.py` уплотняет полилинии коридоров, цепляет door mouths вдоль осевых (без V-обходов через hub), убирает диагональные courtyard-hops; Flutter Chaikin сглаживает маршрут.
+2. **LE centerline (1.7.0):** тот же pass в `build_graph_le.py` (zone polylines + door chaining).
+3. **Schematic UX (1.7.0):** CustomPainter — полосы коридоров / пины комнат / маршрут; JPG не default.
+4. **Официальный artwork (позже):** заменить/уточнить геометрию схемы, когда будет authorized 2D; honesty про graph-derived MVP остаётся.
+5. **Честность:** без App Store redistribution чужих фото этажей; private repo пока unsettled.
 
 ---
 

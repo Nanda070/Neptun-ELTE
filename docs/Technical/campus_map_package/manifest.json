@@ -5,7 +5,7 @@
   "generatedAt": "2026-09-16",
   "packageDate": "2026-09-16",
   "phase": 6,
-  "notes": "Phase 0–6 deliverable: ready-to-bundle indoor routing package for ELTE Lágymányos LD+LE + Phase 6 QA (see QA_REPORT.md). Basemap JPG redistribution permission still PENDING — do not ship in App Store / GitHub APK until ATTRIBUTION checklist cleared. No Flutter UI (Phase B). No cookies/tokens.",
+  "notes": "Strategy D product UX (1.7.0): app draws graph-derived 2D schematic (corridors/rooms/route); floor JPG not primary. LD+LE centerline graphs. Official BIS artwork still pending. Photo underlay is debug-only.",
   "buildings": [
     {
       "id": "ld",
@@ -25,8 +25,8 @@
       ],
       "graph": "graph_ld.json",
       "joins": "joins_ld.json",
-      "nodeCount": 475,
-      "edgeCount": 639,
+      "nodeCount": 664,
+      "edgeCount": 819,
       "roomCount": 134
     },
     {
@@ -47,8 +47,8 @@
       ],
       "graph": "graph_le.json",
       "joins": "joins_le.json",
-      "nodeCount": 454,
-      "edgeCount": 600,
+      "nodeCount": 625,
+      "edgeCount": 888,
       "roomCount": 92
     }
   ],
@@ -94,5 +94,8 @@
   "shipBlockers": [
     "Basemap JPG redistribution permission pending (Héger Tamás / Sárközi Gergő).",
     "Do not bundle this package in App Store / GitHub APK until ATTRIBUTION.md checklist cleared."
-  ]
+  ],
+  "graphFingerprint": "a2bf2172f4",
+  "graphMode": "ld+le-centerline-schematic",
+  "uiMode": "strategy-d-schematic"
 }

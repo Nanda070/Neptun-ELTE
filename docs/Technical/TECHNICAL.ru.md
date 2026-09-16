@@ -12,7 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
-Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research-пакет фазы A сохранён; Phase B MVP **1.6.0** UX отвергнут (фото этажа + кривые пути). **1.6.1** = LD пути по осевым коридоров + стратегия D (искать официальную 2D; JPG не финал) + репо **private**. LE centerline ещё pending. Basemap permission **pending**. Геометрия BIS `routing.route` всё ещё **null**. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor-карта кампуса (LD/LE A→B): [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md). Research-пакет фазы A сохранён; Phase B MVP **1.6.0** фото-UX отвергнут. **1.6.1** LD centerline. **1.7.0** = **Strategy D schematic UX** (2D-схема из графа: коридоры/комнаты/маршрут; JPG не primary; LE тоже centerline) + репо **private**. Официальный BIS artwork ещё pending; `routing.route` всё ещё **null**. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -56,7 +56,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.6.1+1** — для пользователя / Settings / docs = **1.6.1** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.7.0+1** — для пользователя / Settings / docs = **1.7.0** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -68,7 +68,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.6.1`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.7.0`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.6.1** | **Текущая.** Патч линии **6** — LD граф по **осевым коридоров** (без hub-spoke V-обходов) + Chaikin display; honesty стратегии D (фото-basemap transitional; искать официальную 2D); GitHub-репо **private** (sideload `AppUpdater` может не работать для не-collaborators). Пути LE пока hub-heuristic. Basemap permission **pending**. Тег **v1.6.1**. |
+| **1.7.0** | **Текущая.** Feature-line **7** — **Strategy D** product UX: по умолчанию **2D-схема** из графа (`CampusSchematicPainter`: полосы коридоров, пины комнат, гладкий маршрут); JPG этажа только debug. Centerline-графы LD+LE. Официальный BIS artwork ещё pending; репо **private**. Тег **v1.7.0**. |
+| **1.6.1** | Патч линии **6** — LD centerline + Chaikin; honesty стратегии D (фото не финал); LE тогда ещё hub. Тег **v1.6.1**. |
 | **1.6.0** | Feature-line **6** — **фаза B** indoor-карты MVP: pre-login Map, LD/LE, этажи, поиск, A→B Dijkstra, пакет в `assets/campus_map/`. UX позже отвергнут (кривые пути + фото этажа). Basemap permission **pending**. Тег **v1.6.0**. |
 | **1.5.12** | Патч — iOS внешние Maps для LD/LE/LK: native `maps:` URI (+ https fallback), `maps`/`comgooglemaps` в `LSApplicationQueriesSchemes`, **Открыть карту** всегда видно (не только после decode), `TextButton` чтобы тап строки списка не перехватывал. Тег **v1.5.12**. |
 | **1.5.11** | Патч — **фаза A (0–6)** indoor-карты кампуса: docs/data готовы (MVP-пакет + QA **41 pass / 0 fail / 2 waive**); синхронизация честности (в приложении ещё нет indoor A→B; Flutter фаза B отложена; разрешение JPG basemap **pending** / не бандлить artwork в APK). Бинарь той же продуктовой линии, что **1.5.10** (надёжность сессии) + тег для device/GitHub. Тег **v1.5.11**. |
@@ -217,7 +218,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → foreground JWT maintenance + sync опционального фонового keep-alive |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.6.1` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.7.0` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -483,7 +484,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Переходная фаза B** | Пакет + `CampusMapPage` (pre-login + drawer): LD/LE, этажи, поиск, A→B. **1.6.1** LD-пути по осевым коридоров (+ Chaikin); LE пока hub-heuristic. Фото-basemap **не** финал (**стратегия D** — искать официальную/разрешённую 2D). Репо **private**. Полилинии BIS routing всё ещё **null**. Basemap JPG permission **pending**. Внешний Open map сохранён. |
+| Indoor-карта кампуса | **Strategy D schematic (1.7.0)** | Пакет + `CampusMapPage` (pre-login + drawer): LD/LE 2D-схема (коридоры + пины + маршрут), этажи, поиск, A→B. Фото JPG **не** primary (только debug-подложка). Centerline LD+LE. Официальный BIS artwork ещё pending; `routing.route` **null**. Репо **private**. Внешний Open map сохранён. |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -573,7 +574,7 @@ Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.6.1**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.7.0**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
 
 **Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
 
@@ -772,7 +773,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | План карты — research 0–6 сохранён; Phase B MVP 1.6.0 UX отвергнут; стратегия D + centerline + private repo; пакет [`campus_map_package/`](campus_map_package/) |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | План карты — research 0–6 сохранён; Strategy D schematic в **1.7.0**; centerline + private repo; пакет [`campus_map_package/`](campus_map_package/) |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

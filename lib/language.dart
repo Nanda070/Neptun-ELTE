@@ -386,7 +386,7 @@ class AppStrings{
       roomCode_OpenMap: 'Térkép megnyitása',
       campusMap_Title: 'Campus térkép',
       campusMap_HonestyBanner:
-          'Átmeneti beltéri térkép (folyosó-középvonal; fotó-basemap nem végleges). Engedély pending — sideload/dev. Nem hivatalos ELTE BIS.',
+          '2D séma (Strategy D) — folyosók/termek a campus-gráfból, nem emeletfotó. Hivatalos BIS artwork még pending. Sideload/dev.',
       campusMap_HubButton: 'Campus térkép',
       campusMap_HubButtonDescription:
           'Beltéri A→B a Lágymányos Déli (LD) és Északi (LE) tömbökben. Neptun bejelentkezés nélkül.',
@@ -400,6 +400,8 @@ class AppStrings{
       campusMap_NoPath: 'Nincs útvonal ezek között a termek között',
       campusMap_CrossBuildingHint: 'Az indítás és a cél legyen ugyanabban az épületben (LD vagy LE)',
       campusMap_FloorsOnPath: 'Emeletek az úton',
+      campusMap_SchematicMode: '2D séma (nem fotó)',
+      campusMap_PhotoDebugToggle: 'Fotó-alárajz (debug)',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
       notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
@@ -789,7 +791,7 @@ class AppStrings{
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
       campusMap_Title: 'Campus map',
       campusMap_HonestyBanner:
-          'Transitional indoor map (corridor-centerline paths; photo basemap not final). Permission pending — sideload/dev. Not official ELTE BIS.',
+          '2D schematic (Strategy D) — corridors/rooms from campus graph, not a floor photo. Official BIS artwork still pending. Sideload/dev.',
       campusMap_HubButton: 'Campus map',
       campusMap_HubButtonDescription:
           'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
@@ -803,6 +805,8 @@ class AppStrings{
       campusMap_NoPath: 'No path found between these rooms',
       campusMap_CrossBuildingHint: 'Pick start and end in the same building (LD or LE)',
       campusMap_FloorsOnPath: 'Floors on path',
+      campusMap_SchematicMode: '2D schematic (not photo)',
+      campusMap_PhotoDebugToggle: 'Photo underlay (debug)',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
       notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
@@ -1479,6 +1483,8 @@ class LanguagePack{
   final String campusMap_NoPath;
   final String campusMap_CrossBuildingHint;
   final String campusMap_FloorsOnPath;
+  final String campusMap_SchematicMode;
+  final String campusMap_PhotoDebugToggle;
   final String markbook_creditAbbrev;
   final String notif_exam_BodyToday;
   final String notif_exam_BodyTomorrow;
@@ -1805,7 +1811,7 @@ class LanguagePack{
     this.roomCode_OpenMap = 'Open map',
     this.campusMap_Title = 'Campus map',
     this.campusMap_HonestyBanner =
-        'Transitional indoor map (corridor-centerline paths; photo basemap not final). Permission pending — sideload/dev. Not official ELTE BIS.',
+        '2D schematic (Strategy D) — corridors/rooms from campus graph, not a floor photo. Official BIS artwork still pending. Sideload/dev.',
     this.campusMap_HubButton = 'Campus map',
     this.campusMap_HubButtonDescription =
         'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
@@ -1819,6 +1825,8 @@ class LanguagePack{
     this.campusMap_NoPath = 'No path found between these rooms',
     this.campusMap_CrossBuildingHint = 'Pick start and end in the same building (LD or LE)',
     this.campusMap_FloorsOnPath = 'Floors on path',
+    this.campusMap_SchematicMode = '2D schematic (not photo)',
+    this.campusMap_PhotoDebugToggle = 'Photo underlay (debug)',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
     required this.notif_exam_BodyTomorrow,
@@ -2243,6 +2251,8 @@ class LanguagePack{
         campusMap_NoPath: getStr('campusMap_NoPath', en.campusMap_NoPath),
         campusMap_CrossBuildingHint: getStr('campusMap_CrossBuildingHint', en.campusMap_CrossBuildingHint),
         campusMap_FloorsOnPath: getStr('campusMap_FloorsOnPath', en.campusMap_FloorsOnPath),
+        campusMap_SchematicMode: getStr('campusMap_SchematicMode', en.campusMap_SchematicMode),
+        campusMap_PhotoDebugToggle: getStr('campusMap_PhotoDebugToggle', en.campusMap_PhotoDebugToggle),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
@@ -2721,6 +2731,8 @@ class LanguagePack{
       'campusMap_NoPath':lang.campusMap_NoPath,
       'campusMap_CrossBuildingHint':lang.campusMap_CrossBuildingHint,
       'campusMap_FloorsOnPath':lang.campusMap_FloorsOnPath,
+      'campusMap_SchematicMode':lang.campusMap_SchematicMode,
+      'campusMap_PhotoDebugToggle':lang.campusMap_PhotoDebugToggle,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
       'notif_exam_BodyToday':lang.notif_exam_BodyToday,
       'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,

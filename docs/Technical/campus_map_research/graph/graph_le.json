@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packageKind": "buildingGraph",
   "generatedAt": "2026-09-16",
-  "notes": "Phase 3 LE MVP graph. Double-courtyard loop + south-wing (hajóorr) hubs visually placed on 800×800 basemap CRS (Dunapart LEFT/west, x→east, y↓). Room stubs estimated from room-number zone heuristic + ordinal along zone polyline — semi-manual / approximate, not CV-traced. LK bare codes folded into LE. BIS floors outside −1…7 omitted. Basemap permission still pending. rooms.json floor field often '?' — level inferred from code.",
+  "notes": "Phase 3 LE graph (centerline pass 2026-09-16). Double-courtyard loop + south-wing (hajóorr) hubs on 800×800 basemap CRS (Dunapart LEFT/west, x→east, y↓). Door mouths and waypoints chained along zone polylines (not hub-spoke) so same-zone A→B follows the centerline. Room offsets still heuristic — not CV-traced. LK bare codes folded into LE. BIS floors outside −1…7 omitted. Basemap permission still pending. Not a final product map (Strategy D).",
   "building": {
     "id": "le",
     "neptunPrefix": "LE",
@@ -5351,6 +5351,1887 @@
       "label": "wing-s"
     },
     {
+      "id": "le-n-le-f-1-clwest-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-clwest-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-clwest-t2",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f-1-clnorth-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-clnorth-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-clnorth-t2",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f-1-cleast-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-cleast-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-cleast-t2",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f-1-cleast-s-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-cleast-s-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-clcross-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-clcross-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-clcross-t2",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f-1-clsouth-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-clsouth-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f-1-clsouth-t2",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f-1-clwing-t0",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f-1-clwing-t1",
+      "floorId": "le-f-1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clwest-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-clwest-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clwest-t2",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f0-clnorth-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-clnorth-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clnorth-t2",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f0-cleast-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-cleast-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-cleast-t2",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f0-cleast-s-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-cleast-s-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clcross-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-clcross-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clcross-t2",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f0-clsouth-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-clsouth-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f0-clsouth-t2",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f0-clwing-t0",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f0-clwing-t1",
+      "floorId": "le-f0",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clwest-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-clwest-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clwest-t2",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f1-clnorth-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-clnorth-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clnorth-t2",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f1-cleast-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-cleast-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-cleast-t2",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f1-cleast-s-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-cleast-s-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clcross-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-clcross-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clcross-t2",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f1-clsouth-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-clsouth-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f1-clsouth-t2",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f1-clwing-t0",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f1-clwing-t1",
+      "floorId": "le-f1",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clwest-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-clwest-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clwest-t2",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f2-clnorth-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-clnorth-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clnorth-t2",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f2-cleast-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-cleast-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-cleast-t2",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f2-cleast-s-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-cleast-s-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clcross-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-clcross-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clcross-t2",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f2-clsouth-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-clsouth-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f2-clsouth-t2",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f2-clwing-t0",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f2-clwing-t1",
+      "floorId": "le-f2",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clwest-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-clwest-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clwest-t2",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f3-clnorth-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-clnorth-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clnorth-t2",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f3-cleast-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-cleast-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-cleast-t2",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f3-cleast-s-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-cleast-s-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clcross-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-clcross-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clcross-t2",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f3-clsouth-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-clsouth-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f3-clsouth-t2",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f3-clwing-t0",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f3-clwing-t1",
+      "floorId": "le-f3",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clwest-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-clwest-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clwest-t2",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f4-clnorth-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-clnorth-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clnorth-t2",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f4-cleast-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-cleast-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-cleast-t2",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f4-cleast-s-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-cleast-s-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clcross-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-clcross-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clcross-t2",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f4-clsouth-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-clsouth-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f4-clsouth-t2",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f4-clwing-t0",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f4-clwing-t1",
+      "floorId": "le-f4",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clwest-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-clwest-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clwest-t2",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f5-clnorth-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-clnorth-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clnorth-t2",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f5-cleast-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-cleast-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-cleast-t2",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f5-cleast-s-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-cleast-s-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clcross-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-clcross-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clcross-t2",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f5-clsouth-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-clsouth-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f5-clsouth-t2",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f5-clwing-t0",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f5-clwing-t1",
+      "floorId": "le-f5",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clwest-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-clwest-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clwest-t2",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f6-clnorth-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-clnorth-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clnorth-t2",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f6-cleast-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-cleast-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-cleast-t2",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f6-cleast-s-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-cleast-s-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clcross-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-clcross-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clcross-t2",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f6-clsouth-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-clsouth-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f6-clsouth-t2",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f6-clwing-t0",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f6-clwing-t1",
+      "floorId": "le-f6",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clwest-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-clwest-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clwest-t2",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 145.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "west-cl-2"
+    },
+    {
+      "id": "le-n-le-f7-clnorth-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-clnorth-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clnorth-t2",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 145.0,
+        "space": "basemapPx"
+      },
+      "label": "north-cl-2"
+    },
+    {
+      "id": "le-n-le-f7-cleast-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 290.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-cleast-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 380.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-cleast-t2",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 470.0,
+        "space": "basemapPx"
+      },
+      "label": "east-cl-2"
+    },
+    {
+      "id": "le-n-le-f7-cleast-s-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 660.0,
+        "y": 493.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-cleast-s-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 654.0,
+        "y": 561.1,
+        "space": "basemapPx"
+      },
+      "label": "east-s-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clcross-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-clcross-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clcross-t2",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 400.0,
+        "space": "basemapPx"
+      },
+      "label": "cross-cl-2"
+    },
+    {
+      "id": "le-n-le-f7-clsouth-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 300.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-clsouth-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-1"
+    },
+    {
+      "id": "le-n-le-f7-clsouth-t2",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 500.0,
+        "y": 575.0,
+        "space": "basemapPx"
+      },
+      "label": "south-cl-2"
+    },
+    {
+      "id": "le-n-le-f7-clwing-t0",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 652.8,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-0"
+    },
+    {
+      "id": "le-n-le-f7-clwing-t1",
+      "floorId": "le-f7",
+      "kind": "corridor",
+      "coord": {
+        "x": 400.0,
+        "y": 705.6,
+        "space": "basemapPx"
+      },
+      "label": "wing-cl-1"
+    },
+    {
       "id": "le-n-le-f-1-door-_1_23",
       "floorId": "le-f-1",
       "kind": "corridor",
@@ -10349,10 +12230,1442 @@
       "kind": "corridor"
     },
     {
-      "id": "le-e-le-f-1-hub-door-_1_23",
+      "id": "le-e-le-f-1-clwest-loop-w-n",
+      "from": "le-n-le-f-1-loop-w-n",
+      "to": "le-n-le-f-1-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwest-loop-w",
+      "from": "le-n-le-f-1-loop-w",
+      "to": "le-n-le-f-1-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwest-loop-w-s",
+      "from": "le-n-le-f-1-loop-w-s",
+      "to": "le-n-le-f-1-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clnorth-loop-nw",
+      "from": "le-n-le-f-1-loop-nw",
+      "to": "le-n-le-f-1-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clnorth-loop-n",
+      "from": "le-n-le-f-1-loop-n",
+      "to": "le-n-le-f-1-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clnorth-loop-ne",
+      "from": "le-n-le-f-1-loop-ne",
+      "to": "le-n-le-f-1-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-loop-e-n",
+      "from": "le-n-le-f-1-loop-e-n",
+      "to": "le-n-le-f-1-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-loop-e",
+      "from": "le-n-le-f-1-loop-e",
+      "to": "le-n-le-f-1-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-loop-e-s",
+      "from": "le-n-le-f-1-loop-e-s",
+      "to": "le-n-le-f-1-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-loop-e-s",
+      "from": "le-n-le-f-1-loop-e-s",
+      "to": "le-n-le-f-1-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-loop-se",
+      "from": "le-n-le-f-1-loop-se",
+      "to": "le-n-le-f-1-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clcross-cross-w",
+      "from": "le-n-le-f-1-cross-w",
+      "to": "le-n-le-f-1-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clcross-cross-mid",
+      "from": "le-n-le-f-1-cross-mid",
+      "to": "le-n-le-f-1-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clcross-cross-e",
+      "from": "le-n-le-f-1-cross-e",
+      "to": "le-n-le-f-1-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-loop-sw",
+      "from": "le-n-le-f-1-loop-sw",
+      "to": "le-n-le-f-1-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-loop-s",
       "from": "le-n-le-f-1-loop-s",
-      "to": "le-n-le-f-1-door-_1_23",
-      "weight": 107.1,
+      "to": "le-n-le-f-1-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-loop-se",
+      "from": "le-n-le-f-1-loop-se",
+      "to": "le-n-le-f-1-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwing-wing-n",
+      "from": "le-n-le-f-1-wing-n",
+      "to": "le-n-le-f-1-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwing-wing-mid",
+      "from": "le-n-le-f-1-wing-mid",
+      "to": "le-n-le-f-1-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwing-wing-s",
+      "from": "le-n-le-f-1-wing-s",
+      "to": "le-n-le-f-1-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-loop-w-n",
+      "from": "le-n-le-f0-loop-w-n",
+      "to": "le-n-le-f0-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-loop-w",
+      "from": "le-n-le-f0-loop-w",
+      "to": "le-n-le-f0-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-loop-w-s",
+      "from": "le-n-le-f0-loop-w-s",
+      "to": "le-n-le-f0-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-loop-nw",
+      "from": "le-n-le-f0-loop-nw",
+      "to": "le-n-le-f0-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-loop-n",
+      "from": "le-n-le-f0-loop-n",
+      "to": "le-n-le-f0-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-loop-ne",
+      "from": "le-n-le-f0-loop-ne",
+      "to": "le-n-le-f0-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-loop-e-n",
+      "from": "le-n-le-f0-loop-e-n",
+      "to": "le-n-le-f0-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-loop-e",
+      "from": "le-n-le-f0-loop-e",
+      "to": "le-n-le-f0-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-loop-e-s",
+      "from": "le-n-le-f0-loop-e-s",
+      "to": "le-n-le-f0-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-loop-e-s",
+      "from": "le-n-le-f0-loop-e-s",
+      "to": "le-n-le-f0-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-loop-se",
+      "from": "le-n-le-f0-loop-se",
+      "to": "le-n-le-f0-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clcross-cross-w",
+      "from": "le-n-le-f0-cross-w",
+      "to": "le-n-le-f0-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clcross-cross-mid",
+      "from": "le-n-le-f0-cross-mid",
+      "to": "le-n-le-f0-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clcross-cross-e",
+      "from": "le-n-le-f0-cross-e",
+      "to": "le-n-le-f0-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clsouth-loop-sw",
+      "from": "le-n-le-f0-loop-sw",
+      "to": "le-n-le-f0-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clsouth-loop-s",
+      "from": "le-n-le-f0-loop-s",
+      "to": "le-n-le-f0-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clsouth-loop-se",
+      "from": "le-n-le-f0-loop-se",
+      "to": "le-n-le-f0-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwing-wing-n",
+      "from": "le-n-le-f0-wing-n",
+      "to": "le-n-le-f0-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwing-wing-mid",
+      "from": "le-n-le-f0-wing-mid",
+      "to": "le-n-le-f0-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwing-wing-s",
+      "from": "le-n-le-f0-wing-s",
+      "to": "le-n-le-f0-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwest-loop-w-n",
+      "from": "le-n-le-f1-loop-w-n",
+      "to": "le-n-le-f1-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwest-loop-w",
+      "from": "le-n-le-f1-loop-w",
+      "to": "le-n-le-f1-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwest-loop-w-s",
+      "from": "le-n-le-f1-loop-w-s",
+      "to": "le-n-le-f1-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clnorth-loop-nw",
+      "from": "le-n-le-f1-loop-nw",
+      "to": "le-n-le-f1-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clnorth-loop-n",
+      "from": "le-n-le-f1-loop-n",
+      "to": "le-n-le-f1-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clnorth-loop-ne",
+      "from": "le-n-le-f1-loop-ne",
+      "to": "le-n-le-f1-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-loop-e-n",
+      "from": "le-n-le-f1-loop-e-n",
+      "to": "le-n-le-f1-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-loop-e",
+      "from": "le-n-le-f1-loop-e",
+      "to": "le-n-le-f1-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-loop-e-s",
+      "from": "le-n-le-f1-loop-e-s",
+      "to": "le-n-le-f1-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-s-loop-e-s",
+      "from": "le-n-le-f1-loop-e-s",
+      "to": "le-n-le-f1-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-s-loop-se",
+      "from": "le-n-le-f1-loop-se",
+      "to": "le-n-le-f1-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clcross-cross-w",
+      "from": "le-n-le-f1-cross-w",
+      "to": "le-n-le-f1-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clcross-cross-mid",
+      "from": "le-n-le-f1-cross-mid",
+      "to": "le-n-le-f1-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clcross-cross-e",
+      "from": "le-n-le-f1-cross-e",
+      "to": "le-n-le-f1-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clsouth-loop-sw",
+      "from": "le-n-le-f1-loop-sw",
+      "to": "le-n-le-f1-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clsouth-loop-s",
+      "from": "le-n-le-f1-loop-s",
+      "to": "le-n-le-f1-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clsouth-loop-se",
+      "from": "le-n-le-f1-loop-se",
+      "to": "le-n-le-f1-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-wing-n",
+      "from": "le-n-le-f1-wing-n",
+      "to": "le-n-le-f1-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-wing-mid",
+      "from": "le-n-le-f1-wing-mid",
+      "to": "le-n-le-f1-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-wing-s",
+      "from": "le-n-le-f1-wing-s",
+      "to": "le-n-le-f1-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-loop-w-n",
+      "from": "le-n-le-f2-loop-w-n",
+      "to": "le-n-le-f2-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-loop-w",
+      "from": "le-n-le-f2-loop-w",
+      "to": "le-n-le-f2-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-loop-w-s",
+      "from": "le-n-le-f2-loop-w-s",
+      "to": "le-n-le-f2-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clnorth-loop-nw",
+      "from": "le-n-le-f2-loop-nw",
+      "to": "le-n-le-f2-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clnorth-loop-n",
+      "from": "le-n-le-f2-loop-n",
+      "to": "le-n-le-f2-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clnorth-loop-ne",
+      "from": "le-n-le-f2-loop-ne",
+      "to": "le-n-le-f2-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-loop-e-n",
+      "from": "le-n-le-f2-loop-e-n",
+      "to": "le-n-le-f2-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-loop-e",
+      "from": "le-n-le-f2-loop-e",
+      "to": "le-n-le-f2-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-loop-e-s",
+      "from": "le-n-le-f2-loop-e-s",
+      "to": "le-n-le-f2-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-s-loop-e-s",
+      "from": "le-n-le-f2-loop-e-s",
+      "to": "le-n-le-f2-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-s-loop-se",
+      "from": "le-n-le-f2-loop-se",
+      "to": "le-n-le-f2-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clcross-cross-w",
+      "from": "le-n-le-f2-cross-w",
+      "to": "le-n-le-f2-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clcross-cross-mid",
+      "from": "le-n-le-f2-cross-mid",
+      "to": "le-n-le-f2-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clcross-cross-e",
+      "from": "le-n-le-f2-cross-e",
+      "to": "le-n-le-f2-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clsouth-loop-sw",
+      "from": "le-n-le-f2-loop-sw",
+      "to": "le-n-le-f2-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clsouth-loop-s",
+      "from": "le-n-le-f2-loop-s",
+      "to": "le-n-le-f2-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clsouth-loop-se",
+      "from": "le-n-le-f2-loop-se",
+      "to": "le-n-le-f2-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-wing-n",
+      "from": "le-n-le-f2-wing-n",
+      "to": "le-n-le-f2-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-wing-mid",
+      "from": "le-n-le-f2-wing-mid",
+      "to": "le-n-le-f2-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-wing-s",
+      "from": "le-n-le-f2-wing-s",
+      "to": "le-n-le-f2-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-loop-w-n",
+      "from": "le-n-le-f3-loop-w-n",
+      "to": "le-n-le-f3-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-loop-w",
+      "from": "le-n-le-f3-loop-w",
+      "to": "le-n-le-f3-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-loop-w-s",
+      "from": "le-n-le-f3-loop-w-s",
+      "to": "le-n-le-f3-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clnorth-loop-nw",
+      "from": "le-n-le-f3-loop-nw",
+      "to": "le-n-le-f3-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clnorth-loop-n",
+      "from": "le-n-le-f3-loop-n",
+      "to": "le-n-le-f3-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clnorth-loop-ne",
+      "from": "le-n-le-f3-loop-ne",
+      "to": "le-n-le-f3-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-loop-e-n",
+      "from": "le-n-le-f3-loop-e-n",
+      "to": "le-n-le-f3-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-loop-e",
+      "from": "le-n-le-f3-loop-e",
+      "to": "le-n-le-f3-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-loop-e-s",
+      "from": "le-n-le-f3-loop-e-s",
+      "to": "le-n-le-f3-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-s-loop-e-s",
+      "from": "le-n-le-f3-loop-e-s",
+      "to": "le-n-le-f3-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-s-loop-se",
+      "from": "le-n-le-f3-loop-se",
+      "to": "le-n-le-f3-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clcross-cross-w",
+      "from": "le-n-le-f3-cross-w",
+      "to": "le-n-le-f3-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clcross-cross-mid",
+      "from": "le-n-le-f3-cross-mid",
+      "to": "le-n-le-f3-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clcross-cross-e",
+      "from": "le-n-le-f3-cross-e",
+      "to": "le-n-le-f3-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clsouth-loop-sw",
+      "from": "le-n-le-f3-loop-sw",
+      "to": "le-n-le-f3-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clsouth-loop-s",
+      "from": "le-n-le-f3-loop-s",
+      "to": "le-n-le-f3-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clsouth-loop-se",
+      "from": "le-n-le-f3-loop-se",
+      "to": "le-n-le-f3-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-wing-n",
+      "from": "le-n-le-f3-wing-n",
+      "to": "le-n-le-f3-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-wing-mid",
+      "from": "le-n-le-f3-wing-mid",
+      "to": "le-n-le-f3-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-wing-s",
+      "from": "le-n-le-f3-wing-s",
+      "to": "le-n-le-f3-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-loop-w-n",
+      "from": "le-n-le-f4-loop-w-n",
+      "to": "le-n-le-f4-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-loop-w",
+      "from": "le-n-le-f4-loop-w",
+      "to": "le-n-le-f4-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-loop-w-s",
+      "from": "le-n-le-f4-loop-w-s",
+      "to": "le-n-le-f4-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-loop-nw",
+      "from": "le-n-le-f4-loop-nw",
+      "to": "le-n-le-f4-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-loop-n",
+      "from": "le-n-le-f4-loop-n",
+      "to": "le-n-le-f4-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-loop-ne",
+      "from": "le-n-le-f4-loop-ne",
+      "to": "le-n-le-f4-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-loop-e-n",
+      "from": "le-n-le-f4-loop-e-n",
+      "to": "le-n-le-f4-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-loop-e",
+      "from": "le-n-le-f4-loop-e",
+      "to": "le-n-le-f4-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-loop-e-s",
+      "from": "le-n-le-f4-loop-e-s",
+      "to": "le-n-le-f4-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-s-loop-e-s",
+      "from": "le-n-le-f4-loop-e-s",
+      "to": "le-n-le-f4-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-s-loop-se",
+      "from": "le-n-le-f4-loop-se",
+      "to": "le-n-le-f4-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clcross-cross-w",
+      "from": "le-n-le-f4-cross-w",
+      "to": "le-n-le-f4-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clcross-cross-mid",
+      "from": "le-n-le-f4-cross-mid",
+      "to": "le-n-le-f4-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clcross-cross-e",
+      "from": "le-n-le-f4-cross-e",
+      "to": "le-n-le-f4-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clsouth-loop-sw",
+      "from": "le-n-le-f4-loop-sw",
+      "to": "le-n-le-f4-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clsouth-loop-s",
+      "from": "le-n-le-f4-loop-s",
+      "to": "le-n-le-f4-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clsouth-loop-se",
+      "from": "le-n-le-f4-loop-se",
+      "to": "le-n-le-f4-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-wing-n",
+      "from": "le-n-le-f4-wing-n",
+      "to": "le-n-le-f4-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-wing-mid",
+      "from": "le-n-le-f4-wing-mid",
+      "to": "le-n-le-f4-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-wing-s",
+      "from": "le-n-le-f4-wing-s",
+      "to": "le-n-le-f4-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-loop-w-n",
+      "from": "le-n-le-f5-loop-w-n",
+      "to": "le-n-le-f5-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-loop-w",
+      "from": "le-n-le-f5-loop-w",
+      "to": "le-n-le-f5-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-loop-w-s",
+      "from": "le-n-le-f5-loop-w-s",
+      "to": "le-n-le-f5-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clnorth-loop-nw",
+      "from": "le-n-le-f5-loop-nw",
+      "to": "le-n-le-f5-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clnorth-loop-n",
+      "from": "le-n-le-f5-loop-n",
+      "to": "le-n-le-f5-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clnorth-loop-ne",
+      "from": "le-n-le-f5-loop-ne",
+      "to": "le-n-le-f5-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-loop-e-n",
+      "from": "le-n-le-f5-loop-e-n",
+      "to": "le-n-le-f5-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-loop-e",
+      "from": "le-n-le-f5-loop-e",
+      "to": "le-n-le-f5-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-loop-e-s",
+      "from": "le-n-le-f5-loop-e-s",
+      "to": "le-n-le-f5-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-s-loop-e-s",
+      "from": "le-n-le-f5-loop-e-s",
+      "to": "le-n-le-f5-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-s-loop-se",
+      "from": "le-n-le-f5-loop-se",
+      "to": "le-n-le-f5-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clcross-cross-w",
+      "from": "le-n-le-f5-cross-w",
+      "to": "le-n-le-f5-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clcross-cross-mid",
+      "from": "le-n-le-f5-cross-mid",
+      "to": "le-n-le-f5-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clcross-cross-e",
+      "from": "le-n-le-f5-cross-e",
+      "to": "le-n-le-f5-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clsouth-loop-sw",
+      "from": "le-n-le-f5-loop-sw",
+      "to": "le-n-le-f5-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clsouth-loop-s",
+      "from": "le-n-le-f5-loop-s",
+      "to": "le-n-le-f5-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clsouth-loop-se",
+      "from": "le-n-le-f5-loop-se",
+      "to": "le-n-le-f5-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwing-wing-n",
+      "from": "le-n-le-f5-wing-n",
+      "to": "le-n-le-f5-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwing-wing-mid",
+      "from": "le-n-le-f5-wing-mid",
+      "to": "le-n-le-f5-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwing-wing-s",
+      "from": "le-n-le-f5-wing-s",
+      "to": "le-n-le-f5-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-loop-w-n",
+      "from": "le-n-le-f6-loop-w-n",
+      "to": "le-n-le-f6-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-loop-w",
+      "from": "le-n-le-f6-loop-w",
+      "to": "le-n-le-f6-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-loop-w-s",
+      "from": "le-n-le-f6-loop-w-s",
+      "to": "le-n-le-f6-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clnorth-loop-nw",
+      "from": "le-n-le-f6-loop-nw",
+      "to": "le-n-le-f6-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clnorth-loop-n",
+      "from": "le-n-le-f6-loop-n",
+      "to": "le-n-le-f6-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clnorth-loop-ne",
+      "from": "le-n-le-f6-loop-ne",
+      "to": "le-n-le-f6-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-loop-e-n",
+      "from": "le-n-le-f6-loop-e-n",
+      "to": "le-n-le-f6-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-loop-e",
+      "from": "le-n-le-f6-loop-e",
+      "to": "le-n-le-f6-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-loop-e-s",
+      "from": "le-n-le-f6-loop-e-s",
+      "to": "le-n-le-f6-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-s-loop-e-s",
+      "from": "le-n-le-f6-loop-e-s",
+      "to": "le-n-le-f6-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-s-loop-se",
+      "from": "le-n-le-f6-loop-se",
+      "to": "le-n-le-f6-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clcross-cross-w",
+      "from": "le-n-le-f6-cross-w",
+      "to": "le-n-le-f6-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clcross-cross-mid",
+      "from": "le-n-le-f6-cross-mid",
+      "to": "le-n-le-f6-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clcross-cross-e",
+      "from": "le-n-le-f6-cross-e",
+      "to": "le-n-le-f6-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clsouth-loop-sw",
+      "from": "le-n-le-f6-loop-sw",
+      "to": "le-n-le-f6-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clsouth-loop-s",
+      "from": "le-n-le-f6-loop-s",
+      "to": "le-n-le-f6-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clsouth-loop-se",
+      "from": "le-n-le-f6-loop-se",
+      "to": "le-n-le-f6-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwing-wing-n",
+      "from": "le-n-le-f6-wing-n",
+      "to": "le-n-le-f6-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwing-wing-mid",
+      "from": "le-n-le-f6-wing-mid",
+      "to": "le-n-le-f6-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwing-wing-s",
+      "from": "le-n-le-f6-wing-s",
+      "to": "le-n-le-f6-clwing-t1",
+      "weight": 49.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-loop-w-n",
+      "from": "le-n-le-f7-loop-w-n",
+      "to": "le-n-le-f7-clwest-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-loop-w",
+      "from": "le-n-le-f7-loop-w",
+      "to": "le-n-le-f7-clwest-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-loop-w-s",
+      "from": "le-n-le-f7-loop-w-s",
+      "to": "le-n-le-f7-clwest-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clnorth-loop-nw",
+      "from": "le-n-le-f7-loop-nw",
+      "to": "le-n-le-f7-clnorth-t0",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clnorth-loop-n",
+      "from": "le-n-le-f7-loop-n",
+      "to": "le-n-le-f7-clnorth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clnorth-loop-ne",
+      "from": "le-n-le-f7-loop-ne",
+      "to": "le-n-le-f7-clnorth-t2",
+      "weight": 130.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-loop-e-n",
+      "from": "le-n-le-f7-loop-e-n",
+      "to": "le-n-le-f7-cleast-t0",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-loop-e",
+      "from": "le-n-le-f7-loop-e",
+      "to": "le-n-le-f7-cleast-t1",
+      "weight": 20.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-loop-e-s",
+      "from": "le-n-le-f7-loop-e-s",
+      "to": "le-n-le-f7-cleast-t2",
+      "weight": 50.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-loop-e-s",
+      "from": "le-n-le-f7-loop-e-s",
+      "to": "le-n-le-f7-cleast-s-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-loop-se",
+      "from": "le-n-le-f7-loop-se",
+      "to": "le-n-le-f7-cleast-s-t1",
+      "weight": 36.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-cross-w",
+      "from": "le-n-le-f7-cross-w",
+      "to": "le-n-le-f7-clcross-t0",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-cross-mid",
+      "from": "le-n-le-f7-cross-mid",
+      "to": "le-n-le-f7-clcross-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-cross-e",
+      "from": "le-n-le-f7-cross-e",
+      "to": "le-n-le-f7-clcross-t2",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-loop-sw",
+      "from": "le-n-le-f7-loop-sw",
+      "to": "le-n-le-f7-clsouth-t0",
+      "weight": 130.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-loop-s",
+      "from": "le-n-le-f7-loop-s",
+      "to": "le-n-le-f7-clsouth-t1",
+      "weight": 0.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-loop-se",
+      "from": "le-n-le-f7-loop-se",
+      "to": "le-n-le-f7-clsouth-t2",
+      "weight": 120.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwing-wing-n",
+      "from": "le-n-le-f7-wing-n",
+      "to": "le-n-le-f7-clwing-t0",
+      "weight": 32.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwing-wing-mid",
+      "from": "le-n-le-f7-wing-mid",
+      "to": "le-n-le-f7-clwing-t1",
+      "weight": 15.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwing-wing-s",
+      "from": "le-n-le-f7-wing-s",
+      "to": "le-n-le-f7-clwing-t1",
+      "weight": 49.4,
       "bidirectional": true,
       "kind": "corridor"
     },
@@ -10365,28 +13678,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f-1-hub-door-_1_52",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_52",
-      "weight": 16.3,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f-1-stub-_1_52",
       "from": "le-n-le-f-1-door-_1_52",
       "to": "le-n-le-f-1-room-_1_52",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f-1-hub-door-_1_53",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_53",
-      "weight": 18.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f-1-stub-_1_53",
@@ -10397,28 +13694,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f-1-hub-door-_1_54",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_54",
-      "weight": 20.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f-1-stub-_1_54",
       "from": "le-n-le-f-1-door-_1_54",
       "to": "le-n-le-f-1-room-_1_54",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f-1-hub-door-_1_62",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_62",
-      "weight": 38.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f-1-stub-_1_62",
@@ -10429,28 +13710,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f-1-hub-door-_1_63",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_63",
-      "weight": 40.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f-1-stub-_1_63",
       "from": "le-n-le-f-1-door-_1_63",
       "to": "le-n-le-f-1-room-_1_63",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f-1-hub-door-_1_64",
-      "from": "le-n-le-f-1-loop-e-s",
-      "to": "le-n-le-f-1-door-_1_64",
-      "weight": 40.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f-1-stub-_1_64",
@@ -10461,28 +13726,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f1-hub-door-1_71",
-      "from": "le-n-le-f1-loop-e",
-      "to": "le-n-le-f1-door-1_71",
-      "weight": 58.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f1-stub-1_71",
       "from": "le-n-le-f1-door-1_71",
       "to": "le-n-le-f1-room-1_71",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f-1-hub-door-_1_75",
-      "from": "le-n-le-f-1-loop-e",
-      "to": "le-n-le-f-1-door-_1_75",
-      "weight": 72.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f-1-stub-_1_75",
@@ -10493,28 +13742,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f-1-hub-door-_1_85",
-      "from": "le-n-le-f-1-loop-e",
-      "to": "le-n-le-f-1-door-_1_85",
-      "weight": 109.1,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f-1-stub-_1_85",
       "from": "le-n-le-f-1-door-_1_85",
       "to": "le-n-le-f-1-room-_1_85",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_100A",
-      "from": "le-n-le-f0-loop-w",
-      "to": "le-n-le-f0-door-0_100A",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_100A",
@@ -10525,28 +13758,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-0_100B",
-      "from": "le-n-le-f0-loop-w",
-      "to": "le-n-le-f0-door-0_100B",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-0_100B",
       "from": "le-n-le-f0-door-0_100B",
       "to": "le-n-le-f0-room-0_100B",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_100C",
-      "from": "le-n-le-f0-loop-w",
-      "to": "le-n-le-f0-door-0_100C",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_100C",
@@ -10557,28 +13774,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-0_100D",
-      "from": "le-n-le-f0-loop-w",
-      "to": "le-n-le-f0-door-0_100D",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-0_100D",
       "from": "le-n-le-f0-door-0_100D",
       "to": "le-n-le-f0-room-0_100D",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_75",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_75",
-      "weight": 72.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_75",
@@ -10589,28 +13790,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-0_79",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_79",
-      "weight": 87.3,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-0_79",
       "from": "le-n-le-f0-door-0_79",
       "to": "le-n-le-f0-room-0_79",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_81",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_81",
-      "weight": 94.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_81",
@@ -10621,28 +13806,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-0_83",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_83",
-      "weight": 101.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-0_83",
       "from": "le-n-le-f0-door-0_83",
       "to": "le-n-le-f0-room-0_83",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_87",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_87",
-      "weight": 116.4,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_87",
@@ -10653,28 +13822,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-0_89",
-      "from": "le-n-le-f0-loop-e",
-      "to": "le-n-le-f0-door-0_89",
-      "weight": 123.6,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-0_89",
       "from": "le-n-le-f0-door-0_89",
       "to": "le-n-le-f0-room-0_89",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-0_99",
-      "from": "le-n-le-f0-loop-n",
-      "to": "le-n-le-f0-door-0_99",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-0_99",
@@ -10685,28 +13838,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-039",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-039",
-      "weight": 12.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-039",
       "from": "le-n-le-f0-door-039",
       "to": "le-n-le-f0-room-039",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-058",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-058",
-      "weight": 29.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-058",
@@ -10717,28 +13854,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-060",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-060",
-      "weight": 34.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-060",
       "from": "le-n-le-f0-door-060",
       "to": "le-n-le-f0-room-060",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-062",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-062",
-      "weight": 38.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-062",
@@ -10749,28 +13870,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f0-hub-door-063",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-063",
-      "weight": 40.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f0-stub-063",
       "from": "le-n-le-f0-door-063",
       "to": "le-n-le-f0-room-063",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f0-hub-door-065",
-      "from": "le-n-le-f0-loop-e-s",
-      "to": "le-n-le-f0-door-065",
-      "weight": 41.3,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f0-stub-065",
@@ -10781,28 +13886,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f1-hub-door-109_114",
-      "from": "le-n-le-f1-wing-mid",
-      "to": "le-n-le-f1-door-109_114",
-      "weight": 75.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f1-stub-109_114",
       "from": "le-n-le-f1-door-109_114",
       "to": "le-n-le-f1-room-109_114",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f1-hub-door-115",
-      "from": "le-n-le-f1-wing-mid",
-      "to": "le-n-le-f1-door-115",
-      "weight": 65.8,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f1-stub-115",
@@ -10813,28 +13902,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f2-hub-door-2_104",
-      "from": "le-n-le-f2-loop-w",
-      "to": "le-n-le-f2-door-2_104",
-      "weight": 185.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f2-stub-2_104",
       "from": "le-n-le-f2-door-2_104",
       "to": "le-n-le-f2-room-2_104",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f2-hub-door-2_105",
-      "from": "le-n-le-f2-loop-w",
-      "to": "le-n-le-f2-door-2_105",
-      "weight": 181.8,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f2-stub-2_105",
@@ -10845,28 +13918,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f2-hub-door-2_113",
-      "from": "le-n-le-f2-loop-w",
-      "to": "le-n-le-f2-door-2_113",
-      "weight": 152.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f2-stub-2_113",
       "from": "le-n-le-f2-door-2_113",
       "to": "le-n-le-f2-room-2_113",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f2-hub-door-2_126",
-      "from": "le-n-le-f2-loop-w",
-      "to": "le-n-le-f2-door-2_126",
-      "weight": 105.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f2-stub-2_126",
@@ -10877,28 +13934,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f2-hub-door-2_133",
-      "from": "le-n-le-f2-loop-w",
-      "to": "le-n-le-f2-door-2_133",
-      "weight": 80.0,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f2-stub-2_133",
       "from": "le-n-le-f2-door-2_133",
       "to": "le-n-le-f2-room-2_133",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f2-hub-door-2_54",
-      "from": "le-n-le-f2-loop-e-s",
-      "to": "le-n-le-f2-door-2_54",
-      "weight": 20.8,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f2-stub-2_54",
@@ -10909,28 +13950,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f2-hub-door-2_63",
-      "from": "le-n-le-f2-loop-e-s",
-      "to": "le-n-le-f2-door-2_63",
-      "weight": 40.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f2-stub-2_63",
       "from": "le-n-le-f2-door-2_63",
       "to": "le-n-le-f2-room-2_63",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f2-hub-door-2_77",
-      "from": "le-n-le-f2-loop-e",
-      "to": "le-n-le-f2-door-2_77",
-      "weight": 80.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f2-stub-2_77",
@@ -10941,28 +13966,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f2-hub-door-202",
-      "from": "le-n-le-f2-wing-mid",
-      "to": "le-n-le-f2-door-202",
-      "weight": 86.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f2-stub-202",
       "from": "le-n-le-f2-door-202",
       "to": "le-n-le-f2-room-202",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f2-hub-door-210",
-      "from": "le-n-le-f2-wing-mid",
-      "to": "le-n-le-f2-door-210",
-      "weight": 73.8,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f2-stub-210",
@@ -10973,28 +13982,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f3-hub-door-3_113",
-      "from": "le-n-le-f3-loop-w",
-      "to": "le-n-le-f3-door-3_113",
-      "weight": 152.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f3-stub-3_113",
       "from": "le-n-le-f3-door-3_113",
       "to": "le-n-le-f3-room-3_113",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f3-hub-door-3_114",
-      "from": "le-n-le-f3-loop-w",
-      "to": "le-n-le-f3-door-3_114",
-      "weight": 149.1,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f3-stub-3_114",
@@ -11005,28 +13998,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f3-hub-door-3_124",
-      "from": "le-n-le-f3-loop-w",
-      "to": "le-n-le-f3-door-3_124",
-      "weight": 112.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f3-stub-3_124",
       "from": "le-n-le-f3-door-3_124",
       "to": "le-n-le-f3-room-3_124",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f3-hub-door-3_126",
-      "from": "le-n-le-f3-loop-w",
-      "to": "le-n-le-f3-door-3_126",
-      "weight": 105.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f3-stub-3_126",
@@ -11037,28 +14014,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f3-hub-door-3_67",
-      "from": "le-n-le-f3-loop-e-s",
-      "to": "le-n-le-f3-door-3_67",
-      "weight": 42.9,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f3-stub-3_67",
       "from": "le-n-le-f3-door-3_67",
       "to": "le-n-le-f3-room-3_67",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f3-hub-door-317",
-      "from": "le-n-le-f3-wing-mid",
-      "to": "le-n-le-f3-door-317",
-      "weight": 62.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f3-stub-317",
@@ -11069,28 +14030,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f3-hub-door-334",
-      "from": "le-n-le-f3-wing-mid",
-      "to": "le-n-le-f3-door-334",
-      "weight": 35.1,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f3-stub-334",
       "from": "le-n-le-f3-door-334",
       "to": "le-n-le-f3-room-334",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f4-hub-door-4_110",
-      "from": "le-n-le-f4-loop-w",
-      "to": "le-n-le-f4-door-4_110",
-      "weight": 163.6,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f4-stub-4_110",
@@ -11101,28 +14046,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f4-hub-door-4_113",
-      "from": "le-n-le-f4-loop-w",
-      "to": "le-n-le-f4-door-4_113",
-      "weight": 152.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f4-stub-4_113",
       "from": "le-n-le-f4-door-4_113",
       "to": "le-n-le-f4-room-4_113",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f4-hub-door-4_51",
-      "from": "le-n-le-f4-loop-e-s",
-      "to": "le-n-le-f4-door-4_51",
-      "weight": 14.1,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f4-stub-4_51",
@@ -11133,28 +14062,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f4-hub-door-4_52",
-      "from": "le-n-le-f4-loop-e-s",
-      "to": "le-n-le-f4-door-4_52",
-      "weight": 16.3,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f4-stub-4_52",
       "from": "le-n-le-f4-door-4_52",
       "to": "le-n-le-f4-room-4_52",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f4-hub-door-4_70",
-      "from": "le-n-le-f4-loop-e",
-      "to": "le-n-le-f4-door-4_70",
-      "weight": 54.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f4-stub-4_70",
@@ -11165,28 +14078,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f4-hub-door-4_95",
-      "from": "le-n-le-f4-loop-n",
-      "to": "le-n-le-f4-door-4_95",
-      "weight": 183.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f4-stub-4_95",
       "from": "le-n-le-f4-door-4_95",
       "to": "le-n-le-f4-room-4_95",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f4-hub-door-4_97",
-      "from": "le-n-le-f4-loop-n",
-      "to": "le-n-le-f4-door-4_97",
-      "weight": 191.9,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f4-stub-4_97",
@@ -11197,28 +14094,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f4-hub-door-4_99",
-      "from": "le-n-le-f4-loop-n",
-      "to": "le-n-le-f4-door-4_99",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f4-stub-4_99",
       "from": "le-n-le-f4-door-4_99",
       "to": "le-n-le-f4-room-4_99",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f4-hub-door-415",
-      "from": "le-n-le-f4-wing-mid",
-      "to": "le-n-le-f4-door-415",
-      "weight": 65.8,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f4-stub-415",
@@ -11229,28 +14110,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f4-hub-door-416",
-      "from": "le-n-le-f4-wing-mid",
-      "to": "le-n-le-f4-door-416",
-      "weight": 64.1,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f4-stub-416",
       "from": "le-n-le-f4-door-416",
       "to": "le-n-le-f4-room-416",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f5-hub-door-5_129",
-      "from": "le-n-le-f5-loop-w",
-      "to": "le-n-le-f5-door-5_129",
-      "weight": 94.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f5-stub-5_129",
@@ -11261,28 +14126,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f5-hub-door-5_138",
-      "from": "le-n-le-f5-loop-w",
-      "to": "le-n-le-f5-door-5_138",
-      "weight": 61.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f5-stub-5_138",
       "from": "le-n-le-f5-door-5_138",
       "to": "le-n-le-f5-room-5_138",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f5-hub-door-5_55",
-      "from": "le-n-le-f5-loop-e-s",
-      "to": "le-n-le-f5-door-5_55",
-      "weight": 23.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f5-stub-5_55",
@@ -11293,28 +14142,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f5-hub-door-5_56",
-      "from": "le-n-le-f5-loop-e-s",
-      "to": "le-n-le-f5-door-5_56",
-      "weight": 25.2,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f5-stub-5_56",
       "from": "le-n-le-f5-door-5_56",
       "to": "le-n-le-f5-room-5_56",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f5-hub-door-5_81",
-      "from": "le-n-le-f5-loop-e",
-      "to": "le-n-le-f5-door-5_81",
-      "weight": 94.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f5-stub-5_81",
@@ -11325,28 +14158,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f5-hub-door-5_84",
-      "from": "le-n-le-f5-loop-e",
-      "to": "le-n-le-f5-door-5_84",
-      "weight": 105.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f5-stub-5_84",
       "from": "le-n-le-f5-door-5_84",
       "to": "le-n-le-f5-room-5_84",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f5-hub-door-5_86",
-      "from": "le-n-le-f5-loop-e",
-      "to": "le-n-le-f5-door-5_86",
-      "weight": 112.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f5-stub-5_86",
@@ -11357,28 +14174,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f5-hub-door-5_87",
-      "from": "le-n-le-f5-loop-e",
-      "to": "le-n-le-f5-door-5_87",
-      "weight": 116.4,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f5-stub-5_87",
       "from": "le-n-le-f5-door-5_87",
       "to": "le-n-le-f5-room-5_87",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f5-hub-door-5_89",
-      "from": "le-n-le-f5-loop-e",
-      "to": "le-n-le-f5-door-5_89",
-      "weight": 123.6,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f5-stub-5_89",
@@ -11389,28 +14190,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_100",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_100",
-      "weight": 200.0,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_100",
       "from": "le-n-le-f6-door-6_100",
       "to": "le-n-le-f6-room-6_100",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_101",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_101",
-      "weight": 196.4,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_101",
@@ -11421,28 +14206,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_102",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_102",
-      "weight": 192.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_102",
       "from": "le-n-le-f6-door-6_102",
       "to": "le-n-le-f6-room-6_102",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_104",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_104",
-      "weight": 185.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_104",
@@ -11453,28 +14222,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_105",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_105",
-      "weight": 181.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_105",
       "from": "le-n-le-f6-door-6_105",
       "to": "le-n-le-f6-room-6_105",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_107",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_107",
-      "weight": 174.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_107",
@@ -11485,28 +14238,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_118",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_118",
-      "weight": 134.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_118",
       "from": "le-n-le-f6-door-6_118",
       "to": "le-n-le-f6-room-6_118",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_121",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_121",
-      "weight": 123.6,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_121",
@@ -11517,28 +14254,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_129",
-      "from": "le-n-le-f6-loop-w",
-      "to": "le-n-le-f6-door-6_129",
-      "weight": 94.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_129",
       "from": "le-n-le-f6-door-6_129",
       "to": "le-n-le-f6-room-6_129",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_53",
-      "from": "le-n-le-f6-loop-e-s",
-      "to": "le-n-le-f6-door-6_53",
-      "weight": 18.5,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_53",
@@ -11549,28 +14270,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_79",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_79",
-      "weight": 87.3,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_79",
       "from": "le-n-le-f6-door-6_79",
       "to": "le-n-le-f6-room-6_79",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_80",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_80",
-      "weight": 90.9,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_80",
@@ -11581,28 +14286,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_85",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_85",
-      "weight": 109.1,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_85",
       "from": "le-n-le-f6-door-6_85",
       "to": "le-n-le-f6-room-6_85",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_86",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_86",
-      "weight": 112.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_86",
@@ -11613,28 +14302,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f6-hub-door-6_87",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_87",
-      "weight": 116.4,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f6-stub-6_87",
       "from": "le-n-le-f6-door-6_87",
       "to": "le-n-le-f6-room-6_87",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f6-hub-door-6_88",
-      "from": "le-n-le-f6-loop-e",
-      "to": "le-n-le-f6-door-6_88",
-      "weight": 120.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f6-stub-6_88",
@@ -11645,28 +14318,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_102",
-      "from": "le-n-le-f7-loop-w",
-      "to": "le-n-le-f7-door-7_102",
-      "weight": 192.7,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_102",
       "from": "le-n-le-f7-door-7_102",
       "to": "le-n-le-f7-room-7_102",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f7-hub-door-7_13",
-      "from": "le-n-le-f7-loop-w",
-      "to": "le-n-le-f7-door-7_13",
-      "weight": 152.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f7-stub-7_13",
@@ -11677,28 +14334,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_15",
-      "from": "le-n-le-f7-loop-s",
-      "to": "le-n-le-f7-door-7_15",
-      "weight": 139.4,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_15",
       "from": "le-n-le-f7-door-7_15",
       "to": "le-n-le-f7-room-7_15",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f7-hub-door-7_33",
-      "from": "le-n-le-f7-cross-mid",
-      "to": "le-n-le-f7-door-7_33",
-      "weight": 66.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f7-stub-7_33",
@@ -11709,28 +14350,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_54",
-      "from": "le-n-le-f7-loop-e-s",
-      "to": "le-n-le-f7-door-7_54",
-      "weight": 20.8,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_54",
       "from": "le-n-le-f7-door-7_54",
       "to": "le-n-le-f7-room-7_54",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f7-hub-door-7_55",
-      "from": "le-n-le-f7-loop-e-s",
-      "to": "le-n-le-f7-door-7_55",
-      "weight": 23.0,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f7-stub-7_55",
@@ -11741,28 +14366,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_57",
-      "from": "le-n-le-f7-loop-e-s",
-      "to": "le-n-le-f7-door-7_57",
-      "weight": 27.5,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_57",
       "from": "le-n-le-f7-door-7_57",
       "to": "le-n-le-f7-room-7_57",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f7-hub-door-7_59",
-      "from": "le-n-le-f7-loop-e-s",
-      "to": "le-n-le-f7-door-7_59",
-      "weight": 31.9,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f7-stub-7_59",
@@ -11773,28 +14382,12 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_85",
-      "from": "le-n-le-f7-loop-e",
-      "to": "le-n-le-f7-door-7_85",
-      "weight": 109.1,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_85",
       "from": "le-n-le-f7-door-7_85",
       "to": "le-n-le-f7-room-7_85",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
-    },
-    {
-      "id": "le-e-le-f7-hub-door-7_86",
-      "from": "le-n-le-f7-loop-e",
-      "to": "le-n-le-f7-door-7_86",
-      "weight": 112.7,
-      "bidirectional": true,
-      "kind": "corridor"
     },
     {
       "id": "le-e-le-f7-stub-7_86",
@@ -11805,20 +14398,1612 @@
       "kind": "roomStub"
     },
     {
-      "id": "le-e-le-f7-hub-door-7_87",
-      "from": "le-n-le-f7-loop-e",
-      "to": "le-n-le-f7-door-7_87",
-      "weight": 116.4,
-      "bidirectional": true,
-      "kind": "corridor"
-    },
-    {
       "id": "le-e-le-f7-stub-7_87",
       "from": "le-n-le-f7-door-7_87",
       "to": "le-n-le-f7-room-7_87",
       "weight": 40.0,
       "bidirectional": true,
       "kind": "roomStub"
+    },
+    {
+      "id": "le-e-le-f-1-clcross-chain-0",
+      "from": "le-n-le-f-1-clcross-t0",
+      "to": "le-n-le-f-1-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clcross-chain-1",
+      "from": "le-n-le-f-1-clcross-t1",
+      "to": "le-n-le-f-1-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-chain-0",
+      "from": "le-n-le-f-1-cleast-t0",
+      "to": "le-n-le-f-1-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-chain-1",
+      "from": "le-n-le-f-1-cleast-t1",
+      "to": "le-n-le-f-1-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-chain-2",
+      "from": "le-n-le-f-1-cleast-t2",
+      "to": "le-n-le-f-1-door-_1_75",
+      "weight": 2.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-chain-3",
+      "from": "le-n-le-f-1-door-_1_75",
+      "to": "le-n-le-f-1-door-_1_85",
+      "weight": 36.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-0",
+      "from": "le-n-le-f-1-cleast-s-t0",
+      "to": "le-n-le-f-1-door-_1_52",
+      "weight": 43.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-1",
+      "from": "le-n-le-f-1-door-_1_52",
+      "to": "le-n-le-f-1-door-_1_53",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-2",
+      "from": "le-n-le-f-1-door-_1_53",
+      "to": "le-n-le-f-1-door-_1_54",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-3",
+      "from": "le-n-le-f-1-door-_1_54",
+      "to": "le-n-le-f-1-door-_1_62",
+      "weight": 17.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-4",
+      "from": "le-n-le-f-1-door-_1_62",
+      "to": "le-n-le-f-1-door-_1_63",
+      "weight": 1.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-5",
+      "from": "le-n-le-f-1-door-_1_63",
+      "to": "le-n-le-f-1-door-_1_64",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-cleast-s-chain-6",
+      "from": "le-n-le-f-1-door-_1_64",
+      "to": "le-n-le-f-1-cleast-s-t1",
+      "weight": 3.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clnorth-chain-0",
+      "from": "le-n-le-f-1-clnorth-t0",
+      "to": "le-n-le-f-1-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clnorth-chain-1",
+      "from": "le-n-le-f-1-clnorth-t1",
+      "to": "le-n-le-f-1-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-chain-0",
+      "from": "le-n-le-f-1-door-_1_23",
+      "to": "le-n-le-f-1-clsouth-t0",
+      "weight": 7.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-chain-1",
+      "from": "le-n-le-f-1-clsouth-t0",
+      "to": "le-n-le-f-1-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clsouth-chain-2",
+      "from": "le-n-le-f-1-clsouth-t1",
+      "to": "le-n-le-f-1-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwest-chain-0",
+      "from": "le-n-le-f-1-clwest-t0",
+      "to": "le-n-le-f-1-clwest-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwest-chain-1",
+      "from": "le-n-le-f-1-clwest-t1",
+      "to": "le-n-le-f-1-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f-1-clwing-chain-0",
+      "from": "le-n-le-f-1-clwing-t0",
+      "to": "le-n-le-f-1-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clcross-chain-0",
+      "from": "le-n-le-f0-clcross-t0",
+      "to": "le-n-le-f0-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clcross-chain-1",
+      "from": "le-n-le-f0-clcross-t1",
+      "to": "le-n-le-f0-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-0",
+      "from": "le-n-le-f0-cleast-t0",
+      "to": "le-n-le-f0-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-1",
+      "from": "le-n-le-f0-cleast-t1",
+      "to": "le-n-le-f0-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-2",
+      "from": "le-n-le-f0-cleast-t2",
+      "to": "le-n-le-f0-door-0_75",
+      "weight": 2.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-3",
+      "from": "le-n-le-f0-door-0_75",
+      "to": "le-n-le-f0-door-0_79",
+      "weight": 14.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-4",
+      "from": "le-n-le-f0-door-0_79",
+      "to": "le-n-le-f0-door-0_81",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-5",
+      "from": "le-n-le-f0-door-0_81",
+      "to": "le-n-le-f0-door-0_83",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-6",
+      "from": "le-n-le-f0-door-0_83",
+      "to": "le-n-le-f0-door-0_87",
+      "weight": 14.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-chain-7",
+      "from": "le-n-le-f0-door-0_87",
+      "to": "le-n-le-f0-door-0_89",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-0",
+      "from": "le-n-le-f0-cleast-s-t0",
+      "to": "le-n-le-f0-door-039",
+      "weight": 14.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-1",
+      "from": "le-n-le-f0-door-039",
+      "to": "le-n-le-f0-door-058",
+      "weight": 42.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-2",
+      "from": "le-n-le-f0-door-058",
+      "to": "le-n-le-f0-door-060",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-3",
+      "from": "le-n-le-f0-door-060",
+      "to": "le-n-le-f0-door-062",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-4",
+      "from": "le-n-le-f0-door-062",
+      "to": "le-n-le-f0-door-063",
+      "weight": 1.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-5",
+      "from": "le-n-le-f0-door-063",
+      "to": "le-n-le-f0-door-065",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-cleast-s-chain-6",
+      "from": "le-n-le-f0-door-065",
+      "to": "le-n-le-f0-cleast-s-t1",
+      "weight": 0.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-chain-0",
+      "from": "le-n-le-f0-clnorth-t0",
+      "to": "le-n-le-f0-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-chain-1",
+      "from": "le-n-le-f0-clnorth-t1",
+      "to": "le-n-le-f0-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clnorth-chain-2",
+      "from": "le-n-le-f0-clnorth-t2",
+      "to": "le-n-le-f0-door-0_99",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clsouth-chain-0",
+      "from": "le-n-le-f0-clsouth-t0",
+      "to": "le-n-le-f0-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clsouth-chain-1",
+      "from": "le-n-le-f0-clsouth-t1",
+      "to": "le-n-le-f0-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-0",
+      "from": "le-n-le-f0-door-0_100A",
+      "to": "le-n-le-f0-door-0_100B",
+      "weight": 0.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-1",
+      "from": "le-n-le-f0-door-0_100B",
+      "to": "le-n-le-f0-door-0_100C",
+      "weight": 0.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-2",
+      "from": "le-n-le-f0-door-0_100C",
+      "to": "le-n-le-f0-door-0_100D",
+      "weight": 0.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-3",
+      "from": "le-n-le-f0-door-0_100D",
+      "to": "le-n-le-f0-clwest-t0",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-4",
+      "from": "le-n-le-f0-clwest-t0",
+      "to": "le-n-le-f0-clwest-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwest-chain-5",
+      "from": "le-n-le-f0-clwest-t1",
+      "to": "le-n-le-f0-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f0-clwing-chain-0",
+      "from": "le-n-le-f0-clwing-t0",
+      "to": "le-n-le-f0-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clcross-chain-0",
+      "from": "le-n-le-f1-clcross-t0",
+      "to": "le-n-le-f1-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clcross-chain-1",
+      "from": "le-n-le-f1-clcross-t1",
+      "to": "le-n-le-f1-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-chain-0",
+      "from": "le-n-le-f1-cleast-t0",
+      "to": "le-n-le-f1-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-chain-1",
+      "from": "le-n-le-f1-cleast-t1",
+      "to": "le-n-le-f1-door-1_71",
+      "weight": 78.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-chain-2",
+      "from": "le-n-le-f1-door-1_71",
+      "to": "le-n-le-f1-cleast-t2",
+      "weight": 11.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-cleast-s-chain-0",
+      "from": "le-n-le-f1-cleast-s-t0",
+      "to": "le-n-le-f1-cleast-s-t1",
+      "weight": 68.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clnorth-chain-0",
+      "from": "le-n-le-f1-clnorth-t0",
+      "to": "le-n-le-f1-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clnorth-chain-1",
+      "from": "le-n-le-f1-clnorth-t1",
+      "to": "le-n-le-f1-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clsouth-chain-0",
+      "from": "le-n-le-f1-clsouth-t0",
+      "to": "le-n-le-f1-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clsouth-chain-1",
+      "from": "le-n-le-f1-clsouth-t1",
+      "to": "le-n-le-f1-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwest-chain-0",
+      "from": "le-n-le-f1-clwest-t0",
+      "to": "le-n-le-f1-clwest-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwest-chain-1",
+      "from": "le-n-le-f1-clwest-t1",
+      "to": "le-n-le-f1-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-chain-0",
+      "from": "le-n-le-f1-door-109_114",
+      "to": "le-n-le-f1-door-115",
+      "weight": 9.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-chain-1",
+      "from": "le-n-le-f1-door-115",
+      "to": "le-n-le-f1-clwing-t0",
+      "weight": 28.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f1-clwing-chain-2",
+      "from": "le-n-le-f1-clwing-t0",
+      "to": "le-n-le-f1-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clcross-chain-0",
+      "from": "le-n-le-f2-clcross-t0",
+      "to": "le-n-le-f2-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clcross-chain-1",
+      "from": "le-n-le-f2-clcross-t1",
+      "to": "le-n-le-f2-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-chain-0",
+      "from": "le-n-le-f2-cleast-t0",
+      "to": "le-n-le-f2-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-chain-1",
+      "from": "le-n-le-f2-cleast-t1",
+      "to": "le-n-le-f2-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-chain-2",
+      "from": "le-n-le-f2-cleast-t2",
+      "to": "le-n-le-f2-door-2_77",
+      "weight": 10.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-s-chain-0",
+      "from": "le-n-le-f2-cleast-s-t0",
+      "to": "le-n-le-f2-door-2_54",
+      "weight": 47.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-s-chain-1",
+      "from": "le-n-le-f2-door-2_54",
+      "to": "le-n-le-f2-door-2_63",
+      "weight": 19.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-cleast-s-chain-2",
+      "from": "le-n-le-f2-door-2_63",
+      "to": "le-n-le-f2-cleast-s-t1",
+      "weight": 5.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clnorth-chain-0",
+      "from": "le-n-le-f2-clnorth-t0",
+      "to": "le-n-le-f2-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clnorth-chain-1",
+      "from": "le-n-le-f2-clnorth-t1",
+      "to": "le-n-le-f2-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clsouth-chain-0",
+      "from": "le-n-le-f2-clsouth-t0",
+      "to": "le-n-le-f2-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clsouth-chain-1",
+      "from": "le-n-le-f2-clsouth-t1",
+      "to": "le-n-le-f2-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-0",
+      "from": "le-n-le-f2-door-2_104",
+      "to": "le-n-le-f2-door-2_105",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-1",
+      "from": "le-n-le-f2-door-2_105",
+      "to": "le-n-le-f2-door-2_113",
+      "weight": 29.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-2",
+      "from": "le-n-le-f2-door-2_113",
+      "to": "le-n-le-f2-clwest-t0",
+      "weight": 42.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-3",
+      "from": "le-n-le-f2-clwest-t0",
+      "to": "le-n-le-f2-door-2_126",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-4",
+      "from": "le-n-le-f2-door-2_126",
+      "to": "le-n-le-f2-door-2_133",
+      "weight": 25.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-5",
+      "from": "le-n-le-f2-door-2_133",
+      "to": "le-n-le-f2-clwest-t1",
+      "weight": 60.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwest-chain-6",
+      "from": "le-n-le-f2-clwest-t1",
+      "to": "le-n-le-f2-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-chain-0",
+      "from": "le-n-le-f2-door-202",
+      "to": "le-n-le-f2-door-210",
+      "weight": 12.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-chain-1",
+      "from": "le-n-le-f2-door-210",
+      "to": "le-n-le-f2-clwing-t0",
+      "weight": 36.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f2-clwing-chain-2",
+      "from": "le-n-le-f2-clwing-t0",
+      "to": "le-n-le-f2-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clcross-chain-0",
+      "from": "le-n-le-f3-clcross-t0",
+      "to": "le-n-le-f3-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clcross-chain-1",
+      "from": "le-n-le-f3-clcross-t1",
+      "to": "le-n-le-f3-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-chain-0",
+      "from": "le-n-le-f3-cleast-t0",
+      "to": "le-n-le-f3-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-chain-1",
+      "from": "le-n-le-f3-cleast-t1",
+      "to": "le-n-le-f3-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-s-chain-0",
+      "from": "le-n-le-f3-cleast-s-t0",
+      "to": "le-n-le-f3-cleast-s-t1",
+      "weight": 68.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-cleast-s-chain-1",
+      "from": "le-n-le-f3-cleast-s-t1",
+      "to": "le-n-le-f3-door-3_67",
+      "weight": 3.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clnorth-chain-0",
+      "from": "le-n-le-f3-clnorth-t0",
+      "to": "le-n-le-f3-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clnorth-chain-1",
+      "from": "le-n-le-f3-clnorth-t1",
+      "to": "le-n-le-f3-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clsouth-chain-0",
+      "from": "le-n-le-f3-clsouth-t0",
+      "to": "le-n-le-f3-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clsouth-chain-1",
+      "from": "le-n-le-f3-clsouth-t1",
+      "to": "le-n-le-f3-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-0",
+      "from": "le-n-le-f3-door-3_113",
+      "to": "le-n-le-f3-door-3_114",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-1",
+      "from": "le-n-le-f3-door-3_114",
+      "to": "le-n-le-f3-door-3_124",
+      "weight": 36.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-2",
+      "from": "le-n-le-f3-door-3_124",
+      "to": "le-n-le-f3-clwest-t0",
+      "weight": 2.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-3",
+      "from": "le-n-le-f3-clwest-t0",
+      "to": "le-n-le-f3-door-3_126",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-4",
+      "from": "le-n-le-f3-door-3_126",
+      "to": "le-n-le-f3-clwest-t1",
+      "weight": 85.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwest-chain-5",
+      "from": "le-n-le-f3-clwest-t1",
+      "to": "le-n-le-f3-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-chain-0",
+      "from": "le-n-le-f3-door-317",
+      "to": "le-n-le-f3-clwing-t0",
+      "weight": 25.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-chain-1",
+      "from": "le-n-le-f3-clwing-t0",
+      "to": "le-n-le-f3-door-334",
+      "weight": 2.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f3-clwing-chain-2",
+      "from": "le-n-le-f3-door-334",
+      "to": "le-n-le-f3-clwing-t1",
+      "weight": 50.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clcross-chain-0",
+      "from": "le-n-le-f4-clcross-t0",
+      "to": "le-n-le-f4-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clcross-chain-1",
+      "from": "le-n-le-f4-clcross-t1",
+      "to": "le-n-le-f4-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-chain-0",
+      "from": "le-n-le-f4-cleast-t0",
+      "to": "le-n-le-f4-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-chain-1",
+      "from": "le-n-le-f4-cleast-t1",
+      "to": "le-n-le-f4-door-4_70",
+      "weight": 74.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-chain-2",
+      "from": "le-n-le-f4-door-4_70",
+      "to": "le-n-le-f4-cleast-t2",
+      "weight": 15.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-s-chain-0",
+      "from": "le-n-le-f4-cleast-s-t0",
+      "to": "le-n-le-f4-door-4_51",
+      "weight": 41.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-s-chain-1",
+      "from": "le-n-le-f4-door-4_51",
+      "to": "le-n-le-f4-door-4_52",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-cleast-s-chain-2",
+      "from": "le-n-le-f4-door-4_52",
+      "to": "le-n-le-f4-cleast-s-t1",
+      "weight": 25.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-chain-0",
+      "from": "le-n-le-f4-clnorth-t0",
+      "to": "le-n-le-f4-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-chain-1",
+      "from": "le-n-le-f4-clnorth-t1",
+      "to": "le-n-le-f4-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-chain-2",
+      "from": "le-n-le-f4-clnorth-t2",
+      "to": "le-n-le-f4-door-4_95",
+      "weight": 83.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-chain-3",
+      "from": "le-n-le-f4-door-4_95",
+      "to": "le-n-le-f4-door-4_97",
+      "weight": 8.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clnorth-chain-4",
+      "from": "le-n-le-f4-door-4_97",
+      "to": "le-n-le-f4-door-4_99",
+      "weight": 8.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clsouth-chain-0",
+      "from": "le-n-le-f4-clsouth-t0",
+      "to": "le-n-le-f4-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clsouth-chain-1",
+      "from": "le-n-le-f4-clsouth-t1",
+      "to": "le-n-le-f4-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-chain-0",
+      "from": "le-n-le-f4-door-4_110",
+      "to": "le-n-le-f4-door-4_113",
+      "weight": 10.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-chain-1",
+      "from": "le-n-le-f4-door-4_113",
+      "to": "le-n-le-f4-clwest-t0",
+      "weight": 42.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-chain-2",
+      "from": "le-n-le-f4-clwest-t0",
+      "to": "le-n-le-f4-clwest-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwest-chain-3",
+      "from": "le-n-le-f4-clwest-t1",
+      "to": "le-n-le-f4-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-chain-0",
+      "from": "le-n-le-f4-door-415",
+      "to": "le-n-le-f4-door-416",
+      "weight": 1.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-chain-1",
+      "from": "le-n-le-f4-door-416",
+      "to": "le-n-le-f4-clwing-t0",
+      "weight": 26.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f4-clwing-chain-2",
+      "from": "le-n-le-f4-clwing-t0",
+      "to": "le-n-le-f4-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clcross-chain-0",
+      "from": "le-n-le-f5-clcross-t0",
+      "to": "le-n-le-f5-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clcross-chain-1",
+      "from": "le-n-le-f5-clcross-t1",
+      "to": "le-n-le-f5-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-0",
+      "from": "le-n-le-f5-cleast-t0",
+      "to": "le-n-le-f5-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-1",
+      "from": "le-n-le-f5-cleast-t1",
+      "to": "le-n-le-f5-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-2",
+      "from": "le-n-le-f5-cleast-t2",
+      "to": "le-n-le-f5-door-5_81",
+      "weight": 24.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-3",
+      "from": "le-n-le-f5-door-5_81",
+      "to": "le-n-le-f5-door-5_84",
+      "weight": 10.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-4",
+      "from": "le-n-le-f5-door-5_84",
+      "to": "le-n-le-f5-door-5_86",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-5",
+      "from": "le-n-le-f5-door-5_86",
+      "to": "le-n-le-f5-door-5_87",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-chain-6",
+      "from": "le-n-le-f5-door-5_87",
+      "to": "le-n-le-f5-door-5_89",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-s-chain-0",
+      "from": "le-n-le-f5-cleast-s-t0",
+      "to": "le-n-le-f5-door-5_55",
+      "weight": 49.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-s-chain-1",
+      "from": "le-n-le-f5-door-5_55",
+      "to": "le-n-le-f5-door-5_56",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-cleast-s-chain-2",
+      "from": "le-n-le-f5-door-5_56",
+      "to": "le-n-le-f5-cleast-s-t1",
+      "weight": 17.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clnorth-chain-0",
+      "from": "le-n-le-f5-clnorth-t0",
+      "to": "le-n-le-f5-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clnorth-chain-1",
+      "from": "le-n-le-f5-clnorth-t1",
+      "to": "le-n-le-f5-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clsouth-chain-0",
+      "from": "le-n-le-f5-clsouth-t0",
+      "to": "le-n-le-f5-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clsouth-chain-1",
+      "from": "le-n-le-f5-clsouth-t1",
+      "to": "le-n-le-f5-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-chain-0",
+      "from": "le-n-le-f5-clwest-t0",
+      "to": "le-n-le-f5-door-5_129",
+      "weight": 15.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-chain-1",
+      "from": "le-n-le-f5-door-5_129",
+      "to": "le-n-le-f5-door-5_138",
+      "weight": 32.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-chain-2",
+      "from": "le-n-le-f5-door-5_138",
+      "to": "le-n-le-f5-clwest-t1",
+      "weight": 41.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwest-chain-3",
+      "from": "le-n-le-f5-clwest-t1",
+      "to": "le-n-le-f5-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f5-clwing-chain-0",
+      "from": "le-n-le-f5-clwing-t0",
+      "to": "le-n-le-f5-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clcross-chain-0",
+      "from": "le-n-le-f6-clcross-t0",
+      "to": "le-n-le-f6-clcross-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clcross-chain-1",
+      "from": "le-n-le-f6-clcross-t1",
+      "to": "le-n-le-f6-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-0",
+      "from": "le-n-le-f6-cleast-t0",
+      "to": "le-n-le-f6-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-1",
+      "from": "le-n-le-f6-cleast-t1",
+      "to": "le-n-le-f6-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-2",
+      "from": "le-n-le-f6-cleast-t2",
+      "to": "le-n-le-f6-door-6_79",
+      "weight": 17.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-3",
+      "from": "le-n-le-f6-door-6_79",
+      "to": "le-n-le-f6-door-6_80",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-4",
+      "from": "le-n-le-f6-door-6_80",
+      "to": "le-n-le-f6-door-6_85",
+      "weight": 18.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-5",
+      "from": "le-n-le-f6-door-6_85",
+      "to": "le-n-le-f6-door-6_86",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-6",
+      "from": "le-n-le-f6-door-6_86",
+      "to": "le-n-le-f6-door-6_87",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-chain-7",
+      "from": "le-n-le-f6-door-6_87",
+      "to": "le-n-le-f6-door-6_88",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-s-chain-0",
+      "from": "le-n-le-f6-cleast-s-t0",
+      "to": "le-n-le-f6-door-6_53",
+      "weight": 45.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-cleast-s-chain-1",
+      "from": "le-n-le-f6-door-6_53",
+      "to": "le-n-le-f6-cleast-s-t1",
+      "weight": 23.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clnorth-chain-0",
+      "from": "le-n-le-f6-clnorth-t0",
+      "to": "le-n-le-f6-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clnorth-chain-1",
+      "from": "le-n-le-f6-clnorth-t1",
+      "to": "le-n-le-f6-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clsouth-chain-0",
+      "from": "le-n-le-f6-clsouth-t0",
+      "to": "le-n-le-f6-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clsouth-chain-1",
+      "from": "le-n-le-f6-clsouth-t1",
+      "to": "le-n-le-f6-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-0",
+      "from": "le-n-le-f6-door-6_100",
+      "to": "le-n-le-f6-door-6_101",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-1",
+      "from": "le-n-le-f6-door-6_101",
+      "to": "le-n-le-f6-door-6_102",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-2",
+      "from": "le-n-le-f6-door-6_102",
+      "to": "le-n-le-f6-door-6_104",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-3",
+      "from": "le-n-le-f6-door-6_104",
+      "to": "le-n-le-f6-door-6_105",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-4",
+      "from": "le-n-le-f6-door-6_105",
+      "to": "le-n-le-f6-door-6_107",
+      "weight": 7.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-5",
+      "from": "le-n-le-f6-door-6_107",
+      "to": "le-n-le-f6-door-6_118",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-6",
+      "from": "le-n-le-f6-door-6_118",
+      "to": "le-n-le-f6-door-6_121",
+      "weight": 10.9,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-7",
+      "from": "le-n-le-f6-door-6_121",
+      "to": "le-n-le-f6-clwest-t0",
+      "weight": 13.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-8",
+      "from": "le-n-le-f6-clwest-t0",
+      "to": "le-n-le-f6-door-6_129",
+      "weight": 15.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-9",
+      "from": "le-n-le-f6-door-6_129",
+      "to": "le-n-le-f6-clwest-t1",
+      "weight": 74.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwest-chain-10",
+      "from": "le-n-le-f6-clwest-t1",
+      "to": "le-n-le-f6-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f6-clwing-chain-0",
+      "from": "le-n-le-f6-clwing-t0",
+      "to": "le-n-le-f6-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-chain-0",
+      "from": "le-n-le-f7-clcross-t0",
+      "to": "le-n-le-f7-door-7_33",
+      "weight": 33.3,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-chain-1",
+      "from": "le-n-le-f7-door-7_33",
+      "to": "le-n-le-f7-clcross-t1",
+      "weight": 66.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clcross-chain-2",
+      "from": "le-n-le-f7-clcross-t1",
+      "to": "le-n-le-f7-clcross-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-chain-0",
+      "from": "le-n-le-f7-cleast-t0",
+      "to": "le-n-le-f7-cleast-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-chain-1",
+      "from": "le-n-le-f7-cleast-t1",
+      "to": "le-n-le-f7-cleast-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-chain-2",
+      "from": "le-n-le-f7-cleast-t2",
+      "to": "le-n-le-f7-door-7_85",
+      "weight": 39.1,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-chain-3",
+      "from": "le-n-le-f7-door-7_85",
+      "to": "le-n-le-f7-door-7_86",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-chain-4",
+      "from": "le-n-le-f7-door-7_86",
+      "to": "le-n-le-f7-door-7_87",
+      "weight": 3.6,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-chain-0",
+      "from": "le-n-le-f7-cleast-s-t0",
+      "to": "le-n-le-f7-door-7_54",
+      "weight": 47.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-chain-1",
+      "from": "le-n-le-f7-door-7_54",
+      "to": "le-n-le-f7-door-7_55",
+      "weight": 2.2,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-chain-2",
+      "from": "le-n-le-f7-door-7_55",
+      "to": "le-n-le-f7-door-7_57",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-chain-3",
+      "from": "le-n-le-f7-door-7_57",
+      "to": "le-n-le-f7-door-7_59",
+      "weight": 4.5,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-cleast-s-chain-4",
+      "from": "le-n-le-f7-door-7_59",
+      "to": "le-n-le-f7-cleast-s-t1",
+      "weight": 11.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clnorth-chain-0",
+      "from": "le-n-le-f7-clnorth-t0",
+      "to": "le-n-le-f7-clnorth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clnorth-chain-1",
+      "from": "le-n-le-f7-clnorth-t1",
+      "to": "le-n-le-f7-clnorth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-chain-0",
+      "from": "le-n-le-f7-door-7_15",
+      "to": "le-n-le-f7-clsouth-t0",
+      "weight": 39.4,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-chain-1",
+      "from": "le-n-le-f7-clsouth-t0",
+      "to": "le-n-le-f7-clsouth-t1",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clsouth-chain-2",
+      "from": "le-n-le-f7-clsouth-t1",
+      "to": "le-n-le-f7-clsouth-t2",
+      "weight": 100.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-chain-0",
+      "from": "le-n-le-f7-door-7_102",
+      "to": "le-n-le-f7-door-7_13",
+      "weight": 40.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-chain-1",
+      "from": "le-n-le-f7-door-7_13",
+      "to": "le-n-le-f7-clwest-t0",
+      "weight": 42.7,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-chain-2",
+      "from": "le-n-le-f7-clwest-t0",
+      "to": "le-n-le-f7-clwest-t1",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwest-chain-3",
+      "from": "le-n-le-f7-clwest-t1",
+      "to": "le-n-le-f7-clwest-t2",
+      "weight": 90.0,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "le-e-le-f7-clwing-chain-0",
+      "from": "le-n-le-f7-clwing-t0",
+      "to": "le-n-le-f7-clwing-t1",
+      "weight": 52.8,
+      "bidirectional": true,
+      "kind": "corridor"
     },
     {
       "id": "le-e-vert-le-lift-A-le-f-1-le-f0",
@@ -12497,8 +16682,8 @@
     "floorCount": 9,
     "roomCount": 92,
     "roomStubCount": 92,
-    "nodeCount": 454,
-    "edgeCount": 600,
+    "nodeCount": 625,
+    "edgeCount": 888,
     "verticalShafts": [
       "le-lift-A",
       "le-lift-B",

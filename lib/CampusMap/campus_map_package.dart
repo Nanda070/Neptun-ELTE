@@ -316,6 +316,7 @@ class CampusEdge {
     required this.to,
     required this.weight,
     required this.bidirectional,
+    required this.kind,
   });
 
   final String id;
@@ -323,6 +324,7 @@ class CampusEdge {
   final String to;
   final double weight;
   final bool bidirectional;
+  final String kind;
 
   factory CampusEdge.fromJson(Map<String, dynamic> j) => CampusEdge(
         id: j['id'] as String,
@@ -330,6 +332,7 @@ class CampusEdge {
         to: j['to'] as String,
         weight: (j['weight'] as num).toDouble(),
         bidirectional: j['bidirectional'] as bool? ?? true,
+        kind: j['kind'] as String? ?? 'corridor',
       );
 }
 

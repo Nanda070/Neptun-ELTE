@@ -6,16 +6,15 @@ Paths are Dijkstra on pixel weights (stairs costlier than lifts).
 ## 1 same-floor east neighbors
 
 - **From → To:** `0.81` → `0.83`
-- **Cost (px-equiv):** 276.3
-- **Hops:** 4
+- **Cost (px-equiv):** 87.3
+- **Hops:** 3
 - **Vertical kinds:** none
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0']`
 - **Node id list:**
 
 ```
 le-n-le-f0-room-0_81
 le-n-le-f0-door-0_81
-le-n-le-f0-loop-e
 le-n-le-f0-door-0_83
 le-n-le-f0-room-0_83
 ```
@@ -23,10 +22,10 @@ le-n-le-f0-room-0_83
 ## 2 ground Dunapart entrance → Ortvay
 
 - **From → To:** `entrance-dunapart@f0` → `0.81`
-- **Cost (px-equiv):** 739.5
-- **Hops:** 7
+- **Cost (px-equiv):** 779.5
+- **Hops:** 11
 - **Vertical kinds:** none
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
 - **Node id list:**
 
 ```
@@ -36,6 +35,10 @@ le-n-le-f0-cross-w
 le-n-le-f0-cross-mid
 le-n-le-f0-cross-e
 le-n-le-f0-loop-e
+le-n-le-f0-cleast-t1
+le-n-le-f0-cleast-t2
+le-n-le-f0-door-0_75
+le-n-le-f0-door-0_79
 le-n-le-f0-door-0_81
 le-n-le-f0-room-0_81
 ```
@@ -43,21 +46,24 @@ le-n-le-f0-room-0_81
 ## 3 basement ↔ floor 1 (vertical)
 
 - **From → To:** `-1.53` → `1.71`
-- **Cost (px-equiv):** 791.9
-- **Hops:** 9
+- **Cost (px-equiv):** 885.7
+- **Hops:** 12
 - **Vertical kinds:** ['verticalStair', 'verticalStair']
-- **Floors visited:** `['le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f0', 'le-f1', 'le-f1', 'le-f1', 'le-f1']`
+- **Floors visited:** `['le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f-1', 'le-f0', 'le-f1', 'le-f1', 'le-f1', 'le-f1', 'le-f1']`
 - **Node id list:**
 
 ```
 le-n-le-f-1-room-_1_53
 le-n-le-f-1-door-_1_53
+le-n-le-f-1-door-_1_52
+le-n-le-f-1-cleast-s-t0
 le-n-le-f-1-loop-e-s
 le-n-le-f-1-loop-e
 le-n-le-f-1-stair-main
 le-n-le-f0-stair-main
 le-n-le-f1-stair-main
 le-n-le-f1-loop-e
+le-n-le-f1-cleast-t1
 le-n-le-f1-door-1_71
 le-n-le-f1-room-1_71
 ```
@@ -65,16 +71,15 @@ le-n-le-f1-room-1_71
 ## 4 named halls Ortvay → Eötvös
 
 - **From → To:** `0.81` → `0.83`
-- **Cost (px-equiv):** 276.3
-- **Hops:** 4
+- **Cost (px-equiv):** 87.3
+- **Hops:** 3
 - **Vertical kinds:** none
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0']`
 - **Node id list:**
 
 ```
 le-n-le-f0-room-0_81
 le-n-le-f0-door-0_81
-le-n-le-f0-loop-e
 le-n-le-f0-door-0_83
 le-n-le-f0-room-0_83
 ```
@@ -82,20 +87,32 @@ le-n-le-f0-room-0_83
 ## 5 cross-zone west → east
 
 - **From → To:** `0.100A` → `0.89`
-- **Cost (px-equiv):** 918.6
-- **Hops:** 8
+- **Cost (px-equiv):** 958.9
+- **Hops:** 20
 - **Vertical kinds:** none
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0']`
 - **Node id list:**
 
 ```
 le-n-le-f0-room-0_100A
 le-n-le-f0-door-0_100A
+le-n-le-f0-door-0_100B
+le-n-le-f0-door-0_100C
+le-n-le-f0-door-0_100D
+le-n-le-f0-clwest-t0
+le-n-le-f0-clwest-t1
 le-n-le-f0-loop-w
 le-n-le-f0-cross-w
 le-n-le-f0-cross-mid
 le-n-le-f0-cross-e
 le-n-le-f0-loop-e
+le-n-le-f0-cleast-t1
+le-n-le-f0-cleast-t2
+le-n-le-f0-door-0_75
+le-n-le-f0-door-0_79
+le-n-le-f0-door-0_81
+le-n-le-f0-door-0_83
+le-n-le-f0-door-0_87
 le-n-le-f0-door-0_89
 le-n-le-f0-room-0_89
 ```
@@ -103,15 +120,19 @@ le-n-le-f0-room-0_89
 ## 6 cross-floor lift/stair 0 → 3
 
 - **From → To:** `0.81` → `3.67`
-- **Cost (px-equiv):** 926.8
-- **Hops:** 12
+- **Cost (px-equiv):** 1022.8
+- **Hops:** 18
 - **Vertical kinds:** ['verticalLift', 'verticalLift', 'verticalLift']
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f1', 'le-f2', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f1', 'le-f2', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3', 'le-f3']`
 - **Node id list:**
 
 ```
 le-n-le-f0-room-0_81
 le-n-le-f0-door-0_81
+le-n-le-f0-door-0_79
+le-n-le-f0-door-0_75
+le-n-le-f0-cleast-t2
+le-n-le-f0-cleast-t1
 le-n-le-f0-loop-e
 le-n-le-f0-stair-main
 le-n-le-f0-lift-B
@@ -121,6 +142,8 @@ le-n-le-f3-lift-B
 le-n-le-f3-stair-main
 le-n-le-f3-loop-e
 le-n-le-f3-loop-e-s
+le-n-le-f3-cleast-s-t0
+le-n-le-f3-cleast-s-t1
 le-n-le-f3-door-3_67
 le-n-le-f3-room-3_67
 ```
@@ -128,16 +151,21 @@ le-n-le-f3-room-3_67
 ## 7 LK/hajóorr wing stub
 
 - **From → To:** `039` → `115`
-- **Cost (px-equiv):** 781.6
-- **Hops:** 13
+- **Cost (px-equiv):** 796.0
+- **Hops:** 19
 - **Vertical kinds:** ['verticalStair']
-- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f1', 'le-f1', 'le-f1', 'le-f1', 'le-f1']`
+- **Floors visited:** `['le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f0', 'le-f1', 'le-f1', 'le-f1', 'le-f1', 'le-f1', 'le-f1']`
 - **Node id list:**
 
 ```
 le-n-le-f0-room-039
 le-n-le-f0-door-039
-le-n-le-f0-loop-e-s
+le-n-le-f0-door-058
+le-n-le-f0-door-060
+le-n-le-f0-door-062
+le-n-le-f0-door-063
+le-n-le-f0-door-065
+le-n-le-f0-cleast-s-t1
 le-n-le-f0-loop-se
 le-n-le-f0-loop-s
 le-n-le-f0-wing-n
@@ -146,7 +174,8 @@ le-n-le-f0-wing-s
 le-n-le-f0-stair-wing
 le-n-le-f1-stair-wing
 le-n-le-f1-wing-s
-le-n-le-f1-wing-mid
+le-n-le-f1-clwing-t1
+le-n-le-f1-clwing-t0
 le-n-le-f1-door-115
 le-n-le-f1-room-115
 ```
