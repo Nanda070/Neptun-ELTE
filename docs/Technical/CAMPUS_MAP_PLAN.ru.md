@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **Фаза 0 готова · фаза 1 готова** (схема зафиксирована). Далее: **фаза 2** — оцифровка графа LD. **Фаза B (Flutter-приложение)** отложена, пока графы LD (+ LE) не упакованы и не прошли QA.  
+**Статус:** **Фазы 0–2 готовы** (MVP-граф LD). Далее: **фаза 3** — оцифровка LE. **Фаза B (Flutter-приложение)** отложена, пока графы LD (+ LE) не упакованы и не прошли QA.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
@@ -60,6 +60,7 @@
 | Research README | `README.md` |
 | Отчёты импорта BIS | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
 | **Схема фазы 1** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
+| **Граф LD фазы 2** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
 | Basemap JPG LD | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | Публичная таблица комнат LD | `ld_south/rooms.json` (~134 подписанных комнат; схема коридоров 1–8) |
 | Basemap JPG LE | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -115,7 +116,7 @@
 
 - **Primary (граф):** локальные **пиксели basemap** (`space: "basemapPx"`), origin top-left, привязка к размеру JPG — маршрутизация без Mapbox.
 - **Secondary:** опциональный WGS84 из centroids BIS (`space: "wgs84"`) для outdoor handoff / проверок — не CRS проходимости.
-- Образец: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (реальные коды/WGS BIS; **placeholder**-пиксели до фазы 2).
+- Образец: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (фрагмент floor-0; **полный** граф LD — фаза 2 [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json)).
 - Join-заглушка: [`joins_ld.stub.json`](campus_map_research/schema/joins_ld.stub.json) / `.csv`.
 
 ### Лестницы / лифты
@@ -132,7 +133,7 @@
 
 ## Фаза 2 — Полная оцифровка графа LD
 
-**Статус:** **СЛЕДУЮЩАЯ** (не начата).
+**Статус:** **ГОТОВО** — MVP **2026-09-16**. Артефакт: [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · заметки: [`graph/README.md`](campus_map_research/graph/README.md) · сэмплы: [`graph/samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md).
 
 **Зачем:** проходимый граф коридоров для **Юга / Déli (LD)** на всех студенчески значимых этажах.
 
@@ -168,10 +169,12 @@
 
 ### Критерии выхода
 
-- [ ] Каждый этаж −1…7 имеет связный corridor-компонент по схеме 1–8 (или задокументированные тупики).
-- [ ] Все лифты/лестницы/входы на этих этажах — узлы с межэтажными / outdoor-связями где применимо.
-- [ ] ≥5 сэмплов A→B проходят (путь есть, длина разумна, нет «сквозь стену»).
-- [ ] Черновик артефакта `graph_ld.json` существует (может лежать в research до упаковки фазы 5).
+- [x] Каждый этаж −1…7 имеет связный corridor-компонент по схеме 1–8 (или задокументированные тупики).
+- [x] Все лифты/лестницы/входы на этих этажах — узлы с межэтажными / outdoor-связями где применимо.
+- [x] ≥5 сэмплов A→B проходят (путь есть, длина разумна, нет «сквозь стену»).
+- [x] Черновик артефакта `graph_ld.json` существует (может лежать в research до упаковки фазы 5).
+
+**Честность:** пиксели хабов/дверей — **полуручные / приблизительные** (stub по цифре коридора + визуальные хабы), не CV-точные двери. Чердак `T` опущен. Пиксели уточним позже; связность для MVP полная.
 
 ---
 

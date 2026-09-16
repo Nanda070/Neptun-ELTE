@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0 done · Phase 1 done** (schema locked). Next: **Phase 2** digitize LD graph. **Phase B (Flutter app)** deferred until LD (+ LE) graphs are packaged + QA’d.  
+**Status:** **Phase 0–2 done** (LD MVP graph). Next: **Phase 3** digitize LE. **Phase B (Flutter app)** deferred until LD (+ LE) graphs are packaged + QA’d.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -60,6 +60,7 @@ Paths under `docs/Technical/campus_map_research/`:
 | Research README | `README.md` |
 | BIS import reports | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
 | **Phase 1 schema** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
+| **Phase 2 LD graph** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
 | LD basemap JPGs | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | LD public room table | `ld_south/rooms.json` (~134 labeled rooms; corridor schema 1–8) |
 | LE basemap JPGs | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -115,7 +116,7 @@ Paths under `docs/Technical/campus_map_research/`:
 
 - **Primary (graph):** floor-local **basemap pixels** (`space: "basemapPx"`), origin top-left, tied to declared JPG size — routing without Mapbox.
 - **Secondary:** optional WGS84 from BIS centroids (`space: "wgs84"`) for outdoor handoff / checks — not the walkable CRS.
-- Sample: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (real BIS codes/WGS; **placeholder** pixels until Phase 2).
+- Sample: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (illustrative floor-0 fragment; **full** LD graph is Phase 2 [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json)).
 - Join stub: [`joins_ld.stub.json`](campus_map_research/schema/joins_ld.stub.json) / `.csv`.
 
 ### Stairs / lifts
@@ -132,7 +133,7 @@ Stairs and lifts are **inter-floor edges**: one landing node per floor sharing `
 
 ## Phase 2 — Digitize LD graph fully
 
-**Status:** **NEXT** (not started).
+**Status:** **DONE** — MVP **2026-09-16**. Artifact: [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · notes: [`graph/README.md`](campus_map_research/graph/README.md) · samples: [`graph/samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md).
 
 **Purpose:** walkable corridor graph for **South / Déli (LD)** on all student-relevant floors.
 
@@ -168,10 +169,12 @@ Document at least **5** LD routes with expected floor changes, e.g.:
 
 ### Exit criteria
 
-- [ ] Every floor −1…7 has a connected corridor component covering schema 1–8 (or documented dead-ends).
-- [ ] All lifts/stairs/entrances on those floors are nodes with inter-floor / outdoor links as applicable.
-- [ ] ≥5 A→B samples pass (path exists, sensible length, no wall-crossing).
-- [ ] Draft artifact `graph_ld.json` exists (may live under research until Phase 5 packaging).
+- [x] Every floor −1…7 has a connected corridor component covering schema 1–8 (or documented dead-ends).
+- [x] All lifts/stairs/entrances on those floors are nodes with inter-floor / outdoor links as applicable.
+- [x] ≥5 A→B samples pass (path exists, sensible length, no wall-crossing).
+- [x] Draft artifact `graph_ld.json` exists (may live under research until Phase 5 packaging).
+
+**Honesty:** hub/door pixels are **semi-manual / approximate** (corridor-digit stubs + visual hubs), not CV-perfect doors. Attic `T` omitted. Refine pixels later; connectivity is complete for MVP.
 
 ---
 

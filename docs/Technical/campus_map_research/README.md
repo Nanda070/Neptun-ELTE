@@ -8,9 +8,10 @@ Research material for future **2D A→B** indoor routing (LD/LE) in Neptun ELTE.
 
 | Doc | Language |
 |------|----------|
-| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B (0–1 done) |
+| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B (0–2 done; LD graph) |
 | [CAMPUS_MAP_PLAN.ru.md](../CAMPUS_MAP_PLAN.ru.md) | RU — same facts |
 | [schema/SCHEMA.md](./schema/SCHEMA.md) | EN — Phase 1 Building/Floor/Room/Node/Edge/Join + coords |
+| [graph/README.md](./graph/README.md) | Phase 2 LD MVP graph (`graph_ld.json` + samples) |
 | [BIS_IMPORT_REPORT.md](./BIS_IMPORT_REPORT.md) | EN — auth, APIs, rooms/floors import, A→B status, inventory, recommended path |
 | [BIS_IMPORT_REPORT.ru.md](./BIS_IMPORT_REPORT.ru.md) | RU — same facts |
 
@@ -36,6 +37,7 @@ campus_map_research/
   README.md
   BIS_IMPORT_REPORT.md · BIS_IMPORT_REPORT.ru.md
   schema/                   ← Phase 1 data model (SCHEMA.md + LD floor-0 example + join stubs)
+  graph/                    ← Phase 2 LD MVP corridor graph (graph_ld.json + builder + samples)
   ld_south/                 ← public JPG plans + 134-room table (sarkozigergo)
   le_north/                 ← public JPG + room table
   eszaki_route_planner/     ← sample working A→B stack (North / terkeptar)
@@ -45,7 +47,7 @@ campus_map_research/
     html/ · js/ · assets/
 ```
 
-**Phase status (2026-09-16):** Phase **0** inventory freeze **done**; Phase **1** schema **done** — see [`schema/SCHEMA.md`](schema/SCHEMA.md). Next: Phase **2** digitize LD graph ([CAMPUS_MAP_PLAN](../CAMPUS_MAP_PLAN.md)).
+**Phase status (2026-09-16):** Phase **0** inventory freeze **done**; Phase **1** schema **done**; Phase **2** LD MVP graph **done** — see [`graph/`](graph/). Next: Phase **3** digitize LE ([CAMPUS_MAP_PLAN](../CAMPUS_MAP_PLAN.md)).
 ## BIS (official) — what we have
 
 Captured with **system Chrome** AppleScript/JXA against open `deli` 3D + `eszaki` 2D tabs (not IDE browser).

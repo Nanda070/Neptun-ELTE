@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — docs: карта кампуса фаза 2 (MVP-граф LD)
+
+**[2026-09-16]**
+
+- Фаза 2 MVP графа коридоров LD: [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) (этажи −1…7, 134 room stub, вертикальные лифты/лестницы) + сэмплы + builder. Только docs/data; без Dart / bump версии. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: карта кампуса фазы 0+1 (схема)
 
 **[2026-09-16]**
@@ -457,11 +465,11 @@
 - UI навигатора учебной недели (**1.5.8**) + фикс битого кэша почты / epoch-`ERROR` (**1.5.6**).
 - **Переводчик** почты HU→EN/RU — **работает** (failure → оригинал; disclaimer один раз).
 - Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как раньше; п. **11** (tanterv) **снят**.
-- Research-дамп карты + план **сначала карта**; фазы **0–1 готовы** (схема); Flutter Map UI не начат.
+- Research-дамп карты + план **сначала карта**; фазы **0–2 готовы** (MVP-граф LD); Flutter Map UI не начат.
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза A** — далее фаза 2 оцифровка LD ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
+- **Indoor-карта фаза A** — далее фаза 3 оцифровка LE ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.
