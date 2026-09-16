@@ -2,9 +2,9 @@
 
 Ready-to-host / ready-to-bundle indoor routing package for ELTE Lágymányos **LD (South)** + **LE (North)**.
 
-**Status:** Phase **0–6** research package + QA **2026-09-16** · Phase B photo MVP UX **rejected** · **1.7.1** mall-style floor schematic app UX + LD+LE centerline graphs · IT faculty LD+LE scope · Owner **Nanda**  
+**Status:** Phase **0–6** research package + QA **2026-09-16** · Phase B photo MVP UX **rejected** · **1.8.0** BIS FootPrint polygon app UX + LD+LE centerline graphs · IT faculty LD+LE scope · Owner **Nanda**  
 **Credits:** [ATTRIBUTION.md](ATTRIBUTION.md) (JPG not product primary).  
-**Honesty:** Product map draws mall-style schematic polygons (not graph-edge glow; JPG not primary). Graph for routing.
+**Honesty:** Product map draws BIS FootPrint room polygons (not schematic ribbons / JPG). Graph for A→B routing overlay.
 
 Plan: [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) · Research: [campus_map_research/](../campus_map_research/README.md) · QA: [QA_REPORT.md](QA_REPORT.md)
 

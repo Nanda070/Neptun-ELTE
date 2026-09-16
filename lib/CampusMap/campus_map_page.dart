@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:neptun2/CampusMap/campus_map_package.dart';
-import 'package:neptun2/CampusMap/campus_map_schematic.dart';
+import 'package:neptun2/CampusMap/campus_map_polygons.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/Misc/elte_room_code.dart';
 
-/// Indoor campus map — mall-style floor schematic (not graph-edge glow).
+/// Indoor campus map — BIS FootPrint room polygons (not schematic ribbons).
 /// Works without Neptun login. Scope: IT faculty LD+LE.
 class CampusMapPage extends StatefulWidget {
   const CampusMapPage({super.key, this.initialBuildingId = 'ld'});
@@ -28,11 +28,9 @@ class _CampusMapPageState extends State<CampusMapPage> {
   final _searchCtrl = TextEditingController();
   List<CampusSearchHit> _searchHits = const [];
   bool _pickingFrom = true;
-  /// Debug-only: faint JPG underlay. OFF by default.
-  bool _showPhotoDebug = false;
   final _transform = TransformationController();
   double _viewScale = 1.0;
-  String? _selectedRoomId;
+  CampusRoomPolygon? _selectedPoly;
 
   @override
   void initState() {
@@ -97,9 +95,26 @@ class _CampusMapPageState extends State<CampusMapPage> {
         _to = hit;
       }
       _pathNodeIds = null;
+      _selectedPoly = _polyForGraphRoom(hit.room);
       _searchCtrl.clear();
       _searchHits = const [];
     });
+  }
+
+  CampusRoomPolygon? _polyForGraphRoom(CampusRoom room) {
+    final floor = _pkg?.floorPolygons(_buildingId, _floorLevel);
+    if (floor == null) return null;
+    final code = room.bisRoomCode;
+    if (code != null && code.isNotEmpty) {
+      for (final p in floor.rooms) {
+        if (p.code == code) return p;
+      }
+    }
+    final needle = room.codeBis.replaceAll('.', '-');
+    for (final p in floor.rooms) {
+      if (p.number == room.codeBis || p.number == needle) return p;
+    }
+    return null;
   }
 
   void _route() {
@@ -136,6 +151,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
       _from = null;
       _to = null;
       _pathNodeIds = null;
+      _selectedPoly = null;
     });
   }
 
@@ -151,17 +167,6 @@ class _CampusMapPageState extends State<CampusMapPage> {
         foregroundColor: theme.textColor,
         title: Text(lang.campusMap_Title, style: TextStyle(color: theme.textColor)),
         actions: [
-          IconButton(
-            tooltip: lang.campusMap_PhotoDebugToggle,
-            onPressed: () {
-              AppHaptics.lightImpact();
-              setState(() => _showPhotoDebug = !_showPhotoDebug);
-            },
-            icon: Icon(
-              _showPhotoDebug ? Icons.image_outlined : Icons.apartment_outlined,
-              color: theme.textColor.withValues(alpha: _showPhotoDebug ? 1 : 0.7),
-            ),
-          ),
           if (_from != null || _to != null || _pathNodeIds != null)
             IconButton(
               tooltip: lang.campusMap_Clear,
@@ -198,7 +203,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                           ),
                         ),
                         child: Text(
-                          lang.campusMap_ItFacultyOnly,
+                          lang.campusMap_ItFacultyOnlyShort,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: theme.textColor.withValues(alpha: 0.9),
@@ -309,7 +314,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                 _buildingId = 'ld';
                 _pathNodeIds = null;
                 _floorLevel = 0;
-                _selectedRoomId = null;
+                _selectedPoly = null;
               });
             },
           ),
@@ -323,7 +328,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                 _buildingId = 'le';
                 _pathNodeIds = null;
                 _floorLevel = 0;
-                _selectedRoomId = null;
+                _selectedPoly = null;
               });
             },
           ),
@@ -351,7 +356,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                   AppHaptics.lightImpact();
                   setState(() {
                     _floorLevel = f.level;
-                    _selectedRoomId = null;
+                    _selectedPoly = null;
                   });
                 },
               ),
@@ -405,6 +410,9 @@ class _CampusMapPageState extends State<CampusMapPage> {
       return Center(child: Text(lang.campusMap_LoadError, style: TextStyle(color: theme.textColor)));
     }
 
+    final polySet = pkg.polygons[_buildingId];
+    final polyFloor = pkg.floorPolygons(_buildingId, _floorLevel);
+
     String? fromRoomId;
     String? toRoomId;
     if (_from != null && _from!.buildingId == _buildingId) {
@@ -429,12 +437,25 @@ class _CampusMapPageState extends State<CampusMapPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surface = isDark
         ? theme.textColor.withValues(alpha: 0.06)
-        : const Color(0xFFF4F7FB);
-    final corridor = isDark
-        ? theme.textColor.withValues(alpha: 0.55)
-        : const Color(0xFF64748B);
+        : const Color(0xFFF1F5F9);
     final route = theme.onSecondaryContainer;
-    final schematic = pkg.floorSchematic(_buildingId, _floorLevel);
+
+    if (polySet == null || polyFloor == null || polyFloor.rooms.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            lang.campusMap_LoadError,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: theme.textColor),
+          ),
+        ),
+      );
+    }
+
+    final view = buildFloorView(polySet, polyFloor);
+    final affine = fitAffineForFloor(g, floor);
+    final aspect = view.bounds.width / view.bounds.height;
 
     return Column(
       children: [
@@ -450,9 +471,9 @@ class _CampusMapPageState extends State<CampusMapPage> {
           child: InteractiveViewer(
             transformationController: _transform,
             minScale: 0.55,
-            maxScale: 6,
+            maxScale: 8,
             child: AspectRatio(
-              aspectRatio: floor.basemapWidth / floor.basemapHeight,
+              aspectRatio: aspect.isFinite && aspect > 0.2 ? aspect : 1.0,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return GestureDetector(
@@ -461,54 +482,34 @@ class _CampusMapPageState extends State<CampusMapPage> {
                       final w = constraints.maxWidth;
                       final h = constraints.maxHeight;
                       if (w <= 0 || h <= 0) return;
-                      final bx = details.localPosition.dx * floor.basemapWidth / w;
-                      final by = details.localPosition.dy * floor.basemapHeight / h;
-                      CampusRoom? best;
-                      var bestD = 28.0 * 28.0; // ~28px hit in basemap space scaled
-                      final hitR = (28.0 * floor.basemapWidth / w);
-                      final hit2 = hitR * hitR;
-                      for (final r in g.rooms.values) {
-                        if (r.floorId != floor.id) continue;
-                        final dx = r.x - bx;
-                        final dy = r.y - by;
-                        final d = dx * dx + dy * dy;
-                        if (d < hit2 && d < bestD) {
-                          bestD = d;
-                          best = r;
-                        }
-                      }
-                      setState(() => _selectedRoomId = best?.id);
+                      final hit = CampusPolygonPainter.findRoomAt(
+                        localPos: details.localPosition,
+                        size: Size(w, h),
+                        floor: polyFloor,
+                        projector: view.projector,
+                        bounds: view.bounds,
+                      );
+                      AppHaptics.lightImpact();
+                      setState(() => _selectedPoly = hit);
                     },
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        if (_showPhotoDebug)
-                          Opacity(
-                            opacity: 0.22,
-                            child: Image.asset(
-                              pkg.basemapAsset(_buildingId, _floorLevel),
-                              fit: BoxFit.fill,
-                              filterQuality: FilterQuality.low,
-                            ),
-                          ),
-                        CustomPaint(
-                          painter: CampusSchematicPainter(
-                            graph: g,
-                            floor: floor,
-                            schematic: schematic,
-                            pathNodeIds: _pathNodeIds,
-                            fromRoomId: fromRoomId,
-                            toRoomId: toRoomId,
-                            selectedRoomId: _selectedRoomId,
-                            corridorColor: corridor,
-                            routeColor: route,
-                            labelColor: theme.textColor,
-                            surfaceColor: surface,
-                            outlineColor: theme.textColor,
-                            viewScale: _viewScale,
-                          ),
-                        ),
-                      ],
+                    child: CustomPaint(
+                      painter: CampusPolygonPainter(
+                        polygonFloor: polyFloor,
+                        graph: g,
+                        floor: floor,
+                        affine: affine,
+                        projector: view.projector,
+                        bounds: view.bounds,
+                        pathNodeIds: _pathNodeIds,
+                        fromRoomId: fromRoomId,
+                        toRoomId: toRoomId,
+                        selectedCode: _selectedPoly?.code,
+                        routeColor: route,
+                        labelColor: theme.textColor,
+                        surfaceColor: surface,
+                        viewScale: _viewScale,
+                        dark: isDark,
+                      ),
                     ),
                   );
                 },
@@ -516,11 +517,47 @@ class _CampusMapPageState extends State<CampusMapPage> {
             ),
           ),
         ),
+        if (_selectedPoly != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 4),
+            child: Material(
+              color: theme.textColor.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(12),
+              child: ListTile(
+                dense: true,
+                title: Text(
+                  _selectedPoly!.name.isNotEmpty
+                      ? _selectedPoly!.name
+                      : _selectedPoly!.shortLabel,
+                  style: TextStyle(
+                    color: theme.textColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                subtitle: Text(
+                  [
+                    if (_selectedPoly!.code.isNotEmpty) _selectedPoly!.code,
+                    _selectedPoly!.type,
+                  ].join(' · '),
+                  style: TextStyle(
+                    color: theme.textColor.withValues(alpha: 0.6),
+                    fontSize: 12,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.close, color: theme.textColor.withValues(alpha: 0.6)),
+                  onPressed: () => setState(() => _selectedPoly = null),
+                ),
+              ),
+            ),
+          ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
+          padding: const EdgeInsets.fromLTRB(12, 2, 12, 10),
           child: Text(
-            floor.labelEn,
-            style: TextStyle(color: theme.textColor.withValues(alpha: 0.55), fontSize: 11),
+            '${floor.labelEn} · ${lang.campusMap_CoverageHint.replaceAll('{n}', '${pkg.totalPolygonCount}').replaceAll('{c}', '${pkg.totalCatalogCount}')}',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: theme.textColor.withValues(alpha: 0.5), fontSize: 11),
           ),
         ),
       ],

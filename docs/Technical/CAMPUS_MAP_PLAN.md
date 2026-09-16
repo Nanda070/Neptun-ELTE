@@ -1,6 +1,7 @@
 # Campus map — finish-the-map-first plan
 
-**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.6.1** LD centerline graph. **1.7.0** graph-edge “schematic” (glowing topology) **rejected** as product map. **1.8.0** = **mall-style 2D floor schematic**: outer shell + courtyard holes + filled corridor ribbons (`schematic_ld.json` / `schematic_le.json`); room pins from graph; route = Chaikin-smoothed centerline path; collision-aware labels; JPG debug-only. Scope banner: **IT faculty only (for now)** (LD South + LE North). Graph is for **routing only**, not the visual building shape.
+**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**: colored room footprints from `bis.elte.hu/tiles/rooms` MVT (bundled `polygons_ld/le.json`, **2571/3670** catalog); graph for A→B overlay only (affine≈WGS); tap room card; IT faculty chip. JPG/schematic not primary.
+
 
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
@@ -18,10 +19,10 @@ Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Decisio
 | Topic | Choice |
 |-------|--------|
 | **Paths** | Routes follow **corridor centerlines**; smooth display (along-corridor chain + Chaikin). |
-| **Visual map** | **Mall/TЦ-style floor schematic** — building shell + corridor **ribbons** from digitized geometry JSON. Do **not** draw graph edges as the map. Do **not** use floor JPG as primary view (debug underlay optional). |
+| **Visual map** | **BIS FootPrint polygons** (WGS84 room fills by type). Do **not** use graph ribbons or floor JPG as primary. |
 | **Scope** | **IT faculty only (for now)** — LD (Déli / South) + LE (Északi / North) Lágymányos IK buildings. |
 | **BIS polylines** | Still **null** in research dump — routes use derived graph; not a ship blocker. |
-| **Phase B UI** | **1.8.0** ships schematic polygons + IT-only banner; search / floors / A→B / pre-login kept. |
+| **Phase B UI** | **1.8.0** ships BIS FootPrint polygons + IT faculty chip; search / floors / A→B / pre-login kept. |
 
 ### Schematic geometry
 

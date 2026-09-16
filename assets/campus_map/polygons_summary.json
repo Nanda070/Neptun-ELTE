@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-09-16",
+  "totalPolygons": 2571,
+  "catalogTotal": 3670,
+  "buildings": {
+    "ld": {
+      "file": "assets/campus_map/polygons_ld.json",
+      "bytes": 424076,
+      "polygons": 1375,
+      "catalog": 1696,
+      "floors": {
+        "-1": 149,
+        "0": 143,
+        "1": 169,
+        "2": 134,
+        "3": 148,
+        "4": 156,
+        "5": 169,
+        "6": 161,
+        "7": 146
+      },
+      "skipped": 28
+    },
+    "le": {
+      "file": "assets/campus_map/polygons_le.json",
+      "bytes": 371038,
+      "polygons": 1196,
+      "catalog": 1974,
+      "floors": {
+        "-1": 145,
+        "0": 189,
+        "1": 176,
+        "2": 113,
+        "3": 146,
+        "4": 116,
+        "5": 138,
+        "6": 109,
+        "7": 64
+      },
+      "skipped": 22
+    }
+  },
+  "uiMode": "bis-footprint-polygons",
+  "routeCrs": "graph-basemapPx affine\u2192WGS84 using room centroidWgs control points (approximate)"
+}

@@ -15,7 +15,7 @@ Owner: **Nanda**. Canonical detail: `docs/Technical/TECHNICAL.md` § Versioning 
   - Feature line advances when a planned foundation/feature block ships.
   - Patch advances for bugfixes / auth / small tweaks within that line.
 - **`2.0.0`** = final / release-candidate product line. Everything before that is **1.x.y** only.
-- Current line example: **`1.7.2`** = feature line **7** patch (IT-only i18n + docs scrub); **1.7.1** = mall-style schematic polygons (Strategy D floor schematic + LD/LE centerline). Feature line **6** was **1.6.x** (Phase B indoor MVP → centerline patch). Previous line **5** patches were **1.5.x**. Next big block → **1.8.0** (or **2.0.0** if final/RC).
+- Current line example: **`1.8.0`** = feature line **8** (BIS FootPrint polygon campus map). **1.7.2** = line **7** patch (IT-only i18n + docs scrub); **1.7.1** = mall-style schematic. Feature line **6** was **1.6.x**. Next big block → **1.9.0** (or **2.0.0** if final/RC).
 
 ## When bumping
 

@@ -5,29 +5,22 @@
   "generatedAt": "2026-09-16",
   "packageDate": "2026-09-16",
   "phase": 6,
-  "notes": "1.7.1+ mall-style 2D schematic (shell + corridor ribbons from schematic_*.json); graph for routing/pins only; JPG debug-only; IT faculty LD+LE scope.",
+  "notes": "1.8.0 primary UI = BIS FootPrint room polygons (WGS84) from bis.elte.hu/tiles/rooms MVT; graph for A→B routing overlay (affine≈WGS); schematic_*.json legacy only; JPG debug-only; IT faculty LD+LE.",
   "buildings": [
     {
       "id": "ld",
       "neptunPrefix": "LD",
       "nameHu": "Déli Épület",
       "nameEn": "South Building",
-      "floors": [
-        -1,
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
+      "floors": [-1, 0, 1, 2, 3, 4, 5, 6, 7],
       "graph": "graph_ld.json",
       "joins": "joins_ld.json",
+      "polygons": "polygons_ld.json",
       "nodeCount": 664,
       "edgeCount": 819,
       "roomCount": 134,
+      "polygonCount": 1375,
+      "catalogCount": 1696,
       "schematic": "schematic_ld.json"
     },
     {
@@ -35,22 +28,15 @@
       "neptunPrefix": "LE",
       "nameHu": "Északi Épület",
       "nameEn": "North Building",
-      "floors": [
-        -1,
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
+      "floors": [-1, 0, 1, 2, 3, 4, 5, 6, 7],
       "graph": "graph_le.json",
       "joins": "joins_le.json",
+      "polygons": "polygons_le.json",
       "nodeCount": 625,
       "edgeCount": 888,
       "roomCount": 92,
+      "polygonCount": 1196,
+      "catalogCount": 1974,
       "schematic": "schematic_le.json"
     }
   ],
@@ -68,7 +54,10 @@
     "qa_report": "QA_REPORT.md",
     "qa_matrix": "qa_matrix.json",
     "schematic_ld": "schematic_ld.json",
-    "schematic_le": "schematic_le.json"
+    "schematic_le": "schematic_le.json",
+    "polygons_ld": "polygons_ld.json",
+    "polygons_le": "polygons_le.json",
+    "polygons_summary": "polygons_summary.json"
   },
   "assets": {
     "ld": {
@@ -96,6 +85,9 @@
   },
   "graphFingerprint": "a2bf2172f4",
   "graphMode": "ld+le-centerline",
-  "uiMode": "floor-schematic-ribbons",
+  "uiMode": "bis-footprint-polygons",
+  "routeCrs": "graph-basemapPx affine→WGS84 via room centroidWgs (approximate ~10–35 m)",
+  "polygonTotal": 2571,
+  "catalogTotal": 3670,
   "scope": "it-faculty-ld-le"
 }

@@ -58,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _appVersionLabel = '1.7.2';
+        _appVersionLabel = '1.8.0';
       });
     }
   }

@@ -2,21 +2,25 @@ import 'dart:convert';
 import 'dart:ui' show Offset;
 
 import 'package:flutter/services.dart';
+import 'package:neptun2/CampusMap/campus_map_polygons.dart';
 
-/// Offline campus map package loader (Phase B). Assets under `assets/campus_map/`.
+/// Offline campus map package loader. Assets under `assets/campus_map/`.
 class CampusMapPackage {
   CampusMapPackage._({
     required this.manifest,
     required this.graphs,
     required this.schematics,
+    required this.polygons,
     required this.joinsByBuilding,
     required this.aliases,
   });
 
   final Map<String, dynamic> manifest;
   final Map<String, CampusBuildingGraph> graphs; // ld / le
-  /// Mall-style floor polygons (shell + corridor ribbons). Visual map only.
+  /// Legacy mall-style ribbons (not primary UI since 1.8.0).
   final Map<String, CampusBuildingSchematic> schematics;
+  /// BIS FootPrint room polygons (primary map since 1.8.0).
+  final Map<String, CampusPolygonSet> polygons;
   final Map<String, List<CampusJoin>> joinsByBuilding;
   final List<CampusAlias> aliases;
 
@@ -29,6 +33,7 @@ class CampusMapPackage {
 
     final graphs = <String, CampusBuildingGraph>{};
     final schematics = <String, CampusBuildingSchematic>{};
+    final polygons = <String, CampusPolygonSet>{};
     final joinsByBuilding = <String, List<CampusJoin>>{};
 
     for (final b in (manifest['buildings'] as List).cast<Map>()) {
@@ -47,6 +52,16 @@ class CampusMapPackage {
         );
       } catch (_) {
         // Optional: older packages without schematic JSON still load graphs.
+      }
+      final polygonsFile =
+          (b['polygons'] as String?) ?? 'polygons_$id.json';
+      try {
+        polygons[id] = CampusPolygonSet.fromJson(
+          jsonDecode(await rootBundle.loadString('$assetRoot/$polygonsFile'))
+              as Map<String, dynamic>,
+        );
+      } catch (_) {
+        // Optional until 1.8 assets ship.
       }
       final joinsRaw = jsonDecode(
         await rootBundle.loadString('$assetRoot/$joinsFile'),
@@ -69,6 +84,7 @@ class CampusMapPackage {
       manifest: manifest,
       graphs: graphs,
       schematics: schematics,
+      polygons: polygons,
       joinsByBuilding: joinsByBuilding,
       aliases: aliases,
     );
@@ -77,6 +93,16 @@ class CampusMapPackage {
   CampusFloorSchematic? floorSchematic(String buildingId, int level) {
     return schematics[buildingId]?.floorByLevel(level);
   }
+
+  CampusPolygonFloor? floorPolygons(String buildingId, int level) {
+    return polygons[buildingId]?.floorByLevel(level);
+  }
+
+  int get totalPolygonCount =>
+      polygons.values.fold(0, (s, p) => s + p.polygonCount);
+
+  int get totalCatalogCount =>
+      polygons.values.fold(0, (s, p) => s + p.catalogCount);
 
   String basemapAsset(String buildingId, int level) {
     final assets = (manifest['assets'] as Map)[buildingId] as Map;
@@ -356,6 +382,9 @@ class CampusRoom {
     required this.x,
     required this.y,
     required this.aliases,
+    this.bisRoomCode,
+    this.lng,
+    this.lat,
   });
 
   final String id;
@@ -366,9 +395,13 @@ class CampusRoom {
   final double x;
   final double y;
   final List<String> aliases;
+  final String? bisRoomCode;
+  final double? lng;
+  final double? lat;
 
   factory CampusRoom.fromJson(Map<String, dynamic> j) {
     final c = j['centroid'] as Map<String, dynamic>;
+    final wgs = j['centroidWgs'] as Map<String, dynamic>?;
     return CampusRoom(
       id: j['id'] as String,
       floorId: j['floorId'] as String,
@@ -380,6 +413,9 @@ class CampusRoom {
       aliases: ((j['aliases'] as List?) ?? const [])
           .map((e) => e.toString())
           .toList(),
+      bisRoomCode: j['bisRoomCode'] as String?,
+      lng: (wgs?['lng'] as num?)?.toDouble(),
+      lat: (wgs?['lat'] as num?)?.toDouble(),
     );
   }
 

@@ -1,0 +1,244 @@
+{
+  "capturedAt": "2026-09-16",
+  "method": "Chrome page-context fetch of https://bis.elte.hu/tiles/rooms/{z}/{x}/{y}.pbf (logged-in cookies). Decoded with mapbox-vector-tile.",
+  "queryRenderedFeatures": "blocked \u2014 Map facade style not finished loading (featuresets undefined); tiles endpoint used instead.",
+  "polygonCounts": {
+    "deli": 1403,
+    "eszaki": 1218,
+    "total": 2621
+  },
+  "ringVertexBuckets": {
+    "4_or_less": 1702,
+    "5_10": 674,
+    "11_30": 151,
+    "31_plus": 94
+  },
+  "sampleProperties": {
+    "roomCode": "LD-00-306-01-14",
+    "roomNumber": "00-306",
+    "roomName": "00-306 Elektronmikroszk\u00f3pos laboregy\u00fcttes",
+    "roomType": "educational",
+    "floorId": 22,
+    "scope": "budapest/lagymanyos/deli/00/LD-00-306-01-14"
+  },
+  "joins": {
+    "south": {
+      "catalogCount": 1696,
+      "polygonCount": 1403,
+      "catalogKeys": [
+        [
+          "id",
+          1696
+        ],
+        [
+          "scope",
+          1696
+        ],
+        [
+          "floorId",
+          1696
+        ],
+        [
+          "buildingId",
+          1696
+        ],
+        [
+          "roomCode",
+          1696
+        ],
+        [
+          "roomNumber",
+          1696
+        ],
+        [
+          "roomName",
+          1696
+        ],
+        [
+          "bbox",
+          1696
+        ],
+        [
+          "centroid",
+          1696
+        ],
+        [
+          "properties",
+          1696
+        ],
+        [
+          "orgUnits",
+          1696
+        ]
+      ],
+      "matchedRoomCode": 1403,
+      "sampleCat": {
+        "id": 2814,
+        "scope": "budapest/lagymanyos/deli/6/LD-6-211-02-33",
+        "floorId": 19,
+        "buildingId": 1,
+        "roomCode": "LD-6-211-02-33",
+        "roomNumber": "6-211",
+        "roomName": "6-211 Etol\u00f3giai Tansz\u00e9k Titk\u00e1rs\u00e1g",
+        "bbox": [
+          19.062266080187616,
+          47.47265257382288,
+          19.062349664914237,
+          47.47269017678006
+        ],
+        "centroid": [
+          19.062307872,
+          47.472671375
+        ],
+        "properties": {
+          "roomType": "administrative"
+        },
+        "orgUnits": [
+          654
+        ]
+      },
+      "samplePoly": {
+        "roomCode": "LD-00-306-01-14",
+        "roomNumber": "00-306",
+        "roomName": "00-306 Elektronmikroszk\u00f3pos laboregy\u00fcttes",
+        "roomType": "educational",
+        "floorId": 22,
+        "scope": "budapest/lagymanyos/deli/00/LD-00-306-01-14"
+      }
+    },
+    "north": {
+      "catalogCount": 1974,
+      "polygonCount": 1218,
+      "catalogKeys": [
+        [
+          "id",
+          1974
+        ],
+        [
+          "scope",
+          1974
+        ],
+        [
+          "floorId",
+          1974
+        ],
+        [
+          "buildingId",
+          1974
+        ],
+        [
+          "roomCode",
+          1974
+        ],
+        [
+          "roomNumber",
+          1974
+        ],
+        [
+          "roomName",
+          1974
+        ],
+        [
+          "bbox",
+          1974
+        ],
+        [
+          "centroid",
+          1974
+        ],
+        [
+          "properties",
+          1974
+        ],
+        [
+          "orgUnits",
+          1974
+        ]
+      ],
+      "matchedRoomCode": 1218,
+      "sampleCat": {
+        "id": 1142,
+        "scope": "budapest/lagymanyos/eszaki/7/L\u00c9-7-83-02-33",
+        "floorId": 12,
+        "buildingId": 2,
+        "roomCode": "L\u00c9-7-83-02-33",
+        "roomNumber": "7.83",
+        "roomName": "7.83 Titk\u00e1rs\u00e1g-t\u00e1rgyal\u00f3",
+        "bbox": [
+          19.06230270425087,
+          47.47477080406619,
+          19.06240140009286,
+          47.47486338042844
+        ],
+        "centroid": [
+          19.06235216,
+          47.474816971
+        ],
+        "properties": {
+          "roomType": "administrative"
+        },
+        "orgUnits": [
+          523
+        ]
+      },
+      "samplePoly": {
+        "roomCode": "LK-1-164/A-05-71",
+        "roomNumber": "164/A",
+        "roomName": "N\u0151i WC",
+        "roomType": "social",
+        "floorId": 6,
+        "scope": "budapest/lagymanyos/eszaki/1/LK-1-164-A-05-71"
+      }
+    }
+  },
+  "files": [
+    "deli_floor_17_rooms.geojson",
+    "deli_floor_18_rooms.geojson",
+    "deli_floor_19_rooms.geojson",
+    "deli_floor_21_rooms.geojson",
+    "deli_floor_22_rooms.geojson",
+    "deli_floor_23_rooms.geojson",
+    "deli_floor_24_rooms.geojson",
+    "deli_floor_25_rooms.geojson",
+    "deli_floor_26_rooms.geojson",
+    "deli_floor_27_rooms.geojson",
+    "deli_rooms.geojson",
+    "eszaki_floor_10_rooms.geojson",
+    "eszaki_floor_11_rooms.geojson",
+    "eszaki_floor_12_rooms.geojson",
+    "eszaki_floor_13_rooms.geojson",
+    "eszaki_floor_14_rooms.geojson",
+    "eszaki_floor_1_rooms.geojson",
+    "eszaki_floor_2_rooms.geojson",
+    "eszaki_floor_3_rooms.geojson",
+    "eszaki_floor_4_rooms.geojson",
+    "eszaki_floor_5_rooms.geojson",
+    "eszaki_floor_6_rooms.geojson",
+    "eszaki_floor_7_rooms.geojson",
+    "eszaki_floor_8_rooms.geojson",
+    "eszaki_floor_9_rooms.geojson",
+    "eszaki_rooms.geojson",
+    "lagymanyos_rooms.geojson"
+  ],
+  "rawTiles": [
+    "rooms_15_18118_11461.pbf",
+    "rooms_15_18119_11461.pbf",
+    "rooms_15_18119_11462.pbf",
+    "rooms_16_36237_22923.pbf",
+    "rooms_16_36238_22923.pbf",
+    "rooms_16_36238_22924.pbf",
+    "rooms_17_72475_45847.pbf",
+    "rooms_17_72476_45847.pbf",
+    "rooms_17_72476_45848.pbf"
+  ],
+  "blockers": [
+    "Mapbox GL queryRenderedFeatures unavailable (style load / featuresets).",
+    "Catalog larger than polygon set (south 1696 vs 1403; north 1974 vs 1218) \u2014 remaining rooms may lack FootPrint geom or sit outside fetched tiles/ACL.",
+    "floorId values are BIS internal IDs (not always 0..7 labels)."
+  ],
+  "catalogIdJoin": {
+    "deli": 1403,
+    "eszaki": 1218,
+    "total": 2621
+  }
+}
