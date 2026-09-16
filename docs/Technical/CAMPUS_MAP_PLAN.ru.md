@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **Фазы 0–4 готовы** (MVP-графы LD + LE + joins/алиасы). Далее: **фаза 5** — упаковка deliverable. **Фаза B (Flutter-приложение)** отложена, пока графы не упакованы и не прошли QA.  
+**Статус:** **Фазы 0–5 готовы** (MVP-графы LD + LE + joins/алиасы + [`campus_map_package/`](campus_map_package/)). Далее: **фаза 6** — QA-матрица. **Фаза B (Flutter-приложение)** отложена, пока не пройдёт QA фазы 6.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
@@ -257,14 +257,16 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 
 ### Дистрибуция
 
-- **Ready-to-bundle** напр. в `docs/Technical/campus_map_package/` **или** GitHub Release asset / CDN — решить в момент упаковки.
-- Предпочитать производный JSON + разрешённые basemap вместо бандла BIS HTML/JS SPA.
+- **Выбрано:** ready-to-bundle в [`docs/Technical/campus_map_package/`](campus_map_package/) (графы, joins, алиасы, basemap, checksums, атрибуция, `check_package.py`).
+- Предпочитать производный JSON + разрешённые basemap вместо бандла BIS HTML/JS SPA. Разрешение на JPG basemap всё ещё **pending** — см. `ATTRIBUTION.md` пакета.
 
 ### Критерии выхода
 
-- [ ] Все файлы выше на месте; checksums сходятся.
-- [ ] `ATTRIBUTION.md` заполнен; нерешённые лицензии помечены как **block ship**.
-- [ ] Пакет грузится в **не-Flutter** checker (скрипт или простой HTML-tool) и считает A→B для сэмплов.
+- [x] Все файлы выше на месте; checksums сходятся (`docs/Technical/campus_map_package/`).
+- [x] `ATTRIBUTION.md` заполнен; нерешённые лицензии помечены как **block ship** (разрешение на JPG basemap **pending**).
+- [x] Пакет грузится в **не-Flutter** checker (`check_package.py`) и считает A→B для сэмплов.
+
+**Честность:** пакет лежит в [`campus_map_package/`](campus_map_package/) для Phase A / QA. Перераспространение basemap всё ещё **pending** — не бандлить в App Store / APK, пока чеклист не закрыт.
 
 ---
 

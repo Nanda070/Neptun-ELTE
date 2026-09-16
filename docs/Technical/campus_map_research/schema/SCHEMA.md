@@ -31,7 +31,7 @@ Every graph / floor package JSON **must** include:
 ```
 
 - **`schemaVersion`:** integer. Bump only when breaking field names/semantics. Current = **`1`**.
-- Phase 5 `manifest.json` will also carry `schemaVersion` for the whole deliverable.
+- Phase 5 `manifest.json` will also carry `schemaVersion` for the whole deliverable. **Shipped package:** [`../../campus_map_package/`](../../campus_map_package/) (`schemaVersion`: **1**).
 
 ---
 

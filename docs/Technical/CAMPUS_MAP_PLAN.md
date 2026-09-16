@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–4 done** (LD + LE MVP graphs + joins/aliases). Next: **Phase 5** package deliverable. **Phase B (Flutter app)** deferred until graphs are packaged + QA’d.  
+**Status:** **Phase 0–5 done** (LD + LE MVP graphs + joins/aliases + [`campus_map_package/`](campus_map_package/)). Next: **Phase 6** QA matrix. **Phase B (Flutter app)** deferred until Phase 6 QA passes.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -257,14 +257,16 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ### Distribution
 
-- **Ready-to-bundle** under e.g. `docs/Technical/campus_map_package/` **or** GitHub Release asset / CDN — decide at packaging time.
-- Prefer derived JSON + permitted basemaps over shipping BIS HTML/JS SPA.
+- **Chosen:** ready-to-bundle under [`docs/Technical/campus_map_package/`](campus_map_package/) (graphs, joins, aliases, basemaps, checksums, attribution, `check_package.py`).
+- Prefer derived JSON + permitted basemaps over shipping BIS HTML/JS SPA. Basemap JPG permission still **pending** — see package `ATTRIBUTION.md`.
 
 ### Exit criteria
 
-- [ ] All files above present; checksums verify.
-- [ ] `ATTRIBUTION.md` filled; unresolved licenses flagged **block ship**.
-- [ ] Package loads in a **non-Flutter** checker (script or small HTML tool) and computes A→B for sample pairs.
+- [x] All files above present; checksums verify (`docs/Technical/campus_map_package/`).
+- [x] `ATTRIBUTION.md` filled; unresolved licenses flagged **block ship** (basemap JPG permission **pending**).
+- [x] Package loads in a **non-Flutter** checker (`check_package.py`) and computes A→B for sample pairs.
+
+**Honesty:** package lives under [`campus_map_package/`](campus_map_package/) for Phase A / QA. Basemap redistribution still **pending** — do not App Store / APK-bundle until checklist cleared.
 
 ---
 

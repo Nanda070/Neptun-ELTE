@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — docs: campus map Phase 5 (package deliverable)
+
+**[2026-09-16]**
+
+- Phase 5 ready-to-bundle package: [`campus_map_package/`](campus_map_package/) (`graph_ld/le`, joins, aliases, stable `basemaps/{ld|le}/f*.jpg`, `manifest.json`, `checksums.sha256`, `ATTRIBUTION.md`, `check_package.py`). Basemap JPG redistribution **pending** (**block ship** App Store/APK). Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: campus map Phase 4 (joins + aliases)
 
 **[2026-09-16]**
@@ -485,7 +493,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase A** — Phase 5 package next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
+- **Campus indoor map Phase A** — Phase 6 QA next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); package at [`campus_map_package/`](campus_map_package/); Flutter Map UI (**Phase B**) deferred until QA passes. Basemap permission still pending.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

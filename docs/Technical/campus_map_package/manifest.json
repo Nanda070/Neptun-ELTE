@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "campusMapPackage",
+  "packageId": "elte-lagymanyos-ld-le",
+  "generatedAt": "2026-09-16",
+  "packageDate": "2026-09-16",
+  "phase": 5,
+  "notes": "Phase 5 ready-to-bundle indoor routing package for ELTE Lágymányos LD+LE. Basemap JPG redistribution permission still PENDING — research packaging only; do not ship in App Store / GitHub APK until ATTRIBUTION checklist cleared. No Flutter UI. No cookies/tokens.",
+  "buildings": [
+    {
+      "id": "ld",
+      "neptunPrefix": "LD",
+      "nameHu": "Déli Épület",
+      "nameEn": "South Building",
+      "floors": [
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "graph": "graph_ld.json",
+      "joins": "joins_ld.json",
+      "nodeCount": 475,
+      "edgeCount": 639,
+      "roomCount": 134
+    },
+    {
+      "id": "le",
+      "neptunPrefix": "LE",
+      "nameHu": "Északi Épület",
+      "nameEn": "North Building",
+      "floors": [
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "graph": "graph_le.json",
+      "joins": "joins_le.json",
+      "nodeCount": 454,
+      "edgeCount": 600,
+      "roomCount": 92
+    }
+  ],
+  "files": {
+    "graph_ld": "graph_ld.json",
+    "graph_le": "graph_le.json",
+    "joins_ld": "joins_ld.json",
+    "joins_le": "joins_le.json",
+    "aliases": "aliases.json",
+    "search_fixtures": "search_fixtures.json",
+    "attribution": "ATTRIBUTION.md",
+    "checksums": "checksums.sha256",
+    "checker": "check_package.py"
+  },
+  "assets": {
+    "ld": {
+      "-1": "basemaps/ld/f-1.jpg",
+      "0": "basemaps/ld/f0.jpg",
+      "1": "basemaps/ld/f1.jpg",
+      "2": "basemaps/ld/f2.jpg",
+      "3": "basemaps/ld/f3.jpg",
+      "4": "basemaps/ld/f4.jpg",
+      "5": "basemaps/ld/f5.jpg",
+      "6": "basemaps/ld/f6.jpg",
+      "7": "basemaps/ld/f7.jpg"
+    },
+    "le": {
+      "-1": "basemaps/le/f-1.jpg",
+      "0": "basemaps/le/f0.jpg",
+      "1": "basemaps/le/f1.jpg",
+      "2": "basemaps/le/f2.jpg",
+      "3": "basemaps/le/f3.jpg",
+      "4": "basemaps/le/f4.jpg",
+      "5": "basemaps/le/f5.jpg",
+      "6": "basemaps/le/f6.jpg",
+      "7": "basemaps/le/f7.jpg"
+    }
+  },
+  "basemapPermission": "pending",
+  "shipBlockers": [
+    "Basemap JPG redistribution permission pending (Héger Tamás / Sárközi Gergő).",
+    "Do not bundle this package in App Store / GitHub APK until ATTRIBUTION.md checklist cleared."
+  ]
+}

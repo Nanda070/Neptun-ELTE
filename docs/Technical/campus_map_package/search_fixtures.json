@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "searchFixtures",
+  "generatedAt": "2026-09-16",
+  "notes": "Phase 6 QA: query → expected room/node (null node = educational-only).",
+  "fixtures": [
+    {
+      "query": "LD 0.821",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-821",
+      "expectedNodeId": "ld-n-ld-f0-room-0-821",
+      "expectedCodeBis": "0-821",
+      "why": "search"
+    },
+    {
+      "query": "LD-0-805",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-805",
+      "expectedNodeId": "ld-n-ld-f0-room-0-805",
+      "expectedCodeBis": "0-805",
+      "why": "search"
+    },
+    {
+      "query": "0-412",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-412",
+      "expectedNodeId": "ld-n-ld-f0-room-0-412",
+      "expectedCodeBis": "0-412",
+      "why": "search"
+    },
+    {
+      "query": "Bolyai",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-821",
+      "expectedNodeId": "ld-n-ld-f0-room-0-821",
+      "expectedCodeBis": "0-821",
+      "why": "search"
+    },
+    {
+      "query": "Fejér Lipót",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-805",
+      "expectedNodeId": "ld-n-ld-f0-room-0-805",
+      "expectedCodeBis": "0-805",
+      "why": "search"
+    },
+    {
+      "query": "Rényi",
+      "buildingId": "ld",
+      "expectedRoomId": "ld-room-0-412",
+      "expectedNodeId": "ld-n-ld-f0-room-0-412",
+      "expectedCodeBis": "0-412",
+      "why": "search"
+    },
+    {
+      "query": "LE 0.81",
+      "buildingId": "le",
+      "expectedRoomId": "le-room-0_81",
+      "expectedNodeId": "le-n-le-f0-room-0_81",
+      "expectedCodeBis": "0.81",
+      "why": "search"
+    },
+    {
+      "query": "LE-0-83",
+      "buildingId": "le",
+      "expectedRoomId": "le-room-0_83",
+      "expectedNodeId": "le-n-le-f0-room-0_83",
+      "expectedCodeBis": "0.83",
+      "why": "search"
+    },
+    {
+      "query": "Ortvay",
+      "buildingId": "le",
+      "expectedRoomId": "le-room-0_81",
+      "expectedNodeId": "le-n-le-f0-room-0_81",
+      "expectedCodeBis": "0.81",
+      "why": "search"
+    },
+    {
+      "query": "Eötvös",
+      "buildingId": "le",
+      "expectedRoomId": "le-room-0_83",
+      "expectedNodeId": "le-n-le-f0-room-0_83",
+      "expectedCodeBis": "0.83",
+      "why": "search"
+    },
+    {
+      "query": "Rybár István",
+      "buildingId": "le",
+      "expectedRoomId": "le-room-_1_64",
+      "expectedNodeId": "le-n-le-f-1-room-_1_64",
+      "expectedCodeBis": "-1.64",
+      "why": "search"
+    },
+    {
+      "query": "LD 5.210",
+      "buildingId": "ld",
+      "expectedRoomId": null,
+      "expectedNodeId": null,
+      "expectedCodeBis": "5-210",
+      "why": "educational-only (no graph pin)"
+    },
+    {
+      "query": "LD 5.615",
+      "buildingId": "ld",
+      "expectedRoomId": null,
+      "expectedNodeId": null,
+      "expectedCodeBis": "5-615",
+      "why": "educational-only (no graph pin)"
+    },
+    {
+      "query": "LD 5.713",
+      "buildingId": "ld",
+      "expectedRoomId": null,
+      "expectedNodeId": null,
+      "expectedCodeBis": "5-713",
+      "why": "educational-only (no graph pin)"
+    }
+  ]
+}

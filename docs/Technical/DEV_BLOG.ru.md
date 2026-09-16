@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — docs: карта кампуса фаза 5 (пакет deliverable)
+
+**[2026-09-16]**
+
+- Фаза 5 ready-to-bundle пакет: [`campus_map_package/`](campus_map_package/) (`graph_ld/le`, joins, алиасы, стабильные `basemaps/{ld|le}/f*.jpg`, `manifest.json`, `checksums.sha256`, `ATTRIBUTION.md`, `check_package.py`). Перераспространение JPG basemap **pending** (**block ship** App Store/APK). Только docs/data; без Dart / bump версии. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: карта кампуса фаза 4 (joins + алиасы)
 
 **[2026-09-16]**
@@ -485,7 +493,7 @@
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза A** — далее фаза 5 пакет ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
+- **Indoor-карта фаза A** — далее фаза 6 QA ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); пакет [`campus_map_package/`](campus_map_package/); Flutter UI (**фаза B**) отложена, пока не пройдёт QA. Разрешение на basemap всё ещё pending.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.
