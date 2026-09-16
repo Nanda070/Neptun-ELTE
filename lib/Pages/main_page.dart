@@ -2264,6 +2264,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   int currentMailPage = 1;
   bool currentMailLoadingDebounce = false;
   late ScrollController currentMailPageController;
+
+  static bool _cachedMailEntryValid(api.MailEntry entry) {
+    if (entry.ID.isEmpty || entry.sendDateMs <= 0) return false;
+    return !(entry.subject == 'ERROR' &&
+        entry.detail == 'ERROR' &&
+        entry.senderName == 'ERROR');
+  }
+
   Future<void> fetchMails({bool force = false})async{
     final hasCachedMails = storage.DataCache.getHasCachedMail() ?? false;
     final cacheTime = await storage.getString('MailCacheTime');
@@ -2281,17 +2289,23 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       final loaded = <api.MailEntry>[];
       for (int i = 0; i < len; i++) {
         final calEntry = await storage.getString('CachedMails_$i');
-        if (calEntry != null) {
-          loaded.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false,"").fillWithExisting(calEntry));
-        }
+        if (calEntry == null) continue;
+        try {
+          final entry = api.MailEntry("ERROR", "ERROR", "ERROR", 0, false, "")
+              .fillWithExisting(calEntry);
+          if (_cachedMailEntryValid(entry)) loaded.add(entry);
+        } catch (_) {}
       }
-      if (loaded.isEmpty && len > 0) return false;
+      if (len > 0 && loaded.length != len) {
+        await storage.DataCache.setHasCachedMail(0);
+        return false;
+      }
       if (!force || currentMailPage <= 1) {
         mailEntries = loaded;
         allLoadedMailCount = loaded.length;
         _lastMailPageWasFull = loaded.length >= 20 && (totalMailCount == 0 || loaded.length < totalMailCount);
       }
-      return hasCachedMails;
+      return len == 0 || loaded.isNotEmpty;
     }
 
     bool paintedFromCache = false;
