@@ -15,7 +15,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Nanda070-111?style=for-the-badge&logo=github)](https://github.com/Nanda070/Neptun-ELTE)
 [![Bug reports](https://img.shields.io/badge/Баг--репорты-nanda.is--a.dev-0a7-?style=for-the-badge)](https://nanda.is-a.dev)
 
-> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📱 [iOS vs Android](Technical/IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · 🎨 [UI-макеты (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal--юридические-документы)
+> 🇬🇧 [English README](README.md) · 📘 [Техническая (RU)](Technical/TECHNICAL.ru.md) · [EN](Technical/TECHNICAL.md) · 📝 [Dev Blog](Technical/DEV_BLOG.ru.md) · 🎨 [UI-макеты (Figma)](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) · ⚖️ [Legal](#legal--юридические-документы)
 
 Бэклог / остаток работы — в [технической](Technical/TECHNICAL.ru.md) (честность + решения) и в разделе «В работе» [Dev Blog](Technical/DEV_BLOG.ru.md). Нумерованные файлы `IMPLEMENTATION_PLAN` **удалены** (п. **11** снят раньше).
 
@@ -127,8 +127,6 @@ iOS-шпаргалка — в Technical §14 (отдельного `DEVELOPER.md
 | README (EN) | [`docs/README.md`](README.md) |
 | Техническая (RU) | [`docs/Technical/TECHNICAL.ru.md`](Technical/TECHNICAL.ru.md) |
 | Technical (EN) | [`docs/Technical/TECHNICAL.md`](Technical/TECHNICAL.md) |
-| iOS vs Android (RU) | [`docs/Technical/IOS_VS_ANDROID.ru.md`](Technical/IOS_VS_ANDROID.ru.md) |
-| iOS vs Android (EN) | [`docs/Technical/IOS_VS_ANDROID.md`](Technical/IOS_VS_ANDROID.md) |
 | Dev Blog (RU) | [`docs/Technical/DEV_BLOG.ru.md`](Technical/DEV_BLOG.ru.md) |
 | Dev Blog (EN) | [`docs/Technical/DEV_BLOG.md`](Technical/DEV_BLOG.md) |
 | Бэклог | Честность TECHNICAL + «В работе» в DEV_BLOG (нумерованные `IMPLEMENTATION_PLAN*` **удалены**) |

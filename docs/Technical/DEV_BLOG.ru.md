@@ -316,7 +316,17 @@
 
 **[2026-09-16]**
 
-- **TECHNICAL EN+RU сверены с кодом** (без правок приложения, без bump `1.x.y`, без тега/APK): после логина ELTE student-data REST — **GET + Bearer JWT** на назначенном `hallgatoN` (cookie портала не на этих GET); **POST** = портал Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read; **нет PUT/DELETE**; `trySilentReauth()` для ELTE false; SessionGuard **10 мин wall-clock от старта сессии** (не idle, не зависит от refresh JWT; `exp` не парсится; ~10–15 мин access — наблюдение); retry 401 только на GET; helper email OTP в коде, UI не вызывает; нет Workmanager / background_fetch. Матрица платформ EN+RU выровнена. Владелец **Nanda**.
+- **TECHNICAL EN+RU сверены с кодом** (без правок приложения, без bump `1.x.y`, без тега/APK): после логина ELTE student-data REST — **GET + Bearer JWT** на назначенном `hallgatoN` (cookie портала не на этих GET); **POST** = портал Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read; **нет PUT/DELETE**; `trySilentReauth()` для ELTE false; SessionGuard **10 мин wall-clock от старта сессии** (не idle, не зависит от refresh JWT; `exp` не парсится; ~10–15 мин access — наблюдение); retry 401 только на GET; helper email OTP в коде, UI не вызывает; нет Workmanager / background_fetch. Владелец **Nanda**.
+
+---
+
+## 2026-09-16 — docs: удаление матрицы IOS_VS_ANDROID
+
+**[2026-09-16, 08:15]**
+
+- Удалены `docs/Technical/IOS_VS_ANDROID.md` + `.ru.md` после функционального паритета Android APK — отдельная матрица платформ больше не нужна.
+- Кросс-ссылки убраны из README / TECHNICAL EN+RU; краткие platform-only bullets (updater / signing / CI / haptics / toast / ID) перенесены в TECHNICAL §14–15.
+- `.cursor/rules/keep-docs-current.mdc` больше не требует `IOS_VS_ANDROID*` в обязательном списке. Только docs; без bump версии / тега / APK. Владелец **Nanda**.
 
 ---
 ## В работе / запланировано (честно)

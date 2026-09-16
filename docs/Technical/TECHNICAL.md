@@ -1,6 +1,6 @@
 # Neptun ELTE — technical documentation
 
-> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📱 [iOS vs Android (EN)](IOS_VS_ANDROID.md) · [RU](IOS_VS_ANDROID.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
+> 🇷🇺 [Русская версия](TECHNICAL.ru.md) · 📝 [Dev Blog (EN)](DEV_BLOG.md) · [RU](DEV_BLOG.ru.md)
 
 > **Audience:** developers and anyone with repo access.  
 > Git-only (`docs/Technical/TECHNICAL.md`). **Not** published as a website, **no** public route.  
@@ -15,7 +15,7 @@ Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
-Platform matrix (what each OS has/lacks): [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) / [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md).  
+Product features are shared on both platforms after Android APK parity; remaining platform-only notes (updater / signing / CI / haptics / toast) live in [§14](#14-ios) and [§15](#15-android). The separate `IOS_VS_ANDROID*` matrix was **deleted**.  
 UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.figma.com/design/IXXxEJWpswZW19IR05nDQ2/Neptun-ELTE-%E2%80%94-UI-Mockups) — **Android** = polished target; **iOS** = current Flutter shell + additive polish. Mockups may still show **5** bottom tabs; **app IA** is **4** (Calendar \| Markbook \| Periods \| Mail) + Payments in drawer above Settings (plan **1c**). Owner **Nanda**.
 
 ---
@@ -119,7 +119,7 @@ Neptun-ELTE/
 ├── docs/
 │   ├── README.md / README.ru.md   # Product README (full)
 │   ├── LICENSE                    # Canonical LGPL-3.0-only text
-│   ├── Technical/                 # TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU)
+│   ├── Technical/                 # TECHNICAL + DEV_BLOG (EN + RU)
 │   ├── Legal-En/ · Legal-Ru/ · Legal-Hu/
 │   └── …
 ├── .github/workflows/        # Android debug APK + unsigned iOS IPA
@@ -135,7 +135,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | TECHNICAL + IOS_VS_ANDROID + DEV_BLOG (EN + RU) |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG (EN + RU) |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -579,17 +579,17 @@ On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon �
 - `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`
 - `UIApplicationShortcutItems`: Calendar / Mail / Payments (plan item **13**)
 
-### iOS vs Android-only
+### Platform-only notes
 
-Full side-by-side: [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md) (RU: [`IOS_VS_ANDROID.ru.md`](IOS_VS_ANDROID.ru.md)).
+No separate matrix doc (`IOS_VS_ANDROID*` deleted after Android APK functional parity). Shared product surface on both OSes; remaining differences:
 
-| Feature | iOS |
-|---------|-----|
-| Links (`url_launcher`) | Should work (Android-only gate removed) |
-| Haptics | `HapticFeedback` |
-| APK updater / Play IAU | Hidden / do not call |
-| Fluttertoast | Often invisible; `custom_snackbar.dart` exists |
-| SPM warning | `flutter_secure_storage`, `open_filex` — not a blocker yet |
+- **Distribution / updater:** Android — GitHub APK `AppUpdater` + Play `in_app_update` when installed from Play; iOS — updater UI hidden / no-op (no TestFlight / IPA auto-update twin).
+- **Signing:** Android — local `key.properties` + keystore (debug fallback if absent); iOS — Xcode Team / profiles (not in repo). App Store **not set up**.
+- **CI:** Android debug APK (`betabuild.yml`); unsigned iOS IPA (`ios-ipa.yml`). No analyze/test job yet.
+- **IDs:** iOS `com.nanda070.neptunmobile` · Android `com.nanda070.neptun_mobile.app`.
+- **Haptics / toast / alarms:** iOS `HapticFeedback`; Android `vibration` + exact-alarm APIs; Fluttertoast often invisible on iOS (`custom_snackbar.dart` exists).
+- **Links (`url_launcher`):** should work on both (Android-only gate removed).
+- **SPM warning:** `flutter_secure_storage`, `open_filex` — not a blocker yet.
 
 ### Commands
 
@@ -617,7 +617,7 @@ After create, confirm Bundle ID is `com.nanda070.neptunmobile` (not `neptun_mobi
 
 ## 15. Android
 
-Compared with iOS: [`IOS_VS_ANDROID.md`](IOS_VS_ANDROID.md).
+Platform-only notes vs iOS: see [§14](#14-ios) (updater / signing / CI / haptics). Product features match after APK parity.
 
 | Field | Value |
 |-------|-------|
@@ -752,7 +752,6 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/README.md` / `docs/README.ru.md` | Product overview |
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
-| `docs/Technical/IOS_VS_ANDROID.md` / `IOS_VS_ANDROID.ru.md` | iOS vs Android platform matrix |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |

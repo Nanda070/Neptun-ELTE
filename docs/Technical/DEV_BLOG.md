@@ -316,7 +316,17 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-16]**
 
-- **TECHNICAL EN+RU synced to code** (no app change, no `1.x.y` bump, no tag/APK): after ELTE login, student-data REST is **GET + Bearer JWT** on assigned `hallgatoN` (portal cookies not on those GETs); **POST** = portal Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read only; **no PUT/DELETE**; `trySilentReauth()` false for ELTE; SessionGuard **10 min wall-clock from session start** (not idle, independent of JWT refresh; `exp` not parsed; ~10–15 min access lifetime observational); 401 retry on GET only; email OTP helper in code unused by UI; no Workmanager / background_fetch. Platform matrix EN+RU aligned. Owner **Nanda**.
+- **TECHNICAL EN+RU synced to code** (no app change, no `1.x.y` bump, no tag/APK): after ELTE login, student-data REST is **GET + Bearer JWT** on assigned `hallgatoN` (portal cookies not on those GETs); **POST** = portal Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read only; **no PUT/DELETE**; `trySilentReauth()` false for ELTE; SessionGuard **10 min wall-clock from session start** (not idle, independent of JWT refresh; `exp` not parsed; ~10–15 min access lifetime observational); 401 retry on GET only; email OTP helper in code unused by UI; no Workmanager / background_fetch. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
+
+**[2026-09-16, 08:15]**
+
+- Deleted `docs/Technical/IOS_VS_ANDROID.md` + `.ru.md` after Android APK functional parity — separate platform matrix no longer wanted.
+- Cross-links removed from README / TECHNICAL EN+RU; brief platform-only bullets (updater / signing / CI / haptics / toast / IDs) folded into TECHNICAL §14–15.
+- `.cursor/rules/keep-docs-current.mdc` no longer lists `IOS_VS_ANDROID*` as mandatory. Docs-only; no version bump / tag / APK. Owner **Nanda**.
 
 ---
 ## In progress / planned (honest)
