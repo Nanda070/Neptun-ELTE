@@ -240,5 +240,42 @@
     "deli": 1403,
     "eszaki": 1218,
     "total": 2621
+  },
+  "updatedAt": "2026-09-16",
+  "stepC": {
+    "denserTiles": [
+      "rooms_15_18118_11461.pbf",
+      "rooms_15_18119_11461.pbf",
+      "rooms_15_18119_11462.pbf",
+      "rooms_16_36237_22923.pbf",
+      "rooms_16_36238_22923.pbf",
+      "rooms_16_36238_22924.pbf",
+      "rooms_17_72475_45846.pbf",
+      "rooms_17_72475_45847.pbf",
+      "rooms_17_72476_45846.pbf",
+      "rooms_17_72476_45847.pbf",
+      "rooms_17_72476_45848.pbf",
+      "rooms_18_144951_91693.pbf",
+      "rooms_18_144951_91694.pbf",
+      "rooms_18_144952_91693.pbf",
+      "rooms_18_144952_91694.pbf",
+      "rooms_18_144952_91695.pbf",
+      "rooms_18_144952_91696.pbf",
+      "rooms_18_144953_91694.pbf",
+      "rooms_18_144953_91695.pbf",
+      "rooms_18_144953_91696.pbf"
+    ],
+    "mvtRoomTypesObserved": {
+      "social": 403,
+      "corridor": 481,
+      "educational": 1488,
+      "administrative": 216,
+      "outdoor": 2,
+      "misc": 33
+    },
+    "technicalInMvt": 0,
+    "bboxFillLd": 201,
+    "bboxFillLe": 198,
+    "bundledTotal": 2972
   }
 }

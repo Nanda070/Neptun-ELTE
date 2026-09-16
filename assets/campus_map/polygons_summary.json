@@ -1,61 +1,67 @@
 {
   "generatedAt": "2026-09-16",
-  "totalPolygons": 2571,
-  "catalogTotal": 3670,
+  "totalPolygons": 2972,
+  "catalogTotal": 3112,
+  "footprintFromMvt": 2573,
+  "bboxFillCount": 399,
   "buildings": {
     "ld": {
       "file": "assets/campus_map/polygons_ld.json",
-      "bytes": 497787,
-      "polygons": 1375,
-      "catalog": 1696,
+      "bytes": 579803,
+      "polygons": 1576,
+      "catalog": 1661,
+      "mvt": 1375,
+      "bboxFill": 201,
       "floors": {
-        "-1": 149,
-        "0": 143,
-        "1": 169,
-        "2": 134,
-        "3": 148,
-        "4": 156,
-        "5": 169,
-        "6": 161,
-        "7": 146
+        "-1": 254,
+        "0": 172,
+        "1": 188,
+        "2": 142,
+        "3": 156,
+        "4": 162,
+        "5": 173,
+        "6": 172,
+        "7": 157
       },
-      "skipped": 28,
       "rotationAngle": 78.49973776890022,
       "bbox": [
-        19.061751356,
-        47.471750759,
-        19.063414599,
-        47.472887353
-      ]
+        19.061717772352004,
+        47.471747727815654,
+        19.063440519133014,
+        47.472915157235285
+      ],
+      "hasFloorHulls": true
     },
     "le": {
       "file": "assets/campus_map/polygons_le.json",
-      "bytes": 436209,
-      "polygons": 1196,
-      "catalog": 1974,
+      "bytes": 519775,
+      "polygons": 1396,
+      "catalog": 1451,
+      "mvt": 1198,
+      "bboxFill": 198,
       "floors": {
-        "-1": 145,
-        "0": 189,
-        "1": 176,
-        "2": 113,
-        "3": 146,
-        "4": 116,
-        "5": 138,
-        "6": 109,
-        "7": 64
+        "-1": 215,
+        "0": 233,
+        "1": 188,
+        "2": 121,
+        "3": 163,
+        "4": 126,
+        "5": 148,
+        "6": 123,
+        "7": 79
       },
-      "skipped": 22,
       "rotationAngle": 78.49970420702536,
       "bbox": [
         19.06104459,
         47.473816746,
-        19.06276354,
+        19.062840205719347,
         47.47535845
-      ]
+      ],
+      "hasFloorHulls": true
     }
   },
   "uiMode": "bis-footprint-polygons",
-  "routeCrs": "graph-basemapPx affine→WGS84 using room centroidWgs control points (approximate)",
-  "polygonCrs": "WGS84 rings reanchored to BIS catalog centroids (1.8.1); view plan-aligned via building rotationAngle ≈78.5°",
-  "fixNote": "1.8.0 MVT absolute Y placed many LD rooms ~300m north of Déli hull (two clusters + blank gap). 1.8.1 translates each ring so centroid matches catalog; shapes unchanged."
+  "routeCrs": "graph-basemapPx affine\u2192WGS84 using room centroidWgs control points (approximate)",
+  "polygonCrs": "WGS84; MVT reanchored to catalog centroids; technical/missing filled via catalog bbox; floor hull underlay+fitBounds",
+  "fixNote": "BIS MVT rooms layer has 0 technical FootPrints. Step C denser z17/z18 tiles added no technical. Catalog bbox rectangles fill those holes; floor entity hull used for view fit + underlay (1.8.2)."
 }

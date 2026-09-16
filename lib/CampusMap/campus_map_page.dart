@@ -555,7 +555,12 @@ class _CampusMapPageState extends State<CampusMapPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 2, 12, 10),
           child: Text(
-            '${floor.labelEn} · ${lang.campusMap_CoverageHint.replaceAll('{n}', '${pkg.totalPolygonCount}').replaceAll('{c}', '${pkg.totalCatalogCount}')}',
+            [
+              '${floor.labelEn} · ${_buildingId.toUpperCase()} ${polyFloor.rooms.length} ${lang.campusMap_RoomsWord}',
+              lang.campusMap_CoverageHint
+                  .replaceAll('{n}', '${pkg.totalPolygonCount}')
+                  .replaceAll('{c}', '${pkg.totalCatalogCount}'),
+            ].join('\n'),
             textAlign: TextAlign.center,
             style: TextStyle(color: theme.textColor.withValues(alpha: 0.5), fontSize: 11),
           ),

@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-09-16 — релиз 1.8.2 (hull + покрытие карты)
+
+- **Релиз 1.8.2** (`pubspec` **1.8.2+1**): патч линии **8**. Лестница A–E: contiguous силуэт LD ground (дыры = missing rooms, не projection); denser BIS MVT (всё ещё **0** `technical`); catalog-bbox fill → **2972/3670**; fitBounds + underlay по hull этажа; футер `Ground · LD N комнат` (глобал вторично). Docs EN+RU. GitHub Release **v1.8.2**. Владелец **Nanda**.
+
 ## 2026-09-16 — релиз 1.8.1 (фикс позиций полигонов карты)
 
 - **Релиз 1.8.1** (`pubspec` **1.8.1+1**): патч линии **8**. Причина пустого разрыва на LD ground: у MVT была неверная абсолютная **широта** (~11–255 м vs каталог; два кластера ~300 м), при верной **форме** комнат. Фикс: reanchor колец к `centroid` каталога BIS; `rotationAngle` ≈78.5° для plan-вида; uniform scale. Docs EN+RU. GitHub Release **v1.8.1**. Владелец **Nanda**.

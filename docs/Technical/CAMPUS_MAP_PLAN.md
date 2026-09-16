@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + ≈78.5° plan rotation (fixes MVT-Y blank gap). Bundled `polygons_ld/le.json` (**2571/3670**); graph A→B affine≈WGS; IT faculty chip.
+**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + ≈78.5° plan rotation; **1.8.2** = floor-hull fitBounds/underlay + denser tiles + catalog-bbox fill (**2972/3670**). Graph A→B affine≈WGS; IT faculty chip.
 
 
 **Owner:** Nanda.  

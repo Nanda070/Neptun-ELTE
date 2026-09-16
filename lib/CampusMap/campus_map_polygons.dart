@@ -12,6 +12,7 @@ class CampusPolygonSet {
     required this.bbox,
     required this.floors,
     this.rotationAngle = 0,
+    this.buildingHull = const [],
   });
 
   final String buildingId;
@@ -21,12 +22,23 @@ class CampusPolygonSet {
   final Map<int, CampusPolygonFloor> floors;
   /// BIS `building.properties.rotationAngle` (degrees) — plan-align local view.
   final double rotationAngle;
+  /// Building outline from BIS entities (fallback when floor hull missing).
+  final List<Offset> buildingHull;
 
   factory CampusPolygonSet.fromJson(Map<String, dynamic> j) {
     final floors = <int, CampusPolygonFloor>{};
     for (final e in (j['floors'] as List).cast<Map>()) {
       final fl = CampusPolygonFloor.fromJson(Map<String, dynamic>.from(e));
       floors[fl.level] = fl;
+    }
+    final hullRaw = (j['buildingHull'] as List?) ?? const [];
+    final buildingHull = <Offset>[];
+    for (final p in hullRaw) {
+      if (p is List && p.length >= 2) {
+        buildingHull.add(
+          Offset((p[0] as num).toDouble(), (p[1] as num).toDouble()),
+        );
+      }
     }
     return CampusPolygonSet(
       buildingId: j['buildingId'] as String,
@@ -37,6 +49,7 @@ class CampusPolygonSet {
           .toList(),
       floors: floors,
       rotationAngle: (j['rotationAngle'] as num?)?.toDouble() ?? 0,
+      buildingHull: buildingHull,
     );
   }
 
@@ -47,19 +60,36 @@ class CampusPolygonFloor {
   CampusPolygonFloor({
     required this.level,
     required this.rooms,
+    this.hull = const [],
+    this.bisFloorId,
+    this.label,
   });
 
   final int level;
   final List<CampusRoomPolygon> rooms;
+  /// BIS floor entity hull ring `[lng,lat]` (closed) — view fit + underlay.
+  final List<Offset> hull;
+  final int? bisFloorId;
+  final String? label;
 
   factory CampusPolygonFloor.fromJson(Map<String, dynamic> j) {
     final rooms = ((j['rooms'] as List?) ?? const [])
         .cast<Map>()
         .map((e) => CampusRoomPolygon.fromJson(Map<String, dynamic>.from(e)))
         .toList();
+    final hullRaw = (j['hull'] as List?) ?? const [];
+    final hull = <Offset>[];
+    for (final p in hullRaw) {
+      if (p is List && p.length >= 2) {
+        hull.add(Offset((p[0] as num).toDouble(), (p[1] as num).toDouble()));
+      }
+    }
     return CampusPolygonFloor(
       level: (j['level'] as num).toInt(),
       rooms: rooms,
+      hull: hull,
+      bisFloorId: (j['bisFloorId'] as num?)?.toInt(),
+      label: j['label'] as String?,
     );
   }
 }
@@ -241,12 +271,19 @@ Color bisRoomFill(String type, {required bool dark}) {
       return dark ? const Color(0xFFD97706) : const Color(0xFFFDE68A);
     case 'social':
       return dark ? const Color(0xFF059669) : const Color(0xFFA7F3D0);
+    case 'technical':
+      return dark ? const Color(0xFF78716C) : const Color(0xFFD6D3D1);
     case 'outdoor':
       return dark ? const Color(0xFF65A30D) : const Color(0xFFD9F99D);
     case 'misc':
     default:
       return dark ? const Color(0xFF94A3B8) : const Color(0xFFCBD5E1);
   }
+}
+
+Color bisFloorHullFill({required bool dark}) {
+  // Official BIS uses a warm floorPlate under rooms.
+  return dark ? const Color(0xFF3F3A36) : const Color(0xFFE8DFD4);
 }
 
 Color bisRoomStroke(String type, {required bool dark}) {
@@ -329,22 +366,44 @@ class CampusPolygonPainter extends CustomPainter {
       Paint()..color = surfaceColor,
     );
 
+    // Floor / building hull underlay — plan silhouette when rooms are sparse.
+    if (polygonFloor.hull.length >= 3) {
+      final hullPath = _ringPath(polygonFloor.hull, size);
+      canvas.drawPath(
+        hullPath,
+        Paint()
+          ..style = PaintingStyle.fill
+          ..color = bisFloorHullFill(dark: dark),
+      );
+      canvas.drawPath(
+        hullPath,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..color = dark
+              ? Colors.white.withValues(alpha: 0.22)
+              : const Color(0xFF78716C).withValues(alpha: 0.55),
+      );
+    }
+
     // Draw corridors first (under), then other rooms, educational on top-ish.
     final ordered = [...polygonFloor.rooms]..sort((a, b) {
         int rank(String t) {
           switch (t) {
             case 'corridor':
               return 0;
-            case 'outdoor':
+            case 'technical':
               return 1;
-            case 'misc':
+            case 'outdoor':
               return 2;
-            case 'social':
+            case 'misc':
               return 3;
-            case 'administrative':
+            case 'social':
               return 4;
-            case 'educational':
+            case 'administrative':
               return 5;
+            case 'educational':
+              return 6;
             default:
               return 3;
           }
@@ -612,20 +671,32 @@ class CampusSchematicPainterCompat {
 }
 
 /// Build projector + padded local bounds (plan-aligned via [CampusPolygonSet.rotationAngle]).
+///
+/// Prefer the BIS **floor hull** (or building hull) for fitBounds so outlier /
+/// sparse rooms do not stretch the plan. Fall back to room vertices, then bbox.
 ({WgsLocalProjector projector, Rect bounds}) buildFloorView(
   CampusPolygonSet set,
   CampusPolygonFloor floor,
 ) {
-  double minLng = 1e9, minLat = 1e9, maxLng = -1e9, maxLat = -1e9;
-  for (final r in floor.rooms) {
-    for (final ring in r.rings) {
-      for (final p in ring) {
-        minLng = math.min(minLng, p.dx);
-        maxLng = math.max(maxLng, p.dx);
-        minLat = math.min(minLat, p.dy);
-        maxLat = math.max(maxLat, p.dy);
+  final fitRing = <Offset>[];
+  if (floor.hull.length >= 3) {
+    fitRing.addAll(floor.hull);
+  } else if (set.buildingHull.length >= 3) {
+    fitRing.addAll(set.buildingHull);
+  } else {
+    for (final r in floor.rooms) {
+      for (final ring in r.rings) {
+        fitRing.addAll(ring);
       }
     }
+  }
+
+  double minLng = 1e9, minLat = 1e9, maxLng = -1e9, maxLat = -1e9;
+  for (final p in fitRing) {
+    minLng = math.min(minLng, p.dx);
+    maxLng = math.max(maxLng, p.dx);
+    minLat = math.min(minLat, p.dy);
+    maxLat = math.max(maxLat, p.dy);
   }
   if (minLng > maxLng) {
     // Fallback to building bbox.
@@ -649,7 +720,7 @@ class CampusSchematicPainterCompat {
     originLat,
     rotationDegrees: set.rotationAngle,
   );
-  // Bounds from every vertex after plan rotation (not WGS AABB corners alone).
+  // Bounds from hull (or room) vertices after plan rotation — not WGS AABB alone.
   double minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
   void include(double lng, double lat) {
     final p = projector.toLocal(lng, lat);
@@ -660,13 +731,17 @@ class CampusSchematicPainterCompat {
   }
 
   var any = false;
-  for (final r in floor.rooms) {
-    for (final ring in r.rings) {
-      for (final p in ring) {
-        include(p.dx, p.dy);
-        any = true;
-      }
-    }
+  final verts = fitRing.isNotEmpty
+      ? fitRing
+      : <Offset>[
+          Offset(minLng, minLat),
+          Offset(maxLng, maxLat),
+          Offset(minLng, maxLat),
+          Offset(maxLng, minLat),
+        ];
+  for (final p in verts) {
+    include(p.dx, p.dy);
+    any = true;
   }
   if (!any) {
     include(minLng, minLat);

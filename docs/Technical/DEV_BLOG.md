@@ -7,6 +7,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.8.2 (campus map hull + coverage)
+
+- **Release 1.8.2** (`pubspec` **1.8.2+1**): patch on line **8**. Ladder A–E: verified contiguous LD ground silhouette (holes = missing rooms, not projection); denser BIS MVT tiles (still **0** `technical`); catalog-bbox fill → **2972/3670**; floor-hull **fitBounds** + underlay; footer `Ground · LD N rooms` (global secondary). Docs EN+RU. GitHub Release **v1.8.2**. Owner **Nanda**.
+
 ## 2026-09-16 — release 1.8.1 (campus map polygon position fix)
 
 - **Release 1.8.1** (`pubspec` **1.8.1+1**): patch on line **8**. Root cause of blank LD ground-floor gap: MVT decode had wrong absolute **latitude** (~11–255 m vs catalog; two clusters ~300 m apart) while room **shapes** matched catalog bboxes. Fix: reanchor every ring to BIS catalog `centroid`; store/building `rotationAngle` ≈78.5° for plan-aligned view; uniform screen scale. Docs EN+RU. GitHub Release **v1.8.1**. Owner **Nanda**.

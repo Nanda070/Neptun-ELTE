@@ -404,7 +404,8 @@ class AppStrings{
       campusMap_FloorsOnPath: 'Emeletek az úton',
       campusMap_SchematicMode: 'Beltéri térkép',
       campusMap_PhotoDebugToggle: 'Fotó-alárajz (debug)',
-      campusMap_CoverageHint: '{n}/{c} BIS FootPrint terem',
+      campusMap_CoverageHint: 'összesen {n}/{c} BIS FootPrint',
+      campusMap_RoomsWord: 'terem',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
       notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
@@ -812,7 +813,8 @@ class AppStrings{
       campusMap_FloorsOnPath: 'Floors on path',
       campusMap_SchematicMode: 'Indoor map',
       campusMap_PhotoDebugToggle: 'Photo underlay (debug)',
-      campusMap_CoverageHint: '{n}/{c} BIS FootPrint rooms',
+      campusMap_CoverageHint: 'total {n}/{c} BIS FootPrint',
+      campusMap_RoomsWord: 'rooms',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
       notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
@@ -1492,6 +1494,7 @@ class LanguagePack{
   final String campusMap_SchematicMode;
   final String campusMap_PhotoDebugToggle;
   final String campusMap_CoverageHint;
+  final String campusMap_RoomsWord;
   final String campusMap_ItFacultyOnly;
   final String campusMap_ItFacultyOnlyShort;
   final String markbook_creditAbbrev;
@@ -1840,6 +1843,7 @@ class LanguagePack{
     this.campusMap_SchematicMode = 'Indoor map',
     this.campusMap_PhotoDebugToggle = 'Photo underlay (debug)',
     this.campusMap_CoverageHint = '{n}/{c} BIS FootPrint rooms',
+    this.campusMap_RoomsWord = 'rooms',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
     required this.notif_exam_BodyTomorrow,
@@ -2267,6 +2271,14 @@ class LanguagePack{
         campusMap_SchematicMode: getStr('campusMap_SchematicMode', en.campusMap_SchematicMode),
         campusMap_PhotoDebugToggle: getStr('campusMap_PhotoDebugToggle', en.campusMap_PhotoDebugToggle),
         campusMap_CoverageHint: getStr('campusMap_CoverageHint', en.campusMap_CoverageHint),
+        campusMap_RoomsWord: () {
+          final v = getStr('campusMap_RoomsWord', en.campusMap_RoomsWord);
+          if (v != en.campusMap_RoomsWord) return v;
+          if (countryId == 'ru') return 'комнат';
+          if (countryId == 'hu') return 'terem';
+          if (countryId == 'tr') return 'oda';
+          return v;
+        }(),
         campusMap_ItFacultyOnly: () {
           final v = getStr('campusMap_ItFacultyOnly', en.campusMap_ItFacultyOnly);
           if (v != en.campusMap_ItFacultyOnly) return v;
@@ -2762,6 +2774,7 @@ class LanguagePack{
       'campusMap_SchematicMode':lang.campusMap_SchematicMode,
       'campusMap_PhotoDebugToggle':lang.campusMap_PhotoDebugToggle,
       'campusMap_CoverageHint':lang.campusMap_CoverageHint,
+      'campusMap_RoomsWord':lang.campusMap_RoomsWord,
       'campusMap_ItFacultyOnly':lang.campusMap_ItFacultyOnly,
       'campusMap_ItFacultyOnlyShort':lang.campusMap_ItFacultyOnlyShort,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
