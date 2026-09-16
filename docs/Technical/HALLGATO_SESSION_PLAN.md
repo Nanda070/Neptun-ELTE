@@ -166,7 +166,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 ## Optional password retention in Settings (opt-in, default OFF)
 
-**Status:** **partially shipped** (16 September 2026) — Settings toggle + wipe matrix + login pre-fill; no auto-2FA. Background keep-alive still design-only.
+**Status:** **shipped in 1.5.7** (16 September 2026) — Settings toggle + wipe matrix + login pre-fill; no auto-2FA. (**Honesty:** briefly landed then Dart paths **reverted in 1.5.6**; restored in **1.5.7**.)
 
 ### User control
 
@@ -243,7 +243,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 11. **Settings — background keep-alive** — add localized strings + toggle (default **off**); persist pref key (name TBD, e.g. `settings_backgroundSessionKeepAlive`); gate registration of WorkManager / iOS background task only when on; subtitle explaining battery + irregular schedule.
 12. **Background plugin choice** — Android: WorkManager periodic task with conservative interval; iOS: `background_fetch` and/or BGTaskScheduler; document chosen package + minimum interval + deferral behavior in TECHNICAL § session.
 13. **Battery / ELTE policy** — no foreground-equivalent 3–4 min polling in background; single coalesced `GetNewTokens` per task; backoff on errors; no duplicate timer while app is `resumed` (foreground scheduler owns that window).
-14. **Settings — password retention** — **partial:** toggle (`SETTING_RememberPasswordOnDevice`, default **off**); `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` manual vs expired matrix; login pre-fill; EN/HU/RU strings. Remaining: none for core opt-in (background toggle = step 11).
+14. **Settings — password retention** — **done (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **off**); `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` manual vs expired/cold-start matrix; login pre-fill; EN/HU/RU strings. (**1.5.6** reverted Dart; restored in **1.5.7**.)
 15. **Store / manifest** — Android permissions + iOS `UIBackgroundModes` / BGTask identifiers only if background toggle ships; Play / App Store justification text aligned with optional user-enabled maintenance.
 16. **Portal / HWEB research** — if pursued: spike doc with HAR, endpoints, and pass/fail before any user-facing “activity” feature; keep lower priority than steps 2–10.
 

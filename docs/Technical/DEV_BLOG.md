@@ -375,7 +375,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-16]**
 
-- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + remember-password Settings (both default off; password code restored after 1.5.6 session-core cut). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Owner **Nanda**.
+- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + **Remember password on this device** Settings (both default off). Password Dart was briefly on `main` then **reverted in 1.5.6** session-core cut; **1.5.7** restores toggle + `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix (manual logout always wipes; expiry/cold-start keep when opted in; login pre-fill; no auto-2FA). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Owner **Nanda**.
 
 ---
 

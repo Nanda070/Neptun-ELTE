@@ -166,7 +166,7 @@
 
 ## Опциональное сохранение пароля в Настройках (opt-in, по умолчанию ВЫКЛ)
 
-**Статус:** **частично отгружено** (16 сентября 2026) — toggle в Настройках + матрица wipe + pre-fill входа; без auto-2FA. Фоновый keep-alive по-прежнему только дизайн.
+**Статус:** **отгружено в 1.5.7** (16 сентября 2026) — toggle в Настройках + матрица wipe + pre-fill входа; без auto-2FA. (**Честность:** кратко было, затем Dart-пути **откачены в 1.5.6**; восстановлено в **1.5.7**.)
 
 ### Управление пользователем
 
@@ -245,7 +245,7 @@
 11. **Настройки — фоновый keep-alive** — локализованные строки + toggle (default **выкл**); pref (TBD, напр. `settings_backgroundSessionKeepAlive`); регистрация WorkManager / iOS BG task только при вкл; подзаголовок про батарею и нерегулярность.
 12. **Выбор фонового плагина** — Android: WorkManager с консервативным интервалом; iOS: `background_fetch` и/или BGTaskScheduler; пакет + минимальный интервал + defer в TECHNICAL § session.
 13. **Политика батареи / ELTE** — не polling 3–4 мин в фоне; один coalesced `GetNewTokens` на задачу; backoff; без дублирующего timer при `resumed` (foreground scheduler).
-14. **Настройки — сохранение пароля** — **частично:** toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard`; pre-fill входа; строки EN/HU/RU. Фоновый toggle = шаг 11.
+14. **Настройки — сохранение пароля** — **готово (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard` (ручной / expiry / cold-start); pre-fill входа; строки EN/HU/RU. (**1.5.6** откатил Dart; восстановлено в **1.5.7**.)
 15. **Store / manifest** — permissions Android + `UIBackgroundModes` / BGTask на iOS только если toggle отгружен; текст обоснования для Play / App Store.
 16. **Исследование portal / HWEB** — при продолжении: spike с HAR, endpoints, pass/fail до user-facing «activity»; приоритет ниже шагов 2–10.
 

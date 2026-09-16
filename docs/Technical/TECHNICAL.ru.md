@@ -77,7 +77,7 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.7** | **Текущая.** Патч на линии **5** — опциональный **фоновый hallgato keep-alive** в Настройках (`SETTING_BackgroundHallgatoKeepAlive`, default off; Android WorkManager 15 мин / iOS Background Fetch 15+ мин; общий `GetNewTokens`) + **запомнить пароль** (`SETTING_RememberPasswordOnDevice`). На базе **1.5.6** session v1. Тег **v1.5.7**. |
+| **1.5.7** | **Текущая.** Патч на линии **5** — опциональный **фоновый hallgato keep-alive** в Настройках (`SETTING_BackgroundHallgatoKeepAlive`, default off; Android WorkManager 15 мин / iOS Background Fetch 15+ мин; общий `GetNewTokens`) + **восстановление** opt-in **Запомнить пароль** (`SETTING_RememberPasswordOnDevice`; Dart-пути кратко были на `main`, **откачены в 1.5.6**, восстановлены здесь). На базе **1.5.6** session v1. Тег **v1.5.7**. |
 | **1.5.6** | [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) **v1 core**: снят клиентский **10-минутный** wall-clock; проактивный `POST /api/Account/GetNewTokens` каждые **3 мин 30 с** в `AppLifecycleState.resumed`; пауза в фоне; реактивный GET 401 без изменений; grace ~45 с сохранён. Тег **v1.5.6**. |
 | **1.5.5** | Патч — drawer без двойных icon/emoji + color-only splash. Тег **v1.5.5**. |
 | **1.5.4** | Патч — надёжность 10-мин wall-clock сессии на Android (`SessionGuard`: продолжение stamp, фикс гонки prefs, тикер 15 с + lifecycle re-check); фикс двойных emoji в Bug report (`EmojiRichText` без tint на color-emoji). Политика по-прежнему **10 мин**. Тег **v1.5.4**. |
@@ -209,7 +209,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.7` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.7` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -389,7 +389,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
-**Опциональное сохранение пароля (частично):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. Portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
+**Опциональное сохранение пароля (1.5.7):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` / cold-start wipe (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. (**Честность:** кратко было на `main`, Dart-пути **откачены в 1.5.6**; **1.5.7** восстанавливает.) Portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
 ---
 

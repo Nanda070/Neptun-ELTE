@@ -375,7 +375,7 @@
 
 **[2026-09-16]**
 
-- **Релиз 1.5.7** (`pubspec` **1.5.7+1**): опциональный фоновый hallgato JWT keep-alive + запомнить пароль в Настройках (оба default off; код пароля восстановлен после среза 1.5.6). Logout отменяет фоновые задачи через `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Владелец **Nanda**.
+- **Релиз 1.5.7** (`pubspec` **1.5.7+1**): опциональный фоновый hallgato JWT keep-alive + **Запомнить пароль на этом устройстве** (оба default off). Dart пароля кратко был на `main`, **откачен в 1.5.6**; **1.5.7** восстанавливает toggle + `sessionWipeKeepCache(wipePassword:)` + матрицу `SessionGuard` (ручной logout всегда стирает; expiry/cold-start сохраняют при opt-in; pre-fill; без auto-2FA). Logout отменяет фоновые задачи через `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Владелец **Nanda**.
 
 ---
 
