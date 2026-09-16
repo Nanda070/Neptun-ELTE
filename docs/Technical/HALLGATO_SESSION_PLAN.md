@@ -1,6 +1,6 @@
 # Hallgato session maintenance — design plan
 
-**Status:** design / plan only — **not implemented in app code** (as of **16 September 2026**).  
+**Status:** **v1 core shipped in app 1.5.6** (16 September 2026). Optional Settings tiers (background keep-alive, password retention, portal activity) remain **design only**.  
 **Owner:** Nanda.  
 **Canonical twin:** [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
@@ -17,19 +17,17 @@ Minimize the number of full logins (**password + TOTP**) while keeping the user 
 
 ---
 
-## Current shipped behavior (honesty)
-
-Until this plan is implemented, the app still enforces:
+## Shipped behavior — v1 core (1.5.6)
 
 | Mechanism | Behavior |
 |-----------|----------|
-| **10-minute wall clock** | `SessionGuard.sessionWallClockLimit` — force logout from **participant session start**, independent of JWT refresh (`lib/API/api_coms.dart`, `SessionGuard`). |
-| **Reactive refresh** | On **401/403** for **GET** requests, `_APIRequest.ensureValidSession()` → `tryTokenRefresh()` (`POST /api/Account/GetNewTokens`) → ELTE `trySilentReauth()` (**always false**) → `forceExpiredLogout`. |
-| **Foreground lifecycle** | `HomePage` (`lib/Pages/main_page.dart`) observes lifecycle for **wall-clock** re-check, not proactive token refresh. |
+| **Session end** | **Manual logout** or **dead refresh** (`GetNewTokens` 401/403 / empty tokens). **No** client 10-minute wall-clock (`SESSION_StartedAtMs` enforcement removed). |
+| **Foreground proactive refresh** | Every **3 min 30 s** while `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens` (modern API + refresh token). Paused on background. Interval: `SessionGuard.foregroundTokenMaintenanceInterval`. |
+| **Reactive refresh** | On **401/403** for **GET** requests, `_APIRequest.ensureValidSession()` → `tryTokenRefresh()` → ELTE `trySilentReauth()` (**always false**) → `forceExpiredLogout`. Shares `_isRefreshingToken` lock with foreground maintenance. |
+| **Post-login grace** | ~45 s after `markParticipantSessionStarted` — reactive path skips forced logout if access token still present. |
+| **Cold start** | `isColdStartSessionUsable()`: `HasLogin` + non-empty access token only (no wall-clock stamp). |
 | **Background / killed** | No periodic hallgato calls while the process is dead. Widgets: cache-only, **no JWT** (unchanged). |
-| **JWT `exp`** | Client does **not** decode JWT `exp` today; access lifetime ~10–15 min is **observational** only. |
-
-**Planned policy change (not shipped):** remove the client **10-minute wall-clock** forced logout. Session ends on **manual logout** or **token failure** (refresh dead / `GetNewTokens` fails), not an arbitrary timer.
+| **JWT `exp`** | Client does **not** decode JWT `exp`; access lifetime ~10–15 min is **observational** only. |
 
 ---
 
@@ -37,7 +35,7 @@ Until this plan is implemented, the app still enforces:
 
 ### Interval
 
-While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance every **3–4 minutes** (use a single chosen interval in implementation, e.g. **3 min 30 s**, or jitter between 3 and 4 min — document the chosen constant in code comments).
+While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance every **3 min 30 s** — **`SessionGuard.foregroundTokenMaintenanceInterval`** in `lib/API/api_coms.dart` (shipped **1.5.6**).
 
 ### Primary mechanism
 
@@ -61,7 +59,7 @@ While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance e
 | `inactive`, `paused`, `detached`, `hidden` | Pause / cancel timer — **no** proactive `GetNewTokens` |
 | Process killed | No maintenance (see cold start below) |
 
-**Integration point:** same `WidgetsBindingObserver` surface as today’s wall-clock checks on `HomePage` — replace or coexist during migration (wall-clock removal is the end state).
+**Integration point:** `HomePage` `WidgetsBindingObserver` — starts/stops the maintenance `Timer` on `resumed` vs background states (wall-clock removed in **1.5.6**).
 
 ### Failure handling (foreground)
 
@@ -91,7 +89,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 | **Refresh dead or missing** | Wipe auth via existing paths → login screen → **password + TOTP** |
 | **No `HasLogin` / no tokens** | Login screen |
 
-**Note on today’s cold start:** `SessionGuard.isColdStartSessionUsable()` also rejects sessions when the **10-minute wall-clock** stamp is expired — that check should be **removed** when the wall-clock policy is removed.
+**Cold start (shipped):** wall-clock branch **removed** from `isColdStartSessionUsable()` in **1.5.6**.
 
 **Widgets:** unchanged — read calendar cache only; **no JWT** in widget extensions.
 
@@ -168,7 +166,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 ## Optional password retention in Settings (opt-in, default OFF)
 
-**Status:** design / optional convenience — **not** v1 core unless product ships it with foreground maintenance.
+**Status:** **partially shipped** (16 September 2026) — Settings toggle + wipe matrix + login pre-fill; no auto-2FA. Background keep-alive still design-only.
 
 ### User control
 
@@ -230,24 +228,22 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 ---
 
-## Implementation checklist (future dev)
+## Implementation checklist
 
-Numbered steps only — **no code in this task**.
-
-1. **Document parity** — keep EN + RU plan twins and TECHNICAL pointers updated when behavior ships.
-2. **Proactive refresh helper** — extract or wrap `tryTokenRefresh()` (`lib/API/api_coms.dart`, `_APIRequest`) for callable maintenance (respect `_isRefreshingToken`, `SessionGuard.isAuthBlocked`).
-3. **Foreground scheduler** — in `HomePage` (`lib/Pages/main_page.dart`) or a small dedicated module: `Timer` / `periodic` every **3–4 min** only when `AppLifecycleState.resumed`; cancel on pause/background (mirror existing lifecycle observer pattern used for wall-clock).
-4. **Remove wall-clock policy** — delete or bypass `SessionGuard.sessionWallClockLimit`, `startSessionWallClock`, `checkSessionWallClockOnResume`, persisted `SESSION_StartedAtMs` enforcement, and wall-clock branch in `isColdStartSessionUsable()`; keep `markParticipantSessionStarted` only if still needed for post-login grace or rename purpose in comments.
-5. **Post-login grace** — re-evaluate `_postLoginGrace` (~45 s) in `SessionGuard.ensureValidSession` paths after wall-clock removal; keep if still needed for 2FA race.
-6. **Cold start** — update `startup_page.dart` / `isColdStartSessionUsable()` to gate on tokens + optional startup `GetNewTokens`, not 10-min stamp.
-7. **User-visible copy** — ensure `auth_sessionExpired_PleaseSignIn` still matches “refresh dead” vs “wall clock” (wall-clock-specific messaging can be removed).
-8. **TECHNICAL + DEV_BLOG + honesty table** — state JWT-maintenance policy; bump marketing version only when shipping to users (Android APK → new tag per repo rules).
-9. **Manual test matrix** — foreground 20+ min without TOTP; background 30+ min; kill app with valid refresh; kill with dead refresh; airplane mode during maintenance tick.
-10. **Widgets regression** — confirm widget sync still cache-only, no JWT.
+1. **Document parity** — **done (1.5.6)** — EN + RU plan twins + TECHNICAL + DEV_BLOG.
+2. **Proactive refresh helper** — **done (1.5.6)** — `_APIRequest._attemptTokenRefresh()` + `runForegroundTokenMaintenance()`.
+3. **Foreground scheduler** — **done (1.5.6)** — `HomePage` periodic timer + lifecycle pause/resume.
+4. **Remove wall-clock policy** — **done (1.5.6)** — removed wall-clock APIs and `SESSION_StartedAtMs` enforcement; `markParticipantSessionStarted` kept for post-login grace.
+5. **Post-login grace** — **done (1.5.6)** — ~45 s kept in `ensureValidSession`.
+6. **Cold start** — **done (1.5.6)** — token gate only (optional startup `GetNewTokens` still future).
+7. **User-visible copy** — **done (1.5.6)** — `auth_sessionExpired_PleaseSignIn` used for refresh-dead only.
+8. **TECHNICAL + DEV_BLOG + honesty table** — **done (1.5.6)** — version **1.5.6**, tag **v1.5.6**.
+9. **Manual test matrix** — **not automated** — foreground 20+ min; background 30+ min; kill with valid/dead refresh; airplane mode during tick.
+10. **Widgets regression** — **unchanged** — cache-only, no JWT.
 11. **Settings — background keep-alive** — add localized strings + toggle (default **off**); persist pref key (name TBD, e.g. `settings_backgroundSessionKeepAlive`); gate registration of WorkManager / iOS background task only when on; subtitle explaining battery + irregular schedule.
 12. **Background plugin choice** — Android: WorkManager periodic task with conservative interval; iOS: `background_fetch` and/or BGTaskScheduler; document chosen package + minimum interval + deferral behavior in TECHNICAL § session.
 13. **Battery / ELTE policy** — no foreground-equivalent 3–4 min polling in background; single coalesced `GetNewTokens` per task; backoff on errors; no duplicate timer while app is `resumed` (foreground scheduler owns that window).
-14. **Settings — password retention** — toggle (default **off**); wire to `neptun_password` read/write in `DataCache` / login flow; on token-failure logout respect opt-in (retain password); on manual logout wipe password (recommended); Settings security copy EN/RU/HU.
+14. **Settings — password retention** — **partial:** toggle (`SETTING_RememberPasswordOnDevice`, default **off**); `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` manual vs expired matrix; login pre-fill; EN/HU/RU strings. Remaining: none for core opt-in (background toggle = step 11).
 15. **Store / manifest** — Android permissions + iOS `UIBackgroundModes` / BGTask identifiers only if background toggle ships; Play / App Store justification text aligned with optional user-enabled maintenance.
 16. **Portal / HWEB research** — if pursued: spike doc with HAR, endpoints, and pass/fail before any user-facing “activity” feature; keep lower priority than steps 2–10.
 

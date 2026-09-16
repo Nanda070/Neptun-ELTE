@@ -292,6 +292,8 @@
   "notif_class_BodyIn5Min": "Занятие «%0» в «%1» через 5 мин!",
   "notif_class_BodyNow": "Занятие «%0» сейчас в «%1»!",
   "settings_fontScale_Label": "Размер шрифта",
+  "settings_rememberPasswordOnDevice": "Запомнить пароль на этом устройстве",
+  "settings_rememberPasswordOnDevice_Subtitle": "Только для удобства: пароль остаётся в защищённом хранилище после истечения сессии (2FA всё равно нужна). Отключите на общем устройстве. Ручной выход всегда удаляет пароль.",
   "mail_error_Prefix": "Ошибка: %0",
   "mail_error_EmptyMessage": "Пустое сообщение.",
   "popup_case9_2faHeader": "Двухэтапная аутентификация",

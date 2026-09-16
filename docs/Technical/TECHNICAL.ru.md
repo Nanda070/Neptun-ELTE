@@ -55,7 +55,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.5.5+1** — для пользователя / Settings / docs = **1.5.5** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.5.6+1** — для пользователя / Settings / docs = **1.5.6** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -67,7 +67,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.5`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.6`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -77,7 +77,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.5** | **Текущая.** Патч на линии **5** — drawer Settings/Bug report/Logout без двойного Material icon + emoji в тексте (`stripLeadingEmoji`); splash color-only (без launcher-иконки при входе; Android 12 — solid tile). Launcher AppIcon / adaptive icons без изменений. Новый git-тег **v1.5.5** (не clobber **v1.5.4**). |
+| **1.5.6** | **Текущая.** Патч на линии **5** — [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) **v1 core**: снят клиентский **10-минутный** wall-clock; проактивный `POST /api/Account/GetNewTokens` каждые **3 мин 30 с** в `AppLifecycleState.resumed` (modern API + refresh token); пауза в фоне; реактивный GET 401 без изменений; grace ~45 с сохранён. Без Settings background/password. Тег **v1.5.6**. |
+| **1.5.5** | Патч — drawer без двойных icon/emoji + color-only splash. Тег **v1.5.5**. |
 | **1.5.4** | Патч — надёжность 10-мин wall-clock сессии на Android (`SessionGuard`: продолжение stamp, фикс гонки prefs, тикер 15 с + lifecycle re-check); фикс двойных emoji в Bug report (`EmojiRichText` без tint на color-emoji). Политика по-прежнему **10 мин**. Тег **v1.5.4**. |
 | **1.5.3** | Патч — новая launcher / adaptive иконка (Android + iOS) из обновлённого брендинга ELTE Neptun; splash использует обновлённый `assets/neptun2_logo.png`. Политика сессии без изменений (по-прежнему **10 мин**). Тег **v1.5.3**. |
 | **1.5.2** | Патч — паритет Android с iOS: App Widget «Пары сегодня» из кэша календаря (без JWT), deep-link `neptunelte://` + `<queries>` maps/mailto, fallback подписи release APK без `key.properties`; фикс белого экрана OTP/2FA на Android (непрозрачный `TwoFactorCodePage`). Политика сессии без изменений (по-прежнему **10 мин**). |
@@ -207,7 +208,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.5` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.6` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -371,19 +372,21 @@ UI setup:
 
 **Чтение vs запись:** единственная **мутация** student-data — mark-as-read. Студенческий, платежи, сочинение письма и запись на экзамен здесь **не** записи (карточка/платежи — GET; compose / signup не реализованы).
 
-### Восстановление сессии и wall-clock
+### Восстановление сессии и поддержка JWT
 
-Refresh / повторный логин при **401/403 GET** — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). Иначе `trySilentReauth()` — для ELTE **всегда false** (нужна интерактивная 2FA). Иначе `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Путь **POST не ретраит 401**. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
+Refresh / повторный логин при **401/403 GET** — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). Иначе `trySilentReauth()` — для ELTE **всегда false** (нужна интерактивная 2FA). Иначе `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache(wipePassword: …)` (JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**; пароль — см. opt-in ниже), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Путь **POST не ретраит 401**. **Ручной выход** всегда стирает пароль; **истечение сессии / провал токена** учитывает opt-in. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
 
-**Wall-clock сессии приложения (видимо пользователю):** После успешного логина / 2FA `SessionGuard.markParticipantSessionStarted()` (из `SetupPage`, до `navigateToHomeRoot`) сбрасывает устаревший `SESSION_StartedAtMs`, сохраняет новый старт и ставит **10-минутный** wall-clock от **начала participant-сессии** (**не idle**). Не зависит от refresh JWT. Клиент **не** парсит JWT `exp`. Срок access JWT ~10–15 мин — **наблюдение** (практика Neptun), не декодирование токена. Вход на `HomePage` вызывает `startSessionWallClock()`, который **продолжает** тот же stamp (не даёт новые 10 мин). По истечении — `forceExpiredLogout`. `prepareForLoginAttempt()` очищает wall-clock в начале попытки входа. Ручной logout отменяет таймеры; refresh JWT **не** продлевает wall-clock.
+**Политика окончания сессии (1.5.6 / HALLGATO v1 core):** Нет клиентского **10-минутного wall-clock**. Выход — **ручной logout** или мёртвый refresh (`GetNewTokens` → 401/403 или пустые токены при проактивном или реактивном refresh). Клиент **не** парсит JWT `exp`. `markParticipantSessionStarted()` задаёт только post-login grace — **не** пишет `SESSION_StartedAtMs` и не ставит таймеры.
 
-**Grace после входа (1.3.3):** ~45 с после `markParticipantSessionStarted` `ensureValidSession` **не** вызывает `forceExpiredLogout`, если refresh/тихий re-auth провалились, но access token ещё есть — защита от гонки сразу после 2FA. На resume предпочитается in-memory старт; prefs старше последней auth-метки игнорируются.
+**Проактивный refresh на foreground (1.5.6):** В `AppLifecycleState.resumed` `HomePage` каждые **3 мин 30 с** (`SessionGuard.foregroundTokenMaintenanceInterval`) вызывает `runForegroundTokenMaintenance()` → `POST …/api/Account/GetNewTokens` при `getIsModernApi()` и refresh token. Таймер **отменяется** на `inactive` / `paused` / `detached` / `hidden`. Общий lock `_isRefreshingToken` с `ensureValidSession`. **401/403** на maintenance → `forceExpiredLogout`; сеть/временные ошибки → следующий tick. **Нет** `workmanager` / `background_fetch` в v1.
 
-**Wall-clock в фоне / Android (1b + 1.5.4):** `HomePage` — `WidgetsBindingObserver`. На `AppLifecycleState.resumed` / `inactive` `SessionGuard.checkSessionWallClockOnResume()` сравнивает `now` с сохранённым стартом; если `>= 10 мин` → `forceExpiredLogout`, иначе перезаводит one-shot `Timer` на остаток **плюс** периодический тикер **15 с** (на Android длинные one-shot Timer часто задерживаются/паузятся). Persist пишет с generation counter, чтобы fire-and-forget cancel `SESSION_StartedAtMs=0` не затирал новый старт (эта гонка раньше оставляла Android cold start без wall-clock stamp). Честно: если ОС убила процесс в фоне, expiry проверяется при следующем cold start / resume по сохранённому stamp — не пока isolate мёртв. **Нет** `workmanager` / `background_fetch` для сессии Neptun. Виджеты синхронизируют кэш календаря **без JWT**.
+**Grace после входа (1.3.3):** ~45 с после `markParticipantSessionStarted` `ensureValidSession` **не** вызывает `forceExpiredLogout`, если refresh/тихий re-auth провалились, но access token ещё есть.
+
+**Cold start:** `isColdStartSessionUsable()` пускает на Home при `HasLogin` и непустом access token — **без** wall-clock stamp. Долгий фон без foreground refresh может потребовать полный вход, если refresh JWT истёк на сервере.
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
-**Запланированная поддержка сессии hallgato (не отгружено):** только дизайн — [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) — проактивный `POST /api/Account/GetNewTokens` каждые **3–4 мин** в `resumed`, снятие клиентского **10-минутного** wall-clock после реализации, cold start через refresh вместо таймера. **Сейчас в отгрузке** по-прежнему **10 мин** wall-clock и реактивный refresh только при 401 на GET, пока план не попадёт в код.
+**Опциональное сохранение пароля (частично):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. Фоновый keep-alive и portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
 ---
 
@@ -395,7 +398,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | Username, URL института, флаги кэша, настройки | `shared_preferences` |
 | Демо | `setIsDemoAccount(1)` |
 
-**Срок JWT:** access-токены короткоживущие (~10–15 мин **наблюдательно** в Neptun — клиент **не** парсит JWT `exp`). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после начала participant-сессии** (не idle; не зависит от refresh JWT — см. wall-clock выше). Без рабочего refresh token 401 на GET тоже форсирует logout, а не пустые экраны «как будто вошёл». `trySilentReauth()` для ELTE пропускается.
+**Срок JWT:** access-токены короткоживущие (~10–15 мин **наблюдательно** в Neptun — клиент **не** парсит JWT `exp`). На foreground проактивный refresh продлевает access, пока приложение открыто; без рабочего refresh token провал проактивного или реактивного refresh форсирует logout. `trySilentReauth()` для ELTE пропускается.
 
 **2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → непрозрачный `TwoFactorCodePage` через корневой `appNavigatorKey` (`lib/Pages/two_factor_page.dart`) → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. Маршрут 2FA закрывается **до** HWEB-моста; при успехе setup вызывает `navigateToHomeRoot()` (`lib/app_navigator.dart` → корневой `pushAndRemoveUntil(HomePage)`), а не через локальный `BuildContext` логина — чтобы disposed route не оставлял **чёрный экран** (iOS) или **белый фон окна** (Android; исправлено в **1.5.2**, login 2FA больше не через transparent popup mode 9).
 
@@ -457,13 +460,13 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 |---------|---------|-------------|
 | Android клиент (логин, 4 вкладки + drawer, кэш) | **Full / mid-beta** | Реальный API, не каркас. Nav IA **1c** |
 | iOS симулятор + release на устройстве | **Working** | Bundle без `_`; signing Automatic |
-| Modern JWT + refresh | **Solid** | GET+Bearer на назначенном `hallgatoN`; `GetNewTokens` при 401/403 GET; JWT `exp` **не** парсится; wall-clock независим |
+| Modern JWT + refresh | **Solid** | GET+Bearer на назначенном `hallgatoN`; проактивный + реактивный `GetNewTokens`; JWT `exp` **не** парсится; без клиентского wall-clock (1.5.6) |
 | 2FA modern TOTP (портал ELTE) | **Working MVP** | Login2FA + OuterLogin JWT на hallgatoN. **Student web full** → snackbar `loginStudentWebFull` (не «неверный пароль») |
 | 2FA modern email | **Helper в коде; UI не вызывает** | `elteRequestEmailOtp` (`RequestEmailCode` / `CodePrefix`); UI сначала TOTP |
 | JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
 | Тихий re-auth ELTE | **Отключён** | `trySilentReauth()` возвращает false; пароль хранится, но 2FA интерактивна |
 | Записи student-data | **Только mark-read** | Студенческий / платежи / compose почты / запись на экзамен — не записи |
-| Keep-alive сессии | **Нет** | Нет Workmanager / background_fetch. 10 мин wall-clock от старта сессии (не idle). Виджеты только кэш, без JWT |
+| Keep-alive сессии | **Только foreground (1.5.6)** | Проактивный `GetNewTokens` каждые 3 мин 30 с в `resumed`; нет Workmanager / background_fetch. Виджеты только кэш, без JWT |
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
@@ -490,7 +493,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences). Cookie **портала** ELTE (`_elteCookies`) — **только в памяти**, не persist; стираются `resetEltePortalState()` при logout.
 
-`sessionWipeKeepCache` — обычный logout / истечение сессии: стирает пароль/токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш** (календарь / зачётка / платежи / периоды / почта / семестры / аватар). `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
+`sessionWipeKeepCache(wipePassword: …)` — wipe auth при logout / истечении: стирает токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш**; пароль — когда `wipePassword: true` (default). `SessionGuard`: `wipePassword: true` при ручном logout и при выкл. toggle; `false` только при автоматической смерти сессии с opt-in. `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
 
 Аналитики в git **нет** (`.gitignore`: `/lib/app_analitics_server_send.dart`).
 
@@ -558,7 +561,7 @@ Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.5**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.6**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
 
 **Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
 
@@ -734,8 +737,8 @@ Release на iPhone: `--release` (см. §14).
 | Убрана устаревшая плашка «2FA не работает» | В ELTE 2FA обязательна; приложение умеет ввод кода |
 | Нет deep-link / auto-OTP из Authenticator | TOTP вводится вручную; Microsoft Authenticator снаружи |
 | Helper email OTP есть; UI не вызывает | `elteRequestEmailOtp` реализует портальный `GetEmail` / `CodePrefix`; UI сначала TOTP (экрана email OTP нет) |
-| SessionGuard 10 мин wall-clock, не JWT `exp` | Logout от начала participant-сессии (не idle); refresh не продлевает; `exp` не декодируется |
-| Нет Workmanager / keep-alive сессии | Политика — wall-clock logout; виджеты синхронизируют кэш без JWT |
+| SessionGuard JWT maintenance, не wall-clock | Нет 10-мин таймера; logout при ручном выходе / мёртвом refresh; `exp` не декодируется |
+| Нет фонового keep-alive (v1) | Только foreground 3 мин 30 с; виджеты синхронизируют кэш без JWT |
 | `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
 | `loginStudentWebFull` ≠ invalid password | Переполнение HWEB после верного 2FA красилось как неверный пароль (`submitTwoFactor` → `false` → `_paintRed`) |
 | Хаб ELTE → `https://neptun.elte.hu` | Портальный логин + 2FA. После `/ToNeptunWeb/ToNeptunHWeb` JWT REST на балансируемых `hallgato1…N` — один узел не хардкодить |

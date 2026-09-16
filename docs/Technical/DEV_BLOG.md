@@ -328,6 +328,17 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.6 (hallgato session v1 core)
+
+**[2026-09-16]**
+
+- **HALLGATO_SESSION_PLAN v1 core shipped:** removed client **10-minute** `SessionGuard` wall-clock (`startSessionWallClock`, `checkSessionWallClockOnResume`, `SESSION_StartedAtMs` enforcement, cold-start wall-clock branch). Session ends on manual logout or dead refresh only.
+- **Foreground JWT maintenance:** `HomePage` periodic timer every **3 min 30 s** while `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens` (modern API + refresh token); pauses on background; shares `_isRefreshingToken` with GET 401 recovery; ~45 s post-login grace unchanged.
+- **Not in v1:** Settings background keep-alive, password retention, portal/HWEB activity (plan docs only).
+- **Release 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK (+ IPA if built). Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — plan: mail + calendar bugs
 
 **[2026-09-16, 08:45]**
@@ -341,6 +352,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 **[2026-09-16]**
 
 - Extended **HALLGATO_SESSION_PLAN** EN+RU: optional Settings **background keep-alive** (WorkManager / BGTask, default off, battery-conservative); **portal/HWEB activity** as unproven lower-priority research; **opt-in password retention** (`neptun_password`, 2FA still manual). Checklist steps 11–16. Docs-only; no Dart / SessionGuard / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — Settings: optional password retention (opt-in)
+
+**[2026-09-16]**
+
+- Shipped **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default off) in Settings → Behavior & other; EN/HU/RU strings. `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix: manual log out always wipes password; token failure / `forceExpiredLogout` retains `neptun_password` when opted in; login pre-fill only (no auto-2FA). TECHNICAL + HALLGATO plan EN+RU updated. No marketing version bump (Agent #3 owns 1.5.6). Owner **Nanda**.
 
 ---
 

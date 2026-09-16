@@ -1,6 +1,6 @@
 # Поддержка сессии hallgato — план (дизайн)
 
-**Статус:** только дизайн / план — **в коде приложения не реализовано** (на **16 сентября 2026**).  
+**Статус:** **ядро v1 отгружено в приложении 1.5.6** (16 сентября 2026). Опциональные уровни Settings (фон, пароль, portal activity) — **только дизайн**.  
 **Владелец:** Nanda.  
 **Каноническая пара:** [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) (EN).
 
@@ -17,19 +17,17 @@
 
 ---
 
-## Текущее поведение в отгрузке (честность)
-
-Пока план не реализован, приложение по-прежнему:
+## Поведение в отгрузке — ядро v1 (1.5.6)
 
 | Механизм | Поведение |
 |----------|-----------|
-| **10-минутный wall-clock** | `SessionGuard.sessionWallClockLimit` — принудительный выход от **начала participant-сессии**, независимо от refresh JWT (`lib/API/api_coms.dart`, `SessionGuard`). |
-| **Реактивный refresh** | При **401/403** на **GET** — `_APIRequest.ensureValidSession()` → `tryTokenRefresh()` (`POST /api/Account/GetNewTokens`) → для ELTE `trySilentReauth()` (**всегда false**) → `forceExpiredLogout`. |
-| **Lifecycle на переднем плане** | `HomePage` (`lib/Pages/main_page.dart`) следит за lifecycle для **wall-clock**, не для проактивного refresh токена. |
-| **Фон / убийство процесса** | Периодических вызовов hallgato нет. Виджеты: только кэш, **без JWT** (без изменений). |
-| **JWT `exp`** | Клиент **не** декодирует `exp`; срок access ~10–15 мин — **наблюдение**, не декодирование. |
-
-**Запланированная смена политики (не отгружено):** убрать клиентский **10-минутный wall-clock**. Сессия заканчивается при **ручном выходе** или **провале токенов** (мёртвый refresh / ошибка `GetNewTokens`), а не по произвольному таймеру.
+| **Конец сессии** | **Ручной logout** или **мёртвый refresh** (`GetNewTokens` 401/403 / пустые токены). **Нет** клиентского 10-мин wall-clock (enforce `SESSION_StartedAtMs` снят). |
+| **Проактивный refresh на foreground** | Каждые **3 мин 30 с** в `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens`. Пауза в фоне. Интервал: `SessionGuard.foregroundTokenMaintenanceInterval`. |
+| **Реактивный refresh** | **401/403** на **GET** → `ensureValidSession()` → `tryTokenRefresh()` → ELTE `trySilentReauth()` (**false**) → `forceExpiredLogout`. Общий lock `_isRefreshingToken` с foreground maintenance. |
+| **Grace после входа** | ~45 с после `markParticipantSessionStarted` — реактивный путь не форсирует logout, если access ещё есть. |
+| **Cold start** | `isColdStartSessionUsable()`: только `HasLogin` + непустой access (без wall-clock stamp). |
+| **Фон / убийство процесса** | Периодических вызовов hallgato нет. Виджеты: только кэш, **без JWT**. |
+| **JWT `exp`** | Клиент **не** декодирует `exp`; ~10–15 мин access — **наблюдение**. |
 
 ---
 
@@ -168,7 +166,7 @@
 
 ## Опциональное сохранение пароля в Настройках (opt-in, по умолчанию ВЫКЛ)
 
-**Статус:** дизайн / опциональное удобство — **не** ядро v1, пока продукт не отгрузит вместе с foreground maintenance.
+**Статус:** **частично отгружено** (16 сентября 2026) — toggle в Настройках + матрица wipe + pre-fill входа; без auto-2FA. Фоновый keep-alive по-прежнему только дизайн.
 
 ### Управление пользователем
 
@@ -247,7 +245,7 @@
 11. **Настройки — фоновый keep-alive** — локализованные строки + toggle (default **выкл**); pref (TBD, напр. `settings_backgroundSessionKeepAlive`); регистрация WorkManager / iOS BG task только при вкл; подзаголовок про батарею и нерегулярность.
 12. **Выбор фонового плагина** — Android: WorkManager с консервативным интервалом; iOS: `background_fetch` и/или BGTaskScheduler; пакет + минимальный интервал + defer в TECHNICAL § session.
 13. **Политика батареи / ELTE** — не polling 3–4 мин в фоне; один coalesced `GetNewTokens` на задачу; backoff; без дублирующего timer при `resumed` (foreground scheduler).
-14. **Настройки — сохранение пароля** — toggle (default **выкл**); `neptun_password` в `DataCache` / login; при logout по токенам — opt-in; при ручном logout — wipe пароля (рекомендуется); security copy EN/RU/HU.
+14. **Настройки — сохранение пароля** — **частично:** toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard`; pre-fill входа; строки EN/HU/RU. Фоновый toggle = шаг 11.
 15. **Store / manifest** — permissions Android + `UIBackgroundModes` / BGTask на iOS только если toggle отгружен; текст обоснования для Play / App Store.
 16. **Исследование portal / HWEB** — при продолжении: spike с HAR, endpoints, pass/fail до user-facing «activity»; приоритет ниже шагов 2–10.
 

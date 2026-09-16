@@ -392,6 +392,9 @@ class AppStrings{
       notif_class_BodyIn5Min: '"%0" órád lesz itt: "%1" 5 perc múlva!',
       notif_class_BodyNow: '"%0" órád van itt: "%1"!',
       settings_fontScale_Label: 'Betűméret',
+      settings_rememberPasswordOnDevice: 'Jelszó megjegyzése ezen az eszközön',
+      settings_rememberPasswordOnDevice_Subtitle:
+          'Kényelmi funkció: a jelszó biztonságos tárolóban marad kijelentkezés után is (2FA továbbra is kell). Megosztott eszközön kapcsold ki. Kézi kijelentkezés mindig törli a jelszót.',
       mail_error_Prefix: 'Hiba: %0',
       mail_error_EmptyMessage: 'Üres üzenet.',
       popup_case9_2faHeader: 'Kétlépcsős azonosítás',
@@ -774,6 +777,9 @@ class AppStrings{
       notif_class_BodyIn5Min: '"%0" class at "%1" in 5 minutes!',
       notif_class_BodyNow: '"%0" class now at "%1"!',
       settings_fontScale_Label: 'Font scale',
+      settings_rememberPasswordOnDevice: 'Remember password on this device',
+      settings_rememberPasswordOnDevice_Subtitle:
+          'Convenience only: keeps your password in secure storage after session expiry (2FA still required). Turn off on shared devices. Manual log out always clears the password.',
       mail_error_Prefix: 'Error: %0',
       mail_error_EmptyMessage: 'Empty message.',
       popup_case9_2faHeader: 'Two-step authentication',
@@ -1430,6 +1436,8 @@ class LanguagePack{
   final String notif_class_BodyIn5Min;
   final String notif_class_BodyNow;
   final String settings_fontScale_Label;
+  final String settings_rememberPasswordOnDevice;
+  final String settings_rememberPasswordOnDevice_Subtitle;
   final String mail_error_Prefix;
   final String mail_error_EmptyMessage;
   final String popup_case9_2faHeader;
@@ -1750,6 +1758,8 @@ class LanguagePack{
     required this.notif_class_BodyIn5Min,
     required this.notif_class_BodyNow,
     required this.settings_fontScale_Label,
+    required this.settings_rememberPasswordOnDevice,
+    required this.settings_rememberPasswordOnDevice_Subtitle,
     required this.mail_error_Prefix,
     required this.mail_error_EmptyMessage,
     required this.popup_case9_2faHeader,
@@ -2156,6 +2166,11 @@ class LanguagePack{
         notif_class_BodyIn5Min: getStr('notif_class_BodyIn5Min', en.notif_class_BodyIn5Min),
         notif_class_BodyNow: getStr('notif_class_BodyNow', en.notif_class_BodyNow),
         settings_fontScale_Label: getStr('settings_fontScale_Label', en.settings_fontScale_Label),
+        settings_rememberPasswordOnDevice: getStr(
+            'settings_rememberPasswordOnDevice', en.settings_rememberPasswordOnDevice),
+        settings_rememberPasswordOnDevice_Subtitle: getStr(
+            'settings_rememberPasswordOnDevice_Subtitle',
+            en.settings_rememberPasswordOnDevice_Subtitle),
         mail_error_Prefix: getStr('mail_error_Prefix', en.mail_error_Prefix),
         mail_error_EmptyMessage: getStr('mail_error_EmptyMessage', en.mail_error_EmptyMessage),
         popup_case9_2faHeader: getStr('popup_case9_2faHeader', en.popup_case9_2faHeader),
@@ -2609,6 +2624,8 @@ class LanguagePack{
       'notif_class_BodyIn5Min':lang.notif_class_BodyIn5Min,
       'notif_class_BodyNow':lang.notif_class_BodyNow,
       'settings_fontScale_Label':lang.settings_fontScale_Label,
+      'settings_rememberPasswordOnDevice':lang.settings_rememberPasswordOnDevice,
+      'settings_rememberPasswordOnDevice_Subtitle':lang.settings_rememberPasswordOnDevice_Subtitle,
       'mail_error_Prefix':lang.mail_error_Prefix,
       'mail_error_EmptyMessage':lang.mail_error_EmptyMessage,
       'popup_case9_2faHeader':lang.popup_case9_2faHeader,

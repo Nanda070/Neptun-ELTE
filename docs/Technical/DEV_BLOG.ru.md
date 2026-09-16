@@ -328,6 +328,17 @@
 
 ---
 
+## 2026-09-16 — релиз 1.5.6 (hallgato session v1 core)
+
+**[2026-09-16]**
+
+- **HALLGATO_SESSION_PLAN v1 core:** снят клиентский **10-минутный** wall-clock `SessionGuard`; cold start без stamp; выход — ручной logout или мёртвый refresh.
+- **Foreground JWT maintenance:** таймер **3 мин 30 с** в `resumed` → `GetNewTokens`; пауза в фоне; общий `_isRefreshingToken` с 401 GET; grace ~45 с без изменений.
+- **Не в v1:** фоновый keep-alive, сохранение пароля, portal/HWEB activity — только план.
+- **Релиз 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK (+ IPA при сборке). Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — plan: mail + calendar bugs
 
 **[2026-09-16, 08:45]**
@@ -341,6 +352,14 @@
 **[2026-09-16]**
 
 - Расширены **HALLGATO_SESSION_PLAN** EN+RU: опциональный **фоновый keep-alive** в Настройках (WorkManager / BGTask, default выкл, щадящий режим батареи); **активность portal/HWEB** как не доказанное исследование с низким приоритетом; **opt-in сохранение пароля** (`neptun_password`, 2FA по-прежнему вручную). Чеклист шаги 11–16. Только docs; без Dart / SessionGuard / bump версии. Владелец **Nanda**.
+
+---
+
+## 2026-09-16 — Настройки: opt-in сохранение пароля
+
+**[2026-09-16]**
+
+- **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default выкл) в Настройках → Működés; строки EN/HU/RU. `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard`: ручной logout всегда стирает пароль; `forceExpiredLogout` сохраняет `neptun_password` при opt-in; pre-fill входа без auto-2FA. TECHNICAL + HALLGATO EN+RU. Без bump маркетинговой версии (1.5.6 — Agent #3). Владелец **Nanda**.
 
 ---
 
