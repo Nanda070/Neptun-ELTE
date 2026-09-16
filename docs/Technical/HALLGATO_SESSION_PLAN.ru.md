@@ -1,6 +1,6 @@
 # Поддержка сессии hallgato — план (дизайн)
 
-**Статус:** **ядро v1 отгружено в приложении 1.5.6** (16 сентября 2026). **Фоновый keep-alive** + **сохранение пароля** в Настройках отгружены (**1.5.7**, оба default OFF). Portal/HWEB activity — **только дизайн**.  
+**Статус:** **ядро v1** + **фикс кэша почты** + **UI недели календаря** отгружены в **1.5.6** (16 сентября 2026). **Фоновый keep-alive** + **сохранение пароля** в Настройках отгружены в **1.5.7** (оба default OFF). Portal/HWEB, проактивный `GetNewTokens` на cold start, парсинг JWT `exp` и live-test matrix — **будущее / исследование**.  
 **Владелец:** Nanda.  
 **Каноническая пара:** [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) (EN).
 
@@ -35,7 +35,7 @@
 
 ### Интервал
 
-Пока приложение в **`AppLifecycleState.resumed`**, проактивная поддержка каждые **3–4 минуты** (в реализации зафиксировать один интервал, например **3 мин 30 с**, или jitter 3–4 мин — константу описать в комментариях кода).
+Пока приложение в **`AppLifecycleState.resumed`**, проактивная поддержка каждые **3 мин 30 с** — **`SessionGuard.foregroundTokenMaintenanceInterval`** в `lib/API/api_coms.dart` (отгружено **1.5.6**).
 
 ### Основной механизм
 
@@ -59,7 +59,7 @@
 | `inactive`, `paused`, `detached`, `hidden` | Пауза / отмена — **без** проактивного `GetNewTokens` |
 | Процесс убит | Maintenance нет (см. cold start) |
 
-**Точка интеграции:** тот же `WidgetsBindingObserver`, что и для wall-clock на `HomePage` — при миграции заменить или временно сосуществовать (конечное состояние — без wall-clock).
+**Точка интеграции:** `HomePage` `WidgetsBindingObserver` — запуск/остановка maintenance `Timer` при `resumed` vs фоне (wall-clock снят в **1.5.6**).
 
 ### Ошибки (foreground)
 
@@ -78,9 +78,9 @@
 - Долгий фон при настройках по умолчанию: refresh на сервере может протухнуть; при возврате может понадобиться полный вход — **допустимо**; keep-alive не гарантируется без опционального фонового maintenance (ниже).
 - **Опционально:** пользователь может включить фоновый keep-alive в Настройках — см. [Опциональный фоновый keep-alive (Настройки, по умолчанию ВЫКЛ)](#опциональный-фоновый-keep-alive-настройки-по-умолчанию-выкл).
 
-### Cold start (после реализации плана)
+### Cold start (отгружено)
 
-Предполагается снятие wall-clock и токены в `flutter_secure_storage` (`DataCache`).
+Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 
 | Ситуация | Ожидаемый поток |
 |----------|-----------------|
@@ -89,7 +89,7 @@
 | **Refresh мёртв или нет** | Wipe auth существующими путями → экран входа → **пароль + TOTP** |
 | **Нет `HasLogin` / токенов** | Экран входа |
 
-**Сегодня на cold start:** `SessionGuard.isColdStartSessionUsable()` также отклоняет сессию при истёкшем **10-минутном wall-clock** — эту проверку нужно **убрать** вместе с политикой wall-clock.
+**Cold start (отгружено):** ветка wall-clock **убрана** из `isColdStartSessionUsable()` в **1.5.6**.
 
 **Виджеты:** без изменений — только кэш календаря; **без JWT** в расширениях.
 
@@ -180,10 +180,10 @@
 - Сохранённый пароль — **только удобство** после смерти refresh или долгого фона: pre-fill поля login; **TOTP** пользователь вводит, когда ELTE требует Login2FA.
 - **Не** меняет `trySilentReauth()` (**false** для ELTE), пока отдельное продуктовое решение не добавит re-login по паролю **с** обязательным UI 2FA — вне scope здесь.
 
-### Взаимодействие с политикой (планируемое снятие wall-clock)
+### Взаимодействие с политикой (wall-clock снят в 1.5.6)
 
-- После снятия **10-мин wall-clock** конец сессии по провалу токенов **не** должен удалять `neptun_password` при opt-in — только токены / auth flags; пароль для следующего входа.
-- При отгрузке описать в TECHNICAL: какие методы `DataCache` / logout учитывают toggle.
+- Конец сессии по провалу токенов **не** удаляет `neptun_password` при opt-in — только токены / auth flags; пароль для следующего входа.
+- Описано в TECHNICAL: `sessionWipeKeepCache(wipePassword:)` и матрица `SessionGuard` (ручной logout vs expiry).
 
 ### Компромиссы безопасности (копия в Настройках или privacy)
 
@@ -222,42 +222,40 @@
 **Ядро v1** = foreground **3–4 мин** `GetNewTokens` + снятие wall-clock + cold start по токенам. **Не** требовать для ядра v1:
 
 - Auto-2FA / сохранённый seed TOTP
-- **Включённый по умолчанию** фоновый keep-alive (опциональный toggle может выехать позже — [Опциональный фоновый keep-alive](#опциональный-фоновый-keep-alive-настройки-по-умолчанию-выкл))
-- **Включённое по умолчанию** сохранение пароля (opt-in позже — [Опциональное сохранение пароля](#опциональное-сохранение-пароля-в-настройках-opt-in-по-умолчанию-выкл))
+- **Включённый по умолчанию** фоновый keep-alive (опциональный toggle отгружен **1.5.7**, default off — [Опциональный фоновый keep-alive](#опциональный-фоновый-keep-alive-настройки-по-умолчанию-выкл))
+- **Включённое по умолчанию** сохранение пароля (opt-in отгружен **1.5.7**, default off — [Опциональное сохранение пароля](#опциональное-сохранение-пароля-в-настройках-opt-in-по-умолчанию-выкл))
 - Production «activity» portal / HWEB без sign-off исследования — [Активность портала / HWEB](#активность-портала--hweb-исследование--опционально-ниже-приоритет)
 
 ---
 
-## Чеклист реализации (будущая разработка)
+## Чеклист реализации
 
-Только нумерованные шаги — **код в этой задаче не пишем**.
-
-1. **Парность документов** — при отгрузке обновлять EN + RU план и указатели в TECHNICAL.
-2. **Helper проактивного refresh** — вынести или обернуть `tryTokenRefresh()` (`lib/API/api_coms.dart`, `_APIRequest`) для maintenance (учитывать `_isRefreshingToken`, `SessionGuard.isAuthBlocked`).
-3. **Планировщик foreground** — в `HomePage` (`lib/Pages/main_page.dart`) или отдельный модуль: `Timer` / `periodic` каждые **3–4 мин** только при `AppLifecycleState.resumed`; отмена в фоне (как у wall-clock observer).
-4. **Снять wall-clock** — убрать или обойти `SessionGuard.sessionWallClockLimit`, `startSessionWallClock`, `checkSessionWallClockOnResume`, enforce `SESSION_StartedAtMs`, ветку wall-clock в `isColdStartSessionUsable()`; `markParticipantSessionStarted` оставить только если нужен для post-login grace.
-5. **Post-login grace** — пересмотреть `_postLoginGrace` (~45 с) в путях `ensureValidSession` после снятия wall-clock.
-6. **Cold start** — обновить `startup_page.dart` / `isColdStartSessionUsable()`: gate по токенам + опциональный startup `GetNewTokens`, не 10-мин stamp.
-7. **Тексты для пользователя** — `auth_sessionExpired_PleaseSignIn` для «refresh мёртв»; убрать messaging, завязанный на wall-clock.
-8. **TECHNICAL + DEV_BLOG + таблица честности** — описать политику JWT-maintenance; bump маркетинговой версии только при отгрузке пользователям (Android APK → новый tag по правилам репо).
-9. **Ручная матрица тестов** — foreground 20+ min без TOTP; фон 30+ мин; kill с живым refresh; kill с мёртвым refresh; offline на тике maintenance.
-10. **Регрессия виджетов** — кэш-only, без JWT.
-11. **Настройки — фоновый keep-alive** — локализованные строки + toggle (default **выкл**); pref (TBD, напр. `settings_backgroundSessionKeepAlive`); регистрация WorkManager / iOS BG task только при вкл; подзаголовок про батарею и нерегулярность.
-12. **Выбор фонового плагина** — Android: WorkManager с консервативным интервалом; iOS: `background_fetch` и/или BGTaskScheduler; пакет + минимальный интервал + defer в TECHNICAL § session.
-13. **Политика батареи / ELTE** — не polling 3–4 мин в фоне; один coalesced `GetNewTokens` на задачу; backoff; без дублирующего timer при `resumed` (foreground scheduler).
+1. **Парность документов** — **готово (1.5.6)** — EN + RU план + TECHNICAL + DEV_BLOG.
+2. **Helper проактивного refresh** — **готово (1.5.6)** — `_APIRequest._attemptTokenRefresh()` + `runForegroundTokenMaintenance()`.
+3. **Планировщик foreground** — **готово (1.5.6)** — `HomePage` periodic timer + lifecycle pause/resume.
+4. **Снять wall-clock** — **готово (1.5.6)** — сняты wall-clock API и enforce `SESSION_StartedAtMs`; `markParticipantSessionStarted` для post-login grace.
+5. **Post-login grace** — **готово (1.5.6)** — ~45 с в `ensureValidSession`.
+6. **Cold start** — **готово (1.5.6)** — gate по токенам (startup `GetNewTokens` — будущее).
+7. **Тексты для пользователя** — **готово (1.5.6)** — `auth_sessionExpired_PleaseSignIn` для мёртвого refresh.
+8. **TECHNICAL + DEV_BLOG + таблица честности** — **готово (1.5.6)** — версия **1.5.6**, тег **v1.5.6**.
+9. **Ручная матрица тестов** — **не автоматизировано** — foreground 20+ min; фон 30+ min; kill с живым/мёртвым refresh; offline на тике.
+10. **Регрессия виджетов** — **без изменений** — кэш-only, без JWT.
+11. **Настройки — фоновый keep-alive** — **готово (1.5.7)** — `SETTING_BackgroundHallgatoKeepAlive`, строки, default **выкл**; `HallgatoBackgroundKeepAlive.syncScheduledTasks()` регистрирует WorkManager / iOS fetch только при вкл + login.
+12. **Выбор фонового плагина** — **готово (1.5.7)** — Android `workmanager` **15 мин**; iOS `background_fetch` **15+ мин**; TECHNICAL § Session recovery.
+13. **Политика батареи / ELTE** — **готово (1.5.7)** — консервативный фон; общий `GetNewTokens` + mutex; без дублирующего timer при `resumed`.
 14. **Настройки — сохранение пароля** — **готово (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard` (ручной / expiry / cold-start); pre-fill входа; строки EN/HU/RU. (**1.5.6** откатил Dart; восстановлено в **1.5.7**.)
-15. **Store / manifest** — permissions Android + `UIBackgroundModes` / BGTask на iOS только если toggle отгружен; текст обоснования для Play / App Store.
+15. **Store / manifest** — **готово (1.5.7)** — iOS `UIBackgroundModes` = `fetch` для опционального фона; Android WorkManager при toggle on.
 16. **Исследование portal / HWEB** — при продолжении: spike с HAR, endpoints, pass/fail до user-facing «activity»; приоритет ниже шагов 2–10.
 
 ---
 
-## Запланированные исправления багов (та же волна релиза или follow-up)
+## Багфиксы — почта + календарь (отгружено 1.5.6)
 
-**Статус:** только документировано — **не реализовано** (16 сентября 2026). Может выехать вместе с hallgato session maintenance или отдельным патчем; **`SessionGuard` для этих пунктов не менять**, если фикс явно не требует.
+**Статус:** **отгружено в 1.5.6** (тот же тег, что session v1 core). `SessionGuard` для этих пунктов не менялся.
 
-### 1. Почта — дата эпохи и плейсхолдеры `ERROR` при cold entry
+### 1. Почта — дата эпохи и плейсхолдеры `ERROR` при cold entry — **отгружено (1.5.6)**
 
-**Симптом (воспроизведение):**
+**Было (симптом):**
 
 1. Cold start (или возврат после kill), при необходимости войти.
 2. Открыть нижнюю вкладку **Mail / Сообщения** без pull-to-refresh.
@@ -282,13 +280,13 @@
 - **Сбой `fillWithExisting`** → остаются `ERROR` и **`sendDateMs == 0`** → UI показывает 1970-01-01.
 - **Порядок при cold start:** вкладка Mail до готовности auth/сети; refresh с `force` потом успешен.
 
-**Направление фикса (будущее):** не доверять только timestamp кэша; сбрасывать/пропускать невалидные записи; после login гарантировать замену кэша успешным API; loading/empty вместо ERROR.
+**Отгруженный фикс:** `fetchMails` / `loadMailCache()` в `lib/Pages/main_page.dart` — `_cachedMailEntryValid()` пропускает битые строки (`ERROR`, пустой ID, `sendDateMs <= 0`); частично невалидный кэш сбрасывает `HasCachedMail`, чтобы «свежий» 24 ч timestamp не блокировал сеть на cold Mail.
 
 ---
 
-### 2. Календарь — заголовок education week и подпись «classes this week»
+### 2. Календарь — заголовок education week и подпись «classes this week» — **отгружено (1.5.6)**
 
-**Симптом (воспроизведение):**
+**Было (симптом):**
 
 1. Вкладка **Calendar**.
 2. Навигатор недели: **`3. education week`** (в EN строка с lowercase).
@@ -311,7 +309,7 @@
 - **i18n:** шаблон EN + `monthToText` → lowercase и `%1.`; возможно нужен `DateFormat`.
 - **Отдельно** от настройки номера недели (`szorgalmi`) — здесь **UI + форматирование**.
 
-**Направление фикса (будущее):** правка layout в `WeekoffseterElementWidget`; единый формат дат HU/EN/RU.
+**Отгруженный фикс:** layout `WeekoffseterElementWidget` + строки `calendarPage_weekNav_*` (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); заголовок education week и диапазон дат в подписи.
 
 ---
 

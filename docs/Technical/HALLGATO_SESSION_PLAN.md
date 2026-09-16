@@ -1,6 +1,6 @@
 # Hallgato session maintenance — design plan
 
-**Status:** **v1 core shipped in app 1.5.6** (16 September 2026). **Background keep-alive** + **password retention** Settings toggles shipped (**1.5.7**, both default OFF). Portal/HWEB activity remains **design only**.  
+**Status:** **v1 core** + **mail cache fix** + **calendar week UI** shipped in **1.5.6** (16 September 2026). **Background keep-alive** + **password retention** Settings toggles shipped in **1.5.7** (both default OFF). Portal/HWEB activity, cold-start proactive `GetNewTokens`, JWT `exp` parse, and live-test matrix remain **future / research**.  
 **Owner:** Nanda.  
 **Canonical twin:** [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
@@ -78,9 +78,9 @@ While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance e
 - Long background with default settings: refresh JWT may expire on the server; user may need full login when they return — **acceptable**; keep-alive is not guaranteed without optional background maintenance (below).
 - **Optional:** user may enable background keep-alive in Settings — see [Optional background keep-alive (Settings, default OFF)](#optional-background-keep-alive-settings-default-off).
 
-### Cold start scenarios (after plan is implemented)
+### Cold start scenarios (shipped)
 
-Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`DataCache`).
+Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 
 | Situation | Expected flow |
 |-----------|----------------|
@@ -222,8 +222,8 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 **v1 core** shipping criteria = foreground **3–4 min** `GetNewTokens` + planned wall-clock removal + cold-start token gating. Do **not** require for v1 core:
 
 - Auto-2FA / stored TOTP seed
-- **Enabled-by-default** background keep-alive (optional toggle may ship later — [Optional background keep-alive](#optional-background-keep-alive-settings-default-off))
-- **Enabled-by-default** password retention (optional opt-in may ship later — [Optional password retention](#optional-password-retention-in-settings-opt-in-default-off))
+- **Enabled-by-default** background keep-alive (optional toggle shipped **1.5.7**, default off — [Optional background keep-alive](#optional-background-keep-alive-settings-default-off))
+- **Enabled-by-default** password retention (optional opt-in shipped **1.5.7**, default off — [Optional password retention](#optional-password-retention-in-settings-opt-in-default-off))
 - Production portal or HWEB “activity” pings without research sign-off — [Portal / HWEB “activity”](#portal--hweb-activity-research--optional-lower-priority)
 
 ---
@@ -240,22 +240,22 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 8. **TECHNICAL + DEV_BLOG + honesty table** — **done (1.5.6)** — version **1.5.6**, tag **v1.5.6**.
 9. **Manual test matrix** — **not automated** — foreground 20+ min; background 30+ min; kill with valid/dead refresh; airplane mode during tick.
 10. **Widgets regression** — **unchanged** — cache-only, no JWT.
-11. **Settings — background keep-alive** — add localized strings + toggle (default **off**); persist pref key (name TBD, e.g. `settings_backgroundSessionKeepAlive`); gate registration of WorkManager / iOS background task only when on; subtitle explaining battery + irregular schedule.
-12. **Background plugin choice** — Android: WorkManager periodic task with conservative interval; iOS: `background_fetch` and/or BGTaskScheduler; document chosen package + minimum interval + deferral behavior in TECHNICAL § session.
-13. **Battery / ELTE policy** — no foreground-equivalent 3–4 min polling in background; single coalesced `GetNewTokens` per task; backoff on errors; no duplicate timer while app is `resumed` (foreground scheduler owns that window).
+11. **Settings — background keep-alive** — **done (1.5.7)** — `SETTING_BackgroundHallgatoKeepAlive`, localized strings, default **off**; `HallgatoBackgroundKeepAlive.syncScheduledTasks()` gates WorkManager / iOS background fetch only when on + logged in.
+12. **Background plugin choice** — **done (1.5.7)** — Android `workmanager` **15 min**; iOS `background_fetch` **15+ min** (system-deferred); documented in TECHNICAL § Session recovery.
+13. **Battery / ELTE policy** — **done (1.5.7)** — conservative background cadence; shared `GetNewTokens` + refresh mutex; no duplicate timer while `resumed`.
 14. **Settings — password retention** — **done (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **off**); `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` manual vs expired/cold-start matrix; login pre-fill; EN/HU/RU strings. (**1.5.6** reverted Dart; restored in **1.5.7**.)
-15. **Store / manifest** — Android permissions + iOS `UIBackgroundModes` / BGTask identifiers only if background toggle ships; Play / App Store justification text aligned with optional user-enabled maintenance.
+15. **Store / manifest** — **done (1.5.7)** — iOS `UIBackgroundModes` includes `fetch` for optional background keep-alive; Android WorkManager registration when toggle on; optional user-enabled maintenance only.
 16. **Portal / HWEB research** — if pursued: spike doc with HAR, endpoints, and pass/fail before any user-facing “activity” feature; keep lower priority than steps 2–10.
 
 ---
 
-## Planned bug fixes (same release wave or follow-up)
+## Bug fixes — mail + calendar (shipped 1.5.6)
 
-**Status:** documented only — **not implemented** (16 September 2026). May ship with hallgato session maintenance or as a separate patch; **do not change `SessionGuard` for these items** unless a fix explicitly requires it.
+**Status:** **shipped in 1.5.6** (same tag as session v1 core). No `SessionGuard` changes for these items.
 
-### 1. Mail — epoch date and `ERROR` placeholders on cold entry
+### 1. Mail — epoch date and `ERROR` placeholders on cold entry — **shipped (1.5.6)**
 
-**Symptom (repro):**
+**Was (symptom):**
 
 1. Cold-start the app (or return after kill) and sign in if needed.
 2. Open the bottom **Mail / Messages** tab without pull-to-refresh.
@@ -280,13 +280,13 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 - **`fillWithExisting` failure** leaves default `ERROR` and **`sendDateMs == 0`** → UI formats as 1970-01-01.
 - **Cold-start ordering:** Mail tab loads before auth/network ready; first attempt falls back to bad cache; manual refresh runs `force` path and succeeds.
 
-**Fix direction (future):** Invalidate or skip cache when parsed entries are invalid; do not treat “fresh” timestamp alone as sufficient; ensure first successful API fetch after login replaces cache; optional empty/loading UI instead of ERROR sentinels.
+**Shipped fix:** `fetchMails` / `loadMailCache()` in `lib/Pages/main_page.dart` — `_cachedMailEntryValid()` skips corrupt rows (`ERROR` sentinels, empty ID, `sendDateMs <= 0`); partial invalid cache clears `HasCachedMail` so a stale “fresh” 24 h timestamp does not block network fetch on cold Mail tab.
 
 ---
 
-### 2. Calendar — education week header and “classes this week” subtitle
+### 2. Calendar — education week header and “classes this week” subtitle — **shipped (1.5.6)**
 
-**Symptom (repro):**
+**Was (symptom):**
 
 1. Open **Calendar** tab.
 2. Week navigator shows header like **`3. education week`** (lowercase “education week” per EN string).
@@ -309,7 +309,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 - **Copy / i18n:** EN template uses lowercase month tokens from `monthToText` and punctuation (`%1.`) — may need `DateFormat` / per-locale capitalization instead of manual strings.
 - **Separate from** education-week **number** tuning (`szorgalmi` anchor) — this item is **UI + formatting**, not week-index math (unless subtitle `from`/`to` dates are wrong).
 
-**Fix direction (future):** Layout pass on `WeekoffseterElementWidget` (centered subtitle, soft wrap, or `FittedBox` / `Text.rich` with non-breaking span around date range); align month/day formatting with HU/EN/RU expectations.
+**Shipped fix:** `WeekoffseterElementWidget` layout + `calendarPage_weekNav_*` copy (`lib/TimetableElements/timetable_element_widget.dart`, `lib/language.dart`, RU/TR JSON); improved education-week title and date-range subtitle formatting.
 
 ---
 

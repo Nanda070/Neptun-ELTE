@@ -761,7 +761,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
-| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Planned hallgato JWT maintenance (design only; not shipped) |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Hallgato JWT maintenance — **v1 core + mail/calendar fixes shipped 1.5.6**; optional background keep-alive + password retention **1.5.7**; portal/HWEB research still design-only |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

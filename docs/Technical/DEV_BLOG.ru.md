@@ -334,8 +334,9 @@
 
 - **HALLGATO_SESSION_PLAN v1 core:** снят клиентский **10-минутный** wall-clock `SessionGuard`; cold start без stamp; выход — ручной logout или мёртвый refresh.
 - **Foreground JWT maintenance:** таймер **3 мин 30 с** в `resumed` → `GetNewTokens`; пауза в фоне; общий `_isRefreshingToken` с 401 GET; grace ~45 с без изменений.
-- **Не в v1:** фоновый keep-alive, сохранение пароля, portal/HWEB activity — только план.
-- **Релиз 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK (+ IPA при сборке). Владелец **Nanda**.
+- **Почта + календарь (тот же тег):** битый кэш почты больше не рисует epoch/`ERROR` на cold Mail (`_cachedMailEntryValid`); polish заголовка education week и диапазона дат.
+- **Не в 1.5.6:** фоновый keep-alive, сохранение пароля, portal/HWEB — **1.5.7** или только план.
+- **Релиз 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK + unsigned IPA (`Neptun-ELTE-1.5.6-unsigned.ipa`). Владелец **Nanda**.
 
 ---
 
@@ -343,7 +344,7 @@
 
 **[2026-09-16, 08:45]**
 
-- Расширены [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU-пара: **запланированные багфиксы** (epoch/`ERROR` на Mail при cold entry до refresh; layout/формат заголовка недели календаря). Только docs; без Dart и без bump версии. Владелец **Nanda**.
+- Расширены [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU-пара: **запланированные багфиксы** (epoch/`ERROR` на Mail; layout/формат недели календаря). **Отгружено в 1.5.6** (тот же тег, что session v1); план EN+RU синхронизирован 16 сен 2026. Владелец **Nanda**.
 
 ---
 
@@ -375,7 +376,7 @@
 
 **[2026-09-16]**
 
-- **Релиз 1.5.7** (`pubspec` **1.5.7+1**): опциональный фоновый hallgato JWT keep-alive + **Запомнить пароль на этом устройстве** (оба default off). Dart пароля кратко был на `main`, **откачен в 1.5.6**; **1.5.7** восстанавливает toggle + `sessionWipeKeepCache(wipePassword:)` + матрицу `SessionGuard` (ручной logout всегда стирает; expiry/cold-start сохраняют при opt-in; pre-fill; без auto-2FA). Logout отменяет фоновые задачи через `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Владелец **Nanda**.
+- **Релиз 1.5.7** (`pubspec` **1.5.7+1**): опциональный фоновый hallgato JWT keep-alive + **Запомнить пароль на этом устройстве** (оба default off). Dart пароля кратко был на `main`, **откачен в 1.5.6**; **1.5.7** восстанавливает toggle + `sessionWipeKeepCache(wipePassword:)` + матрицу `SessionGuard` (ручной logout всегда стирает; expiry/cold-start сохраняют при opt-in; pre-fill; без auto-2FA). Logout отменяет фоновые задачи через `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK + unsigned IPA (`Neptun-ELTE-1.5.7-unsigned.ipa`). Владелец **Nanda**.
 
 ---
 

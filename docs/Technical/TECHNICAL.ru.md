@@ -761,7 +761,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.md` | Этот документ (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
-| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | План поддержки JWT hallgato (только дизайн; не отгружено) |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; portal/HWEB — только дизайн |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

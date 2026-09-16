@@ -334,8 +334,9 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **HALLGATO_SESSION_PLAN v1 core shipped:** removed client **10-minute** `SessionGuard` wall-clock (`startSessionWallClock`, `checkSessionWallClockOnResume`, `SESSION_StartedAtMs` enforcement, cold-start wall-clock branch). Session ends on manual logout or dead refresh only.
 - **Foreground JWT maintenance:** `HomePage` periodic timer every **3 min 30 s** while `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens` (modern API + refresh token); pauses on background; shares `_isRefreshingToken` with GET 401 recovery; ~45 s post-login grace unchanged.
-- **Not in v1:** Settings background keep-alive, password retention, portal/HWEB activity (plan docs only).
-- **Release 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK (+ IPA if built). Owner **Nanda**.
+- **Mail + calendar (same tag):** corrupt mail cache no longer paints epoch/`ERROR` on cold Mail tab (`_cachedMailEntryValid` in `fetchMails`); calendar education-week header + date-range subtitle layout/copy polish.
+- **Not in 1.5.6:** Settings background keep-alive, password retention, portal/HWEB activity (shipped **1.5.7** or plan-only).
+- **Release 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK + unsigned IPA (`Neptun-ELTE-1.5.6-unsigned.ipa`). Owner **Nanda**.
 
 ---
 
@@ -343,7 +344,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-16, 08:45]**
 
-- Extended [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU twin with **planned bug fixes** (mail epoch/`ERROR` on cold Mail tab until refresh; calendar week header/subtitle layout + formatting). Docs-only; no Dart, no version bump. Owner **Nanda**.
+- Extended [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU twin with **planned bug fixes** (mail epoch/`ERROR` on cold Mail tab until refresh; calendar week header/subtitle layout + formatting). **Shipped in 1.5.6** (same tag as session v1); plan EN+RU synced 16 Sep 2026. Owner **Nanda**.
 
 ---
 
@@ -375,7 +376,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[2026-09-16]**
 
-- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + **Remember password on this device** Settings (both default off). Password Dart was briefly on `main` then **reverted in 1.5.6** session-core cut; **1.5.7** restores toggle + `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix (manual logout always wipes; expiry/cold-start keep when opted in; login pre-fill; no auto-2FA). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK. Owner **Nanda**.
+- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + **Remember password on this device** Settings (both default off). Password Dart was briefly on `main` then **reverted in 1.5.6** session-core cut; **1.5.7** restores toggle + `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix (manual logout always wipes; expiry/cold-start keep when opted in; login pre-fill; no auto-2FA). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK + unsigned IPA (`Neptun-ELTE-1.5.7-unsigned.ipa`). Owner **Nanda**.
 
 ---
 
