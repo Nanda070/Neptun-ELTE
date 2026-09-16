@@ -49,7 +49,7 @@
 - Хаб **только ELTE**, modern JWT + TOTP 2FA; снизу **Calendar \| Markbook \| Periods \| Mail**; Payments в drawer (п. **1c**)
 - Настройки: тема (Light/Dark), язык (EN/HU/RU/TR), масштаб шрифта, типы уведомлений, haptics, сдвиг недели
 - Локальные уведомления: пары / экзамены / оплаты / периоды (`flutter_local_notifications` + timezone) — **не** remote push
-- Wall-clock сессии: **10 мин** через `SessionGuard` (one-shot `Timer` + тикер **15 с** + сохранённый timestamp на resume/`inactive` — п. **1b** + **1.5.4**; один длинный Timer на Android / в фоне часто замирает)
+- Wall-clock сессии: **10 мин** от **начала participant-сессии** (не idle) через `SessionGuard` (one-shot `Timer` + тикер **15 с** + сохранённый timestamp на resume/`inactive` — п. **1b** + **1.5.4**; один длинный Timer на Android / в фоне часто замирает). Не зависит от refresh JWT; JWT `exp` **не** парсится. **Нет** Workmanager / background_fetch для сессии Neptun
 - Кэш и секреты: `shared_preferences`, `flutter_secure_storage`
 - Сеть: `http` (основной); `connectivity_plus`; GitHub raw для языков/тем
 - Ссылки: `url_launcher` (Android-only гейт **снят**)

@@ -6,7 +6,7 @@
 > Файл только в git (`docs/Technical/TECHNICAL.ru.md`). **Не** публикуется как сайт, **не** имеет отдельного веб-маршрута.  
 > Идентификаторы кода, пути, пакеты и API-маршруты — на английском, как в репозитории.
 
-Последняя сверка с кодовой базой: **сентябрь 2026** (репо **Neptun-ELTE**, display name Neptun ELTE, хаб только ELTE, без `/ujhallgato` для ELTE, языки EN/HU/RU/TR, логин modern API + 2FA-код, «неверный пароль» vs «сервер занят»). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
+Последняя сверка с кодовой базой: **16 сентября 2026** (репо **Neptun-ELTE**, display name Neptun ELTE, хаб только ELTE, без `/ujhallgato` для ELTE, языки EN/HU/RU/TR, логин modern API + 2FA-код, «неверный пароль» vs «сервер занят»; факты session/API HTTP ниже совпадают с `lib/API/api_coms.dart` — GET+Bearer на `hallgatoN`, без keep-alive). Источники: `lib/**`, `pubspec.yaml`, `ios/`, `android/`, `Languages/`, `Themes/`, `universityNameUrlPairs.json`, `.github/`.
 
 **Владелец и разработчик:** **Nanda**.
 
@@ -53,7 +53,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - **Скоуп:** только ELTE. Не мульти-вузовский пикер.
 - Файл `universityNameUrlPairs.json` остаётся, но содержит **одну** запись: ELTE → `https://neptun.elte.hu`.
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
-- ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Мобильный клиент логинится и зовёт modern JWT API на **`https://neptun.elte.hu`**, не конкретный `hallgatoN`.
+- ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
 - Версия (`pubspec.yaml`): **1.5.5+1** — для пользователя / Settings / docs = **1.5.5** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
@@ -190,6 +190,7 @@ Neptun-ELTE/
 3. `Provider` не несёт учебные данные.
 4. TLS: `NeptunCerts.badCertificateCallback` принимает **любой** сертификат (`lib/API/api_coms.dart`). Нужно вузам с кривым TLS; это сознательный риск.
 5. Список вузов в приложении читается с **`main` на GitHub**. Локальный JSON в checkout **не** используется, пока не запушен.
+6. После логина ELTE почти весь student-data трафик — **GET** с `Authorization: Bearer <access JWT>` на назначенный `hallgatoN.neptun.elte.hu`. Cookie портала живут в **in-memory** jar на `neptun.elte.hu` и **не** прикрепляются к этим REST GET.
 
 ---
 
@@ -240,7 +241,7 @@ Neptun-ELTE/
 | 2FA TOTP / email | `POST /Account/Login2FA` → непрозрачный `TwoFactorCodePage` (не transparent popup 9; фикс белого экрана Android в **1.5.2**) |
 | `ToNeptunHWeb` → `outerlogin?GUID=` | App постит HWeb, следует 302 |
 | `POST /api/Account/OuterLogin` | Сохраняет JWT; institute URL = **`https://hallgatoN.neptun.elte.hu`** |
-| Student REST | Bearer JWT на этом hallgato |
+| Student REST | **GET** + `Authorization: Bearer <access JWT>` на этом hallgato (`/api/UserInfo`, календарь, …). Cookie портала **не** шлются. |
 
 UI setup:
 
@@ -250,7 +251,7 @@ UI setup:
 4. При 2FA — **6 цифр TOTP**, затем OuterLogin на hallgato.
 5. Демо: `DEMO` / `DEMO`.
 
-**Честность:** ELTE-логин = **портал Potlap + OuterLogin**, не JWT Authenticate на `neptun.elte.hu`. Email OTP известен по HAR; в UI пока акцент на TOTP. Если Student web **full** — мост после 2FA не пройдёт; UI показывает `loginStudentWebFull`, **не** «неверный пароль».
+**Честность:** ELTE-логин = **портал Potlap + OuterLogin**, не JWT Authenticate на `neptun.elte.hu`. Две фазы: cookie портала на `neptun.elte.hu` в `_elteCookies` (**только в памяти, не persist**) → TOTP → OuterLogin → JWT. Пароль хранится в secure storage, но `trySilentReauth()` для ELTE **всегда false** (нужна интерактивная 2FA). Helper email OTP `elteRequestEmailOtp` есть в `api_coms.dart` и **не вызывается из UI** (сначала TOTP). Если Student web **full** — мост после 2FA не пройдёт; UI показывает `loginStudentWebFull`, **не** «неверный пароль».
 
 Константы: `InstitutesRequest.elteInstituteName`, `elteNeptunBaseUrl`.
 
@@ -272,11 +273,11 @@ UI setup:
 
 `normalizeModernApiBaseUrl` снимает `/login`, `/MobileService.svc`, `/Account`, `/Account/Login`.
 
-База API: **`https://neptun.elte.hu`** — не `/ujhallgato`.
+Кандидаты логина стартуют с **`https://neptun.elte.hu`** — не `/ujhallgato`. После OuterLogin сохранённый institute URL — **`https://hallgatoN.neptun.elte.hu`**.
 
 Кандидаты: primary + root ELTE.
 
-После успеха сохраняется база, выбранная логином.
+После успеха сохраняется база, выбранная логином. Для ELTE эта база становится назначенным `hallgatoN`.
 
 ---
 
@@ -341,10 +342,11 @@ UI setup:
 | Баланс | `/api/FinancialDataDashboard/GetCollectiveInvoices` |
 | Периоды | `/api/Periods/GetPeriods` |
 | Почта | `/api/Message/GetUnreadedMessagesCount`, `GetReceivedMessages`, `/api/Messages/{id}/Posts` |
+| Mark-read (POST) | `/api/Message/SetReadedMessage`, `/api/Messages/SetReadedMessage`, `/api/Message/SetMessageAsReaded` (варианты имён) |
 
 Неиспользуемые пути HWEB из захватов сент. 2026 (приложение их не вызывает) были в бывшем нумерованном плане §4.2 (файлы **удалены**). Покрытие неполное; HAR в git нет. Известные leftovers: архив/исходящие/настройки почты, детали неоплаченных финансов, официальный ICS/webcal URL — **не** продуктовый бэклог, пока не откроем снова. XHR записи на экзамен/курс — **не планируем**.
 
-Тело логина:
+Тело логина (JWT `Authenticate` — **мёртв для ELTE**; остаётся для old/non-ELTE modern пути):
 
 ```json
 {
@@ -361,13 +363,23 @@ UI setup:
 
 При 2FA повтор с `token` = код; опционально `Authorization: Bearer` от `twoFactorLoginToken`. Cookie `devicecookie-<b64(username)>=...`.
 
-Refresh / повторный логин при 401 — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). **Тихий повторный вход через портал ELTE отключён** (нужна 2FA). Если refresh не удался, `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
+### HTTP-методы (Dart-клиент ELTE)
 
-**Wall-clock сессии приложения (видимо пользователю):** После успешного логина / 2FA `SessionGuard.markParticipantSessionStarted()` (из `SetupPage`, до `navigateToHomeRoot`) сбрасывает устаревший `SESSION_StartedAtMs`, сохраняет новый старт и ставит **10-минутный** wall-clock. Вход на `HomePage` вызывает `startSessionWallClock()`, который **продолжает** тот же stamp (не даёт новые 10 мин). По истечении — `forceExpiredLogout`. `prepareForLoginAttempt()` очищает wall-clock в начале попытки входа. Ручной logout отменяет таймеры; refresh JWT **не** продлевает wall-clock.
+После логина почти весь student-data трафик — **GET** с `Authorization: Bearer <access JWT>` на назначенный `hallgatoN.neptun.elte.hu`. Cookie портала **не** прикрепляются к REST GET (`getRequest` ставит только Bearer + `Content-Type` + `Accept-Language`).
+
+**POST** есть для: портал `Login`, `Login2FA`, `OuterLogin` / `ToNeptunHWeb`, `POST /api/Account/GetNewTokens` (refresh JWT как Bearer, тело `{}`), mark-mail-read (`SetReadedMessage` + варианты имён). **PUT/DELETE в Dart-клиенте нет.**
+
+**Чтение vs запись:** единственная **мутация** student-data — mark-as-read. Студенческий, платежи, сочинение письма и запись на экзамен здесь **не** записи (карточка/платежи — GET; compose / signup не реализованы).
+
+### Восстановление сессии и wall-clock
+
+Refresh / повторный логин при **401/403 GET** — в `_APIRequest` через `ensureValidSession` → `GetNewTokens` (если есть refresh token). Иначе `trySilentReauth()` — для ELTE **всегда false** (нужна интерактивная 2FA). Иначе `SessionGuard.forceExpiredLogout` стирает **только auth** через `DataCache.sessionWipeKeepCache()` (пароль / JWT / refresh / device cookie / `HasLogin`; **логин + учебный кэш сохраняются**), открывает экран входа через `navigateToLoginRoot()` (корневой `pushAndRemoveUntil(Splitter)` — **не** `popUntil` единственного Home, что могло обнулить навигатор в чёрный экран) и показывает `auth_sessionExpired_PleaseSignIn`. Путь **POST не ретраит 401**. Ручной / просроченный выход делят этот wipe. Leftovers портала: best-effort portal `Account/Logout`, `resetEltePortalState`, `CalendarRequest.clearTrainingIdCache`, wipe `devicecookie_*`, ужесточённый `_looksLikeInvalidCredentials` (без голого `invalid` на HTML `is-invalid`) — повторный вход в том же процессе без ложных «неверных данных» (**1a**). Полный `dataWipe()` (prefs.clear включая кэш) остаётся для hard reset — не используется при обычном logout.
+
+**Wall-clock сессии приложения (видимо пользователю):** После успешного логина / 2FA `SessionGuard.markParticipantSessionStarted()` (из `SetupPage`, до `navigateToHomeRoot`) сбрасывает устаревший `SESSION_StartedAtMs`, сохраняет новый старт и ставит **10-минутный** wall-clock от **начала participant-сессии** (**не idle**). Не зависит от refresh JWT. Клиент **не** парсит JWT `exp`. Срок access JWT ~10–15 мин — **наблюдение** (практика Neptun), не декодирование токена. Вход на `HomePage` вызывает `startSessionWallClock()`, который **продолжает** тот же stamp (не даёт новые 10 мин). По истечении — `forceExpiredLogout`. `prepareForLoginAttempt()` очищает wall-clock в начале попытки входа. Ручной logout отменяет таймеры; refresh JWT **не** продлевает wall-clock.
 
 **Grace после входа (1.3.3):** ~45 с после `markParticipantSessionStarted` `ensureValidSession` **не** вызывает `forceExpiredLogout`, если refresh/тихий re-auth провалились, но access token ещё есть — защита от гонки сразу после 2FA. На resume предпочитается in-memory старт; prefs старше последней auth-метки игнорируются.
 
-**Wall-clock в фоне / Android (1b + 1.5.4):** `HomePage` — `WidgetsBindingObserver`. На `AppLifecycleState.resumed` / `inactive` `SessionGuard.checkSessionWallClockOnResume()` сравнивает `now` с сохранённым стартом; если `>= 10 мин` → `forceExpiredLogout`, иначе перезаводит one-shot `Timer` на остаток **плюс** периодический тикер **15 с** (на Android длинные one-shot Timer часто задерживаются/паузятся). Persist пишет с generation counter, чтобы fire-and-forget cancel `SESSION_StartedAtMs=0` не затирал новый старт (эта гонка раньше оставляла Android cold start без wall-clock stamp). Честно: если ОС убила процесс в фоне, expiry проверяется при следующем cold start / resume по сохранённому stamp — не пока isolate мёртв.
+**Wall-clock в фоне / Android (1b + 1.5.4):** `HomePage` — `WidgetsBindingObserver`. На `AppLifecycleState.resumed` / `inactive` `SessionGuard.checkSessionWallClockOnResume()` сравнивает `now` с сохранённым стартом; если `>= 10 мин` → `forceExpiredLogout`, иначе перезаводит one-shot `Timer` на остаток **плюс** периодический тикер **15 с** (на Android длинные one-shot Timer часто задерживаются/паузятся). Persist пишет с generation counter, чтобы fire-and-forget cancel `SESSION_StartedAtMs=0` не затирал новый старт (эта гонка раньше оставляла Android cold start без wall-clock stamp). Честно: если ОС убила процесс в фоне, expiry проверяется при следующем cold start / resume по сохранённому stamp — не пока isolate мёртв. **Нет** `workmanager` / `background_fetch` для сессии Neptun. Виджеты синхронизируют кэш календаря **без JWT**.
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
@@ -381,13 +393,13 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 | Username, URL института, флаги кэша, настройки | `shared_preferences` |
 | Демо | `setIsDemoAccount(1)` |
 
-**Срок JWT:** access-токены короткоживущие (~10–15 мин на практике в Neptun). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после входа на Home** (см. wall-clock выше). Без рабочего refresh token 401 тоже форсирует logout, а не пустые экраны «как будто вошёл».
+**Срок JWT:** access-токены короткоживущие (~10–15 мин **наблюдательно** в Neptun — клиент **не** парсит JWT `exp`). Refresh может выдать новый access token, но приложение всё равно принудительно выходит через **10 минут после начала participant-сессии** (не idle; не зависит от refresh JWT — см. wall-clock выше). Без рабочего refresh token 401 на GET тоже форсирует logout, а не пустые экраны «как будто вошёл». `trySilentReauth()` для ELTE пропускается.
 
 **2FA (modern):** `isTwoFactorRequired` / `requiresTwoFactor` / `twoFactorLoginToken` без `accessToken` (часто HTTP 202) → код `2` → непрозрачный `TwoFactorCodePage` через корневой `appNavigatorKey` (`lib/Pages/two_factor_page.dart`) → пользователь вводит 6 цифр **TOTP** → `submitTwoFactorCode`. Маршрут 2FA закрывается **до** HWEB-моста; при успехе setup вызывает `navigateToHomeRoot()` (`lib/app_navigator.dart` → корневой `pushAndRemoveUntil(HomePage)`), а не через локальный `BuildContext` логина — чтобы disposed route не оставлял **чёрный экран** (iOS) или **белый фон окна** (Android; исправлено в **1.5.2**, login 2FA больше не через transparent popup mode 9).
 
 **2FA (old):** не поддерживается → обычно `0`.
 
-**Веб ELTE vs приложение:** на сайте TOTP + E-mail (`XXX-XXXXXX`). В приложении: только поле TOTP. Устаревшая плашка «с 2FA войти нельзя» **удалена**.
+**Веб ELTE vs приложение:** на сайте TOTP + E-mail (`XXX-XXXXXX`). В UI приложения: только поле TOTP. Helper `elteRequestEmailOtp` есть в коде, **из UI не вызывается**. Устаревшая плашка «с 2FA войти нельзя» **удалена**.
 
 ---
 
@@ -443,10 +455,13 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 |---------|---------|-------------|
 | Android клиент (логин, 4 вкладки + drawer, кэш) | **Full / mid-beta** | Реальный API, не каркас. Nav IA **1c** |
 | iOS симулятор + release на устройстве | **Working** | Bundle без `_`; signing Automatic |
-| Modern JWT + refresh | **Solid** | |
+| Modern JWT + refresh | **Solid** | GET+Bearer на назначенном `hallgatoN`; `GetNewTokens` при 401/403 GET; JWT `exp` **не** парсится; wall-clock независим |
 | 2FA modern TOTP (портал ELTE) | **Working MVP** | Login2FA + OuterLogin JWT на hallgatoN. **Student web full** → snackbar `loginStudentWebFull` (не «неверный пароль») |
-| 2FA modern email | **HAR известен; UI тонкий** | `RequestEmailCode` + CodePrefix |
+| 2FA modern email | **Helper в коде; UI не вызывает** | `elteRequestEmailOtp` (`RequestEmailCode` / `CodePrefix`); UI сначала TOTP |
 | JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
+| Тихий re-auth ELTE | **Отключён** | `trySilentReauth()` возвращает false; пароль хранится, но 2FA интерактивна |
+| Записи student-data | **Только mark-read** | Студенческий / платежи / compose почты / запись на экзамен — не записи |
+| Keep-alive сессии | **Нет** | Нет Workmanager / background_fetch. 10 мин wall-clock от старта сессии (не idle). Виджеты только кэш, без JWT |
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
@@ -471,7 +486,7 @@ Refresh / повторный логин при 401 — в `_APIRequest` чере
 
 Кэш флагов: календарь, зачётка, платежи, периоды, почта, первая неделя, список терминов. При потере сети UI читает кэш. Это **не** полноценный offline-продукт.
 
-Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences).
+Секреты: username/password/JWT/device cookie в secure storage (миграция со старого SharedPreferences). Cookie **портала** ELTE (`_elteCookies`) — **только в памяти**, не persist; стираются `resetEltePortalState()` при logout.
 
 `sessionWipeKeepCache` — обычный logout / истечение сессии: стирает пароль/токены/device cookie/`HasLogin`, **сохраняет username + учебный кэш** (календарь / зачётка / платежи / периоды / почта / семестры / аватар). `dataWipe` — полный wipe prefs включая кэш (только hard reset). Drawer показывает фото профиля HWEB при наличии, иначе **инициалы** из имени / кода Neptun.
 
@@ -716,10 +731,12 @@ Release на iPhone: `--release` (см. §14).
 | `badCertificateCallback => true` | Вузы с кривыми сертификатами; риск MITM принят |
 | Убрана устаревшая плашка «2FA не работает» | В ELTE 2FA обязательна; приложение умеет ввод кода |
 | Нет deep-link / auto-OTP из Authenticator | TOTP вводится вручную; Microsoft Authenticator снаружи |
-| Нет email OTP (`XXX-XXXXXX`) пока | Нужен Network capture кнопки E-mail и формата `token` |
+| Helper email OTP есть; UI не вызывает | `elteRequestEmailOtp` реализует портальный `GetEmail` / `CodePrefix`; UI сначала TOTP (экрана email OTP нет) |
+| SessionGuard 10 мин wall-clock, не JWT `exp` | Logout от начала participant-сессии (не idle); refresh не продлевает; `exp` не декодируется |
+| Нет Workmanager / keep-alive сессии | Политика — wall-clock logout; виджеты синхронизируют кэш без JWT |
 | `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
 | `loginStudentWebFull` ≠ invalid password | Переполнение HWEB после верного 2FA красилось как неверный пароль (`submitTwoFactor` → `false` → `_paintRed`) |
-| Хаб ELTE → `https://neptun.elte.hu` | Портал + JWT API. HWEB балансируется по `hallgato1…N` после `/ToNeptunWeb/ToNeptunHWeb` — один узел не хардкодить |
+| Хаб ELTE → `https://neptun.elte.hu` | Портальный логин + 2FA. После `/ToNeptunWeb/ToNeptunHWeb` JWT REST на балансируемых `hallgato1…N` — один узел не хардкодить |
 | Один вуз в JSON | Продукт только ELTE; мульти-пикер убран с хаба |
 | ICS оставить в коде | Может быть у старых юзеров; UI не рекламировать |
 | Release на iOS для иконки | Системное ограничение debug с iOS 14 |

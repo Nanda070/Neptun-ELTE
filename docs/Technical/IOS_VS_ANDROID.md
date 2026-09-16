@@ -49,7 +49,7 @@ Short list — same Flutter product surface unless gated above:
 - **ELTE-only** login hub, modern JWT + TOTP 2FA path; bottom **Calendar \| Markbook \| Periods \| Mail**; Payments in drawer (**1c**)
 - Settings: theme (Light/Dark), language (EN/HU/RU/TR), font scale, notification toggles, haptics toggle, week offset
 - Local notifications for classes / exams / payments / periods (`flutter_local_notifications` + timezone) — **not** remote push
-- Session wall-clock: **10 min** via `SessionGuard` (one-shot `Timer` + **15 s** ticker + persisted timestamp on resume/`inactive` — **1b** + **1.5.4**; long Timer alone often pauses on Android / in background)
+- Session wall-clock: **10 min** from **participant session start** (not idle) via `SessionGuard` (one-shot `Timer` + **15 s** ticker + persisted timestamp on resume/`inactive` — **1b** + **1.5.4**; long Timer alone often pauses on Android / in background). Independent of JWT refresh; JWT `exp` is **not** parsed. **No** Workmanager / background_fetch for the Neptun session
 - Cache + secrets: `shared_preferences`, `flutter_secure_storage`
 - Network: `http` (primary); `connectivity_plus`; GitHub raw for languages/themes
 - Links: `url_launcher` (Android-only gate **removed**)

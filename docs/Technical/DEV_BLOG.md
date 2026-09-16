@@ -311,6 +311,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Release 1.5.5** (`pubspec` **1.5.5+1**). GitHub Release **v1.5.5** + APK (+ unsigned IPA via Actions if available). Owner **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: session / API honesty
+
+**[2026-09-16]**
+
+- **TECHNICAL EN+RU synced to code** (no app change, no `1.x.y` bump, no tag/APK): after ELTE login, student-data REST is **GET + Bearer JWT** on assigned `hallgatoN` (portal cookies not on those GETs); **POST** = portal Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read only; **no PUT/DELETE**; `trySilentReauth()` false for ELTE; SessionGuard **10 min wall-clock from session start** (not idle, independent of JWT refresh; `exp` not parsed; ~10–15 min access lifetime observational); 401 retry on GET only; email OTP helper in code unused by UI; no Workmanager / background_fetch. Platform matrix EN+RU aligned. Owner **Nanda**.
+
+---
 ## In progress / planned (honest)
 
 **[ongoing]**
@@ -319,7 +327,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
 - **Message translator** (HU → EN/RU for inbox bodies) — helper returns `null` offline/failure (keep original) + disclaimer; treat as **verify on device** until thoroughly exercised.
 - **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**.
-- Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — HAR-known; **not** primary path yet (TOTP first).
+- Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **exists in code**, unused by UI; TOTP-first.
 - Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI has unsigned IPA + Android debug APK only (no analyze/test job).
 
 ---

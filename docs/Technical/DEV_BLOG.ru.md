@@ -311,6 +311,14 @@
 - **Релиз 1.5.5** (`pubspec` **1.5.5+1**). GitHub Release **v1.5.5** + APK (+ unsigned IPA через Actions, если доступно). Владелец **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: честность session / API
+
+**[2026-09-16]**
+
+- **TECHNICAL EN+RU сверены с кодом** (без правок приложения, без bump `1.x.y`, без тега/APK): после логина ELTE student-data REST — **GET + Bearer JWT** на назначенном `hallgatoN` (cookie портала не на этих GET); **POST** = портал Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read; **нет PUT/DELETE**; `trySilentReauth()` для ELTE false; SessionGuard **10 мин wall-clock от старта сессии** (не idle, не зависит от refresh JWT; `exp` не парсится; ~10–15 мин access — наблюдение); retry 401 только на GET; helper email OTP в коде, UI не вызывает; нет Workmanager / background_fetch. Матрица платформ EN+RU выровнена. Владелец **Nanda**.
+
+---
 ## В работе / запланировано (честно)
 
 **[ongoing]**
@@ -319,7 +327,7 @@
 - **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
 - **Переводчик сообщений** (HU → EN/RU для тел писем) — helper при offline/ошибке возвращает `null` (оставляем оригинал) + disclaimer; считать **проверить на устройстве**, пока не прогнали тщательно.
 - **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**.
-- Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — известен по HAR; **не** основной путь (сначала TOTP).
+- Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **есть в коде**, UI не вызывает; сначала TOTP.
 - Signed IPA / TestFlight / App Store / Play production — **не** текущая цель. В CI только unsigned IPA + Android debug APK (нет analyze/test job).
 
 ---
