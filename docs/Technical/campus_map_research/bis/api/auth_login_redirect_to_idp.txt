@@ -1,0 +1,13 @@
+HTTP/2 302 
+date: Wed, 16 Sep 2026 13:06:08 GMT
+location: https://idp.elte.hu/auth/saml2/idp/SSOService.php?SAMLRequest=[REDACTED_BLOB]&RelayState=%2Fmap%2Fbudapest%2Flagymanyos%2Fdeli%3Flocale%3Den%26viewParadigm%3D3d
+server: nginx/1.31.5
+strict-transport-security: max-age=15552000; includeSubDomains
+vary: Origin
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+content-length: 0
+

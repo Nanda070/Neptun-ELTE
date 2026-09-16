@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+			<!--<script type="text/javascript">
+ if (screen.width <= 699) {
+document.location = "mobile.html";
+}
+
+</script>-->
+        <meta charset="utf-8" />
+
+        <title>Északi Tömb útvonaltervező</title>
+        <link href="ol/ol.css" rel="stylesheet" />
+<!--        <link href="ol/ol3-layerswitcher.css" rel="stylesheet" /> -->
+        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
+<!--        <link rel="stylesheet" href="./resources/qgis2web.css"> -->
+        <link href="style.css" rel="stylesheet" />
+<!--        <script src="ol/ol3-layerswitcher.js"></script>-->
+    </head>
+
+    <body>
+
+        <div id="map"></div>
+        <div id="utvonal"></div>
+		<div id="szint"></div>
+        <div id="panel">
+            Kezdőpont: <input type="text" id="from" onkeyup="typingHint(this)"/><br>
+            Célpont: &nbsp;&nbsp;&nbsp;&nbsp;  <input type="text" id="to" onkeyup="typingHint(this)"/><br><br>
+			<span style="white-space: nowrap"><input type="checkbox" id="enableRestricted"><label for="enableRestricted"><div class="tooltip2">Tervezés tiltott útvonalakon is
+				<span class="tooltiptext"><h6>Lezárt folyosók, teherliftek és ritkán <br> használt személyliftek engedélyezése</h6></span>
+				</div> </label></span><br><br> 
+            <input type="button" class="button" value="Tervezés" onclick="route()" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/kerd.png" id="help" width=10% >
+        </div>
+		<div id="fejlec"> ELTE Lágymányosi Campus Északi Tömb útvonaltervező</div>
+		<div id="lablec"> Készítette:<br>Eszényi Krisztián <br> ELTE Térképtudományi<br>és Geoinformatikai Tanszék <br> 2018</div>
+		<div id="helpbox">
+			<h2>Az útvonaltervező működése</h2>
+			<p><img src="resources/help.jpg" width=100%></p>
+		</div>
+
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="resources/jquery.firstVisitPopup.js"></script>
+		<script>
+			$(function () {
+				$('#helpbox').firstVisitPopup({
+					cookieName : 'elte_utvonaltervezo',
+					showAgainSelector: '#help'
+				});
+			});
+		</script>
+
+        <script src="resources/qgis2web_expressions.js"></script>
+        <script src="resources/polyfills.js"></script>
+        <script src="./resources/functions.js"></script>
+        <script src="./resources/ol.js"></script>
+        <script src="./resources/ol3-layerswitcher.js"></script>
+        <script src="layers/epulet_minusz1_0.js"></script><script src="layers/termek_minusz1_1.js"></script><script src="layers/epulet_00_2.js"></script><script src="layers/termek_00_3.js"></script><script src="layers/epulet_01_4.js"></script><script src="layers/termek_01_5.js"></script><script src="layers/epulet_02_6.js"></script><script src="layers/termek_02_7.js"></script><script src="layers/epulet_03_8.js"></script><script src="layers/termek_03_9.js"></script><script src="layers/epulet_04_10.js"></script><script src="layers/termek_04_11.js"></script><script src="layers/epulet_05_12.js"></script><script src="layers/termek_05_13.js"></script><script src="layers/epulet_06_14.js"></script><script src="layers/termek_06_15.js"></script><script src="layers/epulet_07_16.js"></script><script src="layers/termek_07_17.js"></script>
+        <script src="styles/epulet_minusz1_0_style.js"></script><script src="styles/termek_minusz1_1_style.js"></script><script src="styles/epulet_00_2_style.js"></script><script src="styles/termek_00_3_style.js"></script><script src="styles/epulet_01_4_style.js"></script><script src="styles/termek_01_5_style.js"></script><script src="styles/epulet_02_6_style.js"></script><script src="styles/termek_02_7_style.js"></script><script src="styles/epulet_03_8_style.js"></script><script src="styles/termek_03_9_style.js"></script><script src="styles/epulet_04_10_style.js"></script><script src="styles/termek_04_11_style.js"></script><script src="styles/epulet_05_12_style.js"></script><script src="styles/termek_05_13_style.js"></script><script src="styles/epulet_06_14_style.js"></script><script src="styles/termek_06_15_style.js"></script><script src="styles/epulet_07_16_style.js"></script><script src="styles/termek_07_17_style.js"></script>
+        <script src="./layers/layers.js" type="text/javascript"></script> 
+        <!--<script src="./resources/qgis2web.js"></script>-->
+        <script src="./resources/Autolinker.min.js"></script>
+        <script src="eszaki.js"></script>
+    </body>
+</html>

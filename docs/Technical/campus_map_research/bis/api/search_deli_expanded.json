@@ -1,0 +1,335 @@
+{
+  "rooms": {
+    "hits": [
+      {
+        "id": 3610,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-105-04-64",
+        "_geo": {
+          "lat": 47.472358801,
+          "lng": 19.062539531
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "3610",
+          "roomCode": "<em>LD</em>-5-105-04-64",
+          "roomNumber": "5-105",
+          "roomName": "5-105 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-105-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539531",
+            "lat": "47.472358801"
+          }
+        }
+      },
+      {
+        "id": 2902,
+        "scope": "budapest/lagymanyos/deli/7/LD-7-106-04-64",
+        "_geo": {
+          "lat": 47.472358803,
+          "lng": 19.062539525
+        },
+        "buildingId": 1,
+        "floorId": 23,
+        "_formatted": {
+          "id": "2902",
+          "roomCode": "<em>LD</em>-7-106-04-64",
+          "roomNumber": "7-106",
+          "roomName": "7-106 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "23",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/7/LD-7-106-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539525",
+            "lat": "47.472358803"
+          }
+        }
+      },
+      {
+        "id": 3161,
+        "scope": "budapest/lagymanyos/deli/T/LD-T-105-04-64",
+        "_geo": {
+          "lat": 47.472358803,
+          "lng": 19.062539525
+        },
+        "buildingId": 1,
+        "floorId": 26,
+        "_formatted": {
+          "id": "3161",
+          "roomCode": "<em>LD</em>-T-105-04-64",
+          "roomNumber": "T-105",
+          "roomName": "T-105 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "26",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/T/LD-T-105-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539525",
+            "lat": "47.472358803"
+          }
+        }
+      },
+      {
+        "id": 3128,
+        "scope": "budapest/lagymanyos/deli/6/LD-6-105-04-64",
+        "_geo": {
+          "lat": 47.472358801,
+          "lng": 19.062539531
+        },
+        "buildingId": 1,
+        "floorId": 19,
+        "_formatted": {
+          "id": "3128",
+          "roomCode": "<em>LD</em>-6-105-04-64",
+          "roomNumber": "6-105",
+          "roomName": "6-105 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "19",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/6/LD-6-105-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539531",
+            "lat": "47.472358801"
+          }
+        }
+      },
+      {
+        "id": 3233,
+        "scope": "budapest/lagymanyos/deli/1/LD-1-107-04-64",
+        "_geo": {
+          "lat": 47.472358803,
+          "lng": 19.062539528
+        },
+        "buildingId": 1,
+        "floorId": 27,
+        "_formatted": {
+          "id": "3233",
+          "roomCode": "<em>LD</em>-1-107-04-64",
+          "roomNumber": "1-107",
+          "roomName": "1-107 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "27",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/1/LD-1-107-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539528",
+            "lat": "47.472358803"
+          }
+        }
+      },
+      {
+        "id": 3401,
+        "scope": "budapest/lagymanyos/deli/00/LD-00-109-04-64",
+        "_geo": {
+          "lat": 47.472347656,
+          "lng": 19.062509528
+        },
+        "buildingId": 1,
+        "floorId": 22,
+        "_formatted": {
+          "id": "3401",
+          "roomCode": "<em>LD</em>-00-109-04-64",
+          "roomNumber": "00-109",
+          "roomName": "00-109 Előtér",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "22",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/00/LD-00-109-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062509528",
+            "lat": "47.472347656"
+          }
+        }
+      },
+      {
+        "id": 2294,
+        "scope": "budapest/lagymanyos/deli/4/LD-4-107-04-64",
+        "_geo": {
+          "lat": 47.472358803,
+          "lng": 19.062539527
+        },
+        "buildingId": 1,
+        "floorId": 17,
+        "_formatted": {
+          "id": "2294",
+          "roomCode": "<em>LD</em>-4-107-04-64",
+          "roomNumber": "4-107",
+          "roomName": "4-107 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "17",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/4/LD-4-107-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539527",
+            "lat": "47.472358803"
+          }
+        }
+      },
+      {
+        "id": 3597,
+        "scope": "budapest/lagymanyos/deli/0/LD-0-110-04-64",
+        "_geo": {
+          "lat": 47.472359047,
+          "lng": 19.062539942
+        },
+        "buildingId": 1,
+        "floorId": 25,
+        "_formatted": {
+          "id": "3597",
+          "roomCode": "<em>LD</em>-0-110-04-64",
+          "roomNumber": "0-110",
+          "roomName": "0-110 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "25",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/0/LD-0-110-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539942",
+            "lat": "47.472359047"
+          }
+        }
+      },
+      {
+        "id": 2255,
+        "scope": "budapest/lagymanyos/deli/2/LD-2-126-04-64",
+        "_geo": {
+          "lat": 47.472358802,
+          "lng": 19.062539528
+        },
+        "buildingId": 1,
+        "floorId": 21,
+        "_formatted": {
+          "id": "2255",
+          "roomCode": "<em>LD</em>-2-126-04-64",
+          "roomNumber": "2-126",
+          "roomName": "2-126 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "21",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/2/LD-2-126-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539528",
+            "lat": "47.472358802"
+          }
+        }
+      },
+      {
+        "id": 3393,
+        "scope": "budapest/lagymanyos/deli/3/LD-3-108-04-64",
+        "_geo": {
+          "lat": 47.472358803,
+          "lng": 19.062539528
+        },
+        "buildingId": 1,
+        "floorId": 18,
+        "_formatted": {
+          "id": "3393",
+          "roomCode": "<em>LD</em>-3-108-04-64",
+          "roomNumber": "3-108",
+          "roomName": "3-108 Lépcsőház",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "18",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/3/LD-3-108-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062539528",
+            "lat": "47.472358803"
+          }
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 2,
+    "estimatedTotalHits": 10,
+    "query": "LD"
+  },
+  "buildings": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  },
+  "campuses": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  },
+  "pois": {
+    "hits": [],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  }
+}

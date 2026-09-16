@@ -1,0 +1,2 @@
+final_url=https://idp.elte.hu/auth/module.php/eltedbauth/authpage.php?ReturnTo=https%3A%2F%2Fidp.elte.hu%2Fauth%2Fmodule.php%2Feltedbauth%2Fresume.php%3FState%3D_e3bf81d737ad8af3a086370866597f5e5522fbc4fb%253Ahttps%253A%252F%252Fidp.elte.hu%252Fauth%252Fsaml2%252Fidp%252FSSOService.php%253Fspentityid%253Dhttps%25253A%25252F%25252Fbis.elte.hu%25252Fauth%25252Fsaml%25252Fmetadata%2526cookieTime%253D1789563969%2526RelayState%253D%25252Fmap%25252Fbudapest%25252Flagymanyos%25252Fdeli%25253Flocale%25253Den%252526viewParadigm%25253D3d&LoginType=href&sp_language=hu
+http_code=200

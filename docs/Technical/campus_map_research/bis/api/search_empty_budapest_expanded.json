@@ -1,0 +1,670 @@
+{
+  "rooms": {
+    "hits": []
+  },
+  "buildings": {
+    "hits": [
+      {
+        "id": 1,
+        "scope": "budapest/lagymanyos/deli",
+        "_geo": {
+          "lat": 47.472323552,
+          "lng": 19.062552479
+        },
+        "campusId": 1,
+        "campusShortName": "Lágymányos",
+        "_formatted": {
+          "id": "1",
+          "name": "South Building",
+          "shortName": "South",
+          "campusName": "Lágymányos Campus",
+          "campusShortName": "Lágymányos"
+        }
+      },
+      {
+        "id": 2,
+        "scope": "budapest/lagymanyos/eszaki",
+        "_geo": {
+          "lat": 47.474449241,
+          "lng": 19.061843644
+        },
+        "campusId": 1,
+        "campusShortName": "Lágymányos",
+        "_formatted": {
+          "id": "2",
+          "name": "North Building",
+          "shortName": "North",
+          "campusName": "Lágymányos Campus",
+          "campusShortName": "Lágymányos"
+        }
+      },
+      {
+        "id": 3,
+        "scope": "budapest/trefort/b",
+        "_geo": {
+          "lat": 47.493623105,
+          "lng": 19.061717237
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "3",
+          "name": "Building B",
+          "shortName": "B",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 4,
+        "scope": "budapest/trefort/a",
+        "_geo": {
+          "lat": 47.493405145,
+          "lng": 19.061014067
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "4",
+          "name": "Building A",
+          "shortName": "A",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 5,
+        "scope": "budapest/trefort/c",
+        "_geo": {
+          "lat": 47.493675903,
+          "lng": 19.062012768
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "5",
+          "name": "Building C",
+          "shortName": "C",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 6,
+        "scope": "budapest/trefort/d",
+        "_geo": {
+          "lat": 47.494019304,
+          "lng": 19.062585011
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "6",
+          "name": "Building D",
+          "shortName": "D",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 7,
+        "scope": "budapest/trefort/h",
+        "_geo": {
+          "lat": 47.493883352,
+          "lng": 19.062208259
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "7",
+          "name": "Building H",
+          "shortName": "H",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 9,
+        "scope": "budapest/trefort/g",
+        "_geo": {
+          "lat": 47.493008459,
+          "lng": 19.062442191
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "9",
+          "name": "Gólyavár",
+          "shortName": "G",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 10,
+        "scope": "budapest/trefort/r5",
+        "_geo": {
+          "lat": 47.494317411,
+          "lng": 19.061685095
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "10",
+          "name": "Rákóczi út 5.",
+          "shortName": "R5",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 11,
+        "scope": "budapest/trefort/y",
+        "_geo": {
+          "lat": 47.492557049,
+          "lng": 19.061832962
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "11",
+          "name": "Ifjúsági épület",
+          "shortName": "Y",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 12,
+        "scope": "budapest/trefort/i",
+        "_geo": {
+          "lat": 47.494334331,
+          "lng": 19.062429364
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "12",
+          "name": "Building I",
+          "shortName": "I",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 13,
+        "scope": "budapest/trefort/m",
+        "_geo": {
+          "lat": 47.492837764,
+          "lng": 19.061635474
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "13",
+          "name": "Main Building",
+          "shortName": "M",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 14,
+        "scope": "budapest/trefort/f",
+        "_geo": {
+          "lat": 47.492982239,
+          "lng": 19.063019137
+        },
+        "campusId": 2,
+        "campusShortName": "Trefort",
+        "_formatted": {
+          "id": "14",
+          "name": "Building F",
+          "shortName": "F",
+          "campusName": "Trefort Garden",
+          "campusShortName": "Trefort"
+        }
+      },
+      {
+        "id": 15,
+        "scope": "budapest/belvaros/a",
+        "_geo": {
+          "lat": 47.490336602,
+          "lng": 19.058274306
+        },
+        "campusId": 3,
+        "campusShortName": "Downtown",
+        "_formatted": {
+          "id": "15",
+          "name": "Egyetem tér 1–3.",
+          "shortName": "A",
+          "campusName": "Downtown Campus",
+          "campusShortName": "Downtown"
+        }
+      },
+      {
+        "id": 16,
+        "scope": "budapest/belvaros/b",
+        "_geo": {
+          "lat": 47.490533964,
+          "lng": 19.060493171
+        },
+        "campusId": 3,
+        "campusShortName": "Downtown",
+        "_formatted": {
+          "id": "16",
+          "name": "Kecskeméti utca 10–12.",
+          "shortName": "B",
+          "campusName": "Downtown Campus",
+          "campusShortName": "Downtown"
+        }
+      },
+      {
+        "id": 17,
+        "scope": "budapest/ppk/i",
+        "_geo": {
+          "lat": 47.506457694,
+          "lng": 19.068606556
+        },
+        "campusId": 4,
+        "campusShortName": "Edu. & Psy.",
+        "_formatted": {
+          "id": "17",
+          "name": "Izabella Building",
+          "shortName": "I",
+          "campusName": "Faculty of Education and Psychology",
+          "campusShortName": "Edu. & Psy."
+        }
+      },
+      {
+        "id": 18,
+        "scope": "budapest/damjanich/a",
+        "_geo": {
+          "lat": 47.508519048,
+          "lng": 19.081264208
+        },
+        "campusId": 8,
+        "campusShortName": "Damjanich u.",
+        "_formatted": {
+          "id": "18",
+          "name": "Damjanich utca – Building A",
+          "shortName": "A",
+          "campusName": "Damjanich utcai Campus",
+          "campusShortName": "Damjanich u."
+        }
+      },
+      {
+        "id": 19,
+        "scope": "budapest/damjanich/c",
+        "_geo": {
+          "lat": 47.508292896,
+          "lng": 19.081675207
+        },
+        "campusId": 8,
+        "campusShortName": "Damjanich u.",
+        "_formatted": {
+          "id": "19",
+          "name": "Damjanich utca – Building C",
+          "shortName": "C",
+          "campusName": "Damjanich utcai Campus",
+          "campusShortName": "Damjanich u."
+        }
+      },
+      {
+        "id": 20,
+        "scope": "budapest/ppk/k",
+        "_geo": {
+          "lat": 47.498258291,
+          "lng": 19.062890241
+        },
+        "campusId": 4,
+        "campusShortName": "Edu. & Psy.",
+        "_formatted": {
+          "id": "20",
+          "name": "Kazinczy Building",
+          "shortName": "K",
+          "campusName": "Faculty of Education and Psychology",
+          "campusShortName": "Edu. & Psy."
+        }
+      },
+      {
+        "id": 21,
+        "scope": "budapest/tok/tk",
+        "_geo": {
+          "lat": 47.49180156,
+          "lng": 19.019066132
+        },
+        "campusId": 6,
+        "campusShortName": "Primary & Pre-School Edu.",
+        "_formatted": {
+          "id": "21",
+          "name": "TÓK",
+          "shortName": "TK",
+          "campusName": "Faculty of Primary and Pre-School Education",
+          "campusShortName": "Primary & Pre-School Edu."
+        }
+      },
+      {
+        "id": 22,
+        "scope": "budapest/ejc/ejc",
+        "_geo": {
+          "lat": 47.479945973,
+          "lng": 19.046363586
+        },
+        "campusId": 7,
+        "campusShortName": "EJC",
+        "_formatted": {
+          "id": "22",
+          "name": "Eötvös Collegium",
+          "shortName": "EJC",
+          "campusName": "Eötvös József Collegium",
+          "campusShortName": "EJC"
+        }
+      },
+      {
+        "id": 23,
+        "scope": "budapest/belvaros/21-23",
+        "_geo": {
+          "lat": 47.49000216,
+          "lng": 19.058935869
+        },
+        "campusId": 3,
+        "campusShortName": "Downtown",
+        "_formatted": {
+          "id": "23",
+          "name": "21–23 Szerb Street",
+          "shortName": "21–23 Szerb St.",
+          "campusName": "Downtown Campus",
+          "campusShortName": "Downtown"
+        }
+      },
+      {
+        "id": 24,
+        "scope": "budapest/bggyk/e",
+        "_geo": {
+          "lat": 47.470403984,
+          "lng": 19.108089817
+        },
+        "campusId": 5,
+        "campusShortName": "Spec. Edu.",
+        "_formatted": {
+          "id": "24",
+          "name": "Ecseri út 3.",
+          "shortName": "E",
+          "campusName": "Bárczi Gusztáv Faculty of Special Needs Education",
+          "campusShortName": "Spec. Edu."
+        }
+      },
+      {
+        "id": 25,
+        "scope": "szombathely/szombathely/gh",
+        "_geo": {
+          "lat": 47.2305229,
+          "lng": 16.611006857
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "25",
+          "name": "Building GH",
+          "shortName": "GH",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 26,
+        "scope": "szombathely/szombathely/a",
+        "_geo": {
+          "lat": 47.230334061,
+          "lng": 16.61158839
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "26",
+          "name": "Building A",
+          "shortName": "A",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 27,
+        "scope": "szombathely/szombathely/b",
+        "_geo": {
+          "lat": 47.229688365,
+          "lng": 16.612064725
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "27",
+          "name": "Building B",
+          "shortName": "B",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 28,
+        "scope": "szombathely/szombathely/c",
+        "_geo": {
+          "lat": 47.229254051,
+          "lng": 16.612216033
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "28",
+          "name": "Building C",
+          "shortName": "C",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 29,
+        "scope": "szombathely/szombathely/cs",
+        "_geo": {
+          "lat": 47.228964532,
+          "lng": 16.611298627
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "29",
+          "name": "Sports Hall",
+          "shortName": "CS",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 30,
+        "scope": "szombathely/szombathely/e",
+        "_geo": {
+          "lat": 47.230616818,
+          "lng": 16.610655904
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "30",
+          "name": "Building E",
+          "shortName": "E",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 31,
+        "scope": "szombathely/szombathely/fk",
+        "_geo": {
+          "lat": 47.229561324,
+          "lng": 16.611895734
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "31",
+          "name": "Forrásközpont",
+          "shortName": "FK",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      },
+      {
+        "id": 32,
+        "scope": "szombathely/szombathely/t",
+        "_geo": {
+          "lat": 47.229074241,
+          "lng": 16.611989931
+        },
+        "campusId": 9,
+        "campusShortName": "Szombathely",
+        "_formatted": {
+          "id": "32",
+          "name": "Canteen",
+          "shortName": "T",
+          "campusName": "Szombathelyi Campus",
+          "campusShortName": "Szombathely"
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 2,
+    "estimatedTotalHits": 31,
+    "query": ""
+  },
+  "campuses": {
+    "hits": [
+      {
+        "id": 1,
+        "scope": "budapest/lagymanyos",
+        "_geo": {
+          "lat": 47.473311065,
+          "lng": 19.061515816
+        },
+        "_formatted": {
+          "id": "1",
+          "name": "Lágymányos Campus",
+          "shortName": "Lágymányos"
+        }
+      },
+      {
+        "id": 2,
+        "scope": "budapest/trefort",
+        "_geo": {
+          "lat": 47.493186465,
+          "lng": 19.062068594
+        },
+        "_formatted": {
+          "id": "2",
+          "name": "Trefort Garden",
+          "shortName": "Trefort"
+        }
+      },
+      {
+        "id": 3,
+        "scope": "budapest/belvaros",
+        "_geo": {
+          "lat": 47.490414172,
+          "lng": 19.058273721
+        },
+        "_formatted": {
+          "id": "3",
+          "name": "Downtown Campus",
+          "shortName": "Downtown"
+        }
+      },
+      {
+        "id": 4,
+        "scope": "budapest/ppk",
+        "_geo": {
+          "lat": 47.501815545,
+          "lng": 19.065358117
+        },
+        "_formatted": {
+          "id": "4",
+          "name": "Faculty of Education and Psychology",
+          "shortName": "Edu. & Psy."
+        }
+      },
+      {
+        "id": 5,
+        "scope": "budapest/bggyk",
+        "_geo": {
+          "lat": 47.470410838,
+          "lng": 19.108086054
+        },
+        "_formatted": {
+          "id": "5",
+          "name": "Bárczi Gusztáv Faculty of Special Needs Education",
+          "shortName": "Spec. Edu."
+        }
+      },
+      {
+        "id": 6,
+        "scope": "budapest/tok",
+        "_geo": {
+          "lat": 47.491687647,
+          "lng": 19.018624135
+        },
+        "_formatted": {
+          "id": "6",
+          "name": "Faculty of Primary and Pre-School Education",
+          "shortName": "Primary & Pre-School Edu."
+        }
+      },
+      {
+        "id": 7,
+        "scope": "budapest/ejc",
+        "_geo": {
+          "lat": 47.480227471,
+          "lng": 19.046328052
+        },
+        "_formatted": {
+          "id": "7",
+          "name": "Eötvös József Collegium",
+          "shortName": "EJC"
+        }
+      },
+      {
+        "id": 8,
+        "scope": "budapest/damjanich",
+        "_geo": {
+          "lat": 47.508487144,
+          "lng": 19.081380135
+        },
+        "_formatted": {
+          "id": "8",
+          "name": "Damjanich utcai Campus",
+          "shortName": "Damjanich u."
+        }
+      },
+      {
+        "id": 9,
+        "scope": "szombathely/szombathely",
+        "_geo": {
+          "lat": 47.229611568,
+          "lng": 16.611708537
+        },
+        "_formatted": {
+          "id": "9",
+          "name": "Szombathelyi Campus",
+          "shortName": "Szombathely"
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 1,
+    "estimatedTotalHits": 9,
+    "query": ""
+  },
+  "pois": {
+    "hits": []
+  }
+}

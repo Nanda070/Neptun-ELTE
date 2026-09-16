@@ -1,0 +1,2 @@
+https://idp.elte.hu/auth/saml2/idp/SSOService.php
+https://idp.elte.hu/auth/saml2/idp/SSOService.php?SAMLRequest=[REDACTED_BLOB]

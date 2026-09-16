@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<HTML><HEAD>
+<TITLE>
+Központi bejelentkezés</TITLE>
+<META http-equiv="Content-Type" content="text/HTML; charset=utf-8">
+<META name="Description" content="">
+<META name="Keywords" content="">
+<META name="Author" content="ELTE IIG WebGroup . IWDG Coop">
+<META name="Date" content="2010-02-01T00:00:00+00:00">
+<META name="Updated" content="2020-02-02T00:00:00+00:00">
+<META http-equiv="Pragma" content="no-cache">
+<meta name="viewport" content="initial-scale=1">
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="/auth/module.php/eltedbauth/resources/jquery-ui-1.10.0.custom.min.css"/>
+<script type="text/javascript" src="/auth/module.php/eltedbauth/resources/jquery-1.9.0.js"></script>
+<script type="text/javascript" src="/auth/module.php/eltedbauth/resources/jquery-ui-1.10.0.custom.min.js"></script>
+<META name="personal.identifier" content="">
+<META name="Page-type" content="Egyetemi WebPortál - Login Interface">
+<META name="Copyright" content="&#169;2022 ELTE IIG - http://iig.elte.hu/shibbeloth">
+
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+	<LINK rel="stylesheet" href="/auth/module.php/eltedbauth/resources/shib.css" type="text/css">
+	<LINK rel="shortcut icon" href="/auth/module.php/eltedbauth/resources/images/elte.ico" type="text/css">
+
+</HEAD>
+<body class="fixed">
+
+
+<!-- <FONT face="Georgia, Times New Roman, Times, serif" style="font-size:15pt" color="#FFFFFF"> -->
+<div class="page">
+<div class="page-inner">
+<div class="header">  
+    
+<img src="/auth/module.php/eltedbauth/resources/images/elteheader.png" alt="Eötvös Loránd Tudományegyetem" style='height: 100%; width: 100%; object-fit: contain; display: block;' />
+</div>
+<div class="body">
+<div class="body-inner">
+<div class="language">
+	<a href="https://idp.elte.hu/auth/module.php/eltedbauth/authpage.php?ReturnTo=https%3A%2F%2Fidp.elte.hu%2Fauth%2Fmodule.php%2Feltedbauth%2Fresume.php%3FState%3D_e3bf81d737ad8af3a086370866597f5e5522fbc4fb%253Ahttps%253A%252F%252Fidp.elte.hu%252Fauth%252Fsaml2%252Fidp%252FSSOService.php%253Fspentityid%253Dhttps%25253A%25252F%25252Fbis.elte.hu%25252Fauth%25252Fsaml%25252Fmetadata%2526cookieTime%253D1789563969%2526RelayState%253D%25252Fmap%25252Fbudapest%25252Flagymanyos%25252Fdeli%25253Flocale%25253Den%252526viewParadigm%25253D3d&amp;LoginType=href&amp;sp_language=en"><img src="/auth/module.php/eltedbauth/resources/flags/en.png" alt="English" alt="English" border="0"/></a> <img src="/auth/module.php/eltedbauth/resources/flags/hu.png" alt="Magyar" border="0"/>
+</div>
+<h1>
+Központi bejelentkezés</h1>
+
+<script src="/auth/module.php/eltedbauth/resources/jquery-1.9.1.min.js"> </script>
+<script src="/img/jquery.cookie.js"> </script>
+<script LANGUAGE="JavaScript">
+var activeAuth;
+var allFlavors = [ "iig", "etr", "neptun", "token" ];
+var enabledFlavors = {};
+var flavorEventHandler = {};
+var idpDebug = false;
+var debugData = {"baseurlpath":"auth\/","returnTo":"https:\/\/idp.elte.hu\/auth\/module.php\/eltedbauth\/resume.php?State=_e3bf81d737ad8af3a086370866597f5e5522fbc4fb%3Ahttps%3A%2F%2Fidp.elte.hu%2Fauth%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Dhttps%253A%252F%252Fbis.elte.hu%252Fauth%252Fsaml%252Fmetadata%26cookieTime%3D1789563969%26RelayState%3D%252Fmap%252Fbudapest%252Flagymanyos%252Fdeli%253Flocale%253Den%2526viewParadigm%253D3d","LoginType":"href","language":"hu","header":"K\u00f6zponti bejelentkez\u00e9s","shortDisplay":true,"htmlinject":{"htmlContentPre":[],"htmlContentPost":[],"htmlContentHead":[]}};
+function getKeys(obj){
+	   var keys = [];
+		   for(var key in obj){
+				      keys.push(key);
+						   }
+		   return keys;
+}
+jQuery(document).ready(function()
+	{
+		window.setTimeout(function(){
+			jQuery("input.pass").val("");
+			jQuery("input.pass").attr('autocomplete', 'off');
+		}, 50);
+		if (idpDebug)
+			console.log("allFlavors:",allFlavors);
+		for (i = 0; i < allFlavors.length; i++)
+		{
+			flv = allFlavors[i];
+			(function(_flv)
+			{
+				jQuery("#sel-"+_flv).click(flavorEventHandler[_flv]=function (ev, noFancy) { 
+					if (activeAuth == _flv)
+						return;
+					var j;
+					activeAuth = _flv;
+					duration = 400;
+					if (noFancy === true)
+					{
+						duration = 0;
+					}
+					for (j = 0; j < allFlavors.length; j++)
+					{
+						jQuery("#login-by-"+allFlavors[j]).hide();
+						jQuery("img#sel-"+allFlavors[j]).addClass("grayscale");
+						jQuery("img#sel-"+allFlavors[j]).removeClass("grayscale-disabled");
+					}
+					if (duration == 0)
+					{
+						jQuery("#login-by-"+_flv).show();
+						jQuery("input#username_"+_flv).focus();
+					}
+					else
+					{
+						jQuery("#login-by-"+_flv).fadeIn(duration, function() { jQuery("input#username_"+_flv).focus();});
+					}
+					jQuery("img#sel-"+_flv).removeClass("grayscale");
+					jQuery("img#sel-"+_flv).addClass("grayscale-disabled");
+					jQuery.cookie("default-flavor", _flv, {expires: 365, path: "auth/" })
+					jQuery("input#username_"+_flv)[0].focus();
+				});
+			}(flv));
+		}
+
+		/**
+	    * Select the default flavor
+		 */
+		var def_flv = jQuery.cookie("default-flavor");
+		if (idpDebug)
+		{
+			console.log(debugData);
+			console.log("Default flavor is:",[ def_flv ]);
+			}
+		if (def_flv == null)
+		{
+			def_flv = "iig";
+		}
+
+		if (enabledFlavors[def_flv] !== true)
+		{
+			def_flv = getKeys(enabledFlavors)[0];
+		}
+
+		if (idpDebug)
+				console.log("Default authentication flavor is set to ", [ def_flv ], " available flavors: ", allFlavors);
+		flavorEventHandler[def_flv](undefined, true); //Call the handler without the fadein effect
+
+/*
+		else
+		{
+			// Check if the given flavor is available
+			var cookie_sel = jQuery("#sel-"+def_flv);
+			if (cookie_sel.length > 0)
+			{
+				cookie_sel.click();
+			}
+			else
+			{
+				jQuery("#sel-iig").click();
+			}
+	}*/
+	}
+);
+</script>
+<div class="help-header">Az Ön által kért honlap megtekintéséhez hitelesítés szükséges.<p/></div>	<script>
+		enabledFlavors['iig']=true;
+	</script>
+
+	<div id="login-by-iig" class="login-box" style="display: none">
+	<form method="post" action="?" name="login_iig" id="login_iig" autocomplete="off" >
+	<div class="description">
+Kérjük, adja meg IIG azonosítóját és a hozzá tartozó jelszavát a bejelentkezéshez:<p>	</div>
+			<span class="form-item">
+				<span class="form-desc">
+					<FONT face="Arial, Helvetica, sans-serif" style="font-size:10pt" color="#005098" align="justify">
+
+					IIG (caesar) azonosító					</font>
+				</span>
+				<span class="form-widget">
+				<input type="text" name="username_iig" style="border: 1px solid #059; background: #fafafa;color:#059; font: arial,helvetica,sans-serif;  font-size: 12; " id="username_iig">
+				</span>
+			</span>
+			<span class="form-item">
+				<span class="form-desc">
+					<FONT face="Arial, Helvetica, sans-serif" style="font-size:10pt" color="#005098" align="justify">
+						Jelszó					</font>
+				</span>
+				<span class="form-widget">
+				<input type="password" name="password_iig" style="border: 1px solid #059; background: #fafafa;color:#059; font: arial,helvetica,sans-serif;  font-size: 12; " class="pass" id="password_iig">
+
+				</span>
+			</span>
+			<span class="form-item">
+				<span class="form-widget">
+						<input type="submit" value="Bejelentkezés" class="submit-button">	
+				</span>
+			</span>
+<input type="hidden" name="ReturnTo" value="https://idp.elte.hu/auth/module.php/eltedbauth/resume.php?State=_e3bf81d737ad8af3a086370866597f5e5522fbc4fb%3Ahttps%3A%2F%2Fidp.elte.hu%2Fauth%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Dhttps%253A%252F%252Fbis.elte.hu%252Fauth%252Fsaml%252Fmetadata%26cookieTime%3D1789563969%26RelayState%3D%252Fmap%252Fbudapest%252Flagymanyos%252Fdeli%253Flocale%253Den%2526viewParadigm%253D3d">
+<input type="hidden" name="LoginType" value="href">
+<input type="hidden" name="sp_language" value="hu">
+<input type="hidden" name="source" value="iig">
+</form>
+
+						Amennyiben Ön ELTE egyetemi polgár és még nincsen IIG azonosítója, akkor igényelhet IIG azonosítót elektronikus úton az
+					 <a href="http://ugykezelo.elte.hu">ügyfélkapu</a> segítségével, vagy személyesen az ELTE Informatikai Igazgatóság <a href="http://iig.elte.hu/operator_elerhetoseg">Operátori szolgálatán</a>.<br></div>
+
+
+</div>
+<div class="watermark"></div>
+</div>
+</div>
+</div>
+<div class="footer">				
+<FONT face="Arial, Helvetica, sans-serif" style="font-size:8pt" color="#005098">&copy;2026 ELTE INFORMATIKAI IGAZGATÓSÁG Minden jog fenntartva.</FONT>
+</div>
+
+</BODY>
+</HTML>

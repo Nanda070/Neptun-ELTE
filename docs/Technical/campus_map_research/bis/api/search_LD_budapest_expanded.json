@@ -1,0 +1,335 @@
+{
+  "rooms": {
+    "hits": [
+      {
+        "id": 2264,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-706-05-71",
+        "_geo": {
+          "lat": 47.472228707,
+          "lng": 19.062557106
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "2264",
+          "roomCode": "<em>LD</em>-5-706-05-71",
+          "roomNumber": "5-706",
+          "roomName": "5-706 Mosdó-zuhany",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-706-05-71",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062557106",
+            "lat": "47.472228707"
+          }
+        }
+      },
+      {
+        "id": 3358,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-210-01-14",
+        "_geo": {
+          "lat": 47.472618141,
+          "lng": 19.062346568
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "3358",
+          "roomCode": "<em>LD</em>-5-210-01-14",
+          "roomNumber": "5-210",
+          "roomName": "5-210 Fotó",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-210-01-14",
+          "roomTypeLabel": {
+            "en": "Educational",
+            "hu": "Oktatási helyiség"
+          },
+          "roomType": "educational",
+          "_geo": {
+            "lng": "19.062346568",
+            "lat": "47.472618141"
+          }
+        }
+      },
+      {
+        "id": 3476,
+        "scope": "budapest/lagymanyos/deli/00/LD-00-712-05-71",
+        "_geo": {
+          "lat": 47.472240498,
+          "lng": 19.062588605
+        },
+        "buildingId": 1,
+        "floorId": 22,
+        "_formatted": {
+          "id": "3476",
+          "roomCode": "<em>LD</em>-00-712-05-71",
+          "roomNumber": "00-712",
+          "roomName": "00-712 Férfi öltöző",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "22",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/00/LD-00-712-05-71",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062588605",
+            "lat": "47.472240498"
+          }
+        }
+      },
+      {
+        "id": 2245,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-615-01-14",
+        "_geo": {
+          "lat": 47.472016149,
+          "lng": 19.062746024
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "2245",
+          "roomCode": "<em>LD</em>-5-615-01-14",
+          "roomNumber": "5-615",
+          "roomName": "5-615 Szövettenyésztő laboratórium",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-615-01-14",
+          "roomTypeLabel": {
+            "en": "Educational",
+            "hu": "Oktatási helyiség"
+          },
+          "roomType": "educational",
+          "_geo": {
+            "lng": "19.062746024",
+            "lat": "47.472016149"
+          }
+        }
+      },
+      {
+        "id": 3505,
+        "scope": "budapest/lagymanyos/deli/T/LD-T-202-04-63",
+        "_geo": {
+          "lat": 47.472621195,
+          "lng": 19.062433625
+        },
+        "buildingId": 1,
+        "floorId": 26,
+        "_formatted": {
+          "id": "3505",
+          "roomCode": "<em>LD</em>-T-202-04-63",
+          "roomNumber": "T-202",
+          "roomName": "T-202 Előtér",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "26",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/T/LD-T-202-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062433625",
+            "lat": "47.472621195"
+          }
+        }
+      },
+      {
+        "id": 3553,
+        "scope": "budapest/lagymanyos/deli/6/LD-6-222-05-71",
+        "_geo": {
+          "lat": 47.472379985,
+          "lng": 19.062507586
+        },
+        "buildingId": 1,
+        "floorId": 19,
+        "_formatted": {
+          "id": "3553",
+          "roomCode": "<em>LD</em>-6-222-05-71",
+          "roomNumber": "6-222",
+          "roomName": "6-222 Női WC előtér",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "19",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/6/LD-6-222-05-71",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062507586",
+            "lat": "47.472379985"
+          }
+        }
+      },
+      {
+        "id": 3622,
+        "scope": "budapest/lagymanyos/deli/7/LD-7-707-05-71",
+        "_geo": {
+          "lat": 47.472238609,
+          "lng": 19.062543703
+        },
+        "buildingId": 1,
+        "floorId": 23,
+        "_formatted": {
+          "id": "3622",
+          "roomCode": "<em>LD</em>-7-707-05-71",
+          "roomNumber": "7-707",
+          "roomName": "7-707 WC",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "23",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/7/LD-7-707-05-71",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062543703",
+            "lat": "47.472238609"
+          }
+        }
+      },
+      {
+        "id": 2266,
+        "scope": "budapest/lagymanyos/deli/4/LD-4-406-05-71",
+        "_geo": {
+          "lat": 47.472465451,
+          "lng": 19.062962713
+        },
+        "buildingId": 1,
+        "floorId": 17,
+        "_formatted": {
+          "id": "2266",
+          "roomCode": "<em>LD</em>-4-406-05-71",
+          "roomNumber": "4-406",
+          "roomName": "4-406 WC",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "17",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/4/LD-4-406-05-71",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062962713",
+            "lat": "47.472465451"
+          }
+        }
+      },
+      {
+        "id": 2544,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-404-05-73",
+        "_geo": {
+          "lat": 47.472463514,
+          "lng": 19.062917246
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "2544",
+          "roomCode": "<em>LD</em>-5-404-05-73",
+          "roomNumber": "5-404",
+          "roomName": "5-404 Női öltöző",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-404-05-73",
+          "roomTypeLabel": {
+            "en": "Social",
+            "hu": "Szociális helyiség"
+          },
+          "roomType": "social",
+          "_geo": {
+            "lng": "19.062917246",
+            "lat": "47.472463514"
+          }
+        }
+      },
+      {
+        "id": 2331,
+        "scope": "budapest/lagymanyos/deli/5/LD-5-713-01-14",
+        "_geo": {
+          "lat": 47.472070735,
+          "lng": 19.062624016
+        },
+        "buildingId": 1,
+        "floorId": 24,
+        "_formatted": {
+          "id": "2331",
+          "roomCode": "<em>LD</em>-5-713-01-14",
+          "roomNumber": "5-713",
+          "roomName": "5-713 Sterilizáló előkészítő",
+          "buildingName": "South Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "24",
+          "buildingId": "1",
+          "scope": "budapest/lagymanyos/deli/5/LD-5-713-01-14",
+          "roomTypeLabel": {
+            "en": "Educational",
+            "hu": "Oktatási helyiség"
+          },
+          "roomType": "educational",
+          "_geo": {
+            "lng": "19.062624016",
+            "lat": "47.472070735"
+          }
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 1,
+    "estimatedTotalHits": 10,
+    "query": "LD"
+  },
+  "buildings": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  },
+  "campuses": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  },
+  "pois": {
+    "hits": [],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LD"
+  }
+}

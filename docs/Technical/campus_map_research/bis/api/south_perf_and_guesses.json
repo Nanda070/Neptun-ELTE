@@ -1,0 +1,1092 @@
+{
+  "nav": [
+    {
+      "name": "https://bis.elte.hu/",
+      "type": "navigate"
+    }
+  ],
+  "perfCount": 125,
+  "perf": [
+    {
+      "name": "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+      "type": "link",
+      "dur": 188,
+      "size": 997
+    },
+    {
+      "name": "https://bis.elte.hu/66e62f148ac064e7198d.js?c90b3977d0f8cc716cb6",
+      "type": "script",
+      "dur": 89,
+      "size": 303591
+    },
+    {
+      "name": "https://bis.elte.hu/08f79875d6c8013fedc2.js",
+      "type": "script",
+      "dur": 10,
+      "size": 8005
+    },
+    {
+      "name": "https://bis.elte.hu/d7242e7327d2b614631d.js",
+      "type": "script",
+      "dur": 11,
+      "size": 9265
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/entities,config,features,userProfile?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 134,
+      "size": 111411
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 134,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/283a66263f7b3ec800eb.js",
+      "type": "script",
+      "dur": 12,
+      "size": 2991
+    },
+    {
+      "name": "https://bis.elte.hu/8f02fb8f04c52d4ad839.js",
+      "type": "script",
+      "dur": 13,
+      "size": 12620
+    },
+    {
+      "name": "https://bis.elte.hu/0ba4b694a383b31abb79.js",
+      "type": "script",
+      "dur": 18,
+      "size": 10643
+    },
+    {
+      "name": "https://bis.elte.hu/6417744b69db028601b9.js",
+      "type": "script",
+      "dur": 198,
+      "size": 474671
+    },
+    {
+      "name": "https://bis.elte.hu/abe9bdaa721e75e097f3.js",
+      "type": "script",
+      "dur": 13,
+      "size": 12582
+    },
+    {
+      "name": "https://bis.elte.hu/7966ff348db72988c7c2.js",
+      "type": "script",
+      "dur": 14,
+      "size": 8877
+    },
+    {
+      "name": "https://bis.elte.hu/bae64558bb549de4c2ea.js",
+      "type": "script",
+      "dur": 14,
+      "size": 5920
+    },
+    {
+      "name": "https://bis.elte.hu/4d5fe5e8191ce5616cbf.js",
+      "type": "script",
+      "dur": 15,
+      "size": 12452
+    },
+    {
+      "name": "https://bis.elte.hu/aa1214f59ad1bf15e8ee.js",
+      "type": "script",
+      "dur": 160,
+      "size": 23839
+    },
+    {
+      "name": "https://bis.elte.hu/e7705543a9da6512d05a.js",
+      "type": "script",
+      "dur": 162,
+      "size": 49248
+    },
+    {
+      "name": "https://bis.elte.hu/ef78f0ef1275e9585b44.js",
+      "type": "script",
+      "dur": 203,
+      "size": 19381
+    },
+    {
+      "name": "https://bis.elte.hu/14cc447dfab3270613d8.js",
+      "type": "script",
+      "dur": 15,
+      "size": 2878
+    },
+    {
+      "name": "https://bis.elte.hu/1206abd61210f76390f7.js",
+      "type": "script",
+      "dur": 15,
+      "size": 12395
+    },
+    {
+      "name": "https://bis.elte.hu/e23aff12daa284662ecb.js",
+      "type": "script",
+      "dur": 204,
+      "size": 7366
+    },
+    {
+      "name": "https://bis.elte.hu/75cefdfa7dad1a7d733e.js",
+      "type": "script",
+      "dur": 204,
+      "size": 6184
+    },
+    {
+      "name": "https://bis.elte.hu/c5d7337fe40884ccec5e.js",
+      "type": "script",
+      "dur": 204,
+      "size": 9139
+    },
+    {
+      "name": "https://bis.elte.hu/768063eabca6ba737b91.js",
+      "type": "script",
+      "dur": 204,
+      "size": 10657
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 5754,
+      "size": 58738
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/entities,config,features,userProfile,privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%226%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%227%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%228%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 5836,
+      "size": 170021
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 10,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 15,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/icons/help.svg",
+      "type": "css",
+      "dur": 4,
+      "size": 1509
+    },
+    {
+      "name": "https://bis.elte.hu/icons/room.svg",
+      "type": "css",
+      "dur": 4,
+      "size": 639
+    },
+    {
+      "name": "https://bis.elte.hu/icons/floor.svg",
+      "type": "css",
+      "dur": 8,
+      "size": 723
+    },
+    {
+      "name": "https://bis.elte.hu/icons/building.svg",
+      "type": "css",
+      "dur": 7,
+      "size": 990
+    },
+    {
+      "name": "https://bis.elte.hu/icons/campus.svg",
+      "type": "css",
+      "dur": 8,
+      "size": 1098
+    },
+    {
+      "name": "https://bis.elte.hu/icons/city.svg",
+      "type": "css",
+      "dur": 7,
+      "size": 904
+    },
+    {
+      "name": "https://bis.elte.hu/icons/home.svg",
+      "type": "css",
+      "dur": 7,
+      "size": 744
+    },
+    {
+      "name": "https://bis.elte.hu/icons/logout.svg",
+      "type": "css",
+      "dur": 9,
+      "size": 727
+    },
+    {
+      "name": "https://bis.elte.hu/e318776fb3772da4a9c1.js",
+      "type": "script",
+      "dur": 132,
+      "size": 13603
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-cultural.svg",
+      "type": "css",
+      "dur": 6,
+      "size": 1135
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-restroom.svg",
+      "type": "css",
+      "dur": 8,
+      "size": 1471
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-service.svg",
+      "type": "css",
+      "dur": 9,
+      "size": 877
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-transportation.svg",
+      "type": "css",
+      "dur": 11,
+      "size": 1252
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-amenity.svg",
+      "type": "css",
+      "dur": 12,
+      "size": 1150
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-information.svg",
+      "type": "css",
+      "dur": 12,
+      "size": 877
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-retail.svg",
+      "type": "css",
+      "dur": 12,
+      "size": 945
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-safety.svg",
+      "type": "css",
+      "dur": 12,
+      "size": 906
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-other.svg",
+      "type": "css",
+      "dur": 8,
+      "size": 766
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-trash.svg",
+      "type": "css",
+      "dur": 13,
+      "size": 1246
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22%5C%22%2C%5C%22budapest%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 50,
+      "size": 3846
+    },
+    {
+      "name": "https://bis.elte.hu/ae5c098aa24c1f23b472.js",
+      "type": "other",
+      "dur": -141,
+      "size": 199221
+    },
+    {
+      "name": "https://bis.elte.hu/ae5c098aa24c1f23b472.js",
+      "type": "other",
+      "dur": -141,
+      "size": 0
+    },
+    {
+      "name": "https://bis.elte.hu/sprite/sprite.pbf",
+      "type": "fetch",
+      "dur": 10,
+      "size": 20535
+    },
+    {
+      "name": "https://api.mapbox.com/v4/mapbox.mapbox-streets-v8.json?secure&access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 26,
+      "size": 4871
+    },
+    {
+      "name": "https://api.mapbox.com/styles/v1/mapbox/standard?sdk=js-3.30.0&access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 26,
+      "size": 48094
+    },
+    {
+      "name": "https://bis.elte.hu/d56d1ae1b9f5b80f668b.js",
+      "type": "script",
+      "dur": 9,
+      "size": 12900
+    },
+    {
+      "name": "https://bis.elte.hu/4c22d55ff1c35429b1d8.js",
+      "type": "script",
+      "dur": 9,
+      "size": 7892
+    },
+    {
+      "name": "https://bis.elte.hu/01f81bd30a25eeab480c.js",
+      "type": "script",
+      "dur": 11,
+      "size": 28688
+    },
+    {
+      "name": "https://bis.elte.hu/c5b60a1ef748748b8ec0.js",
+      "type": "script",
+      "dur": 12,
+      "size": 11576
+    },
+    {
+      "name": "https://events.mapbox.com/events/v2?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 136,
+      "size": 0
+    },
+    {
+      "name": "https://bis.elte.hu/03dfce05fd27bf5118ea.js",
+      "type": "script",
+      "dur": 15,
+      "size": 15142
+    },
+    {
+      "name": "https://api.mapbox.com/styles/v1/mapbox/standard/32wwqtroth2ib2rg0kqzvdrpp/iconset.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 22,
+      "size": 87286
+    },
+    {
+      "name": "https://events.mapbox.com/events/v2?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 54,
+      "size": 0
+    },
+    {
+      "name": "https://events.mapbox.com/events/v2?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 48,
+      "size": 0
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Medium/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 12,
+      "size": 41070
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Arial%20Unicode%20MS%20Bold/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 15,
+      "size": 48893
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Medium/256-511.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 18,
+      "size": 34773
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Arial%20Unicode%20MS%20Bold/256-511.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 30,
+      "size": 65871
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Bold/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 23,
+      "size": 43379
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Regular/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 24,
+      "size": 38774
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Arial%20Unicode%20MS%20Regular/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 24,
+      "size": 43424
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Regular/256-511.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 30,
+      "size": 33182
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Arial%20Unicode%20MS%20Regular/256-511.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 41,
+      "size": 53486
+    },
+    {
+      "name": "https://events.mapbox.com/events/v2?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 47,
+      "size": 0
+    },
+    {
+      "name": "https://events.mapbox.com/events/v2?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 50,
+      "size": 0
+    },
+    {
+      "name": "https://api.mapbox.com/map-sessions/v1?sku=101bn5aIaCmoE&access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 7,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 968,
+      "size": 25057
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Italic/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 9,
+      "size": 45846
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/DIN%20Pro%20Medium/8192-8447.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 11,
+      "size": 8417
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Arial%20Unicode%20MS%20Bold/8192-8447.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 11,
+      "size": 26843
+    },
+    {
+      "name": "https://bis.elte.hu/2bb3fe3d6cddc78b5c54.js",
+      "type": "script",
+      "dur": 7,
+      "size": 1613
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 10,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 395,
+      "size": 13047
+    },
+    {
+      "name": "https://bis.elte.hu/icons/3d-view.svg",
+      "type": "css",
+      "dur": 53,
+      "size": 1201
+    },
+    {
+      "name": "https://bis.elte.hu/icons/floorplan.svg",
+      "type": "css",
+      "dur": 53,
+      "size": 1059
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 93,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 114,
+      "size": 4164
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Inter%20Medium/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 45,
+      "size": 47175
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 108,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 132,
+      "size": 2630
+    },
+    {
+      "name": "https://bis.elte.hu/icons/room_type.svg",
+      "type": "css",
+      "dur": 4,
+      "size": 665
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 97,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C3327%5D%22%7D",
+      "type": "fetch",
+      "dur": 97,
+      "size": 348
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Roboto%20Bold/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 54,
+      "size": 44123
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Roboto%20Regular/0-255.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 50,
+      "size": 42270
+    },
+    {
+      "name": "https://api.mapbox.com/fonts/v1/mapbox/Roboto%20Regular/256-511.pbf?access_token=pk.eyJ1IjoiYnJuY3NrIiwiYSI6Ilc5bldoZGMifQ.6b0Vidgq1x1cDcORP_Q4Qw",
+      "type": "fetch",
+      "dur": 52,
+      "size": 25489
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/rooms.getRoomById,routing.route,routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C3327%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062846%2C47.472648%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%2C%5C%22point%3A19.062846%2C47.472648%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 60,
+      "size": 642
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-routing-start.svg",
+      "type": "css",
+      "dur": 4,
+      "size": 717
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-routing-finish.svg",
+      "type": "css",
+      "dur": 4,
+      "size": 581
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 8,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 86,
+      "size": 2623
+    },
+    {
+      "name": "https://bis.elte.hu/icons/room_type.svg",
+      "type": "css",
+      "dur": 32,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 22,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/routing.route,vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%2C%5C%22point%3A19.062807%2C47.472661%5C%22%2C%5C%22room%3A2542%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C2542%5D%22%7D",
+      "type": "fetch",
+      "dur": 22,
+      "size": 357
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C2542%5D%22%7D",
+      "type": "fetch",
+      "dur": 30,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/rooms.getRoomById,routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C2542%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062807%2C47.472661%5C%22%2C%5C%22room%3A2542%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 90,
+      "size": 626
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-routing-start.svg",
+      "type": "css",
+      "dur": 16,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/icons/poi/poi-routing-finish.svg",
+      "type": "css",
+      "dur": 16,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 21,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 82,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 59,
+      "size": 4164
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 21,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 261,
+      "size": 13047
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 11,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 369,
+      "size": 14342
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 10,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 10,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 19,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 19,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 20,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%7D",
+      "type": "fetch",
+      "dur": 1154,
+      "size": 25057
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 14,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/icons/3d-view.svg",
+      "type": "css",
+      "dur": 7,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/icons/floorplan.svg",
+      "type": "css",
+      "dur": 7,
+      "size": 300
+    },
+    {
+      "name": "https://bis.elte.hu/favicon.ico",
+      "type": "other",
+      "dur": 10,
+      "size": 833
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 30,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 21,
+      "size": 348
+    },
+    {
+      "name": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D",
+      "type": "fetch",
+      "dur": 114,
+      "size": 348
+    }
+  ],
+  "hits": [
+    {
+      "url": "/api",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1/",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/graphql",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/config.json",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/manifest.json",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/buildings",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/sites",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/campuses",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/floors",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/rooms",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/places",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/routing",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/route",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/search",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/me",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/user",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/session",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/map",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/maps",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/locations",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/spaces",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/assets",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/budapest",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/budapest/lagymanyos",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/budapest/lagymanyos/deli",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/map/budapest/lagymanyos/deli",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/map/budapest/lagymanyos/eszaki",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/map/budapest/lagymanyos/deli.json",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/data/deli.json",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/static/data.json",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/buildings/deli",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/buildings/eszaki",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/buildings/ld",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/buildings/le",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1/buildings",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1/floors",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1/rooms",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/v1/routes",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/indoor",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/indoor-maps",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/features",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/api/geojson",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/.well-known/apollo/server-health",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/health",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    },
+    {
+      "url": "/status",
+      "status": 200,
+      "ct": "text/html; charset=UTF-8",
+      "len": 1099,
+      "sample": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><style>body {\n        margin: 0;\n        padding: 0;\n        font-family: 'Inter', sans-serif;\n        overflow: hidden;\n        height: 100vh;\n        height: 100dvh;\n      }\n\n      svg {\n        font-weight: 500;\n        font-size: 11px;\n      }\n\n      .mapboxgl-canvas:"
+    }
+  ]
+}

@@ -1,0 +1,855 @@
+{
+  "source": "https://sarkozigergo.web.elte.hu/terkep/ld.html",
+  "building": "LD",
+  "building_hu": "Déli Épület",
+  "building_en": "South Building",
+  "address": "Pázmány Péter sétány 1/C",
+  "floors": [
+    "-1",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+  ],
+  "floor_notes": {
+    "-1": "Map label uses 00 for basement (-1)",
+    "1": "Known map typo: 1.612-1.606 should be 1.112-1.106"
+  },
+  "room_count": 134,
+  "rooms": [
+    {
+      "code": "00-112",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.112"
+    },
+    {
+      "code": "00-113",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.113"
+    },
+    {
+      "code": "00-114",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.114"
+    },
+    {
+      "code": "00-115",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.115"
+    },
+    {
+      "code": "00-410",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.410"
+    },
+    {
+      "code": "00-411 (PC 7)",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.411 (PC 7)"
+    },
+    {
+      "code": "00-412 (PC 6)",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.412 (PC 6)"
+    },
+    {
+      "code": "00-504 Geokémiai szeminárium (zárt terem)",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.504 Geokémiai szeminárium (zárt terem)"
+    },
+    {
+      "code": "00-524 Mauritz Béla terem (koz.tsz. zárt terem)",
+      "type": "Eloadó",
+      "floor": "-1",
+      "neptun_hint": "LD 00.524 Mauritz Béla terem (koz.tsz. zárt terem)"
+    },
+    {
+      "code": "00-620 Ásványhatározási laboratórium",
+      "type": "Laboratórium",
+      "floor": "-1",
+      "neptun_hint": "LD 00.620 Ásványhatározási laboratórium"
+    },
+    {
+      "code": "00-623",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.623"
+    },
+    {
+      "code": "00-66b (IK HÖK Iroda)",
+      "type": "Tanácsterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.66b (IK HÖK Iroda)"
+    },
+    {
+      "code": "00-705 Ásványtani optikai gyakorló",
+      "type": "Laboratórium",
+      "floor": "-1",
+      "neptun_hint": "LD 00.705 Ásványtani optikai gyakorló"
+    },
+    {
+      "code": "00-708 Sztrókay terem (Ásványtan - zárt terem)",
+      "type": "Szaktanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.708 Sztrókay terem (Ásványtan . zárt terem)"
+    },
+    {
+      "code": "00-718 Erdos Pál terem (6-21 nyitva)",
+      "type": "Tanterem",
+      "floor": "-1",
+      "neptun_hint": "LD 00.718 Erdos Pál terem (6.21 nyitva)"
+    },
+    {
+      "code": "00-725",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.725"
+    },
+    {
+      "code": "00-732 TTK Hallgatói Önkormányzat",
+      "type": "Déli Hali",
+      "floor": "-1",
+      "neptun_hint": "LD 00.732 TTK Hallgatói Önkormányzat"
+    },
+    {
+      "code": "00-734 TTK Hallgatói Alapítvány",
+      "type": "Alapítvány",
+      "floor": "-1",
+      "neptun_hint": "LD 00.734 TTK Hallgatói Alapítvány"
+    },
+    {
+      "code": "00-803 Programozási Nyelvi labor",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.803 Programozási Nyelvi labor"
+    },
+    {
+      "code": "00-803/2 Programozási Nyelvi Labor/2",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.803/2 Programozási Nyelvi Labor/2"
+    },
+    {
+      "code": "00-803/3 Programozási Nyelvi Labor/3",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.803/3 Programozási Nyelvi Labor/3"
+    },
+    {
+      "code": "00-803/4 Programozási Nyelvi Labor/4",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.803/4 Programozási Nyelvi Labor/4"
+    },
+    {
+      "code": "00-807 Adatbázis labor",
+      "type": "Számítógépes labor",
+      "floor": "-1",
+      "neptun_hint": "LD 00.807 Adatbázis labor"
+    },
+    {
+      "code": "0-206 Hantken Miksa - hallgatói labor",
+      "type": "Laboratórium",
+      "floor": "0",
+      "neptun_hint": "LD 0.206 Hantken Miksa . hallgatói labor"
+    },
+    {
+      "code": "0-215 (tanszékvezetoi szoba)",
+      "type": "Dolgozó szoba",
+      "floor": "0",
+      "neptun_hint": "LD 0.215 (tanszékvezetoi szoba)"
+    },
+    {
+      "code": "0-220 Kárteszi Ferenc terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.220 Kárteszi Ferenc terem"
+    },
+    {
+      "code": "0-221",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.221"
+    },
+    {
+      "code": "0-222",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.222"
+    },
+    {
+      "code": "0-311 Kőnig terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.311 Kőnig terem"
+    },
+    {
+      "code": "0-312 Gallai Tibor terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.312 Gallai Tibor terem"
+    },
+    {
+      "code": "0-408 TFK mat. módsz. gyüjtemény",
+      "type": "Szaktanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.408 TFK mat. módsz. gyüjtemény"
+    },
+    {
+      "code": "0-409",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.409"
+    },
+    {
+      "code": "0-411",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.411"
+    },
+    {
+      "code": "0-412 Rényi Alfréd terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.412 Rényi Alfréd terem"
+    },
+    {
+      "code": "0-501 Kőzettani gyakorló",
+      "type": "Szaktanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.501 Kőzettani gyakorló"
+    },
+    {
+      "code": "0-803 Szabó József eloadó",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.803 Szabó József eloadó"
+    },
+    {
+      "code": "0-804 Lóczy Lajos terem",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.804 Lóczy Lajos terem"
+    },
+    {
+      "code": "0-805 Fejér Lipót terem",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.805 Fejér Lipót terem"
+    },
+    {
+      "code": "0-817 Dudich Endre terem (k)",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.817 Dudich Endre terem (k)"
+    },
+    {
+      "code": "0-818 Soó Rezso terem (k)",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.818 Soó Rezso terem (k)"
+    },
+    {
+      "code": "0-820 Hunfalvy János terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.820 Hunfalvy János terem"
+    },
+    {
+      "code": "0-821 Bolyai János terem",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.821 Bolyai János terem"
+    },
+    {
+      "code": "0-822 Mogyoródi József terem",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.822 Mogyoródi József terem"
+    },
+    {
+      "code": "0-823 Kitaibel Pál terem",
+      "type": "Eloadó",
+      "floor": "0",
+      "neptun_hint": "LD 0.823 Kitaibel Pál terem"
+    },
+    {
+      "code": "0-825 Farkas Gyula terem",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.825 Farkas Gyula terem"
+    },
+    {
+      "code": "0-826",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.826"
+    },
+    {
+      "code": "0-827",
+      "type": "Tanterem",
+      "floor": "0",
+      "neptun_hint": "LD 0.827"
+    },
+    {
+      "code": "1-105 Sárfalvi Béla terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.105 Sárfalvi Béla terem"
+    },
+    {
+      "code": "1-106 Cholnoky Jeno terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.106 Cholnoky Jeno terem"
+    },
+    {
+      "code": "1-108 Koch Antal terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.108 Koch Antal terem"
+    },
+    {
+      "code": "1-110 Mendöl Tibor terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.110 Mendöl Tibor terem"
+    },
+    {
+      "code": "1-207",
+      "type": "Laboratórium",
+      "floor": "1",
+      "neptun_hint": "LD 1.207"
+    },
+    {
+      "code": "1-225 Bulla Béla terem (FFI-TF zárt)",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.225 Bulla Béla terem (FFI.TF zárt)"
+    },
+    {
+      "code": "1-313 Földrajz számítástechnikai labor",
+      "type": "Számítógépes labor",
+      "floor": "1",
+      "neptun_hint": "LD 1.313 Földrajz számítástechnikai labor"
+    },
+    {
+      "code": "1-401 Földrajz pc labor",
+      "type": "Számítógépes labor",
+      "floor": "1",
+      "neptun_hint": "LD 1.401 Földrajz pc labor"
+    },
+    {
+      "code": "1-404",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.404"
+    },
+    {
+      "code": "1-417 Földrajz pc labor II.",
+      "type": "Számítógépes labor",
+      "floor": "1",
+      "neptun_hint": "LD 1.417 Földrajz pc labor II."
+    },
+    {
+      "code": "1-511",
+      "type": "Dolgozó szoba",
+      "floor": "1",
+      "neptun_hint": "LD 1.511"
+    },
+    {
+      "code": "1-523 Kozetgyakorló laboratórium",
+      "type": "Laboratórium",
+      "floor": "1",
+      "neptun_hint": "LD 1.523 Kozetgyakorló laboratórium"
+    },
+    {
+      "code": "1-817",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.817"
+    },
+    {
+      "code": "1-819 Riesz Frigyes terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.819 Riesz Frigyes terem"
+    },
+    {
+      "code": "1-820 Hajós György terem",
+      "type": "Tanterem",
+      "floor": "1",
+      "neptun_hint": "LD 1.820 Hajós György terem"
+    },
+    {
+      "code": "2-107 (PC2) - Macintosh",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.107 (PC2) . Macintosh"
+    },
+    {
+      "code": "2-107/2 (PC2/2)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.107/2 (PC2/2)"
+    },
+    {
+      "code": "2-108 (PC5)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.108 (PC5)"
+    },
+    {
+      "code": "2-123 ( PC1)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.123 ( PC1)"
+    },
+    {
+      "code": "2-124 (Microsoft Labor)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.124 (Microsoft Labor)"
+    },
+    {
+      "code": "2-202 (PC3)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.202 (PC3)"
+    },
+    {
+      "code": "2-218 (komp. alg.)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.218 (komp. alg.)"
+    },
+    {
+      "code": "2-219 (Grafika labor)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.219 (Grafika labor)"
+    },
+    {
+      "code": "2-402 (Multimédiás labor)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.402 (Multimédiás labor)"
+    },
+    {
+      "code": "2-502",
+      "type": "Tanterem",
+      "floor": "2",
+      "neptun_hint": "LD 2.502"
+    },
+    {
+      "code": "2-520 (Mesterséges Intelligencia labor)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.520 (Mesterséges Intelligencia labor)"
+    },
+    {
+      "code": "2-709 (PC 9)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.709 (PC 9)"
+    },
+    {
+      "code": "2-710 (PC4)",
+      "type": "Számítógépes labor",
+      "floor": "2",
+      "neptun_hint": "LD 2.710 (PC4)"
+    },
+    {
+      "code": "2-712",
+      "type": "Tanterem",
+      "floor": "2",
+      "neptun_hint": "LD 2.712"
+    },
+    {
+      "code": "3-105 Grafika labor",
+      "type": "Számítógépes labor",
+      "floor": "3",
+      "neptun_hint": "LD 3.105 Grafika labor"
+    },
+    {
+      "code": "3-107 UNIX labor",
+      "type": "Laboratórium",
+      "floor": "3",
+      "neptun_hint": "LD 3.107 UNIX labor"
+    },
+    {
+      "code": "3-110",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.110"
+    },
+    {
+      "code": "3-204 (csak kérésre osztható)",
+      "type": "Dolgozó szoba",
+      "floor": "3",
+      "neptun_hint": "LD 3.204 (csak kérésre osztható)"
+    },
+    {
+      "code": "3-219 Turán Pál terem",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.219 Turán Pál terem"
+    },
+    {
+      "code": "3-306 Analízis tanszék (16 után zárt)",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.306 Analízis tanszék (16 után zárt)"
+    },
+    {
+      "code": "3-316 Valószín.és Stat. tanszék (16 után zárt)",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.316 Valószín.és Stat. tanszék (16 után zárt)"
+    },
+    {
+      "code": "3-516 (megszunt)",
+      "type": "Tanácsterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.516 (megszunt)"
+    },
+    {
+      "code": "3-517",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.517"
+    },
+    {
+      "code": "3-607 Számítógéptud. (16 után zárt)",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.607 Számítógéptud. (16 után zárt)"
+    },
+    {
+      "code": "3-715",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.715"
+    },
+    {
+      "code": "3-716",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.716"
+    },
+    {
+      "code": "3-719 Alk. Analízis tanszék (zárt !!!)",
+      "type": "Tanterem",
+      "floor": "3",
+      "neptun_hint": "LD 3.719 Alk. Analízis tanszék (zárt !!!)"
+    },
+    {
+      "code": "4-104 Növényszervezettani laboratórium",
+      "type": "Laboratórium",
+      "floor": "4",
+      "neptun_hint": "LD 4.104 Növényszervezettani laboratórium"
+    },
+    {
+      "code": "4-108 Növényélettani laboratórium",
+      "type": "Laboratórium",
+      "floor": "4",
+      "neptun_hint": "LD 4.108 Növényélettani laboratórium"
+    },
+    {
+      "code": "4-110 Növényélettani laboratórium",
+      "type": "Laboratórium",
+      "floor": "4",
+      "neptun_hint": "LD 4.110 Növényélettani laboratórium"
+    },
+    {
+      "code": "4-202",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.202"
+    },
+    {
+      "code": "4-206 Sárkány Sándor terem",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.206 Sárkány Sándor terem"
+    },
+    {
+      "code": "4-228 Embertani szemináriumi szoba",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.228 Embertani szemináriumi szoba"
+    },
+    {
+      "code": "4-428 Paál Árpád terem",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.428 Paál Árpád terem"
+    },
+    {
+      "code": "4-429 Farkas Gábor terem",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.429 Farkas Gábor terem"
+    },
+    {
+      "code": "4-502 Növényszervezettan labor II.",
+      "type": "Laboratórium",
+      "floor": "4",
+      "neptun_hint": "LD 4.502 Növényszervezettan labor II."
+    },
+    {
+      "code": "4-710 Rajzterem - Geometriai tanszék",
+      "type": "Szaktanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.710 Rajzterem . Geometriai tanszék"
+    },
+    {
+      "code": "4-713 (16 után zárt)",
+      "type": "Tanterem",
+      "floor": "4",
+      "neptun_hint": "LD 4.713 (16 után zárt)"
+    },
+    {
+      "code": "5-102 Genetika gyakorló",
+      "type": "Laboratórium",
+      "floor": "5",
+      "neptun_hint": "LD 5.102 Genetika gyakorló"
+    },
+    {
+      "code": "5-103 Immunológia szövettenyészto labor",
+      "type": "Laboratórium",
+      "floor": "5",
+      "neptun_hint": "LD 5.103 Immunológia szövettenyészto labor"
+    },
+    {
+      "code": "5-104 Immunológia gyakorló",
+      "type": "Laboratórium",
+      "floor": "5",
+      "neptun_hint": "LD 5.104 Immunológia gyakorló"
+    },
+    {
+      "code": "5-106 Biokémia laboratórium",
+      "type": "Laboratórium",
+      "floor": "5",
+      "neptun_hint": "LD 5.106 Biokémia laboratórium"
+    },
+    {
+      "code": "5-108 Biokémia laboratórium",
+      "type": "Laboratórium",
+      "floor": "5",
+      "neptun_hint": "LD 5.108 Biokémia laboratórium"
+    },
+    {
+      "code": "5-202",
+      "type": "Tanterem",
+      "floor": "5",
+      "neptun_hint": "LD 5.202"
+    },
+    {
+      "code": "5-205 TFK Biológia tanszéki Tanácsterem",
+      "type": "Tanterem",
+      "floor": "5",
+      "neptun_hint": "LD 5.205 TFK Biológia tanszéki Tanácsterem"
+    },
+    {
+      "code": "5-501",
+      "type": "Tanterem",
+      "floor": "5",
+      "neptun_hint": "LD 5.501"
+    },
+    {
+      "code": "6-102 (csak elokészíto)",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.102 (csak elokészíto)"
+    },
+    {
+      "code": "6-103 Állatszervezettani anatómiai labor I.",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.103 Állatszervezettani anatómiai labor I."
+    },
+    {
+      "code": "6-104 id. Entz Géza terem",
+      "type": "Tanterem",
+      "floor": "6",
+      "neptun_hint": "LD 6.104 id. Entz Géza terem"
+    },
+    {
+      "code": "6-106 Élettani gyakorló II.",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.106 Élettani gyakorló II."
+    },
+    {
+      "code": "6-107 Élettani gyakorló I.",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.107 Élettani gyakorló I."
+    },
+    {
+      "code": "6-108 (nem osztható)",
+      "type": "Tanterem",
+      "floor": "6",
+      "neptun_hint": "LD 6.108 (nem osztható)"
+    },
+    {
+      "code": "6-203 Friedmann Imre terem",
+      "type": "Tanterem",
+      "floor": "6",
+      "neptun_hint": "LD 6.203 Friedmann Imre terem"
+    },
+    {
+      "code": "6-207 Etológia laboratórium",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.207 Etológia laboratórium"
+    },
+    {
+      "code": "6-218 Etológia szemináriumi szoba",
+      "type": "Tanterem",
+      "floor": "6",
+      "neptun_hint": "LD 6.218 Etológia szemináriumi szoba"
+    },
+    {
+      "code": "6-502 Állatszervezettani szövettani labor",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.502 Állatszervezettani szövettani labor"
+    },
+    {
+      "code": "6-730 Mikrobiol. gyakorló - Bánhegyi József terem",
+      "type": "Laboratórium",
+      "floor": "6",
+      "neptun_hint": "LD 6.730 Mikrobiol. gyakorló . Bánhegyi József terem"
+    },
+    {
+      "code": "7-102 Juhász-Nagy Pál terem",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.102 Juhász.Nagy Pál terem"
+    },
+    {
+      "code": "7-103 Andreanszky Gábor terem",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.103 Andreanszky Gábor terem"
+    },
+    {
+      "code": "7-104 Állatrendsz. lab. - Loksa terem (zárt)",
+      "type": "Laboratórium",
+      "floor": "7",
+      "neptun_hint": "LD 7.104 Állatrendsz. lab. . Loksa terem (zárt)"
+    },
+    {
+      "code": "7-110 Biológia szakmódsz. csop. szem. szoba",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.110 Biológia szakmódsz. csop. szem. szoba"
+    },
+    {
+      "code": "7-206 Egyed László terem",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.206 Egyed László terem"
+    },
+    {
+      "code": "7-207",
+      "type": "Számítógépes labor",
+      "floor": "7",
+      "neptun_hint": "LD 7.207"
+    },
+    {
+      "code": "7-209 (Geofizika Tsz. szmítógép terem)",
+      "type": "Számítógépes labor",
+      "floor": "7",
+      "neptun_hint": "LD 7.209 (Geofizika Tsz. szmítógép terem)"
+    },
+    {
+      "code": "7-219 Biológia szakmódsz. csop. labor",
+      "type": "Laboratórium",
+      "floor": "7",
+      "neptun_hint": "LD 7.219 Biológia szakmódsz. csop. labor"
+    },
+    {
+      "code": "7-309 Geofizikai laboratórium",
+      "type": "Laboratórium",
+      "floor": "7",
+      "neptun_hint": "LD 7.309 Geofizikai laboratórium"
+    },
+    {
+      "code": "7-411",
+      "type": "Tanácsterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.411"
+    },
+    {
+      "code": "7-412 Bioinformatikai terem",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.412 Bioinformatikai terem"
+    },
+    {
+      "code": "7-423",
+      "type": "Tanterem",
+      "floor": "7",
+      "neptun_hint": "LD 7.423"
+    },
+    {
+      "code": "7-424 (BTCS Számítógépes labor)",
+      "type": "Számítógépes labor",
+      "floor": "7",
+      "neptun_hint": "LD 7.424 (BTCS Számítógépes labor)"
+    },
+    {
+      "code": "7-426/a Állatszervezettani anatómiai labor II.",
+      "type": "Laboratórium",
+      "floor": "7",
+      "neptun_hint": "LD 7.426/a Állatszervezettani anatómiai labor II."
+    },
+    {
+      "code": "7-501 Növényrendszertani laboratórium",
+      "type": "Laboratórium",
+      "floor": "7",
+      "neptun_hint": "LD 7.501 Növényrendszertani laboratórium"
+    }
+  ],
+  "corridor_schema": {
+    "image": "floors/delitomb_0.jpg",
+    "corridors": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "landmarks_hu": [
+      "Aréna",
+      "Biológiai gyűjtemény",
+      "Liftek",
+      "Főlépcső",
+      "Büfé",
+      "Nyugati kapu",
+      "Duna / Dunapart"
+    ]
+  },
+  "credits": {
+    "maps": "Héger Tamás",
+    "aggregator": "Sárközi Gergő / sarkozigergo.web.elte.hu"
+  }
+}

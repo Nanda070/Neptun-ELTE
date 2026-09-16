@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><style>body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        height: 100dvh;
+      }
+
+      svg {
+        font-weight: 500;
+        font-size: 11px;
+      }
+
+      .mapboxgl-canvas:focus {
+        outline: 0 none;
+      }
+
+      @page {
+        size: landscape;
+      }
+
+      #layout-root {
+        max-height: 100vh;
+        min-height: 100vh;
+
+        max-height: 100dvh;
+        min-height: 100dvh;
+      }</style><link rel="preconnect" href="https://api.mapbox.com" crossorigin/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet"/><script defer="defer" src="/66e62f148ac064e7198d.js?c90b3977d0f8cc716cb6"></script></head><body><div id="app"/></body></html>

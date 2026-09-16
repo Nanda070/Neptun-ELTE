@@ -1,0 +1,102 @@
+{
+  "perf_0": {
+    "status": 200,
+    "len": 155542,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_1": {
+    "status": 200,
+    "len": 421022,
+    "sample": "[{\"result\":{\"data\":\"[{\\\"cities\\\":1,\\\"campuses\\\":18,\\\"buildings\\\":157,\\\"floors\\\":2102},[2,10],{\\\"id\\\":3,\\\"shortName\\\":4,\\\"name\\\":5,\\\"slug\\\":6,\\\"scope\\\":6,\\\"centroid\\\":7},1,\\\"Bp.\\\",\\\"Budapest\\\",\\\"budape"
+  },
+  "perf_2": {
+    "status": 200,
+    "len": 11476,
+    "sample": "[{\"result\":{\"data\":\"[{\\\"rooms\\\":1,\\\"buildings\\\":3,\\\"campuses\\\":324,\\\"pois\\\":381},{\\\"hits\\\":2},[],{\\\"hits\\\":4,\\\"offset\\\":321,\\\"limit\\\":322,\\\"processingTimeMs\\\":18,\\\"estimatedTotalHits\\\":302,\\\"query\\\":3"
+  },
+  "perf_3": {
+    "status": 200,
+    "len": 63268,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_4": {
+    "status": 200,
+    "len": 31688,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_5": {
+    "status": 200,
+    "len": 10531,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_6": {
+    "status": 200,
+    "len": 4933,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_7": {
+    "status": 200,
+    "len": 28,
+    "sample": "[{\"result\":{\"data\":\"[[]]\"}}]"
+  },
+  "perf_8": {
+    "status": 200,
+    "len": 518,
+    "sample": "[{\"result\":{\"data\":\"[{\\\"id\\\":1,\\\"scope\\\":2,\\\"floorId\\\":3,\\\"buildingId\\\":4,\\\"roomCode\\\":5,\\\"roomNumber\\\":6,\\\"roomName\\\":7,\\\"bbox\\\":8,\\\"centroid\\\":13,\\\"properties\\\":16,\\\"orgUnits\\\":18},3327,\\\"budapest/l"
+  },
+  "perf_9": {
+    "status": 200,
+    "len": 4925,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "perf_10": {
+    "status": 200,
+    "len": 57,
+    "sample": "[{\"result\":{\"data\":\"[null]\"}},{\"result\":{\"data\":\"[[]]\"}}]"
+  },
+  "perf_11": {
+    "status": 200,
+    "len": 28,
+    "sample": "[{\"result\":{\"data\":\"[[]]\"}}]"
+  },
+  "perf_12": {
+    "status": 200,
+    "len": 481,
+    "sample": "[{\"result\":{\"data\":\"[{\\\"id\\\":1,\\\"scope\\\":2,\\\"floorId\\\":3,\\\"buildingId\\\":4,\\\"roomCode\\\":5,\\\"roomNumber\\\":6,\\\"roomName\\\":7,\\\"bbox\\\":8,\\\"centroid\\\":13,\\\"properties\\\":16,\\\"orgUnits\\\":18},2542,\\\"budapest/l"
+  },
+  "perf_15": {
+    "status": 200,
+    "len": 35689,
+    "sample": "[{\"result\":{\"data\":\"[[1,2,3,4,5,6,7],\\\"access\\\",\\\"classification/roomType/educational\\\",\\\"classification/roomType/administrative\\\",\\\"classification/roomType/misc\\\",\\\"classification/roomType/corridor\\\""
+  },
+  "route_room_room": {
+    "status": 200,
+    "len": 30,
+    "sample": "[{\"result\":{\"data\":\"[null]\"}}]"
+  },
+  "route_point_room": {
+    "status": 200,
+    "len": 30,
+    "sample": "[{\"result\":{\"data\":\"[null]\"}}]"
+  },
+  "route_room_point": {
+    "status": 400,
+    "len": 173,
+    "sample": "[{\"error\":\"[{\\\"message\\\":1,\\\"code\\\":2,\\\"data\\\":3},\\\"A route cannot end at a point\\\",-32600,{\\\"code\\\":4,\\\"httpStatus\\\":5,\\\"path\\\":6},\\\"BAD_REQUEST\\\",400,\\\"routing.route\\\"]\"}]"
+  },
+  "route_fullscope": {
+    "status": 200,
+    "len": 30,
+    "sample": "[{\"result\":{\"data\":\"[null]\"}}]"
+  },
+  "route_building": {
+    "status": 200,
+    "len": 30,
+    "sample": "[{\"result\":{\"data\":\"[null]\"}}]"
+  },
+  "route_objstyle": {
+    "status": 400,
+    "len": 157,
+    "sample": "[{\"error\":\"[{\\\"message\\\":1,\\\"code\\\":2,\\\"data\\\":3},\\\"Invalid input\\\",-32600,{\\\"code\\\":4,\\\"httpStatus\\\":5,\\\"path\\\":6},\\\"BAD_REQUEST\\\",400,\\\"routing.route\\\"]\"}]"
+  }
+}

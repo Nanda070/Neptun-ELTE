@@ -1,0 +1,14 @@
+HTTP/2 302 
+content-type: text/html; charset=utf-8
+date: Wed, 16 Sep 2026 13:06:08 GMT
+location: /auth/login?redirect=%2F
+server: nginx/1.31.5
+strict-transport-security: max-age=15552000; includeSubDomains
+vary: Origin
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+content-length: 40
+

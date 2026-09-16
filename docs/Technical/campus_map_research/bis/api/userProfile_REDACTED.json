@@ -1,0 +1,19 @@
+{
+  "username": "[REDACTED]",
+  "name": "[REDACTED]",
+  "email": "[REDACTED]",
+  "scopes": [
+    "[REDACTED]"
+  ],
+  "preferredLanguage": "en",
+  "personOrgId": "[REDACTED]",
+  "nameID": "[REDACTED]",
+  "nameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+  "roles": [
+    {
+      "id": 1,
+      "slug": "default",
+      "name": "ELTE polgár"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+final_url=https://bis.elte.hu/auth/login?redirect=%2Fmap%2Fbudapest%2Flagymanyos%2Fdeli%3Flocale%3Den%26viewParadigm%3D3d
+http_code=302

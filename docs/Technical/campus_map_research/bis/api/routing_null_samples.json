@@ -1,0 +1,70 @@
+[
+  {
+    "name": "LD-0-721-01-14->LD-0-803-01-12_0",
+    "status": 200,
+    "len": 30,
+    "body": "[{\"result\":{\"data\":\"[null]\"}}]",
+    "input": [
+      {
+        "scope": 1,
+        "from": 2,
+        "to": 3
+      },
+      "budapest/lagymanyos/deli/0",
+      "point:19.062468649,47.472137205",
+      "room:3817"
+    ],
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062468649%2C47.472137205%5C%22%2C%5C%22room%3A3817%5C%22%5D%22%7D"
+  },
+  {
+    "name": "LD-0-721-01-14->LD-0-803-01-12_1",
+    "status": 200,
+    "len": 30,
+    "body": "[{\"result\":{\"data\":\"[null]\"}}]",
+    "input": [
+      {
+        "scope": 1,
+        "from": 2,
+        "to": 3
+      },
+      "budapest/lagymanyos/deli/0",
+      "room:3523",
+      "room:3817"
+    ],
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22room%3A3523%5C%22%2C%5C%22room%3A3817%5C%22%5D%22%7D"
+  },
+  {
+    "name": "LD-0-803-01-12->LD-0-312-01-12_0",
+    "status": 200,
+    "len": 30,
+    "body": "[{\"result\":{\"data\":\"[null]\"}}]",
+    "input": [
+      {
+        "scope": 1,
+        "from": 2,
+        "to": 3
+      },
+      "budapest/lagymanyos/deli/0",
+      "point:19.062057081,47.472461213",
+      "room:3818"
+    ],
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062057081%2C47.472461213%5C%22%2C%5C%22room%3A3818%5C%22%5D%22%7D"
+  },
+  {
+    "name": "LD-0-803-01-12->LD-0-312-01-12_1",
+    "status": 200,
+    "len": 30,
+    "body": "[{\"result\":{\"data\":\"[null]\"}}]",
+    "input": [
+      {
+        "scope": 1,
+        "from": 2,
+        "to": 3
+      },
+      "budapest/lagymanyos/deli/0",
+      "room:3817",
+      "room:3818"
+    ],
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22room%3A3817%5C%22%2C%5C%22room%3A3818%5C%22%5D%22%7D"
+  }
+]

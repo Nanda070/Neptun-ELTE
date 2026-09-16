@@ -1,0 +1,626 @@
+{
+  "rooms": {
+    "hits": [
+      {
+        "id": 1158,
+        "scope": "budapest/lagymanyos/eszaki/8/LÉ-8-04-01-14",
+        "_geo": {
+          "lat": 47.474327196,
+          "lng": 19.062451293
+        },
+        "buildingId": 2,
+        "floorId": 13,
+        "_formatted": {
+          "id": "1158",
+          "roomCode": "<em>LÉ</em>-8-04-01-14",
+          "roomNumber": "8.04",
+          "roomName": "8.04 Asztrofizika obszervatórium üzemeltetés",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "13",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/8/LÉ-8-04-01-14",
+          "roomTypeLabel": {
+            "en": "Educational",
+            "hu": "Oktatási helyiség"
+          },
+          "roomType": "educational",
+          "_geo": {
+            "lng": "19.062451293",
+            "lat": "47.474327196"
+          }
+        }
+      },
+      {
+        "id": 705,
+        "scope": "budapest/lagymanyos/eszaki/2/LÉ-2-K7-04-63",
+        "_geo": {
+          "lat": 47.474088805,
+          "lng": 19.062224012
+        },
+        "buildingId": 2,
+        "floorId": 7,
+        "_formatted": {
+          "id": "705",
+          "roomCode": "<em>LÉ</em>-2-K7-04-63",
+          "roomNumber": "2-K7",
+          "roomName": "2.K7 Közlekedő Déli oldal",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "7",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/2/LÉ-2-K7-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062224012",
+            "lat": "47.474088805"
+          }
+        }
+      },
+      {
+        "id": 704,
+        "scope": "budapest/lagymanyos/eszaki/2/LÉ-2-K6-04-63",
+        "_geo": {
+          "lat": 47.474232521,
+          "lng": 19.062462311
+        },
+        "buildingId": 2,
+        "floorId": 7,
+        "_formatted": {
+          "id": "704",
+          "roomCode": "<em>LÉ</em>-2-K6-04-63",
+          "roomNumber": "2-K6",
+          "roomName": "2.K6 Közlekedő (Keleti lifttől D)",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "7",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/2/LÉ-2-K6-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062462311",
+            "lat": "47.474232521"
+          }
+        }
+      },
+      {
+        "id": 1142,
+        "scope": "budapest/lagymanyos/eszaki/7/LÉ-7-83-02-33",
+        "_geo": {
+          "lat": 47.474816971,
+          "lng": 19.06235216
+        },
+        "buildingId": 2,
+        "floorId": 12,
+        "_formatted": {
+          "id": "1142",
+          "roomCode": "<em>LÉ</em>-7-83-02-33",
+          "roomNumber": "7.83",
+          "roomName": "7.83 Titkárság-tárgyaló",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "12",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/7/LÉ-7-83-02-33",
+          "roomTypeLabel": {
+            "en": "Administrative",
+            "hu": "Adminisztráció"
+          },
+          "roomType": "administrative",
+          "_geo": {
+            "lng": "19.06235216",
+            "lat": "47.474816971"
+          }
+        }
+      },
+      {
+        "id": 990,
+        "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-K8-04-63",
+        "_geo": {
+          "lat": 47.474153353,
+          "lng": 19.061920169
+        },
+        "buildingId": 2,
+        "floorId": 10,
+        "_formatted": {
+          "id": "990",
+          "roomCode": "<em>LÉ</em>-5-K8-04-63",
+          "roomNumber": "5/K8",
+          "roomName": "5.K8 Közlekedő (Nyugati lifttől balra)",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "10",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-K8-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.061920169",
+            "lat": "47.474153353"
+          }
+        }
+      },
+      {
+        "id": 806,
+        "scope": "budapest/lagymanyos/eszaki/3/LÉ-3-K7-04-63",
+        "_geo": {
+          "lat": 47.474088599,
+          "lng": 19.062223348
+        },
+        "buildingId": 2,
+        "floorId": 8,
+        "_formatted": {
+          "id": "806",
+          "roomCode": "<em>LÉ</em>-3-K7-04-63",
+          "roomNumber": "3-K7",
+          "roomName": "3.K7 Közlekedő D-i",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "8",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/3/LÉ-3-K7-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062223348",
+            "lat": "47.474088599"
+          }
+        }
+      },
+      {
+        "id": 986,
+        "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-K4-04-63",
+        "_geo": {
+          "lat": 47.474726569,
+          "lng": 19.062311117
+        },
+        "buildingId": 2,
+        "floorId": 10,
+        "_formatted": {
+          "id": "986",
+          "roomCode": "<em>LÉ</em>-5-K4-04-63",
+          "roomNumber": "5/K4",
+          "roomName": "5.K4 Közlekedő (Keleti lifttől balra)",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "10",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-K4-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062311117",
+            "lat": "47.474726569"
+          }
+        }
+      },
+      {
+        "id": 36571,
+        "scope": "budapest/lagymanyos/eszaki/-1/LÉ--1-K4-B-04-63",
+        "_geo": {
+          "lat": 47.474591317,
+          "lng": 19.062350105
+        },
+        "buildingId": 2,
+        "floorId": 4,
+        "_formatted": {
+          "id": "36571",
+          "roomCode": "<em>LÉ</em>--1-K4/B-04-63",
+          "roomNumber": "P-K4 B",
+          "roomName": "Folyosó",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "4",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/-1/LÉ--1-K4-B-04-63",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.062350105",
+            "lat": "47.474591317"
+          }
+        }
+      },
+      {
+        "id": 53,
+        "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-128-01-12",
+        "_geo": {
+          "lat": 47.474531692,
+          "lng": 19.062436109
+        },
+        "buildingId": 2,
+        "floorId": 10,
+        "_formatted": {
+          "id": "53",
+          "roomCode": "<em>LÉ</em>-5-128-01-12",
+          "roomNumber": "5.128",
+          "roomName": "5.128 Média szoba",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "10",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/5/LÉ-5-128-01-12",
+          "roomTypeLabel": {
+            "en": "Educational",
+            "hu": "Oktatási helyiség"
+          },
+          "roomType": "educational",
+          "_geo": {
+            "lng": "19.062436109",
+            "lat": "47.474531692"
+          }
+        }
+      },
+      {
+        "id": 36440,
+        "scope": "budapest/lagymanyos/eszaki/-1/LÉ--1-L9-04-64",
+        "_geo": {
+          "lat": 47.473969366,
+          "lng": 19.061717419
+        },
+        "buildingId": 2,
+        "floorId": 4,
+        "_formatted": {
+          "id": "36440",
+          "roomCode": "<em>LÉ</em>--1-L9-04-64",
+          "roomNumber": "P-L9",
+          "roomName": "<em>Lé</em>pcsőház",
+          "buildingName": "North Building",
+          "campusName": "Lágymányos Campus",
+          "floorId": "4",
+          "buildingId": "2",
+          "scope": "budapest/lagymanyos/eszaki/-1/LÉ--1-L9-04-64",
+          "roomTypeLabel": {
+            "en": "Hallway",
+            "hu": "Közlekedő"
+          },
+          "roomType": "corridor",
+          "_geo": {
+            "lng": "19.061717419",
+            "lat": "47.473969366"
+          }
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 2,
+    "estimatedTotalHits": 10,
+    "query": "LE"
+  },
+  "buildings": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 0,
+    "estimatedTotalHits": 0,
+    "query": "LE"
+  },
+  "campuses": {
+    "hits": [],
+    "offset": 0,
+    "limit": 100,
+    "processingTimeMs": 1,
+    "estimatedTotalHits": 0,
+    "query": "LE"
+  },
+  "pois": {
+    "hits": [
+      {
+        "id": 2,
+        "scope": "budapest/lagymanyos/eszaki/0",
+        "_geo": {
+          "lat": 47.4744965413184,
+          "lng": 19.0618190364794
+        },
+        "buildingId": 2,
+        "name": "Lezárt",
+        "description": null,
+        "icon": "other-barrier",
+        "category": "Other",
+        "type": "Barrier",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "2",
+          "name": "<em>Le</em>zárt",
+          "description": null,
+          "type": "Barrier",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 324,
+        "scope": "budapest/lagymanyos/eszaki/-1",
+        "_geo": {
+          "lat": 47.474192369284246,
+          "lng": 19.062512459671364
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "324",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 328,
+        "scope": "budapest/lagymanyos/eszaki/-1",
+        "_geo": {
+          "lat": 47.47434800600674,
+          "lng": 19.06208975137127
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "328",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 225,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.474812220233645,
+          "lng": 19.062266275629337
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "225",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 226,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.47408602977029,
+          "lng": 19.06261780922924
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "226",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 227,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.4741613052564,
+          "lng": 19.062466807616467
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "227",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 236,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.47445899589335,
+          "lng": 19.06219843158676
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "236",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 238,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.47404440142744,
+          "lng": 19.06211239234565
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "238",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 244,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.474431202171786,
+          "lng": 19.06201887029657
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "244",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      },
+      {
+        "id": 137,
+        "scope": "budapest/lagymanyos/eszaki/1",
+        "_geo": {
+          "lat": 47.474210749581985,
+          "lng": 19.061159344064823
+        },
+        "buildingId": 2,
+        "name": "Lépcső",
+        "description": null,
+        "icon": "other-stairs",
+        "category": "Other",
+        "type": "Stairs",
+        "year": null,
+        "author": null,
+        "recordId": null,
+        "url": null,
+        "_formatted": {
+          "id": "137",
+          "name": "<em>Lé</em>pcső",
+          "description": null,
+          "type": "Stairs",
+          "category": "Other",
+          "buildingId": "2",
+          "year": null,
+          "author": null,
+          "recordId": null
+        }
+      }
+    ],
+    "offset": 0,
+    "limit": 10,
+    "processingTimeMs": 2,
+    "estimatedTotalHits": 10,
+    "query": "LE"
+  }
+}

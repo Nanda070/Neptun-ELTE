@@ -1,0 +1,452 @@
+[
+  {
+    "key": "core_entities_config_features_userProfile",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/entities,config,features,userProfile?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%7D",
+    "len": 265481,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/core_entities_config_features_userProfile.json",
+    "saved_len": 265481,
+    "looks_html": false
+  },
+  {
+    "key": "core_big_bootstrap",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/entities,config,features,userProfile,privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%226%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%227%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%228%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D",
+    "len": 421022,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/core_big_bootstrap.json",
+    "saved_len": 421022,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D",
+    "len": 155542,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest.json",
+    "saved_len": 155542,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%7D",
+    "len": 63268,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos.json",
+    "saved_len": 63268,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%7D",
+    "len": 31688,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli.json",
+    "saved_len": 31688,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%7D",
+    "len": 35689,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki.json",
+    "saved_len": 35689,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__00",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F00%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F00%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F00%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F00%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F00%5C%22%5D%22%7D",
+    "len": 11402,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__00.json",
+    "saved_len": 11402,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__00",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F00%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F00%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F00%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F00%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F00%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__00.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__0",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%7D",
+    "len": 10531,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__0.json",
+    "saved_len": 10531,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__0",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F0%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F0%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F0%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F0%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F0%5C%22%5D%22%7D",
+    "len": 6613,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__0.json",
+    "saved_len": 6613,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__1",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F1%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F1%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F1%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F1%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F1%5C%22%5D%22%7D",
+    "len": 8529,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__1.json",
+    "saved_len": 8529,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__1",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F1%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F1%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F1%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F1%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F1%5C%22%5D%22%7D",
+    "len": 6188,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__1.json",
+    "saved_len": 6188,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__2",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F2%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F2%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F2%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F2%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F2%5C%22%5D%22%7D",
+    "len": 7513,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__2.json",
+    "saved_len": 7513,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__2",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F2%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F2%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F2%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F2%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F2%5C%22%5D%22%7D",
+    "len": 8759,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__2.json",
+    "saved_len": 8759,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__3",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F3%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F3%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F3%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F3%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F3%5C%22%5D%22%7D",
+    "len": 7816,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__3.json",
+    "saved_len": 7816,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__3",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F3%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F3%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F3%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F3%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F3%5C%22%5D%22%7D",
+    "len": 11177,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__3.json",
+    "saved_len": 11177,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__4",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F4%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F4%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F4%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F4%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F4%5C%22%5D%22%7D",
+    "len": 6593,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__4.json",
+    "saved_len": 6593,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__4",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F4%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F4%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F4%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F4%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F4%5C%22%5D%22%7D",
+    "len": 7267,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__4.json",
+    "saved_len": 7267,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__5",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F5%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F5%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F5%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F5%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F5%5C%22%5D%22%7D",
+    "len": 5783,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__5.json",
+    "saved_len": 5783,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__5",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F5%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F5%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F5%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F5%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F5%5C%22%5D%22%7D",
+    "len": 6813,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__5.json",
+    "saved_len": 6813,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__6",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F6%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F6%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F6%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F6%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F6%5C%22%5D%22%7D",
+    "len": 5664,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__6.json",
+    "saved_len": 5664,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__6",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F6%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F6%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F6%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F6%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F6%5C%22%5D%22%7D",
+    "len": 9658,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__6.json",
+    "saved_len": 9658,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__7",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F7%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F7%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F7%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F7%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F7%5C%22%5D%22%7D",
+    "len": 6708,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__7.json",
+    "saved_len": 6708,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__7",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F7%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F7%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F7%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F7%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F7%5C%22%5D%22%7D",
+    "len": 6194,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__7.json",
+    "saved_len": 6194,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__attic",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2Fattic%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2Fattic%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2Fattic%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2Fattic%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2Fattic%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__attic.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__attic",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2Fattic%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2Fattic%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2Fattic%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2Fattic%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2Fattic%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__attic.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__-1",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F-1%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F-1%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F-1%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F-1%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F-1%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__-1.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__-1",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F-1%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F-1%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F-1%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F-1%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F-1%5C%22%5D%22%7D",
+    "len": 6919,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__-1.json",
+    "saved_len": 6919,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__8",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F8%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F8%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F8%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F8%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F8%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__8.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__8",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F8%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F8%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F8%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F8%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2F8%5C%22%5D%22%7D",
+    "len": 3602,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__8.json",
+    "saved_len": 3602,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__deli__T",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2FT%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2FT%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2FT%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2FT%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2FT%5C%22%5D%22%7D",
+    "len": 4234,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__deli__T.json",
+    "saved_len": 4234,
+    "looks_html": false
+  },
+  {
+    "key": "filter__budapest__lagymanyos__eszaki__T",
+    "status": 200,
+    "ct": "text/html; charset=UTF-8",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2FT%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2FT%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2FT%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2FT%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%2FT%5C%22%5D%22%7D",
+    "len": 1099,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/filter__budapest__lagymanyos__eszaki__T.json",
+    "saved_len": 1099,
+    "looks_html": true
+  },
+  {
+    "key": "search_empty_budapest",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22%5C%22%2C%5C%22budapest%5C%22%5D%22%7D",
+    "len": 11474,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/search_empty_budapest.json",
+    "saved_len": 11474,
+    "looks_html": false
+  },
+  {
+    "key": "search_LD_budapest",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22LD%5C%22%2C%5C%22budapest%5C%22%5D%22%7D",
+    "len": 6348,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/search_LD_budapest.json",
+    "saved_len": 6348,
+    "looks_html": false
+  },
+  {
+    "key": "search_LE_budapest",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22LE%5C%22%2C%5C%22budapest%5C%22%5D%22%7D",
+    "len": 10947,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/search_LE_budapest.json",
+    "saved_len": 10947,
+    "looks_html": false
+  },
+  {
+    "key": "search_deli",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22LD%5C%22%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%7D",
+    "len": 5981,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/search_deli.json",
+    "saved_len": 5981,
+    "looks_html": false
+  },
+  {
+    "key": "search_eszaki",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22LE%5C%22%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%7D",
+    "len": 10899,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/search_eszaki.json",
+    "saved_len": 10899,
+    "looks_html": false
+  },
+  {
+    "key": "room_3327",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/rooms.getRoomById?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C3327%5D%22%7D",
+    "len": 460,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/room_3327.json",
+    "saved_len": 460,
+    "looks_html": false
+  },
+  {
+    "key": "vrNodes_3327",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C3327%5D%22%7D",
+    "len": 28,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/vrNodes_3327.json",
+    "saved_len": 28,
+    "looks_html": false
+  },
+  {
+    "key": "roomScope_3327",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%7D",
+    "len": 4933,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/roomScope_3327.json",
+    "saved_len": 4933,
+    "looks_html": false
+  },
+  {
+    "key": "room_2542",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/rooms.getRoomById?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C2542%5D%22%7D",
+    "len": 452,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/room_2542.json",
+    "saved_len": 452,
+    "looks_html": false
+  },
+  {
+    "key": "vrNodes_2542",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C2542%5D%22%7D",
+    "len": 28,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/vrNodes_2542.json",
+    "saved_len": 28,
+    "looks_html": false
+  },
+  {
+    "key": "roomScope_2542",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%7D",
+    "len": 4925,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/roomScope_2542.json",
+    "saved_len": 4925,
+    "looks_html": false
+  },
+  {
+    "key": "route_2542_to_3327",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22room%3A2542%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%7D",
+    "len": 30,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/route_2542_to_3327.json",
+    "saved_len": 30,
+    "looks_html": false
+  },
+  {
+    "key": "route_point_to_3327",
+    "status": 200,
+    "ct": "application/json",
+    "url": "/api/v2/routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062846%2C47.472648%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%7D",
+    "len": 30,
+    "saved": "docs/Technical/campus_map_research/bis/api/raw/route_point_to_3327.json",
+    "saved_len": 30,
+    "looks_html": false
+  }
+]

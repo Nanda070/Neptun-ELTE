@@ -1,0 +1,469 @@
+[
+  {
+    "path": "/api/v2/entities,config,features,userProfile",
+    "input": {
+      "0": -1,
+      "1": -1,
+      "2": -1,
+      "3": -1
+    },
+    "url": "https://bis.elte.hu/api/v2/entities,config,features,userProfile?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "4": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/entities,config,features,userProfile,privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": -1,
+      "1": -1,
+      "2": -1,
+      "3": -1,
+      "4": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "5": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "6": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "7": [
+        {
+          "scope": 1
+        },
+        "budapest"
+      ],
+      "8": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/entities,config,features,userProfile,privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22-1%22%2C%221%22%3A%22-1%22%2C%222%22%3A%22-1%22%2C%223%22%3A%22-1%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%226%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%227%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%5C%22%5D%22%2C%228%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/onboarding.getCompletedTours",
+    "input": {
+      "0": -1
+    },
+    "url": "https://bis.elte.hu/api/v2/onboarding.getCompletedTours?batch=1&input=%7B%220%22%3A%22-1%22%7D"
+  },
+  {
+    "path": "/api/v2/search",
+    "input": {
+      "0": [
+        {
+          "query": 1,
+          "scope": 2
+        },
+        "",
+        "budapest"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/search?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22query%5C%22%3A1%2C%5C%22scope%5C%22%3A2%7D%2C%5C%22%5C%22%2C%5C%22budapest%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos"
+      ],
+      "4": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli"
+      ],
+      "4": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos/deli"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0"
+      ],
+      "4": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos/deli/0"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ],
+      "4": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ],
+      "5": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/vrNodes",
+    "input": {
+      "0": [
+        {
+          "roomId": 1
+        },
+        3327
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C3327%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/rooms.getRoomById,routing.route,routing.route",
+    "input": {
+      "0": [
+        {
+          "id": 1
+        },
+        3327
+      ],
+      "1": [
+        {
+          "scope": 1,
+          "from": 2,
+          "to": 3
+        },
+        "budapest/lagymanyos/deli/0",
+        "point:19.062846,47.472648",
+        "room:3327"
+      ],
+      "2": [
+        {
+          "scope": 1,
+          "from": 2,
+          "to": 3
+        },
+        "budapest/lagymanyos/deli/0/LD-0-613-01-14",
+        "point:19.062846,47.472648",
+        "room:3327"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/rooms.getRoomById,routing.route,routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C3327%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062846%2C47.472648%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-613-01-14%5C%22%2C%5C%22point%3A19.062846%2C47.472648%5C%22%2C%5C%22room%3A3327%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ],
+      "4": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ],
+      "5": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,rooms.getRoomByScope,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%2C%225%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/routing.route,vrNodes",
+    "input": {
+      "0": [
+        {
+          "scope": 1,
+          "from": 2,
+          "to": 3
+        },
+        "budapest/lagymanyos/deli/0/LD-0-611-01-14",
+        "point:19.062807,47.472661",
+        "room:2542"
+      ],
+      "1": [
+        {
+          "roomId": 1
+        },
+        2542
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/routing.route,vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%2FLD-0-611-01-14%5C%22%2C%5C%22point%3A19.062807%2C47.472661%5C%22%2C%5C%22room%3A2542%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C2542%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/vrNodes",
+    "input": {
+      "0": [
+        {
+          "roomId": 1
+        },
+        2542
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/vrNodes?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22roomId%5C%22%3A1%7D%2C2542%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/rooms.getRoomById,routing.route",
+    "input": {
+      "0": [
+        {
+          "id": 1
+        },
+        2542
+      ],
+      "1": [
+        {
+          "scope": 1,
+          "from": 2,
+          "to": 3
+        },
+        "budapest/lagymanyos/deli/0",
+        "point:19.062807,47.472661",
+        "room:2542"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/rooms.getRoomById,routing.route?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22id%5C%22%3A1%7D%2C2542%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%2C%5C%22from%5C%22%3A2%2C%5C%22to%5C%22%3A3%7D%2C%5C%22budapest%2Flagymanyos%2Fdeli%2F0%5C%22%2C%5C%22point%3A19.062807%2C47.472661%5C%22%2C%5C%22room%3A2542%5C%22%5D%22%7D"
+  },
+  {
+    "path": "/api/v2/privileges,classifications,fields,orgUnits,filter",
+    "input": {
+      "0": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/eszaki"
+      ],
+      "1": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/eszaki"
+      ],
+      "2": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/eszaki"
+      ],
+      "3": [
+        {
+          "scope": 1
+        },
+        "budapest/lagymanyos/eszaki"
+      ],
+      "4": [
+        {
+          "searchQuery": -1,
+          "filters": -1,
+          "scope": 1,
+          "classification": -1,
+          "includeNulls": -1
+        },
+        "budapest/lagymanyos/eszaki"
+      ]
+    },
+    "url": "https://bis.elte.hu/api/v2/privileges,classifications,fields,orgUnits,filter?batch=1&input=%7B%220%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%221%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%222%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%223%22%3A%22%5B%7B%5C%22scope%5C%22%3A1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%2C%224%22%3A%22%5B%7B%5C%22searchQuery%5C%22%3A-1%2C%5C%22filters%5C%22%3A-1%2C%5C%22scope%5C%22%3A1%2C%5C%22classification%5C%22%3A-1%2C%5C%22includeNulls%5C%22%3A-1%7D%2C%5C%22budapest%2Flagymanyos%2Feszaki%5C%22%5D%22%7D"
+  }
+]

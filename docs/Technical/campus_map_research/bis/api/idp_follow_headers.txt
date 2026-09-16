@@ -1,0 +1,43 @@
+HTTP/2 302 
+content-type: text/plain; charset=utf-8
+date: Wed, 16 Sep 2026 13:06:09 GMT
+location: https://idp.elte.hu/auth/saml2/idp/SSOService.php?SAMLRequest=[REDACTED_BLOB]&RelayState=%2Fmap%2Fbudapest%2Flagymanyos%2Fdeli%3Flocale%3Den%26viewParadigm%3D3d
+server: nginx/1.31.5
+strict-transport-security: max-age=15552000; includeSubDomains
+vary: Origin
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+content-length: 5
+
+HTTP/1.1 302 Found
+Date: Wed, 16 Sep 2026 13:06:09 GMT
+Server: Apache/2.4.10 (Debian)
+X-Powered-By: PHP/5.6.40-0+deb8u12
+Set-Cookie: [REDACTED]
+Set-Cookie: [REDACTED]
+Location: https://idp.elte.hu/auth/module.php/eltedbauth/authpage.php?ReturnTo=https%3A%2F%2Fidp.elte.hu%2Fauth%2Fmodule.php%2Feltedbauth%2Fresume.php%3FState%3D_e3bf81d737ad8af3a086370866597f5e5522fbc4fb%253Ahttps%253A%252F%252Fidp.elte.hu%252Fauth%252Fsaml2%252Fidp%252FSSOService.php%253Fspentityid%253Dhttps%25253A%25252F%25252Fbis.elte.hu%25252Fauth%25252Fsaml%25252Fmetadata%2526cookieTime%253D1789563969%2526RelayState%253D%25252Fmap%25252Fbudapest%25252Flagymanyos%25252Fdeli%25253Flocale%25253Den%252526viewParadigm%25253D3d&LoginType=href&sp_language=hu
+Pragma: no-cache
+Cache-Control: no-cache, must-revalidate
+Access-Control-Allow-Origin: *
+Content-Length: 1617
+Content-Type: text/html; charset=UTF-8
+
+HTTP/1.1 200 OK
+Date: Wed, 16 Sep 2026 13:06:09 GMT
+Server: Apache/2.4.10 (Debian)
+X-Powered-By: PHP/5.6.40-0+deb8u12
+Set-Cookie: [REDACTED]
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Set-Cookie: [REDACTED]
+Set-Cookie: [REDACTED]
+Set-Cookie: [REDACTED]
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: *
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+
