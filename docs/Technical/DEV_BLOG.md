@@ -421,17 +421,43 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - Added [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): finish LD/LE indoor graph package + QA **before** Flutter Map UI (Phase B deferred). Cross-linked from `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Docs-only; no Dart / version bump. Owner **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: campus map research dump
+
+**[2026-09-16]**
+
+- Committed authenticated **BIS** research dump under [`campus_map_research/`](campus_map_research/README.md) (rooms/floors/entities via system Chrome; `routing.route` geometry **null** this pass; no cookies/tokens in git) + public LD/LE JPG extracts + Északi planner sample + BIS import reports EN+RU. **Not** wired into the app. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: honesty sync (translator + backlog)
+
+**[2026-09-16]**
+
+- Docs honesty: mail/message translator marked **working** (not “verify on device”); README session line matches **1.5.10** remember-password on manual logout; restored tracked **HALLGATO_SESSION_PLAN** EN+RU (were removed in `remove plans`, status synced through **1.5.10**). Refreshed Dev Blog “In progress”. No marketing version bump. Owner **Nanda**.
+
+---
+
 ## In progress / planned (honest)
 
 **[ongoing]**
 
-- **Session force logout** when refresh / silent re-auth fails — **in code** (`SessionGuard.forceExpiredLogout`); keep username + academic cache (**1**), show sign-in again. **1a** / **1b** / **1**–**10** / **12**–**14** shipped (iOS WidgetKit + Android App Widget MVP); item **11** **removed** from plan (no tanterv HAR — do not rebuild fake progress). Numbered plan files **deleted**.
-- **Nav IA (1c):** **shipped** — 4-tab bottom + Payments in drawer; Contacts + version in Settings.
-- **Message translator** (HU → EN/RU for inbox bodies) — helper returns `null` offline/failure (keep original) + disclaimer; treat as **verify on device** until thoroughly exercised.
-- **Large features:** student card **item 12 shipped** as claim/bank/profile only (still **no** QR/wallet). Tanterv / Academic Progress **dropped** (no menu / no HAR). Exam / course registration — **not built, not planned**.
-- Email OTP full UI (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **exists in code**, unused by UI; TOTP-first.
-- Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI has unsigned IPA + Android debug APK only (no analyze/test job).
-- **Campus indoor map** — [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md): Phase A (digitize LD then LE, package, QA) **in progress**; Flutter Map UI **not started** until map finished.
+### Done / working on main (~1.5.10)
+
+- Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
+- Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
+- Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
+- Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
+- Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
+- Campus map **research dump** + **map-first plan** documented; app Map UI not started.
+
+### Still unfinished / research
+
+- **Campus indoor map Phase A** — digitize LD then LE graphs, package, QA ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
+- Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
+- Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
+- Student card still **no** QR/wallet; exam/course registration **not planned**.
+- Signed IPA / TestFlight / App Store / Play production — **not** current goal. CI: unsigned IPA + Android debug APK only (no analyze/test job).
 
 ---
 

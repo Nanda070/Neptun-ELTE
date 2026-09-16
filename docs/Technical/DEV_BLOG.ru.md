@@ -421,17 +421,43 @@
 - Добавлены [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): сначала пакет графа LD/LE + QA, **потом** Flutter UI карты (фаза B отложена). Кросс-ссылки из `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Только docs; без Dart / bump версии. Владелец **Nanda**.
 
 ---
+
+## 2026-09-16 — docs: research-дамп карты кампуса
+
+**[2026-09-16]**
+
+- В git — authenticated research-дамп **BIS** в [`campus_map_research/`](campus_map_research/README.md) (комнаты/этажи/entities через system Chrome; геометрия `routing.route` в этом проходе **null**; cookies/токены не в git) + публичные JPG LD/LE + образец планировщика Északi + отчёты импорта BIS EN+RU. В приложение **не** подключено. Владелец **Nanda**.
+
+---
+
+## 2026-09-16 — docs: честность (переводчик + бэклог)
+
+**[2026-09-16]**
+
+- Честность docs: переводчик почты/сообщений помечен как **работает** (не «проверить на устройстве»); строка сессии в README совпадает с **1.5.10** (пароль при ручном logout при opt-in); восстановлены tracked **HALLGATO_SESSION_PLAN** EN+RU (были удалены в `remove plans`, статус до **1.5.10**). Обновлён раздел «В работе» Dev Blog. Без bump маркетинговой версии. Владелец **Nanda**.
+
+---
+
 ## В работе / запланировано (честно)
 
 **[ongoing]**
 
-- **Принудительный logout сессии** при провале refresh / silent re-auth — **в коде** (`SessionGuard.forceExpiredLogout`); логин + учебный кэш сохраняются (**1**). **1a** / **1b** / **1**–**10** / **12**–**14** сделаны (iOS WidgetKit + Android App Widget MVP); п. **11** **снят** с плана (нет HAR tanterv — фейковый progress не возвращать). Нумерованные plan-файлы **удалены**.
-- **Nav IA (1c):** **сделано** — 4 вкладки снизу + Payments в drawer; Contacts + версия в Settings.
-- **Переводчик сообщений** (HU → EN/RU для тел писем) — helper при offline/ошибке возвращает `null` (оставляем оригинал) + disclaimer; считать **проверить на устройстве**, пока не прогнали тщательно.
-- **Крупные фичи:** студенческий **п. 12 сделан** как заявка/банк/профиль (по-прежнему **нет** QR/wallet). Tanterv / Academic Progress **сняты** (нет меню / нет HAR). Запись на экзамен / курс — **не сделана, не планируем**.
-- Полный UI email OTP (`RequestEmailCode` / `CodePrefix`) — helper `elteRequestEmailOtp` **есть в коде**, UI не вызывает; сначала TOTP.
-- Signed IPA / TestFlight / App Store / Play production — **не** текущая цель. В CI только unsigned IPA + Android debug APK (нет analyze/test job).
-- **Indoor-карта кампуса** — [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md): фаза A (оцифровка LD, затем LE, пакет, QA) **в работе**; Flutter UI карты **не начат**, пока карта не закончена.
+### Сделано / работает на main (~1.5.10)
+
+- Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
+- Опциональный **фоновый keep-alive** в Settings (default выкл; **45 мин**; idle снят в **1.5.10**) + **Запомнить пароль** (default выкл; сохраняется при ручном logout при вкл.).
+- UI навигатора учебной недели (**1.5.8**) + фикс битого кэша почты / epoch-`ERROR` (**1.5.6**).
+- **Переводчик** почты HU→EN/RU — **работает** (failure → оригинал; disclaimer один раз).
+- Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как раньше; п. **11** (tanterv) **снят**.
+- Research-дамп карты + план **сначала карта** задокументированы; Flutter Map UI не начат.
+
+### Ещё не сделано / исследование
+
+- **Indoor-карта фаза A** — оцифровка LD, затем LE, пакет, QA ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
+- Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
+- Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
+- Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.
+- Signed IPA / TestFlight / App Store / Play — **не** текущая цель. CI: unsigned IPA + Android debug APK (нет analyze/test job).
 
 ---
 

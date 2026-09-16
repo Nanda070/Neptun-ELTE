@@ -427,7 +427,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 ### 10.3 Платежи / периоды / почта
 
-Начисления и дедлайны; список **collective invoices** + баланс; периоды с таймерами; входящие + **локальный поиск** (тема / отправитель / загруженное тело) + **чип непрочитанных** (на клиенте; API по-прежнему `filterType=0`) + mark read; полная цепочка постов письма. В карточке письма: опциональный машинный перевод HU→EN/RU (`MessageTranslator`); offline/ошибка HTTP → `null` (caller оставляет оригинал). При первом использовании на устройстве — 5‑секундный snackbar о возможной неточности (`hasSeenMailTranslateDisclaimer`). Тщательную UX offline/failure всё ещё **стоит проверить на устройстве**.
+Начисления и дедлайны; список **collective invoices** + баланс; периоды с таймерами; входящие + **локальный поиск** (тема / отправитель / загруженное тело) + **чип непрочитанных** (на клиенте; API по-прежнему `filterType=0`) + mark read; полная цепочка постов письма. В карточке письма: опциональный машинный перевод HU→EN/RU (`MessageTranslator`) — **работает**; offline/ошибка HTTP → `null` (caller оставляет оригинал). При первом использовании на устройстве — 5‑секундный snackbar о возможной неточности (`hasSeenMailTranslateDisclaimer`).
 
 **Chrome UI платежей** (заголовок вкладки, пустое состояние, дедлайны, символ валюты, тексты уведомлений, баланс в drawer) идёт через `LanguagePack` (EN/HU встроены; RU/TR JSON). **Названия транзакций/счетов и статусы из Neptun** (`transactionPayingType`, `transactionStatus`, подписи collective invoice) обычно остаются **на венгерском** — это язык ответа сервера, а не пропущенная строка приложения.
 
@@ -478,7 +478,8 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
-| Переводчик почты | **MVP; проверить offline/failure** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
+| Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
+| Indoor-карта кампуса | **Только research + план** | Дамп в `campus_map_research/`; [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фаза A в работе; Flutter UI отложен (фаза B). В приложении по-прежнему только внешний maps deep-link |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -766,7 +767,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (пакет графа LD/LE + QA до Flutter UI); research-дамп в `campus_map_research/` |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (фаза A: пакет графа LD/LE + QA; фаза B Flutter отложена); research-дамп в `campus_map_research/` |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
