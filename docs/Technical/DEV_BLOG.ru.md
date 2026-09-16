@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-09-16 — релиз 1.9.0 (BIS WebView + вход IIG)
+
+- **Релиз 1.9.0** (`pubspec` **1.9.0+1**): feature-line **9**. Карта кампуса **primary** = встроенный **официальный BIS** (`bis.elte.hu`) через `webview_flutter`; IdP ELTE IIG / Caesar (`username_iig` / `password_iig`, без 2FA); опциональное сохранение в `flutter_secure_storage`; toggle в Настройках; офлайн FootPrint — debug-меню. Цепочка SAML по HAR. Legal PRIVACY EN/RU/HU + docs EN+RU. GitHub Release **v1.9.0**. Владелец **Nanda**.
+
 ## 2026-09-16 — полировка карты на паузе (всё ещё в разработке)
 
 - **Docs / честность продукта:** дальнейшая полировка UX карты кампуса **на паузе**. Indoor-карта кампуса по-прежнему **в разработке / WIP** — это **не** готовый 1:1 клон официального BIS.
@@ -641,18 +645,18 @@ Product + technical docs приведены к фактам «фазы 0–6 г�
 
 **[ongoing]**
 
-### Сделано / на main (**1.8.3**)
+### Сделано / на main (**1.9.0**)
 
 - Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
-- Опциональный Settings **background keep-alive** (по умолчанию выкл.; **45 мин**; idle снят в **1.5.10**) + **Remember password** (по умолчанию выкл.; сохраняется при ручном logout, если включено).
+- Опциональный Settings **background keep-alive** (по умолчанию выкл.; **45 мин**; idle снят в **1.5.10**) + **Remember password** (по умолчанию выкл.; сохраняется при ручном logout, если включено) + **Сохранять вход BIS IIG** (**1.9.0**).
 - UI навигатора учебной недели календаря (**1.5.8**) + фикс corrupt-cache / epoch-`ERROR` почты (**1.5.6**).
 - **Переводчик** почты HU→EN/RU — **работает** (сбой → оригинал; дисклеймер один раз).
 - Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как ранее; пункт **11** (tanterv) **снят**.
-- **Карта кампуса (фундамент отгружен, всё ещё WIP):** **1.8.3** полигоны BIS FootPrint + светлая палитра; LD+LE; Map до логина; приблизительный A→B. Покрытие **2573/3112**. Полировка UX карты **на паузе** (2026-09-16).
+- **Карта кампуса:** **1.9.0** официальный BIS WebView + безопасный IIG-логин (primary); офлайн FootPrint **1.8.x** — debug (**2573/3112**).
 
 ### Ещё не закончено / research
 
-- **Indoor-карта кампуса — всё ещё в разработке:** не готовый 1:1 продукт официального BIS. Остаётся: дыры / отсутствующие technical-кольца, плотнее покрытие, точнее выравнивание маршрута, дальнейший UX когда возобновим. Полилинии BIS `routing.route` в research всё ещё **null** (вместо них оверлей графа).
+- **Офлайн-пакет FootPrint** — research/WIP вторичен к живому BIS WebView; дыры / technical / маршруты если возобновим офлайн. Полилинии BIS `routing.route` в research всё ещё **null**.
 - Остатки hallgato-плана: cold-start proactive `GetNewTokens`; парсинг JWT `exp`; research активности portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; не используется — TOTP-first).
 - Student card всё ещё **без** QR/wallet; регистрация на экзамены/курсы **не планируется**.

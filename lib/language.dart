@@ -386,12 +386,12 @@ class AppStrings{
       roomCode_OpenMap: 'Térkép megnyitása',
       campusMap_Title: 'Campus térkép',
       campusMap_HonestyBanner:
-          'Lágymányos Informatikai Kar beltéri térképe (LD + LE).',
+          'Hivatalos ELTE BIS térkép az alkalmazásban. ELTE IIG / Caesar bejelentkezés szükséges.',
       campusMap_ItFacultyOnly: 'Informatikai Kar — LD Déli + LE Északi',
       campusMap_ItFacultyOnlyShort: 'Informatikai Kar',
       campusMap_HubButton: 'Campus térkép',
       campusMap_HubButtonDescription:
-          'Beltéri A→B az IK Lágymányos Déli (LD) és Északi (LE) tömbjeiben. Neptun bejelentkezés nélkül.',
+          'Hivatalos BIS térkép (WebView). ELTE IIG / Caesar bejelentkezés; jelszó biztonságos tárolóba menthető.',
       campusMap_SearchFrom: 'Induló terem / teremkeresés…',
       campusMap_SearchTo: 'Cél terem keresése…',
       campusMap_From: 'Honnan',
@@ -406,6 +406,20 @@ class AppStrings{
       campusMap_PhotoDebugToggle: 'Fotó-alárajz (debug)',
       campusMap_CoverageHint: 'összesen {n}/{c} BIS FootPrint',
       campusMap_RoomsWord: 'terem',
+      campusMap_IigLoginRequired: 'Campus térképhez ELTE IIG / Caesar bejelentkezés kell',
+      campusMap_IigLoginHint:
+          'Ugyanaz az IIG azonosító, mint a bis.elte.hu oldalon. Nincs 2FA ezen a folyon. A jelszó csak a készülék biztonságos tárolójában marad.',
+      campusMap_IigUsername: 'IIG felhasználónév',
+      campusMap_IigPassword: 'IIG jelszó',
+      campusMap_IigSaveCredentials: 'Mentés ezen az eszközön',
+      campusMap_IigSaveCredentialsSubtitle:
+          'Felhasználónév és jelszó a Keychain / Keystore-ban (nem SharedPreferences).',
+      campusMap_IigSignIn: 'Bejelentkezés a BIS-be',
+      campusMap_IigEnterCredentials: 'IIG adatok megadása',
+      campusMap_IigClearCredentials: 'Mentett IIG adatok törlése',
+      campusMap_IigCleared: 'Mentett IIG bejelentkezés törölve',
+      campusMap_Reload: 'Újratöltés',
+      campusMap_OfflineDebug: 'Offline poligon térkép (debug)',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
       notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
@@ -417,6 +431,9 @@ class AppStrings{
       settings_rememberPasswordOnDevice: 'Jelszó megjegyzése ezen az eszközön',
       settings_rememberPasswordOnDevice_Subtitle:
           'Kényelmi funkció: a jelszó biztonságos tárolóban marad kijelentkezés és lejárat után is (2FA továbbra is kell). Megosztott eszközön kapcsold ki.',
+      settings_rememberBisIigCredentials: 'BIS IIG bejelentkezés mentése',
+      settings_rememberBisIigCredentials_Subtitle:
+          'Campus térkép: ELTE IIG felhasználónév + jelszó biztonságos tárolóban. Kikapcsoláskor törlődik.',
       settings_backgroundHallgatoKeepAlive: 'Munkamenet ébren tartása háttérben',
       settings_backgroundHallgatoKeepAlive_Subtitle:
           'Opcionális: kb. 45 percenként frissíti a hallgatói JWT-t, amikor az app nincs előtérben (hálózat + nem alacsony akkumulátor). Több akkumulátor; az OS késleltetheti vagy kihagyhatja. Alapból ki.',
@@ -795,12 +812,12 @@ class AppStrings{
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
       campusMap_Title: 'Campus map',
       campusMap_HonestyBanner:
-          'Lágymányos IT faculty indoor map (LD + LE).',
+          'Official ELTE BIS map in the app. ELTE IIG / Caesar login required.',
       campusMap_ItFacultyOnly: 'IT faculty — LD South + LE North',
       campusMap_ItFacultyOnlyShort: 'IT faculty',
       campusMap_HubButton: 'Campus map',
       campusMap_HubButtonDescription:
-          'Indoor A→B for IT faculty Lágymányos South (LD) and North (LE). No Neptun login required.',
+          'Official BIS map (WebView). ELTE IIG / Caesar login; credentials can be saved in secure storage.',
       campusMap_SearchFrom: 'Search start room / hall…',
       campusMap_SearchTo: 'Search destination…',
       campusMap_From: 'From',
@@ -815,6 +832,20 @@ class AppStrings{
       campusMap_PhotoDebugToggle: 'Photo underlay (debug)',
       campusMap_CoverageHint: 'total {n}/{c} BIS FootPrint',
       campusMap_RoomsWord: 'rooms',
+      campusMap_IigLoginRequired: 'ELTE IIG / Caesar login required for campus map',
+      campusMap_IigLoginHint:
+          'Same IIG account as on bis.elte.hu. No 2FA on this flow. Password stays only in on-device secure storage.',
+      campusMap_IigUsername: 'IIG username',
+      campusMap_IigPassword: 'IIG password',
+      campusMap_IigSaveCredentials: 'Save on this device',
+      campusMap_IigSaveCredentialsSubtitle:
+          'Username and password in Keychain / Keystore (never SharedPreferences plaintext).',
+      campusMap_IigSignIn: 'Sign in to BIS',
+      campusMap_IigEnterCredentials: 'Enter IIG credentials',
+      campusMap_IigClearCredentials: 'Clear saved IIG login',
+      campusMap_IigCleared: 'Saved IIG login cleared',
+      campusMap_Reload: 'Reload',
+      campusMap_OfflineDebug: 'Offline polygon map (debug)',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
       notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
@@ -826,6 +857,9 @@ class AppStrings{
       settings_rememberPasswordOnDevice: 'Remember password on this device',
       settings_rememberPasswordOnDevice_Subtitle:
           'Convenience only: keeps your password in secure storage after log out and session expiry (2FA still required). Turn off on shared devices.',
+      settings_rememberBisIigCredentials: 'Save BIS IIG login',
+      settings_rememberBisIigCredentials_Subtitle:
+          'Campus map: keep ELTE IIG username + password in secure storage. Turning off clears them.',
       settings_backgroundHallgatoKeepAlive: 'Keep session alive in background',
       settings_backgroundHallgatoKeepAlive_Subtitle:
           'Optional: about every 45 min refreshes your hallgato JWT while the app is not in the foreground (network + battery not low). Uses more battery; the OS may defer or skip runs. Off by default.',
@@ -1497,6 +1531,18 @@ class LanguagePack{
   final String campusMap_RoomsWord;
   final String campusMap_ItFacultyOnly;
   final String campusMap_ItFacultyOnlyShort;
+  final String campusMap_IigLoginRequired;
+  final String campusMap_IigLoginHint;
+  final String campusMap_IigUsername;
+  final String campusMap_IigPassword;
+  final String campusMap_IigSaveCredentials;
+  final String campusMap_IigSaveCredentialsSubtitle;
+  final String campusMap_IigSignIn;
+  final String campusMap_IigEnterCredentials;
+  final String campusMap_IigClearCredentials;
+  final String campusMap_IigCleared;
+  final String campusMap_Reload;
+  final String campusMap_OfflineDebug;
   final String markbook_creditAbbrev;
   final String notif_exam_BodyToday;
   final String notif_exam_BodyTomorrow;
@@ -1507,6 +1553,8 @@ class LanguagePack{
   final String settings_fontScale_Label;
   final String settings_rememberPasswordOnDevice;
   final String settings_rememberPasswordOnDevice_Subtitle;
+  final String settings_rememberBisIigCredentials;
+  final String settings_rememberBisIigCredentials_Subtitle;
   final String settings_backgroundHallgatoKeepAlive;
   final String settings_backgroundHallgatoKeepAlive_Subtitle;
   final String mail_error_Prefix;
@@ -1844,6 +1892,21 @@ class LanguagePack{
     this.campusMap_PhotoDebugToggle = 'Photo underlay (debug)',
     this.campusMap_CoverageHint = '{n}/{c} BIS FootPrint rooms',
     this.campusMap_RoomsWord = 'rooms',
+    this.campusMap_IigLoginRequired =
+        'ELTE IIG / Caesar login required for campus map',
+    this.campusMap_IigLoginHint =
+        'Same IIG account as on bis.elte.hu. No 2FA on this flow. Password stays only in on-device secure storage.',
+    this.campusMap_IigUsername = 'IIG username',
+    this.campusMap_IigPassword = 'IIG password',
+    this.campusMap_IigSaveCredentials = 'Save on this device',
+    this.campusMap_IigSaveCredentialsSubtitle =
+        'Username and password in Keychain / Keystore (never SharedPreferences plaintext).',
+    this.campusMap_IigSignIn = 'Sign in to BIS',
+    this.campusMap_IigEnterCredentials = 'Enter IIG credentials',
+    this.campusMap_IigClearCredentials = 'Clear saved IIG login',
+    this.campusMap_IigCleared = 'Saved IIG login cleared',
+    this.campusMap_Reload = 'Reload',
+    this.campusMap_OfflineDebug = 'Offline polygon map (debug)',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
     required this.notif_exam_BodyTomorrow,
@@ -1854,6 +1917,9 @@ class LanguagePack{
     required this.settings_fontScale_Label,
     required this.settings_rememberPasswordOnDevice,
     required this.settings_rememberPasswordOnDevice_Subtitle,
+    this.settings_rememberBisIigCredentials = 'Save BIS IIG login',
+    this.settings_rememberBisIigCredentials_Subtitle =
+        'Campus map: keep ELTE IIG username + password in secure storage. Turning off clears them.',
     required this.settings_backgroundHallgatoKeepAlive,
     required this.settings_backgroundHallgatoKeepAlive_Subtitle,
     required this.mail_error_Prefix,
@@ -2293,6 +2359,43 @@ class LanguagePack{
           if (countryId == 'tr') return 'Bilişim Fakültesi';
           return v;
         }(),
+        campusMap_IigLoginRequired: () {
+          final v = getStr('campusMap_IigLoginRequired', en.campusMap_IigLoginRequired);
+          if (v != en.campusMap_IigLoginRequired) return v;
+          if (countryId == 'ru') {
+            return 'Для карты кампуса нужен вход ELTE IIG / Caesar';
+          }
+          if (countryId == 'tr') {
+            return 'Kampüs haritası için ELTE IIG / Caesar girişi gerekli';
+          }
+          return v;
+        }(),
+        campusMap_IigLoginHint: () {
+          final v = getStr('campusMap_IigLoginHint', en.campusMap_IigLoginHint);
+          if (v != en.campusMap_IigLoginHint) return v;
+          if (countryId == 'ru') {
+            return 'Тот же IIG, что на bis.elte.hu. Без 2FA. Пароль только в защищённом хранилище устройства.';
+          }
+          if (countryId == 'tr') {
+            return 'bis.elte.hu ile aynı IIG hesabı. Bu akışta 2FA yok. Şifre yalnızca güvenli depoda kalır.';
+          }
+          return v;
+        }(),
+        campusMap_IigUsername: getStr('campusMap_IigUsername', en.campusMap_IigUsername),
+        campusMap_IigPassword: getStr('campusMap_IigPassword', en.campusMap_IigPassword),
+        campusMap_IigSaveCredentials: getStr(
+            'campusMap_IigSaveCredentials', en.campusMap_IigSaveCredentials),
+        campusMap_IigSaveCredentialsSubtitle: getStr(
+            'campusMap_IigSaveCredentialsSubtitle',
+            en.campusMap_IigSaveCredentialsSubtitle),
+        campusMap_IigSignIn: getStr('campusMap_IigSignIn', en.campusMap_IigSignIn),
+        campusMap_IigEnterCredentials: getStr(
+            'campusMap_IigEnterCredentials', en.campusMap_IigEnterCredentials),
+        campusMap_IigClearCredentials: getStr(
+            'campusMap_IigClearCredentials', en.campusMap_IigClearCredentials),
+        campusMap_IigCleared: getStr('campusMap_IigCleared', en.campusMap_IigCleared),
+        campusMap_Reload: getStr('campusMap_Reload', en.campusMap_Reload),
+        campusMap_OfflineDebug: getStr('campusMap_OfflineDebug', en.campusMap_OfflineDebug),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
@@ -2306,6 +2409,12 @@ class LanguagePack{
         settings_rememberPasswordOnDevice_Subtitle: getStr(
             'settings_rememberPasswordOnDevice_Subtitle',
             en.settings_rememberPasswordOnDevice_Subtitle),
+        settings_rememberBisIigCredentials: getStr(
+            'settings_rememberBisIigCredentials',
+            en.settings_rememberBisIigCredentials),
+        settings_rememberBisIigCredentials_Subtitle: getStr(
+            'settings_rememberBisIigCredentials_Subtitle',
+            en.settings_rememberBisIigCredentials_Subtitle),
         settings_backgroundHallgatoKeepAlive: getStr(
             'settings_backgroundHallgatoKeepAlive',
             en.settings_backgroundHallgatoKeepAlive),
@@ -2777,6 +2886,18 @@ class LanguagePack{
       'campusMap_RoomsWord':lang.campusMap_RoomsWord,
       'campusMap_ItFacultyOnly':lang.campusMap_ItFacultyOnly,
       'campusMap_ItFacultyOnlyShort':lang.campusMap_ItFacultyOnlyShort,
+      'campusMap_IigLoginRequired':lang.campusMap_IigLoginRequired,
+      'campusMap_IigLoginHint':lang.campusMap_IigLoginHint,
+      'campusMap_IigUsername':lang.campusMap_IigUsername,
+      'campusMap_IigPassword':lang.campusMap_IigPassword,
+      'campusMap_IigSaveCredentials':lang.campusMap_IigSaveCredentials,
+      'campusMap_IigSaveCredentialsSubtitle':lang.campusMap_IigSaveCredentialsSubtitle,
+      'campusMap_IigSignIn':lang.campusMap_IigSignIn,
+      'campusMap_IigEnterCredentials':lang.campusMap_IigEnterCredentials,
+      'campusMap_IigClearCredentials':lang.campusMap_IigClearCredentials,
+      'campusMap_IigCleared':lang.campusMap_IigCleared,
+      'campusMap_Reload':lang.campusMap_Reload,
+      'campusMap_OfflineDebug':lang.campusMap_OfflineDebug,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
       'notif_exam_BodyToday':lang.notif_exam_BodyToday,
       'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,
@@ -2787,6 +2908,8 @@ class LanguagePack{
       'settings_fontScale_Label':lang.settings_fontScale_Label,
       'settings_rememberPasswordOnDevice':lang.settings_rememberPasswordOnDevice,
       'settings_rememberPasswordOnDevice_Subtitle':lang.settings_rememberPasswordOnDevice_Subtitle,
+      'settings_rememberBisIigCredentials':lang.settings_rememberBisIigCredentials,
+      'settings_rememberBisIigCredentials_Subtitle':lang.settings_rememberBisIigCredentials_Subtitle,
       'settings_backgroundHallgatoKeepAlive':lang.settings_backgroundHallgatoKeepAlive,
       'settings_backgroundHallgatoKeepAlive_Subtitle':lang.settings_backgroundHallgatoKeepAlive_Subtitle,
       'mail_error_Prefix':lang.mail_error_Prefix,

@@ -1,27 +1,44 @@
-# Карта кампуса — план indoor-карты (research + WIP в приложении)
+# Карта кампуса — план indoor-карты (research + в приложении)
 
-**Статус (2026-09-16):** Indoor-карта кампуса **всё ещё в разработке / WIP** — это **не** готовый 1:1 продукт официального BIS. Research-пакет фаз **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic/ленты **заменены**. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + ≈78.5° plan-rotation; **1.8.2** = hull + bbox; **1.8.3** = denser z19 MVT, без catalog-bbox, светлая палитра BIS + подписи в полигоне (**2573/3112**). В приложении: Map до логина, LD+LE (IK), приблизительный A→B. Ещё WIP: дыры / technical-кольца, выравнивание маршрута, полировка (**на паузе**). Граф A→B affine≈WGS; чип IK.
+**Статус (2026-09-16):** **Primary UX = официальный BIS WebView в приложении (1.9.0)** — `bis.elte.hu` после входа **ELTE IIG / Caesar**; учётные данные можно сохранить в `flutter_secure_storage`. Офлайн-пакет FootPrint (**1.8.x**) — **вторичный / debug**. Research фазы **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic **заменён**. **1.8.0–1.8.3** офлайн-полигоны оставлены как debug (**2573/3112**).
 
 **Владелец:** Nanda.  
-**Решение (обновлено 2026-09-16):** фундамент карты **в приложении** (полигоны FootPrint); дальнейшая полировка UX/покрытия **на паузе**, фича честно помечена как WIP.  
+**Решение (обновлено 2026-09-16):** показывать **настоящий UI BIS** в WebView с сохранением IIG-логина; офлайн-полигоны не основной путь.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
 
 > Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/)  
-> Внешний deep-link: `lib/Misc/elte_room_code.dart` — пины корпусов; indoor A→B — экран Campus Map (WIP).
+> Внешний deep-link: `lib/Misc/elte_room_code.dart` — пины корпусов; вход indoor = **BIS WebView** (`lib/CampusMap/bis_campus_map_page.dart`).
+
+---
+
+## Продуктовый путь (1.9.0) — BIS WebView + IIG
+
+| Тема | Выбор |
+|------|--------|
+| **Primary UI** | `webview_flutter` → `https://bis.elte.hu/map/budapest?locale=en` (SAML через `idp.elte.hu`) |
+| **Auth** | Поля IdP **`username_iig`** / **`password_iig`** (`LoginType=href`, `source=iig`); без 2FA на этом потоке |
+| **Учётные данные** | Опционально Keychain/Keystore (`BisIigCredentials`); toggle в Настройках; wipe очищает |
+| **Офлайн FootPrint** | Только debug-меню; пакет/research ещё WIP для офлайн A→B |
+
+### Цепочка auth (HAR)
+
+1. `bis.elte.hu/` → `/auth/login` → IdP `SSOService.php`  
+2. `eltedbauth/authpage.php` (POST) → `resume.php`  
+3. POST `bis.elte.hu/auth/saml/callback` → UI карты  
 
 ---
 
 ## Сброс после MVP (2026-09-16) — пути + schematic UX
 
-Владелец отверг фото-карту фазы B и вид **1.7.0** (свечение рёбер графа). Решения:
+Владелец отверг фото-карту фазы B и вид **1.7.0** (свечение рёбер графа). Исторические решения (офлайн-эра):
 
 | Тема | Выбор |
 |------|--------|
 | **Пути** | Маршруты по **осевым коридоров**; сглаженный display (цепочка + Chaikin). |
-| **Визуальная карта** | **Полигоны BIS FootPrint** (заливки WGS84 по типу комнаты). **Не** ленты графа и **не** JPG этажа как primary. |
-| **Охват** | **Пока только IK / факультет информатики** — LD (Déli) + LE (Északi). |
-| **Полилинии BIS** | В research всё ещё **null** — маршруты по derived-графу; не ship-blocker. |
-| **UI фазы B** | **В приложении (WIP):** **1.8.3** полигоны BIS FootPrint + светлая палитра + чип IK; поиск / этажи / приблизительный A→B / pre-login. Не готовый BIS 1:1; полировка на паузе. |
+| **Визуальная карта (1.8.x)** | **Полигоны BIS FootPrint** — теперь **debug**, не primary. |
+| **Охват (офлайн)** | **IK** — LD + LE. |
+| **Полилинии BIS** | В research всё ещё **null** — офлайн-маршруты по derived-графу. |
+| **UI фазы B** | **1.9.0** WebView primary; **1.8.3** FootPrint — debug. |
 
 ### Геометрия схемы
 
@@ -35,7 +52,7 @@
 
 Подготовить **полный, атрибутируемый, прошедший QA пакет indoor-маршрутизации** для ELTE Lágymányos **Юг (LD / Déli)** и **Север (LE / Északi)**, который Neptun ELTE сможет позже загрузить **без** живого логина BIS и **без** живого `routing.route`.
 
-**Карта закончена** = выполнены критерии выхода фаз **0–6** (см. [Определение успеха](#определение-успеха--карта-закончена)). Экраны Flutter, кнопка Map на login-хабе и deep-link из расписания — **фаза B**: перечислены для ясности, **MVP отгружен** в **1.6.0** (`CampusMapPage`, `assets/campus_map/`).
+**Карта закончена** = выполнены критерии выхода фаз **0–6** (см. [Определение успеха](#определение-успеха--карта-закончена)). Экраны Flutter / Map на login-хабе — **фаза B**: **MVP в 1.6.0**; **product primary с 1.9.0** = живой BIS WebView.
 
 ---
 

@@ -15,7 +15,7 @@ import '../language.dart';
 import '../notifications.dart';
 import '../Pages/settings_page.dart';
 import '../Pages/student_card_page.dart';
-import '../CampusMap/campus_map_page.dart';
+import '../CampusMap/bis_campus_map_page.dart';
 import '../Misc/auto_updater.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -682,7 +682,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const CampusMapPage()),
+                          MaterialPageRoute(builder: (context) => const BisCampusMapPage()),
                         );
                       },
                     ),

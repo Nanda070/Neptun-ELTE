@@ -7,6 +7,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.9.0 (BIS WebView + IIG login)
+
+- **Release 1.9.0** (`pubspec` **1.9.0+1**): feature line **9**. Campus map **primary** = in-app **official BIS** (`bis.elte.hu`) via `webview_flutter`; ELTE IIG / Caesar IdP (`username_iig` / `password_iig`, no 2FA); optional save in `flutter_secure_storage`; Settings toggle; offline FootPrint demoted to debug menu. HAR-validated SAML chain. Legal PRIVACY EN/RU/HU + docs EN+RU. GitHub Release **v1.9.0**. Owner **Nanda**.
+
 ## 2026-09-16 — campus map polish paused (still in development)
 
 - **Docs / product honesty:** further campus-map UX polish is **paused** for now. Indoor campus map remains **in development / work-in-progress** — **not** a finished 1:1 clone of official BIS.
@@ -641,18 +645,18 @@ Phase B Flutter (login-hub Map, search + A→B, floor switcher) came later in **
 
 **[ongoing]**
 
-### Done / working on main (**1.8.3**)
+### Done / working on main (**1.9.0**)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
-- Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
+- Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on) + **Save BIS IIG login** (**1.9.0**).
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- **Campus map (shipped foundation, still WIP):** **1.8.3** BIS FootPrint polygons + official light palette; LD+LE; pre-login Map; approximate A→B. Coverage **2573/3112**. Map UX polish **paused** (2026-09-16).
+- **Campus map:** **1.9.0** official BIS WebView + ELTE IIG secure login (primary); offline FootPrint **1.8.x** debug secondary (**2573/3112**).
 
 ### Still unfinished / research
 
-- **Campus indoor map — still in development:** not a finished official-BIS 1:1 product. Remaining: holes / missing technical rings, denser coverage, tighter route alignment, further UX polish when resumed. BIS `routing.route` polylines still **null** in research (graph overlay used instead).
+- **Offline campus FootPrint package** — research/WIP secondary to live BIS WebView; holes / technical rings / route alignment if offline path resumes. BIS `routing.route` polylines still **null** in research.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

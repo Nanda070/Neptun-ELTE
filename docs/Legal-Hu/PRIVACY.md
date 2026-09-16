@@ -108,7 +108,8 @@ Eszköz
 
 - jelszó;
 - JWT access / refresh;
-- eszköz / session cookie jellegű anyag.
+- eszköz / session cookie jellegű anyag;
+- **ELTE IIG / Caesar felhasználónév + jelszó** a campus térképhez (hivatalos BIS WebView, `bis.elte.hu`), ha a felhasználó menti (Beállítások **BIS IIG bejelentkezés mentése**, alapból **be**, ha nincs beállítva; a lap checkbox alapból be). A kapcsoló kikapcsolása, a térkép menü törlése vagy teljes adatwipe törli. **Nincs 2FA** ezen az IdP-folyamon. Sosem SharedPreferences plaintextben és sosem gitben.
 
 ### Beállítások (`SharedPreferences`)
 
@@ -176,6 +177,7 @@ Telepítés / jogosultságok / áruházi analitika az ő feltételeik szerint.
 - A HTTP kliens **bármely** TLS tanúsítványt elfogadhat (campus cert hack) → **MITM** kockázat; megbízható hálózat ajánlott.
 - Kijelentkezés / session wipe: a **JWT mindig törlődik**; a felhasználónév megmaradhat előtöltéshez.
 - **Jelszó kijelentkezéskor:** alapból törlődik. Ha a Beállításokban be van kapcsolva a **Jelszó megjegyzése ezen az eszközön** (alapból **ki**, **1.5.7** / kézi logout **1.5.10**), a jelszó **megmaradhat** secure storage-ban előtöltéshez (**2FA továbbra is kézi**). A kapcsoló kikapcsolása törli a jelszót.
+- **Campus térkép IIG adatok (1.9.0+):** opcionális ELTE IIG felhasználónév + jelszó mentés a BIS WebView térképhez. Csak `flutter_secure_storage`. Törlődik a **BIS IIG bejelentkezés mentése** kikapcsolásakor, a térkép menüből vagy teljes wipe-nál. A WebView cookie-k (`bis.elte.hu` / `idp.elte.hu`) a rendszer cookie store-jában maradhatnak törlésig.
 - Opcionális **háttér hallgató keep-alive** (Beállítások, alapból **ki**, **1.5.7+**): WorkManager / Background Fetch, ~**45 perc**, best-effort `GetNewTokens` — nem tracking/hirdetés.
 - Nem hivatalos kliens — saját felelősségre.
 

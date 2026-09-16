@@ -60,6 +60,9 @@ class DataCache{
     await _secureStorage.delete(key: 'neptun_password');
     await _secureStorage.delete(key: 'neptun_jwt_token');
     await _secureStorage.delete(key: 'neptun_refresh_token');
+    // Campus-map ELTE IIG / Caesar credentials (BIS WebView).
+    await _secureStorage.delete(key: 'bis_iig_username');
+    await _secureStorage.delete(key: 'bis_iig_password');
     // Leftover device cookie can poison same-process re-login (false invalid credentials).
     if (keepUsername.isNotEmpty) {
       await setDeviceCookie(keepUsername, null);
@@ -241,6 +244,8 @@ class DataCache{
   /// Opt-in: keep `neptun_password` across session expiry **and** manual log out
   /// for login pre-fill (default OFF). Toggle off clears stored password.
   late bool? _persistentSetting_rememberPasswordOnDevice = false;
+  /// Campus map BIS: remember ELTE IIG credentials in secure storage (default ON).
+  late bool? _persistentSetting_rememberBisIigCredentials = true;
   late int? _persistentSetting_userSelectedLanguage = -1;
   String? _persistentSetting_userSelectedLanguageCode;
 
@@ -379,6 +384,10 @@ class DataCache{
 
     tmp = await getInt('SETTING_RememberPasswordOnDevice');
     _persistentSetting_rememberPasswordOnDevice = tmp != null && tmp != 0;
+
+    tmp = await getInt('SETTING_RememberBisIigCredentials');
+    // Default ON when unset — campus map asks to save IIG login+password.
+    _persistentSetting_rememberBisIigCredentials = tmp == null || tmp != 0;
 
     tmp = await getInt('SETTING_UserWeekOffset');
     _persistentSetting_weekOffset = tmp ?? 0;
@@ -679,6 +688,19 @@ class DataCache{
     await saveInt('SETTING_RememberPasswordOnDevice', on ? 1 : 0);
     if (!on) {
       await setPassword(null);
+    }
+  }
+
+  static bool? getRememberBisIigCredentials() =>
+      _instance._persistentSetting_rememberBisIigCredentials;
+
+  static Future<void> setRememberBisIigCredentials(int? value) async {
+    final on = value != null && value != 0;
+    _instance._persistentSetting_rememberBisIigCredentials = on;
+    await saveInt('SETTING_RememberBisIigCredentials', on ? 1 : 0);
+    if (!on) {
+      await _secureStorage.delete(key: 'bis_iig_username');
+      await _secureStorage.delete(key: 'bis_iig_password');
     }
   }
 

@@ -6,7 +6,8 @@ import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/Misc/elte_room_code.dart';
 
-/// Indoor campus map — BIS FootPrint room polygons (not schematic ribbons).
+/// Offline FootPrint campus map (debug / secondary).
+/// Primary product path is [BisCampusMapPage] (official BIS WebView).
 /// Works without Neptun login. Scope: IT faculty LD+LE.
 class CampusMapPage extends StatefulWidget {
   const CampusMapPage({super.key, this.initialBuildingId = 'ld'});

@@ -12,7 +12,7 @@ Last sync with the codebase: **16 September 2026** (repo **Neptun-ELTE**, displa
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
 **Backlog** (remaining work): this file’s [honesty table](#11-honesty-full-vs-thin) + [§20 decisions](#20-why-we-chose-this) and the Dev Blog [“In progress / planned”](DEV_BLOG.md#in-progress--planned-honest) section. Numbered `IMPLEMENTATION_PLAN.md` / `.ru.md` were **deleted** after **1.5.0** (plan item **11** Academic Progress / tanterv was **dropped** earlier — do not rebuild).  
-Indoor campus map (LD/LE A→B): [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md). **Still in development / WIP** — not a finished official-BIS 1:1. Phase A research package kept; Phase B **1.6.0** photo UX rejected; **1.7.x** schematic UX superseded. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + plan rotation; **1.8.2** = hull + bbox fill; **1.8.3** = denser z19 MVT, **drop catalog-bbox**, official BIS light palette, in-polygon labels (**2573/3112**). Shipped: pre-login Map, LD+LE, approximate A→B. Still WIP: holes / missing technical rings, route alignment, further polish (**paused** 2026-09-16). Research polygons: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).
+Indoor campus map: [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md). **Primary UX (1.9.0):** in-app **official BIS WebView** (`bis.elte.hu`) after **ELTE IIG / Caesar** IdP login; credentials optional in `flutter_secure_storage`. Offline FootPrint polygon package remains research / debug secondary (menu **Offline polygon map**). Earlier: Phase A research; **1.6.0** photo UX rejected; **1.7.x** schematic superseded; **1.8.x** offline FootPrint polygons (**2573/3112**) — kept as debug. Research: [`campus_map_research/bis/polygons/`](campus_map_research/bis/polygons/README.md).
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
@@ -56,7 +56,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The app authenticates on the **portal**, then sets the institute URL to the assigned **`hallgatoN`** and calls modern JWT REST **there**. Do not hardcode `N`.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.8.3+1** — user-facing / Settings / docs = **1.8.3** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.9.0+1** — user-facing / Settings / docs = **1.9.0** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -78,7 +78,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.8.3** | **Current.** Patch — official BIS light map look: denser z17–19 MVT (still **0** technical); **drop catalog-bbox** fakes; pale yellow / tan / blue-pink palette; roomNumber-in-polygon labels; hull floorPlate underlay; **2573/3112**. Map still **WIP** (not a finished BIS 1:1). Tag **v1.8.3**. |
+| **1.9.0** | **Current.** Feature line **9** — campus map primary = **in-app official BIS WebView** + ELTE IIG / Caesar IdP (`username_iig` / `password_iig`); optional secure-storage save; pre-login hub/drawer entry; offline FootPrint demoted to debug. Tag **v1.9.0**. |
+| **1.8.3** | Patch — official BIS light map look (offline polygons): denser z17–19 MVT; **drop catalog-bbox**; pale yellow / tan / blue-pink; roomNumber labels; hull; **2573/3112**. Superseded as primary by **1.9.0**. Tag **v1.8.3**. |
 | **1.8.2** | Hull fitBounds/underlay + catalog-bbox fill (**2972** then). Superseded by **1.8.3** (bbox dropped). Tag **v1.8.2**. |
 | **1.8.1** | Patch — campus map polygon **position fix**: MVT absolute Y had put many LD rooms ~300 m north of the Déli hull (two clusters + blank gap). Rings **reanchored** to BIS catalog centroids (shapes unchanged); viewer plan-aligns with building `rotationAngle` ≈78.5°; uniform scale. Tag **v1.8.1**. |
 | **1.8.0** | Feature line **8** — campus map primary view = **BIS FootPrint room polygons** (WGS84 fills by roomType; tap card; floor/building filter). Graph A→B overlay via per-floor affine basemapPx→WGS (approximate). Bundled `polygons_ld/le.json` (**2571** of catalog **3670**). Tag **v1.8.0**. |
@@ -224,7 +225,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → foreground JWT maintenance + optional background keep-alive sync |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.8.3` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device** + **Save BIS IIG login**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.9.0` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -490,7 +491,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Today’s classes from calendar cache; no JWT. Shared `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Mail translator | **Working** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
-| Campus indoor map | **WIP — BIS FootPrint (1.8.3)** | Still in development — **not** a finished official-BIS 1:1. Shipped: light palette; catalog-centroid reanchor + ≈78.5° plan rotation; **floor hull** fitBounds + underlay; **MVT-only** (**2573/3112**); roomNumber labels; tap card; approximate A→B; IT chip; pre-login Map. Still WIP: holes / missing technical rings (~399 skipped), route alignment, further polish (**paused**). External Open map kept. |
+| Campus indoor map | **BIS WebView (1.9.0)** | Primary: official `bis.elte.hu` in WebView after ELTE IIG / Caesar login; save IIG user+pass in secure storage (opt-out via Settings). Offline FootPrint package (**1.8.x**, **2573/3112**) kept as debug secondary. External Open map kept. |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |

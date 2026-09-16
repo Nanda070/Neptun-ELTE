@@ -18,7 +18,7 @@ import '../Misc/emojirich_text.dart';
 import '../Misc/auto_updater.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
-import 'package:neptun2/CampusMap/campus_map_page.dart';
+import 'package:neptun2/CampusMap/bis_campus_map_page.dart';
 import 'main_page.dart' as main_page;
 import 'two_factor_page.dart';
 
@@ -236,7 +236,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             AppHaptics.lightImpact();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const CampusMapPage()),
+                              MaterialPageRoute(builder: (context) => const BisCampusMapPage()),
                             );
                           },
                           child: Container(

@@ -132,7 +132,8 @@ Stored with **`flutter_secure_storage`** (platform keychain / keystore style sto
 
 - Neptun **password**;
 - **JWT** access and refresh tokens (when issued);
-- Neptun-related **device / session cookie** material the client needs to keep calling APIs.
+- Neptun-related **device / session cookie** material the client needs to keep calling APIs;
+- **ELTE IIG / Caesar username + password** for the in-app campus map (official BIS WebView at `bis.elte.hu`), when the user opts to save them (Settings **Save BIS IIG login**, default **on** once unset; sheet checkbox defaults on). Turning the toggle off, clearing from the map menu, or full app data wipe deletes these keys. **No 2FA** on the BIS IdP form used by this flow. Credentials are **never** written to SharedPreferences plaintext or committed to git.
 
 ### 5.2 Account identifiers and settings
 
@@ -258,6 +259,7 @@ Historical notes (donate buttons, obsolete version gates, etc.) may appear as **
 - Sensitive secrets intended for **platform secure storage** (`flutter_secure_storage`).
 - Logout / session wipe **always clears JWTs** (`accessToken` / refresh) and academic cache intent; **username may remain** for form prefill.
 - **Password on logout:** cleared by default. If the user opted in to Settings **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default **off**, shipped **1.5.7** / manual-logout keep **1.5.10**), the Neptun password may **remain** in secure storage after logout for login prefill (**2FA is still manual**). Turning the toggle off clears the stored password.
+- **Campus map IIG credentials (1.9.0+):** optional save of ELTE IIG username + password for the BIS WebView map. Stored only in `flutter_secure_storage`. Cleared when Settings **Save BIS IIG login** is turned off, via map menu **Clear saved IIG login**, or on full data wipe. WebView cookies for `bis.elte.hu` / `idp.elte.hu` may persist in the system WebView cookie store until cleared.
 - Optional **background hallgato keep-alive** (Settings, default **off**, **1.5.7+**): Android WorkManager / iOS Background Fetch, typical cadence **~45 min**, best-effort `GetNewTokens` only — not tracking/ads.
 - TLS is used for HTTPS endpoints in normal operation.
 

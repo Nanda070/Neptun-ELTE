@@ -58,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _appVersionLabel = '1.8.3';
+        _appVersionLabel = '1.9.0';
       });
     }
   }
@@ -496,6 +496,23 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (b) async {
               AppHaptics.lightImpact();
               await DataCache.setRememberPasswordOnDevice(b ? 1 : 0);
+              setState(() {});
+            },
+          ),
+          SwitchListTile(
+            title: Text(
+              AppStrings.getLanguagePack().settings_rememberBisIigCredentials,
+              style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              AppStrings.getLanguagePack().settings_rememberBisIigCredentials_Subtitle,
+              style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.55), fontSize: 13),
+            ),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getRememberBisIigCredentials() ?? true,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setRememberBisIigCredentials(b ? 1 : 0);
               setState(() {});
             },
           ),

@@ -1,27 +1,44 @@
-# Campus map — indoor map plan (research + in-app WIP)
+# Campus map — indoor map plan (research + in-app)
 
-**Status (2026-09-16):** Indoor campus map is **still in development / WIP** — **not** a finished 1:1 official-BIS product. Research package phases **0–6** kept. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + ≈78.5° plan rotation; **1.8.2** = hull + bbox fill; **1.8.3** = denser z19 MVT, drop catalog-bbox, official BIS light palette + in-polygon labels (**2573/3112**). Shipped in app: pre-login Map, LD+LE (IT), approximate A→B. Still WIP: holes / missing technical rings, route alignment, further polish (**paused**). Graph A→B affine≈WGS; IT faculty chip.
+**Status (2026-09-16):** **Primary product UX = in-app official BIS WebView (1.9.0)** — `bis.elte.hu` after **ELTE IIG / Caesar** IdP login; credentials may be saved in `flutter_secure_storage`. Offline FootPrint polygon package (**1.8.x**) is **secondary / debug** (research + menu). Research phases **0–6** kept. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic **superseded**. **1.8.0–1.8.3** offline FootPrint polygons kept as debug (**2573/3112**).
 
 **Owner:** Nanda.  
-**Decision (updated 2026-09-16):** map foundation is **in the app** (FootPrint polygons); further UX/coverage polish is **paused** while the feature stays honestly marked WIP.  
+**Decision (updated 2026-09-16):** ship the **real BIS UI** in a WebView with saved IIG login; offline polygon painter is not the main path.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
 
 > Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md) · Package: [`campus_map_package/`](campus_map_package/)  
-> Related shipped maps (external deep-link): `lib/Misc/elte_room_code.dart` — building pins; indoor A→B is the Campus Map screen (WIP).
+> Related shipped maps (external deep-link): `lib/Misc/elte_room_code.dart` — building pins; indoor map entry = **BIS WebView** (`lib/CampusMap/bis_campus_map_page.dart`).
+
+---
+
+## Product path (1.9.0) — BIS WebView + IIG
+
+| Topic | Choice |
+|-------|--------|
+| **Primary UI** | `webview_flutter` → `https://bis.elte.hu/map/budapest?locale=en` (SAML via `idp.elte.hu`) |
+| **Auth** | IdP form fields **`username_iig`** / **`password_iig`** (`LoginType=href`, `source=iig`); no 2FA on this flow |
+| **Credentials** | Optional save in Keychain/Keystore (`BisIigCredentials`); Settings toggle; logout/wipe clears |
+| **Offline FootPrint** | Debug menu only; package/research still WIP for offline A→B experiments |
+
+### Auth redirect chain (HAR)
+
+1. `bis.elte.hu/` → `/auth/login` → IdP `SSOService.php`  
+2. `eltedbauth/authpage.php` (POST credentials) → `resume.php`  
+3. POST `bis.elte.hu/auth/saml/callback` (`SAMLResponse`) → map UI  
 
 ---
 
 ## Post-MVP reset (2026-09-16) — paths + schematic UX
 
-Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Decisions:
+Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Historical decisions (offline era):
 
 | Topic | Choice |
 |-------|--------|
 | **Paths** | Routes follow **corridor centerlines**; smooth display (along-corridor chain + Chaikin). |
-| **Visual map** | **BIS FootPrint polygons** (WGS84 room fills by type). Do **not** use graph ribbons or floor JPG as primary. |
-| **Scope** | **IT faculty only (for now)** — LD (Déli / South) + LE (Északi / North) Lágymányos IK buildings. |
-| **BIS polylines** | Still **null** in research dump — routes use derived graph; not a ship blocker. |
-| **Phase B UI** | **In app (WIP):** **1.8.3** BIS FootPrint polygons + light palette + IT chip; search / floors / approximate A→B / pre-login kept. Not a finished BIS 1:1; polish paused. |
+| **Visual map (1.8.x)** | **BIS FootPrint polygons** (WGS84 room fills by type) — now **debug**, not primary. |
+| **Scope (offline)** | **IT faculty** — LD + LE. |
+| **BIS polylines** | Still **null** in research dump — offline routes use derived graph. |
+| **Phase B UI** | **1.9.0** WebView primary; **1.8.3** FootPrint kept as debug. |
 
 ### Schematic geometry
 
@@ -35,7 +52,7 @@ Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Decisio
 
 Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lágymányos **South (LD / Déli)** and **North (LE / Északi)** that the Neptun ELTE app can later load without depending on live BIS login or live `routing.route`.
 
-**Map finished** means: Phase **0–6** exit criteria all met (see [Success definition](#success-definition-map-finished)). Flutter screens / login-hub Map / A→B are **Phase B** — **MVP shipped in 1.6.0**.
+**Map finished** means: Phase **0–6** exit criteria all met (see [Success definition](#success-definition-map-finished)). Flutter screens / login-hub Map / A→B are **Phase B** — **MVP shipped in 1.6.0**; **product primary as of 1.9.0** is live BIS WebView.
 
 ---
 
