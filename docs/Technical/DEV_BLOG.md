@@ -7,6 +7,10 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.8.1 (campus map polygon position fix)
+
+- **Release 1.8.1** (`pubspec` **1.8.1+1**): patch on line **8**. Root cause of blank LD ground-floor gap: MVT decode had wrong absolute **latitude** (~11–255 m vs catalog; two clusters ~300 m apart) while room **shapes** matched catalog bboxes. Fix: reanchor every ring to BIS catalog `centroid`; store/building `rotationAngle` ≈78.5° for plan-aligned view; uniform screen scale. Docs EN+RU. GitHub Release **v1.8.1**. Owner **Nanda**.
+
 ## 2026-09-16 — release 1.8.0 (BIS FootPrint polygon map)
 
 - **Release 1.8.0** (`pubspec` **1.8.0+1**): feature line **8**. Campus map primary view = **BIS FootPrint room polygons** (WGS84 fills by `roomType` like official BIS; tap card; floor/building filter). Bundled `assets/campus_map/polygons_{ld,le}.json` (**1375 + 1196 = 2571** of catalog **3670** — honest gap; floors −1…7). Graph A→B kept as path overlay: per-floor affine `basemapPx→WGS` from room `centroidWgs` control points (**approximate ~10–35 m**); room nodes prefer WGS centroids. Schematic ribbons / JPG no longer primary. Docs EN+RU + CAMPUS_MAP_PLAN synced. GitHub Release **v1.8.0**. Owner **Nanda**.

@@ -5,7 +5,7 @@
   "buildings": {
     "ld": {
       "file": "assets/campus_map/polygons_ld.json",
-      "bytes": 424076,
+      "bytes": 497787,
       "polygons": 1375,
       "catalog": 1696,
       "floors": {
@@ -19,11 +19,18 @@
         "6": 161,
         "7": 146
       },
-      "skipped": 28
+      "skipped": 28,
+      "rotationAngle": 78.49973776890022,
+      "bbox": [
+        19.061751356,
+        47.471750759,
+        19.063414599,
+        47.472887353
+      ]
     },
     "le": {
       "file": "assets/campus_map/polygons_le.json",
-      "bytes": 371038,
+      "bytes": 436209,
       "polygons": 1196,
       "catalog": 1974,
       "floors": {
@@ -37,9 +44,18 @@
         "6": 109,
         "7": 64
       },
-      "skipped": 22
+      "skipped": 22,
+      "rotationAngle": 78.49970420702536,
+      "bbox": [
+        19.06104459,
+        47.473816746,
+        19.06276354,
+        47.47535845
+      ]
     }
   },
   "uiMode": "bis-footprint-polygons",
-  "routeCrs": "graph-basemapPx affine\u2192WGS84 using room centroidWgs control points (approximate)"
+  "routeCrs": "graph-basemapPx affine→WGS84 using room centroidWgs control points (approximate)",
+  "polygonCrs": "WGS84 rings reanchored to BIS catalog centroids (1.8.1); view plan-aligned via building rotationAngle ≈78.5°",
+  "fixNote": "1.8.0 MVT absolute Y placed many LD rooms ~300m north of Déli hull (two clusters + blank gap). 1.8.1 translates each ring so centroid matches catalog; shapes unchanged."
 }

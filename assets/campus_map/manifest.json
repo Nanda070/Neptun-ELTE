@@ -5,7 +5,7 @@
   "generatedAt": "2026-09-16",
   "packageDate": "2026-09-16",
   "phase": 6,
-  "notes": "1.8.0 primary UI = BIS FootPrint room polygons (WGS84) from bis.elte.hu/tiles/rooms MVT; graph for A→B routing overlay (affine≈WGS); schematic_*.json legacy only; JPG debug-only; IT faculty LD+LE.",
+  "notes": "1.8.1 primary UI = BIS FootPrint polygons reanchored to catalog centroids (MVT Y fix) + plan rotation ≈78.5°; graph A→B affine≈WGS; schematic_*.json legacy; JPG debug-only; IT faculty LD+LE.",
   "buildings": [
     {
       "id": "ld",

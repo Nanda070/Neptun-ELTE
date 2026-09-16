@@ -11,6 +11,7 @@ class CampusPolygonSet {
     required this.catalogCount,
     required this.bbox,
     required this.floors,
+    this.rotationAngle = 0,
   });
 
   final String buildingId;
@@ -18,6 +19,8 @@ class CampusPolygonSet {
   final int catalogCount;
   final List<double> bbox; // west, south, east, north
   final Map<int, CampusPolygonFloor> floors;
+  /// BIS `building.properties.rotationAngle` (degrees) — plan-align local view.
+  final double rotationAngle;
 
   factory CampusPolygonSet.fromJson(Map<String, dynamic> j) {
     final floors = <int, CampusPolygonFloor>{};
@@ -33,6 +36,7 @@ class CampusPolygonSet {
           .map((e) => (e as num).toDouble())
           .toList(),
       floors: floors,
+      rotationAngle: (j['rotationAngle'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -117,28 +121,51 @@ class CampusRoomPolygon {
   }
 }
 
-/// Local equirectangular meters from a WGS origin (y north-up).
+/// Local equirectangular meters from a WGS origin.
+///
+/// Optional [rotationDegrees] (BIS building `rotationAngle`) rotates the local
+/// frame by **−angle** so the floor plan is axis-aligned like official BIS 2D
+/// (y still “up” in plan space after rotation).
 class WgsLocalProjector {
-  WgsLocalProjector(this.originLng, this.originLat)
-      : mPerDegLat = 111320.0,
-        mPerDegLng = 111320.0 * math.cos(originLat * math.pi / 180.0);
+  WgsLocalProjector(
+    this.originLng,
+    this.originLat, {
+    this.rotationDegrees = 0,
+  })  : mPerDegLat = 111320.0,
+        mPerDegLng = 111320.0 * math.cos(originLat * math.pi / 180.0),
+        _cos = math.cos(-rotationDegrees * math.pi / 180.0),
+        _sin = math.sin(-rotationDegrees * math.pi / 180.0);
 
   final double originLng;
   final double originLat;
+  final double rotationDegrees;
   final double mPerDegLat;
   final double mPerDegLng;
+  final double _cos;
+  final double _sin;
 
-  Offset toLocal(double lng, double lat) => Offset(
-        (lng - originLng) * mPerDegLng,
-        (lat - originLat) * mPerDegLat,
-      );
+  Offset toLocal(double lng, double lat) {
+    final x = (lng - originLng) * mPerDegLng;
+    final y = (lat - originLat) * mPerDegLat;
+    if (rotationDegrees == 0) return Offset(x, y);
+    return Offset(x * _cos - y * _sin, x * _sin + y * _cos);
+  }
 
   Offset toLocalOffset(Offset wgs) => toLocal(wgs.dx, wgs.dy);
 
-  Offset toWgs(double localX, double localY) => Offset(
-        originLng + localX / mPerDegLng,
-        originLat + localY / mPerDegLat,
-      );
+  Offset toWgs(double localX, double localY) {
+    double x = localX;
+    double y = localY;
+    if (rotationDegrees != 0) {
+      // Inverse of forward rotation by θ = −rotationDegrees.
+      x = localX * _cos + localY * _sin;
+      y = -localX * _sin + localY * _cos;
+    }
+    return Offset(
+      originLng + x / mPerDegLng,
+      originLat + y / mPerDegLat,
+    );
+  }
 }
 
 /// Affine: basemapPx (x,y) → WGS (lng,lat). Approximate — graph digitization ≠ survey.
@@ -265,12 +292,17 @@ class CampusPolygonPainter extends CustomPainter {
   final bool dark;
 
   Offset _map(Offset local, Size size) {
-    final sx = size.width / bounds.width;
-    final sy = size.height / bounds.height;
-    // Flip Y for screen (local y is north-up).
+    // Uniform scale (letterbox) — never stretch lat/lng independently.
+    final scale = math.min(
+      size.width / bounds.width,
+      size.height / bounds.height,
+    );
+    final ox = (size.width - bounds.width * scale) / 2;
+    final oy = (size.height - bounds.height * scale) / 2;
+    // Flip Y for screen (local y is plan-up).
     return Offset(
-      (local.dx - bounds.left) * sx,
-      (bounds.bottom - local.dy) * sy,
+      ox + (local.dx - bounds.left) * scale,
+      oy + (bounds.bottom - local.dy) * scale,
     );
   }
 
@@ -506,11 +538,15 @@ class CampusPolygonPainter extends CustomPainter {
     required WgsLocalProjector projector,
     required Rect bounds,
   }) {
-    // Convert screen → local meters → approximate WGS, then PIP.
-    final sx = bounds.width / size.width;
-    final sy = bounds.height / size.height;
-    final lx = bounds.left + localPos.dx * sx;
-    final ly = bounds.bottom - localPos.dy * sy;
+    // Convert screen → local meters → WGS, then PIP (inverse of uniform _map).
+    final scale = math.min(
+      size.width / bounds.width,
+      size.height / bounds.height,
+    );
+    final ox = (size.width - bounds.width * scale) / 2;
+    final oy = (size.height - bounds.height * scale) / 2;
+    final lx = bounds.left + (localPos.dx - ox) / scale;
+    final ly = bounds.bottom - (localPos.dy - oy) / scale;
     final pt = projector.toWgs(lx, ly);
 
     CampusRoomPolygon? best;
@@ -575,7 +611,7 @@ class CampusSchematicPainterCompat {
   }
 }
 
-/// Build projector + bounds padded from polygon bbox (WGS).
+/// Build projector + padded local bounds (plan-aligned via [CampusPolygonSet.rotationAngle]).
 ({WgsLocalProjector projector, Rect bounds}) buildFloorView(
   CampusPolygonSet set,
   CampusPolygonFloor floor,
@@ -608,16 +644,38 @@ class CampusSchematicPainterCompat {
   }
   final originLng = (minLng + maxLng) / 2;
   final originLat = (minLat + maxLat) / 2;
-  final projector = WgsLocalProjector(originLng, originLat);
-  final sw = projector.toLocal(minLng, minLat);
-  final ne = projector.toLocal(maxLng, maxLat);
-  final pad = 8.0; // meters
-  final bounds = Rect.fromLTRB(
-    math.min(sw.dx, ne.dx) - pad,
-    math.min(sw.dy, ne.dy) - pad,
-    math.max(sw.dx, ne.dx) + pad,
-    math.max(sw.dy, ne.dy) + pad,
+  final projector = WgsLocalProjector(
+    originLng,
+    originLat,
+    rotationDegrees: set.rotationAngle,
   );
+  // Bounds from every vertex after plan rotation (not WGS AABB corners alone).
+  double minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+  void include(double lng, double lat) {
+    final p = projector.toLocal(lng, lat);
+    minX = math.min(minX, p.dx);
+    maxX = math.max(maxX, p.dx);
+    minY = math.min(minY, p.dy);
+    maxY = math.max(maxY, p.dy);
+  }
+
+  var any = false;
+  for (final r in floor.rooms) {
+    for (final ring in r.rings) {
+      for (final p in ring) {
+        include(p.dx, p.dy);
+        any = true;
+      }
+    }
+  }
+  if (!any) {
+    include(minLng, minLat);
+    include(maxLng, maxLat);
+    include(minLng, maxLat);
+    include(maxLng, minLat);
+  }
+  const pad = 8.0; // meters
+  final bounds = Rect.fromLTRB(minX - pad, minY - pad, maxX + pad, maxY + pad);
   return (projector: projector, bounds: bounds);
 }
 

@@ -34,3 +34,7 @@ Catalogs are larger (south 1696, north 1974) — leftover rooms likely lack Foot
 ## Note on `queryRenderedFeatures`
 
 Mapbox map facade was found (`value.maps.map.getMap()`), but `getStyle` / `queryRenderedFeatures` failed (`Style is not done loading` / `featuresets`). Tile endpoint capture succeeded instead.
+
+## Coordinate fix (1.8.1)
+
+Raw MVT decode placed many rings with wrong absolute **latitude** (LD showed two clusters ~300 m apart). Room **shapes** matched catalog bboxes; only position was wrong. App assets and these GeoJSONs were **reanchored** so each ring’s centroid equals the BIS catalog `centroid`. Viewer also applies building `rotationAngle` ≈78.5° for plan-aligned display.

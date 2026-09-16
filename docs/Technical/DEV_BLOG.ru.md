@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-09-16 — релиз 1.8.1 (фикс позиций полигонов карты)
+
+- **Релиз 1.8.1** (`pubspec` **1.8.1+1**): патч линии **8**. Причина пустого разрыва на LD ground: у MVT была неверная абсолютная **широта** (~11–255 м vs каталог; два кластера ~300 м), при верной **форме** комнат. Фикс: reanchor колец к `centroid` каталога BIS; `rotationAngle` ≈78.5° для plan-вида; uniform scale. Docs EN+RU. GitHub Release **v1.8.1**. Владелец **Nanda**.
+
 ## 2026-09-16 — релиз 1.8.0 (полигоны BIS FootPrint)
 
 - **Релиз 1.8.0** (`pubspec` **1.8.0+1**): feature-line **8**. Primary вид карты = **полигоны BIS FootPrint** (заливки WGS84 по `roomType`; карточка по тапу; этаж/корпус). В бандле `polygons_{ld,le}.json` (**1375 + 1196 = 2571** из каталога **3670** — честный gap; этажи −1…7). A→B поверх: affine `basemapPx→WGS` по `centroidWgs` (**≈10–35 м**). Schematic/JPG больше не primary. Docs EN+RU. GitHub Release **v1.8.0**. Владелец **Nanda**.
