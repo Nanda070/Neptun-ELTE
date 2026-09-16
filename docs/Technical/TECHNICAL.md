@@ -589,6 +589,7 @@ On **iOS 14+**, a **debug** build **cannot** launch from the home-screen icon �
 2. Runner → Signing & Capabilities → Automatically manage signing → Team.  
 3. iPhone: **Settings → General → VPN & Device Management** → trust Apple Development.  
 4. Install: `flutter run --release -d Nanda` or `xcrun devicectl device install app`.
+   **Standing order:** after each release, install on Nanda’s iPhone 16 Pro (`com.nanda070.neptunmobile`) — see `.cursor/rules/ios-iphone-install-after-release.mdc`.
 
 ### Info.plist (important)
 

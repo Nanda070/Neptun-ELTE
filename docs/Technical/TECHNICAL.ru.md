@@ -589,6 +589,7 @@ Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Та
 2. Runner → Signing & Capabilities → Automatically manage signing → Team.  
 3. iPhone: **Settings → General → VPN & Device Management** → доверить Apple Development.  
 4. Установка: `flutter run --release -d Nanda` или `xcrun devicectl device install app`.
+   **Постоянный порядок:** после каждого релиза ставить на iPhone 16 Pro Наны (`com.nanda070.neptunmobile`) — см. `.cursor/rules/ios-iphone-install-after-release.mdc`.
 
 ### Info.plist (важное)
 

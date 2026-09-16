@@ -1,0 +1,40 @@
+---
+description: After every app ship/release, always install the build on Nanda’s physical iPhone 16 Pro
+alwaysApply: true
+---
+
+# Always install on iPhone 16 Pro after release
+
+Owner: **Nanda**. Related: `.cursor/rules/versioning.mdc`, `.cursor/rules/android-github-release-tags.mdc`, TECHNICAL §14.
+
+## User policy (RU intent)
+
+«Всегда ставь на iPhone» — after every app ship/release, **always** install the shipped build on the physical **iPhone 16 Pro**.
+
+## When (required)
+
+Do this at the end of any of:
+
+- Marketing version bump / product ship (`1.x.y`)
+- GitHub Release (APK/IPA) or «коммит + релиз + пуш»
+- Explicit reinstall request («поставь», «поставь еще раз»)
+
+Pure docs/chore/rule-only commits need **not** install unless the user asks.
+
+## Device
+
+- Nickname: **Nanda** (wireless or USB)
+- Model: **iPhone 16 Pro** (`iPhone17,1`)
+- UDID (typical): `00008140-00121CC82179801C`
+- Bundle ID: `com.nanda070.neptunmobile`
+
+## How
+
+1. Prefer: `flutter run --release -d Nanda` (or the device UDID).
+2. If wireless Flutter fails: `flutter build ios --release` then `xcrun devicectl device install app --device <UDID> <path-to-.app>` + launch.
+3. Confirm on device: `CFBundleShortVersionString` / Settings version equals the shipped marketing `1.x.y` (three numbers; no `+build`).
+
+## Do not
+
+- Skip the physical phone install after a product release because “docs were updated” or Android was shipped.
+- Leave only a simulator install as the release check.
