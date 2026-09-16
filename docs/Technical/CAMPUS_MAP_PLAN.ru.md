@@ -1,11 +1,11 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **фаза A в работе** (данные / граф карты). **Фаза B (Flutter-приложение)** отложена, пока графы LD (+ LE по договорённости) не завершены и не упакованы.  
+**Статус:** **Фаза 0 готова · фаза 1 готова** (схема зафиксирована). Далее: **фаза 2** — оцифровка графа LD. **Фаза B (Flutter-приложение)** отложена, пока графы LD (+ LE) не упакованы и не прошли QA.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
 
-> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md)  
+> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md)  
 > Уже в приложении (только внешний deep-link): `lib/Misc/elte_room_code.dart` — **не** indoor A→B.
 
 ---
@@ -47,21 +47,29 @@
 
 ## Фаза 0 — Заморозка инвентаря
 
+**Статус:** **ГОТОВО** — решения зафиксированы **2026-09-16**.
+
 **Зачем:** зафиксировать уже имеющееся, чтобы оцифровка не «переоткрывала» источники на полпути.
 
-### Уже в репозитории (`docs/Technical/campus_map_research/`)
+### Замороженный инвентарь (2026-09-16)
 
-| Актив | Путь / заметки |
-|-------|----------------|
-| Research README | `campus_map_research/README.md` |
-| Отчёты импорта BIS | `BIS_IMPORT_REPORT.md` · `.ru.md` |
-| Публичные JPG LD + таблица комнат | `ld_south/` (этажи −1…7, схема коридоров 1–8, ~134 подписанных комнат) |
-| Публичные JPG LE + таблица | `le_north/` (этажи −1…7) |
+Пути под `docs/Technical/campus_map_research/`:
+
+| Актив | Путь |
+|-------|------|
+| Research README | `README.md` |
+| Отчёты импорта BIS | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
+| **Схема фазы 1** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
+| Basemap JPG LD | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
+| Публичная таблица комнат LD | `ld_south/rooms.json` (~134 подписанных комнат; схема коридоров 1–8) |
+| Basemap JPG LE | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
+| Публичная таблица LE | `le_north/rooms.json` |
 | Образец A→B Севера | `eszaki_route_planner/` (terkeptar / OpenLayers 2018) |
-| Каталог BIS Юг | `bis/south/` — **1696** комнат, этажи `00`…`7`,`T` |
-| Каталог BIS Север | `bis/north/` — **1974** комнат, этажи `-4`…`11` |
-| Educational-подмножества | `rooms_educational.json` (Юг **849**, Север **639**) |
+| Каталог BIS Юг | `bis/south/` — **1696** комнат, этажи `00`…`7`,`T`; educational `rooms_educational.json` (**849**) |
+| Каталог BIS Север | `bis/north/` — **1974** комнат, этажи `-4`…`11`; educational (**639**) |
 | API-археология | `bis/api/` (entities, filters, rooms-by-id, routing trials → геометрия **null**) |
+
+**Cookies / токены:** **не в git** (и должны оставаться вне git).
 
 ### Кредиты, которые сохраняем
 
@@ -70,43 +78,61 @@
 - Планировщик Севера: **Eszényi Krisztián** (ELTE Cartography & Geoinformatics, 2018)
 - Официальный BIS: ELTE IIG (`bis.elte.hu`)
 
+### Зафиксированные решения (2026-09-16)
+
+| Решение | Выбор |
+|---------|--------|
+| Basemap | JPG sarkozigergo в `ld_south/floors/` + `le_north/floors/` — **разрешение ещё pending** (honesty) |
+| Поисковые узлы | Centroids/коды BIS + публичные таблицы комнат |
+| Геометрия маршрутов | Оцифровываем свой граф — **не** ждём полилинии BIS `routing.route` |
+
 ### Критерии выхода
 
-- [ ] Краткий «frozen inventory» в этом плане (или research README) перечисляет пути выше с датой **2026-09-16**.
-- [ ] Договорённость: basemap = JPG sarkozigergo (после разрешения); searchable nodes = centroids/коды BIS + публичные таблицы; **не** ждать полилинии BIS.
-- [ ] Cookies / токены по-прежнему **не в git** (уже так).
+- [x] Замороженный инвентарь путей с датой **2026-09-16**.
+- [x] Решения basemap / поиск / не ждать полилинии BIS зафиксированы.
+- [x] Cookies / токены по-прежнему **не в git**.
 
 ---
 
 ## Фаза 1 — Модель данных
 
+**Статус:** **ГОТОВО** — **2026-09-16**. Канон: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md).
+
 **Зачем:** одна JSON-дружелюбная схема для комнат, этажей, узлов, рёбер и join Neptun↔BIS — до рисования рёбер.
 
-### Сущности (минимум)
+### Сущности (зафиксированы)
 
-| Сущность | Обязательные поля (черновик) |
-|----------|------------------------------|
+| Сущность | Обязательные поля |
+|----------|-------------------|
 | **Building** | `id` (`ld` \| `le`), `neptunPrefix` (`LD` \| `LE`), display names HU/EN |
-| **Floor** | `buildingId`, `level` (int, напр. −1…7), `bisSlug` (напр. `00`,`0`…`7`), `basemapAsset` |
-| **Room** | стабильный `id`, `codeBis`, `codeNeptun` (nullable до join), `name`, `floorId`, `centroid` `{x,y}` или `{lng,lat}`, `aliases[]`, `type` |
-| **Node** | `id`, `floorId`, `kind` (`room` \| `corridor` \| `stair` \| `lift` \| `entrance` \| `poi`), `coord`, опционально `roomId` |
-| **Edge** | `from`, `to`, `weight` (длина или cost), `bidirectional` (по умолчанию true), опционально `restricted` |
+| **Floor** | `buildingId`, `level` (int, напр. −1…7), `bisSlug` (напр. `00`,`0`…`7`), `basemapAsset`, `basemapWidth`/`Height` |
+| **Room** | стабильный `id`, `codeBis`, `codeNeptun` (nullable до join), `name`, `floorId`, `centroid` (пиксели), опционально `centroidWgs`, `aliases[]`, `type` |
+| **Node** | `id`, `floorId`, `kind` (`room` \| `corridor` \| `stair` \| `lift` \| `entrance` \| `poi`), `coord` (пиксели), опционально `roomId`, `verticalShaftId` |
+| **Edge** | `from`, `to`, `weight` (длина или cost), `bidirectional` (по умолчанию true), опционально `kind` / `restricted` / `floors` |
 | **Join row** | `neptunCode` ↔ `bisRoomId` / `codeBis`, confidence (`exact` \| `heuristic` \| `manual`) |
 
-### Политика координат
+### Политика координат (зафиксирована)
 
-- Предпочтительно **локальные пиксели / нормализованные** координаты этажа, привязанные к объявленному размеру basemap (ширина×высота JPG), чтобы маршрутизация работала без Mapbox.
-- Параллельный WGS84 для outdoor handoff — опционально, не нужен для выхода фазы A.
+- **Primary (граф):** локальные **пиксели basemap** (`space: "basemapPx"`), origin top-left, привязка к размеру JPG — маршрутизация без Mapbox.
+- **Secondary:** опциональный WGS84 из centroids BIS (`space: "wgs84"`) для outdoor handoff / проверок — не CRS проходимости.
+- Образец: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (реальные коды/WGS BIS; **placeholder**-пиксели до фазы 2).
+- Join-заглушка: [`joins_ld.stub.json`](campus_map_research/schema/joins_ld.stub.json) / `.csv`.
+
+### Лестницы / лифты
+
+Лестницы и лифты — **межэтажные рёбра**: один landing-узел на этаж с общим `verticalShaftId`; вертикальные рёбра связывают соседние площадки (`verticalStair` / `verticalLift`). См. SCHEMA.md.
 
 ### Критерии выхода
 
-- [ ] Схема задокументирована в этом файле (или `campus_map_research/schema.md`) с примерами JSON на один этаж LD.
-- [ ] Поле версии на корне пакета (`schemaVersion`).
-- [ ] Явное правило: лестницы/лифты — **межэтажные рёбра** (один вертикальный ствол связан между этажами).
+- [x] Схема в `campus_map_research/schema/SCHEMA.md` с примером JSON этажа LD floor-0.
+- [x] Поле версии на корне пакета (`schemaVersion`: **1**).
+- [x] Явное правило: лестницы/лифты — **межэтажные рёбра** (один вертикальный ствол связан между этажами).
 
 ---
 
 ## Фаза 2 — Полная оцифровка графа LD
+
+**Статус:** **СЛЕДУЮЩАЯ** (не начата).
 
 **Зачем:** проходимый граф коридоров для **Юга / Déli (LD)** на всех студенчески значимых этажах.
 
@@ -324,6 +350,7 @@
 | Документ | Роль |
 |----------|------|
 | [campus_map_research/README.md](campus_map_research/README.md) | Индекс research-дампа |
+| [campus_map_research/schema/SCHEMA.md](campus_map_research/schema/SCHEMA.md) | Модель данных фазы 1 (зафиксирована) |
 | [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) | Auth BIS, каталоги, routing null |
 | [TECHNICAL.ru.md](TECHNICAL.ru.md) | Технический канон продукта |
 | [DEV_BLOG.ru.md](DEV_BLOG.ru.md) | Хронологический дневник |

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "joins",
+  "buildingId": "ld",
+  "generatedAt": "2026-09-16",
+  "notes": "Phase 1 stub only — a few exact public-table ↔ BIS educational matches. Full joins_ld.json is Phase 4.",
+  "joins": [
+    {
+      "neptunCode": "LD 0.821",
+      "neptunAliases": ["LD-0-821", "LD 0-821", "0-821"],
+      "bisRoomId": 3859,
+      "codeBis": "0-821",
+      "bisRoomCode": "LD-0-821-01-12",
+      "roomId": "ld-room-0-821",
+      "confidence": "exact",
+      "notes": "Bolyai János terem — ld_south/rooms.json + bis/south/rooms_educational.json"
+    },
+    {
+      "neptunCode": "LD 0.805",
+      "neptunAliases": ["LD-0-805", "0-805"],
+      "bisRoomId": 3847,
+      "codeBis": "0-805",
+      "bisRoomCode": "LD-0-805-01-12",
+      "roomId": "ld-room-0-805",
+      "confidence": "exact",
+      "notes": "Fejér Lipót terem"
+    },
+    {
+      "neptunCode": "LD 0.412",
+      "neptunAliases": ["LD-0-412", "0-412"],
+      "bisRoomId": 2358,
+      "codeBis": "0-412",
+      "bisRoomCode": "LD-0-412-01-12",
+      "roomId": "ld-room-0-412",
+      "confidence": "exact",
+      "notes": "Rényi Alfréd terem"
+    },
+    {
+      "neptunCode": "LD 0.803",
+      "neptunAliases": ["LD-0-803", "0-803"],
+      "bisRoomId": 3817,
+      "codeBis": "0-803",
+      "bisRoomCode": "LD-0-803-01-12",
+      "roomId": "ld-room-0-803",
+      "confidence": "exact",
+      "notes": "Szabó József előadó"
+    },
+    {
+      "neptunCode": "LD 0.804",
+      "neptunAliases": ["LD-0-804", "0-804"],
+      "bisRoomId": 2914,
+      "codeBis": "0-804",
+      "bisRoomCode": "LD-0-804-01-12",
+      "roomId": "ld-room-0-804",
+      "confidence": "exact",
+      "notes": "Lóczy Lajos terem"
+    },
+    {
+      "neptunCode": "LD 0.311",
+      "neptunAliases": ["LD-0-311", "0-311"],
+      "bisRoomId": 2315,
+      "codeBis": "0-311",
+      "bisRoomCode": "LD-0-311-01-12",
+      "roomId": "ld-room-0-311",
+      "confidence": "exact",
+      "notes": "Kőnig terem"
+    },
+    {
+      "neptunCode": "LD 0.312",
+      "neptunAliases": ["LD-0-312", "0-312"],
+      "bisRoomId": 3818,
+      "codeBis": "0-312",
+      "bisRoomCode": "LD-0-312-01-12",
+      "roomId": "ld-room-0-312",
+      "confidence": "exact",
+      "notes": "Gallai Tibor terem"
+    },
+    {
+      "neptunCode": "LD 0.220",
+      "neptunAliases": ["LD-0-220", "0-220"],
+      "bisRoomId": 3829,
+      "codeBis": "0-220",
+      "bisRoomCode": "LD-0-220-01-12",
+      "roomId": "ld-room-0-220",
+      "confidence": "exact",
+      "notes": "Kárteszi Ferenc terem"
+    }
+  ]
+}

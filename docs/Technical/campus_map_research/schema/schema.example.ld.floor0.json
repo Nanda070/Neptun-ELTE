@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "floorGraph",
+  "generatedAt": "2026-09-16",
+  "notes": "Phase 1 sample for LD ground floor only. Pixel coords are PLACEHOLDERS for digitization (Phase 2). Room centroidWgs values are real BIS educational centroids. Basemap permission still pending.",
+  "building": {
+    "id": "ld",
+    "neptunPrefix": "LD",
+    "nameHu": "Déli Épület",
+    "nameEn": "South Building",
+    "address": "Pázmány Péter sétány 1/C",
+    "bisBuildingSlug": "deli"
+  },
+  "floor": {
+    "id": "ld-f0",
+    "buildingId": "ld",
+    "level": 0,
+    "bisSlug": "0",
+    "labelHu": "Földszint",
+    "labelEn": "Ground floor",
+    "basemapAsset": "ld_south/floors/deli_foldszint.jpg",
+    "basemapWidth": 800,
+    "basemapHeight": 800,
+    "attribution": "Floor plan artwork: Héger Tamás; aggregator: Sárközi Gergő (sarkozigergo) — redistribution permission pending"
+  },
+  "rooms": [
+    {
+      "id": "ld-room-0-821",
+      "floorId": "ld-f0",
+      "codeBis": "0-821",
+      "bisRoomId": 3859,
+      "bisRoomCode": "LD-0-821-01-12",
+      "codeNeptun": "LD 0.821",
+      "name": "Bolyai János terem",
+      "type": "eloado",
+      "aliases": ["Bolyai", "Bolyai János", "LD 0.821"],
+      "centroid": { "x": 520, "y": 610, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062226632, "lat": 47.471869725, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-805",
+      "floorId": "ld-f0",
+      "codeBis": "0-805",
+      "bisRoomId": 3847,
+      "bisRoomCode": "LD-0-805-01-12",
+      "codeNeptun": "LD 0.805",
+      "name": "Fejér Lipót terem",
+      "type": "eloado",
+      "aliases": ["Fejér Lipót", "Fejer Lipot", "LD 0.805"],
+      "centroid": { "x": 480, "y": 220, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062006309, "lat": 47.472629898, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-412",
+      "floorId": "ld-f0",
+      "codeBis": "0-412",
+      "bisRoomId": 2358,
+      "bisRoomCode": "LD-0-412-01-12",
+      "codeNeptun": "LD 0.412",
+      "name": "Rényi Alfréd terem",
+      "type": "tanterem",
+      "aliases": ["Rényi", "Renyi Alfred", "LD 0.412"],
+      "centroid": { "x": 680, "y": 210, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062878581, "lat": 47.472646585, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-803",
+      "floorId": "ld-f0",
+      "codeBis": "0-803",
+      "bisRoomId": 3817,
+      "bisRoomCode": "LD-0-803-01-12",
+      "codeNeptun": "LD 0.803",
+      "name": "Szabó József előadó",
+      "type": "eloado",
+      "aliases": ["Szabó József", "LD 0.803"],
+      "centroid": { "x": 490, "y": 340, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062057081, "lat": 47.472461213, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-804",
+      "floorId": "ld-f0",
+      "codeBis": "0-804",
+      "bisRoomId": 2914,
+      "bisRoomCode": "LD-0-804-01-12",
+      "codeNeptun": "LD 0.804",
+      "name": "Lóczy Lajos terem",
+      "type": "eloado",
+      "aliases": ["Lóczy Lajos", "LD 0.804"],
+      "centroid": { "x": 485, "y": 280, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062031691, "lat": 47.47254557, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-311",
+      "floorId": "ld-f0",
+      "codeBis": "0-311",
+      "bisRoomId": 2315,
+      "bisRoomCode": "LD-0-311-01-12",
+      "codeNeptun": "LD 0.311",
+      "name": "Kőnig terem",
+      "type": "tanterem",
+      "aliases": ["Kőnig", "Konig", "LD 0.311"],
+      "centroid": { "x": 640, "y": 180, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062759581, "lat": 47.472687819, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-312",
+      "floorId": "ld-f0",
+      "codeBis": "0-312",
+      "bisRoomId": 3818,
+      "bisRoomCode": "LD-0-312-01-12",
+      "codeNeptun": "LD 0.312",
+      "name": "Gallai Tibor terem",
+      "type": "tanterem",
+      "aliases": ["Gallai Tibor", "LD 0.312"],
+      "centroid": { "x": 600, "y": 200, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062553243, "lat": 47.472659443, "space": "wgs84" }
+    },
+    {
+      "id": "ld-room-0-220",
+      "floorId": "ld-f0",
+      "codeBis": "0-220",
+      "bisRoomId": 3829,
+      "bisRoomCode": "LD-0-220-01-12",
+      "codeNeptun": "LD 0.220",
+      "name": "Kárteszi Ferenc terem",
+      "type": "tanterem",
+      "aliases": ["Kárteszi Ferenc", "LD 0.220"],
+      "centroid": { "x": 560, "y": 260, "space": "basemapPx" },
+      "centroidWgs": { "lng": 19.062471826, "lat": 47.472576008, "space": "wgs84" }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "ld-n-f0-entrance-west",
+      "floorId": "ld-f0",
+      "kind": "entrance",
+      "coord": { "x": 120, "y": 400, "space": "basemapPx" },
+      "label": "Nyugati kapu (placeholder)"
+    },
+    {
+      "id": "ld-n-f0-c8-hub",
+      "floorId": "ld-f0",
+      "kind": "corridor",
+      "coord": { "x": 500, "y": 400, "space": "basemapPx" },
+      "label": "Corridor 8 hub (placeholder)"
+    },
+    {
+      "id": "ld-n-f0-c4-hub",
+      "floorId": "ld-f0",
+      "kind": "corridor",
+      "coord": { "x": 650, "y": 250, "space": "basemapPx" },
+      "label": "Corridor 4 hub (placeholder)"
+    },
+    {
+      "id": "ld-n-f0-lift-A",
+      "floorId": "ld-f0",
+      "kind": "lift",
+      "verticalShaftId": "ld-lift-A",
+      "coord": { "x": 400, "y": 380, "space": "basemapPx" },
+      "label": "Liftek landing floor 0"
+    },
+    {
+      "id": "ld-n-f0-stair-main",
+      "floorId": "ld-f0",
+      "kind": "stair",
+      "verticalShaftId": "ld-stair-main",
+      "coord": { "x": 420, "y": 420, "space": "basemapPx" },
+      "label": "Főlépcső landing floor 0"
+    },
+    {
+      "id": "ld-n-f0-room-0-821",
+      "floorId": "ld-f0",
+      "kind": "room",
+      "roomId": "ld-room-0-821",
+      "coord": { "x": 520, "y": 610, "space": "basemapPx" }
+    },
+    {
+      "id": "ld-n-f0-room-0-805",
+      "floorId": "ld-f0",
+      "kind": "room",
+      "roomId": "ld-room-0-805",
+      "coord": { "x": 480, "y": 220, "space": "basemapPx" }
+    },
+    {
+      "id": "ld-n-f0-room-0-412",
+      "floorId": "ld-f0",
+      "kind": "room",
+      "roomId": "ld-room-0-412",
+      "coord": { "x": 680, "y": 210, "space": "basemapPx" }
+    },
+    {
+      "id": "ld-n-f1-lift-A",
+      "floorId": "ld-f1",
+      "kind": "lift",
+      "verticalShaftId": "ld-lift-A",
+      "coord": { "x": 400, "y": 380, "space": "basemapPx" },
+      "label": "Liftek landing floor 1 (tip only — floor 1 graph not in this sample)"
+    }
+  ],
+  "edges": [
+    {
+      "id": "ld-e-f0-ent-c8",
+      "from": "ld-n-f0-entrance-west",
+      "to": "ld-n-f0-c8-hub",
+      "weight": 380,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "ld-e-f0-c8-lift",
+      "from": "ld-n-f0-c8-hub",
+      "to": "ld-n-f0-lift-A",
+      "weight": 102,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "ld-e-f0-c8-stair",
+      "from": "ld-n-f0-c8-hub",
+      "to": "ld-n-f0-stair-main",
+      "weight": 82,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "ld-e-f0-c8-c4",
+      "from": "ld-n-f0-c8-hub",
+      "to": "ld-n-f0-c4-hub",
+      "weight": 212,
+      "bidirectional": true,
+      "kind": "corridor"
+    },
+    {
+      "id": "ld-e-f0-stub-821",
+      "from": "ld-n-f0-c8-hub",
+      "to": "ld-n-f0-room-0-821",
+      "weight": 211,
+      "bidirectional": true,
+      "kind": "roomStub"
+    },
+    {
+      "id": "ld-e-f0-stub-805",
+      "from": "ld-n-f0-c8-hub",
+      "to": "ld-n-f0-room-0-805",
+      "weight": 184,
+      "bidirectional": true,
+      "kind": "roomStub"
+    },
+    {
+      "id": "ld-e-f0-stub-412",
+      "from": "ld-n-f0-c4-hub",
+      "to": "ld-n-f0-room-0-412",
+      "weight": 50,
+      "bidirectional": true,
+      "kind": "roomStub"
+    },
+    {
+      "id": "ld-e-vert-lift-A-f0-f1",
+      "from": "ld-n-f0-lift-A",
+      "to": "ld-n-f1-lift-A",
+      "weight": 40,
+      "bidirectional": true,
+      "kind": "verticalLift",
+      "floors": ["ld-f0", "ld-f1"],
+      "notes": "Inter-floor edge rule: same verticalShaftId ld-lift-A on both landings"
+    }
+  ]
+}

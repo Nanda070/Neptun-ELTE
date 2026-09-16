@@ -1,11 +1,11 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase A in progress** (map data / graph). **Phase B (Flutter app)** is deferred until LD (+ LE as agreed) graphs are complete and packaged.  
+**Status:** **Phase 0 done · Phase 1 done** (schema locked). Next: **Phase 2** digitize LD graph. **Phase B (Flutter app)** deferred until LD (+ LE) graphs are packaged + QA’d.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
 
-> Research dump: [`campus_map_research/`](campus_map_research/README.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md)  
+> Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md)  
 > Related shipped maps (external deep-link only): `lib/Misc/elte_room_code.dart` — **not** indoor A→B.
 
 ---
@@ -47,21 +47,29 @@ Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lá
 
 ## Phase 0 — Inventory freeze
 
+**Status:** **DONE** — decisions frozen **2026-09-16**.
+
 **Purpose:** freeze what we already have so digitization does not rediscover sources mid-flight.
 
-### Already in repo (`docs/Technical/campus_map_research/`)
+### Frozen inventory (2026-09-16)
 
-| Asset | Path / notes |
-|-------|----------------|
-| Research README | `campus_map_research/README.md` |
-| BIS import reports | `BIS_IMPORT_REPORT.md` · `.ru.md` |
-| LD public JPGs + room table | `ld_south/` (floors −1…7, corridor schema 1–8, ~134 labeled rooms) |
-| LE public JPGs + room table | `le_north/` (floors −1…7) |
+Paths under `docs/Technical/campus_map_research/`:
+
+| Asset | Path |
+|-------|------|
+| Research README | `README.md` |
+| BIS import reports | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
+| **Phase 1 schema** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
+| LD basemap JPGs | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
+| LD public room table | `ld_south/rooms.json` (~134 labeled rooms; corridor schema 1–8) |
+| LE basemap JPGs | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
+| LE public room table | `le_north/rooms.json` |
 | North A→B reference | `eszaki_route_planner/` (terkeptar / OpenLayers 2018) |
-| BIS South catalog | `bis/south/` — **1696** rooms, floors `00`…`7`,`T` |
-| BIS North catalog | `bis/north/` — **1974** rooms, floors `-4`…`11` |
-| Educational subsets | `rooms_educational.json` (South **849**, North **639**) |
+| BIS South catalog | `bis/south/` — **1696** rooms, floors `00`…`7`,`T`; educational `rooms_educational.json` (**849**) |
+| BIS North catalog | `bis/north/` — **1974** rooms, floors `-4`…`11`; educational (**639**) |
 | API archaeology | `bis/api/` (entities, filters, rooms-by-id, routing trials → **null** geometry) |
+
+**Cookies / tokens:** **not in git** (and must stay out).
 
 ### Credits to preserve
 
@@ -70,43 +78,61 @@ Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lá
 - North planner: **Eszényi Krisztián** (ELTE Cartography & Geoinformatics, 2018)
 - Official BIS: ELTE IIG (`bis.elte.hu`)
 
+### Decisions frozen (2026-09-16)
+
+| Decision | Choice |
+|----------|--------|
+| Basemap | sarkozigergo JPGs under `ld_south/floors/` + `le_north/floors/` — **permission still pending** (honesty) |
+| Search nodes | BIS centroids/codes + public room tables |
+| Routing geometry | Digitize our own graph — **do not** wait for BIS `routing.route` polylines |
+
 ### Exit criteria
 
-- [ ] One short “frozen inventory” subsection in this plan (or research README) lists paths above with date **2026-09-16**.
-- [ ] Agreement: basemap = sarkozigergo JPGs (pending permission); searchable nodes = BIS centroids/codes + public tables; **no** wait on BIS polylines.
-- [ ] Cookies / tokens remain **out of git** (already true).
+- [x] Frozen inventory paths listed with date **2026-09-16**.
+- [x] Basemap / search / no-wait-on-BIS-polylines decisions locked.
+- [x] Cookies / tokens remain **out of git**.
 
 ---
 
 ## Phase 1 — Data model
 
+**Status:** **DONE** — **2026-09-16**. Canonical: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md).
+
 **Purpose:** one JSON-friendly schema for rooms, floors, graph nodes, edges, and Neptun↔BIS joins — before drawing edges.
 
-### Entities (minimum)
+### Entities (locked)
 
-| Entity | Required fields (draft) |
-|--------|-------------------------|
+| Entity | Required fields |
+|--------|-----------------|
 | **Building** | `id` (`ld` \| `le`), `neptunPrefix` (`LD` \| `LE`), display names HU/EN |
-| **Floor** | `buildingId`, `level` (int, e.g. −1…7), `bisSlug` (e.g. `00`,`0`…`7`), `basemapAsset` |
-| **Room** | stable `id`, `codeBis`, `codeNeptun` (nullable until join), `name`, `floorId`, `centroid` `{x,y}` or `{lng,lat}`, `aliases[]`, `type` |
-| **Node** | `id`, `floorId`, `kind` (`room` \| `corridor` \| `stair` \| `lift` \| `entrance` \| `poi`), `coord`, optional `roomId` |
-| **Edge** | `from`, `to`, `weight` (length or cost), `bidirectional` (default true), optional `restricted` |
+| **Floor** | `buildingId`, `level` (int, e.g. −1…7), `bisSlug` (e.g. `00`,`0`…`7`), `basemapAsset`, `basemapWidth`/`Height` |
+| **Room** | stable `id`, `codeBis`, `codeNeptun` (nullable until join), `name`, `floorId`, `centroid` (pixels), optional `centroidWgs`, `aliases[]`, `type` |
+| **Node** | `id`, `floorId`, `kind` (`room` \| `corridor` \| `stair` \| `lift` \| `entrance` \| `poi`), `coord` (pixels), optional `roomId`, `verticalShaftId` |
+| **Edge** | `from`, `to`, `weight` (length or cost), `bidirectional` (default true), optional `kind` / `restricted` / `floors` |
 | **Join row** | `neptunCode` ↔ `bisRoomId` / `codeBis`, confidence (`exact` \| `heuristic` \| `manual`) |
 
-### Coordinate policy
+### Coordinate policy (locked)
 
-- Prefer **floor-local pixel / normalized** coords tied to a declared basemap size (JPG width×height), so routing works without Mapbox.
-- Optional parallel WGS84 for future outdoor handoff — not required for Phase A exit.
+- **Primary (graph):** floor-local **basemap pixels** (`space: "basemapPx"`), origin top-left, tied to declared JPG size — routing without Mapbox.
+- **Secondary:** optional WGS84 from BIS centroids (`space: "wgs84"`) for outdoor handoff / checks — not the walkable CRS.
+- Sample: [`schema.example.ld.floor0.json`](campus_map_research/schema/schema.example.ld.floor0.json) (real BIS codes/WGS; **placeholder** pixels until Phase 2).
+- Join stub: [`joins_ld.stub.json`](campus_map_research/schema/joins_ld.stub.json) / `.csv`.
+
+### Stairs / lifts
+
+Stairs and lifts are **inter-floor edges**: one landing node per floor sharing `verticalShaftId`; vertical edges link consecutive landings (`verticalStair` / `verticalLift`). See SCHEMA.md.
 
 ### Exit criteria
 
-- [ ] Schema documented in this file (or `campus_map_research/schema.md`) with example JSON snippets for one LD floor.
-- [ ] Version field on package root (`schemaVersion`).
-- [ ] Explicit rule: stairs/lifts are **inter-floor edges** (same logical vertical shaft linked across floors).
+- [x] Schema documented in `campus_map_research/schema/SCHEMA.md` with LD floor-0 example JSON.
+- [x] Version field on package root (`schemaVersion`: **1**).
+- [x] Explicit rule: stairs/lifts are **inter-floor edges** (same logical vertical shaft linked across floors).
 
 ---
 
 ## Phase 2 — Digitize LD graph fully
+
+**Status:** **NEXT** (not started).
 
 **Purpose:** walkable corridor graph for **South / Déli (LD)** on all student-relevant floors.
 
@@ -324,6 +350,7 @@ Until then, the product remains on **external maps deep-link** only (`Open map` 
 | Doc | Role |
 |-----|------|
 | [campus_map_research/README.md](campus_map_research/README.md) | Research dump index |
+| [campus_map_research/schema/SCHEMA.md](campus_map_research/schema/SCHEMA.md) | Phase 1 data model (locked) |
 | [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md) | BIS auth, catalogs, routing null |
 | [TECHNICAL.md](TECHNICAL.md) | Product technical canon |
 | [DEV_BLOG.md](DEV_BLOG.md) | Chronological diary |
