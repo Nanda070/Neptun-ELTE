@@ -6,8 +6,8 @@ import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/Misc/elte_room_code.dart';
 
-/// Indoor campus map — Strategy D schematic UX (graph-derived 2D, not floor photo).
-/// Works without Neptun login.
+/// Indoor campus map — mall-style 2D floor schematic (not graph-edge glow).
+/// Works without Neptun login. Scope: IT faculty LD+LE only (for now).
 class CampusMapPage extends StatefulWidget {
   const CampusMapPage({super.key, this.initialBuildingId = 'ld'});
 
@@ -28,18 +28,30 @@ class _CampusMapPageState extends State<CampusMapPage> {
   final _searchCtrl = TextEditingController();
   List<CampusSearchHit> _searchHits = const [];
   bool _pickingFrom = true;
-  /// Debug-only: faint JPG underlay. OFF by default (Strategy D).
+  /// Debug-only: faint JPG underlay. OFF by default.
   bool _showPhotoDebug = false;
+  final _transform = TransformationController();
+  double _viewScale = 1.0;
 
   @override
   void initState() {
     super.initState();
     _buildingId = widget.initialBuildingId;
+    _transform.addListener(_onTransform);
     _load();
+  }
+
+  void _onTransform() {
+    final s = _transform.value.getMaxScaleOnAxis();
+    if ((s - _viewScale).abs() > 0.04) {
+      setState(() => _viewScale = s);
+    }
   }
 
   @override
   void dispose() {
+    _transform.removeListener(_onTransform);
+    _transform.dispose();
     _searchCtrl.dispose();
     super.dispose();
   }
@@ -70,12 +82,10 @@ class _CampusMapPageState extends State<CampusMapPage> {
     final m = _pkg?.manifest;
     if (m == null) return lang.campusMap_HonestyBanner;
     final date = (m['packageDate'] ?? m['generatedAt'] ?? '').toString();
-    final fp = (m['graphFingerprint'] ?? '').toString();
-    final mode = (m['graphMode'] ?? 'schematic').toString();
+    final mode = (m['uiMode'] ?? m['graphMode'] ?? '').toString();
     final meta = [
       if (date.isNotEmpty) date,
       if (mode.isNotEmpty) mode,
-      if (fp.isNotEmpty) 'fp:$fp',
     ].join(' · ');
     if (meta.isEmpty) return lang.campusMap_HonestyBanner;
     return '${lang.campusMap_HonestyBanner}\n$meta';
@@ -160,7 +170,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
               setState(() => _showPhotoDebug = !_showPhotoDebug);
             },
             icon: Icon(
-              _showPhotoDebug ? Icons.image_outlined : Icons.account_tree_outlined,
+              _showPhotoDebug ? Icons.image_outlined : Icons.apartment_outlined,
               color: theme.textColor.withValues(alpha: _showPhotoDebug ? 1 : 0.7),
             ),
           ),
@@ -187,6 +197,29 @@ class _CampusMapPageState extends State<CampusMapPage> {
               ? Center(child: CircularProgressIndicator(color: theme.onSecondaryContainer))
               : Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: theme.onSecondaryContainer.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.onSecondaryContainer.withValues(alpha: 0.28),
+                          ),
+                        ),
+                        child: Text(
+                          lang.campusMap_ItFacultyOnly,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: theme.textColor.withValues(alpha: 0.9),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                       child: Text(
@@ -418,6 +451,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
         ? theme.textColor.withValues(alpha: 0.55)
         : const Color(0xFF64748B);
     final route = theme.onSecondaryContainer;
+    final schematic = pkg.floorSchematic(_buildingId, _floorLevel);
 
     return Column(
       children: [
@@ -431,6 +465,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
           ),
         Expanded(
           child: InteractiveViewer(
+            transformationController: _transform,
             minScale: 0.55,
             maxScale: 6,
             child: AspectRatio(
@@ -451,6 +486,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                     painter: CampusSchematicPainter(
                       graph: g,
                       floor: floor,
+                      schematic: schematic,
                       pathNodeIds: _pathNodeIds,
                       fromRoomId: fromRoomId,
                       toRoomId: toRoomId,
@@ -459,6 +495,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
                       labelColor: theme.textColor,
                       surfaceColor: surface,
                       outlineColor: theme.textColor,
+                      viewScale: _viewScale,
                     ),
                   ),
                 ],
@@ -469,7 +506,7 @@ class _CampusMapPageState extends State<CampusMapPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
           child: Text(
-            '${floor.labelEn} · ${lang.campusMap_SchematicMode}',
+            '${floor.labelEn} · ${lang.campusMap_SchematicMode} · ${lang.campusMap_ItFacultyOnlyShort}',
             style: TextStyle(color: theme.textColor.withValues(alpha: 0.55), fontSize: 11),
           ),
         ),

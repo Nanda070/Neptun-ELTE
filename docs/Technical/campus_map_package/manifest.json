@@ -5,7 +5,7 @@
   "generatedAt": "2026-09-16",
   "packageDate": "2026-09-16",
   "phase": 6,
-  "notes": "Strategy D product UX (1.7.0): app draws graph-derived 2D schematic (corridors/rooms/route); floor JPG not primary. LD+LE centerline graphs. Official BIS artwork still pending. Photo underlay is debug-only.",
+  "notes": "Strategy D product UX (1.7.0): mall-style 2D schematic (shell + corridor ribbons from schematic_*.json); graph for routing/pins only; JPG debug-only. Official BIS artwork still pending.",
   "buildings": [
     {
       "id": "ld",
@@ -27,7 +27,8 @@
       "joins": "joins_ld.json",
       "nodeCount": 664,
       "edgeCount": 819,
-      "roomCount": 134
+      "roomCount": 134,
+      "schematic": "schematic_ld.json"
     },
     {
       "id": "le",
@@ -49,7 +50,8 @@
       "joins": "joins_le.json",
       "nodeCount": 625,
       "edgeCount": 888,
-      "roomCount": 92
+      "roomCount": 92,
+      "schematic": "schematic_le.json"
     }
   ],
   "files": {
@@ -64,7 +66,9 @@
     "checker": "check_package.py",
     "qa_runner": "run_qa.py",
     "qa_report": "QA_REPORT.md",
-    "qa_matrix": "qa_matrix.json"
+    "qa_matrix": "qa_matrix.json",
+    "schematic_ld": "schematic_ld.json",
+    "schematic_le": "schematic_le.json"
   },
   "assets": {
     "ld": {

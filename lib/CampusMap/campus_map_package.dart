@@ -7,12 +7,15 @@ class CampusMapPackage {
   CampusMapPackage._({
     required this.manifest,
     required this.graphs,
+    required this.schematics,
     required this.joinsByBuilding,
     required this.aliases,
   });
 
   final Map<String, dynamic> manifest;
   final Map<String, CampusBuildingGraph> graphs; // ld / le
+  /// Mall-style floor polygons (shell + corridor ribbons). Visual map only.
+  final Map<String, CampusBuildingSchematic> schematics;
   final Map<String, List<CampusJoin>> joinsByBuilding;
   final List<CampusAlias> aliases;
 
@@ -24,6 +27,7 @@ class CampusMapPackage {
     ) as Map<String, dynamic>;
 
     final graphs = <String, CampusBuildingGraph>{};
+    final schematics = <String, CampusBuildingSchematic>{};
     final joinsByBuilding = <String, List<CampusJoin>>{};
 
     for (final b in (manifest['buildings'] as List).cast<Map>()) {
@@ -34,6 +38,15 @@ class CampusMapPackage {
         jsonDecode(await rootBundle.loadString('$assetRoot/$graphFile'))
             as Map<String, dynamic>,
       );
+      final schematicFile = (b['schematic'] as String?) ?? 'schematic_$id.json';
+      try {
+        schematics[id] = CampusBuildingSchematic.fromJson(
+          jsonDecode(await rootBundle.loadString('$assetRoot/$schematicFile'))
+              as Map<String, dynamic>,
+        );
+      } catch (_) {
+        // Optional: older packages without schematic JSON still load graphs.
+      }
       final joinsRaw = jsonDecode(
         await rootBundle.loadString('$assetRoot/$joinsFile'),
       ) as Map<String, dynamic>;
@@ -54,9 +67,14 @@ class CampusMapPackage {
     return CampusMapPackage._(
       manifest: manifest,
       graphs: graphs,
+      schematics: schematics,
       joinsByBuilding: joinsByBuilding,
       aliases: aliases,
     );
+  }
+
+  CampusFloorSchematic? floorSchematic(String buildingId, int level) {
+    return schematics[buildingId]?.floorByLevel(level);
   }
 
   String basemapAsset(String buildingId, int level) {
@@ -204,6 +222,97 @@ class _CostNode {
   _CostNode(this.cost, this.id);
   final double cost;
   final String id;
+}
+
+class CampusBuildingSchematic {
+  CampusBuildingSchematic({
+    required this.buildingId,
+    required this.floors,
+  });
+
+  final String buildingId;
+  final List<CampusFloorSchematic> floors;
+
+  factory CampusBuildingSchematic.fromJson(Map<String, dynamic> j) {
+    final floors = (j['floors'] as List)
+        .cast<Map>()
+        .map((e) => CampusFloorSchematic.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+    return CampusBuildingSchematic(
+      buildingId: j['buildingId'] as String? ?? '',
+      floors: floors,
+    );
+  }
+
+  CampusFloorSchematic? floorByLevel(int level) {
+    for (final f in floors) {
+      if (f.level == level) return f;
+    }
+    return null;
+  }
+}
+
+class CampusFloorSchematic {
+  CampusFloorSchematic({
+    required this.floorId,
+    required this.level,
+    required this.shell,
+    required this.holes,
+    required this.corridors,
+  });
+
+  final String floorId;
+  final int level;
+  final List<Offset> shell;
+  final List<List<Offset>> holes;
+  final List<CampusCorridorRibbon> corridors;
+
+  factory CampusFloorSchematic.fromJson(Map<String, dynamic> j) {
+    List<Offset> pts(dynamic raw) => (raw as List)
+        .map((e) {
+          final p = e as List;
+          return Offset((p[0] as num).toDouble(), (p[1] as num).toDouble());
+        })
+        .toList();
+    return CampusFloorSchematic(
+      floorId: j['floorId'] as String? ?? '',
+      level: (j['level'] as num).toInt(),
+      shell: pts(j['shell'] ?? const []),
+      holes: ((j['holes'] as List?) ?? const [])
+          .map((h) => pts(h))
+          .toList(),
+      corridors: ((j['corridors'] as List?) ?? const [])
+          .cast<Map>()
+          .map((e) => CampusCorridorRibbon.fromJson(Map<String, dynamic>.from(e)))
+          .toList(),
+    );
+  }
+}
+
+class CampusCorridorRibbon {
+  CampusCorridorRibbon({
+    required this.id,
+    required this.centerline,
+    required this.polygon,
+  });
+
+  final String id;
+  final List<Offset> centerline;
+  final List<Offset> polygon;
+
+  factory CampusCorridorRibbon.fromJson(Map<String, dynamic> j) {
+    List<Offset> pts(dynamic raw) => ((raw as List?) ?? const [])
+        .map((e) {
+          final p = e as List;
+          return Offset((p[0] as num).toDouble(), (p[1] as num).toDouble());
+        })
+        .toList();
+    return CampusCorridorRibbon(
+      id: j['id'] as String? ?? '',
+      centerline: pts(j['centerline']),
+      polygon: pts(j['polygon']),
+    );
+  }
 }
 
 class CampusFloor {

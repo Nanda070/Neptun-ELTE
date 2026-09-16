@@ -386,10 +386,12 @@ class AppStrings{
       roomCode_OpenMap: 'Térkép megnyitása',
       campusMap_Title: 'Campus térkép',
       campusMap_HonestyBanner:
-          '2D séma (Strategy D) — folyosók/termek a campus-gráfból, nem emeletfotó. Hivatalos BIS artwork még pending. Sideload/dev.',
+          '2D emeleti séma — folyosósávok + terempinek; útvonal a centerline-gráfon. Csak IK (LD+LE), egyelőre.',
+      campusMap_ItFacultyOnly: 'Egyelőre csak az Informatikai Kar (IK) — LD Déli + LE Északi',
+      campusMap_ItFacultyOnlyShort: 'Csak IK (egyelőre)',
       campusMap_HubButton: 'Campus térkép',
       campusMap_HubButtonDescription:
-          'Beltéri A→B a Lágymányos Déli (LD) és Északi (LE) tömbökben. Neptun bejelentkezés nélkül.',
+          'Beltéri A→B az IK Lágymányos Déli (LD) és Északi (LE) tömbjeiben. Neptun bejelentkezés nélkül.',
       campusMap_SearchFrom: 'Induló terem / teremkeresés…',
       campusMap_SearchTo: 'Cél terem keresése…',
       campusMap_From: 'Honnan',
@@ -791,10 +793,12 @@ class AppStrings{
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
       campusMap_Title: 'Campus map',
       campusMap_HonestyBanner:
-          '2D schematic (Strategy D) — corridors/rooms from campus graph, not a floor photo. Official BIS artwork still pending. Sideload/dev.',
+          '2D floor schematic — corridor ribbons + room pins; route on centerline graph. IT faculty (LD+LE) only for now.',
+      campusMap_ItFacultyOnly: 'IT faculty only (for now) — LD South + LE North (IK / Informatika)',
+      campusMap_ItFacultyOnlyShort: 'IT faculty only (for now)',
       campusMap_HubButton: 'Campus map',
       campusMap_HubButtonDescription:
-          'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
+          'Indoor A→B for IT faculty Lágymányos South (LD) and North (LE). No Neptun login required.',
       campusMap_SearchFrom: 'Search start room / hall…',
       campusMap_SearchTo: 'Search destination…',
       campusMap_From: 'From',
@@ -1485,6 +1489,8 @@ class LanguagePack{
   final String campusMap_FloorsOnPath;
   final String campusMap_SchematicMode;
   final String campusMap_PhotoDebugToggle;
+  final String campusMap_ItFacultyOnly;
+  final String campusMap_ItFacultyOnlyShort;
   final String markbook_creditAbbrev;
   final String notif_exam_BodyToday;
   final String notif_exam_BodyTomorrow;
@@ -1811,10 +1817,13 @@ class LanguagePack{
     this.roomCode_OpenMap = 'Open map',
     this.campusMap_Title = 'Campus map',
     this.campusMap_HonestyBanner =
-        '2D schematic (Strategy D) — corridors/rooms from campus graph, not a floor photo. Official BIS artwork still pending. Sideload/dev.',
+        '2D floor schematic — corridor ribbons + room pins; route on centerline graph. IT faculty (LD+LE) only for now.',
+    this.campusMap_ItFacultyOnly =
+        'IT faculty only (for now) — LD South + LE North (IK / Informatika)',
+    this.campusMap_ItFacultyOnlyShort = 'IT faculty only (for now)',
     this.campusMap_HubButton = 'Campus map',
     this.campusMap_HubButtonDescription =
-        'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
+        'Indoor A→B for IT faculty Lágymányos South (LD) and North (LE). No Neptun login required.',
     this.campusMap_SearchFrom = 'Search start room / hall…',
     this.campusMap_SearchTo = 'Search destination…',
     this.campusMap_From = 'From',
@@ -2253,6 +2262,8 @@ class LanguagePack{
         campusMap_FloorsOnPath: getStr('campusMap_FloorsOnPath', en.campusMap_FloorsOnPath),
         campusMap_SchematicMode: getStr('campusMap_SchematicMode', en.campusMap_SchematicMode),
         campusMap_PhotoDebugToggle: getStr('campusMap_PhotoDebugToggle', en.campusMap_PhotoDebugToggle),
+        campusMap_ItFacultyOnly: getStr('campusMap_ItFacultyOnly', en.campusMap_ItFacultyOnly),
+        campusMap_ItFacultyOnlyShort: getStr('campusMap_ItFacultyOnlyShort', en.campusMap_ItFacultyOnlyShort),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
@@ -2733,6 +2744,8 @@ class LanguagePack{
       'campusMap_FloorsOnPath':lang.campusMap_FloorsOnPath,
       'campusMap_SchematicMode':lang.campusMap_SchematicMode,
       'campusMap_PhotoDebugToggle':lang.campusMap_PhotoDebugToggle,
+      'campusMap_ItFacultyOnly':lang.campusMap_ItFacultyOnly,
+      'campusMap_ItFacultyOnlyShort':lang.campusMap_ItFacultyOnlyShort,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
       'notif_exam_BodyToday':lang.notif_exam_BodyToday,
       'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,

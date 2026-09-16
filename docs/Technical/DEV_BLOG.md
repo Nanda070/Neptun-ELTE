@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.7.1 (mall-style schematic polygons)
+
+**[2026-09-16, ~20:15]**
+
+- **Release 1.7.1** (`pubspec` **1.7.1+1**): completes Strategy D look with **mall-style floor schematics** — building shell + courtyard holes + filled corridor ribbons from `schematic_ld.json` / `schematic_le.json` (not graph-edge glow as the building shape). Graph still drives routing/pins/route. JPG debug-only. Tag **v1.7.1**. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.7.0 (Strategy D schematic map UX)
 
 **[2026-09-16, ~20:00]**

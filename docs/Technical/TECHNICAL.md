@@ -56,7 +56,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The app authenticates on the **portal**, then sets the institute URL to the assigned **`hallgatoN`** and calls modern JWT REST **there**. Do not hardcode `N`.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.7.0+1** — user-facing / Settings / docs = **1.7.0** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.7.1+1** — user-facing / Settings / docs = **1.7.1** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -68,7 +68,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.7.0`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.7.1`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.7.0** | **Current.** Feature line **7** — **Strategy D** product map UX: default view is graph-derived **2D schematic** (`CampusSchematicPainter`: corridor bands, room pins, smooth route); floor JPG debug-only. LD+LE centerline graphs. Official BIS artwork still pending; repo **private**. Tag **v1.7.0**. |
+| **1.7.1** | **Current.** Patch — mall-style schematic JSON (building shell + corridor ribbons); JPG still debug-only. Tag **v1.7.1**. |
+| **1.7.0** | Feature line **7** — **Strategy D** product map UX: default view is graph-derived **2D schematic** (`CampusSchematicPainter`: corridor bands, room pins, smooth route); floor JPG debug-only. LD+LE centerline graphs. Official BIS artwork still pending; repo **private**. Tag **v1.7.0**. |
 | **1.6.1** | Patch on line **6** — LD corridor-**centerline** graph + Chaikin; Strategy D honesty (photo not final); LE still hub then. Tag **v1.6.1**. |
 | **1.6.0** | Feature line **6** — campus map **Phase B** MVP: pre-login Map, LD/LE floors, search, A→B Dijkstra, package in `assets/campus_map/`. UX later rejected (crooked paths + photo floor). Basemap permission **pending**. Tag **v1.6.0**. |
 | **1.5.12** | Patch — iOS external Maps for LD/LE/LK: native `maps:` URI (+ https fallbacks), `maps`/`comgooglemaps` in `LSApplicationQueriesSchemes`, **Open map** always visible (not only after decode), `TextButton` so list-row taps do not steal the control. Tag **v1.5.12**. |
@@ -218,7 +219,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → foreground JWT maintenance + optional background keep-alive sync |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.7.0` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.7.1` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -574,7 +575,7 @@ On the phone: **Settings → General → VPN & Device Management** → trust the
 | Team (local) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (do not change — breaks Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.7.0**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.7.1**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
 
 **Why no underscore in the Bundle ID:** Automatic Signing names the profile `XC com nanda070 neptun_mobile app`. Underscores in that name are invalid → `The attribute 'name' is invalid` / no profiles.
 
