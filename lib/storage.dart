@@ -75,20 +75,14 @@ class DataCache{
   /// can paint instantly after re-login (plan item 1). Prefer this over [dataWipe]
   /// unless a full reset is required.
   /// Wipes JWT / login flags; keeps academic cache and username.
-  /// When [wipePassword] is false (opt-in remember password), keeps `neptun_password`.
-  static Future<void> sessionWipeKeepCache({bool wipePassword = true}) async {
+  static Future<void> sessionWipeKeepCache() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final keepUsername = (_instance._username != null && _instance._username!.isNotEmpty)
         ? _instance._username!
         : (await getString('Username') ?? '');
 
-    if (wipePassword) {
-      await _secureStorage.delete(key: 'neptun_password');
-      _instance._password = '';
-    } else {
-      final kept = await _secureStorage.read(key: 'neptun_password');
-      _instance._password = kept ?? '';
-    }
+    await _secureStorage.delete(key: 'neptun_password');
+    _instance._password = '';
     await _secureStorage.delete(key: 'neptun_jwt_token');
     await _secureStorage.delete(key: 'neptun_refresh_token');
     await prefs.remove('Password');
@@ -236,7 +230,6 @@ class DataCache{
   late bool? _persistentSetting_showPeriodsNotifications = true;
   late int? _persistentSetting_weekOffset = 0;
   late bool? _persistentSetting_needBetterHaptics = true;
-  late bool? _persistentSetting_rememberPasswordOnDevice = false;
   late int? _persistentSetting_userSelectedLanguage = -1;
   String? _persistentSetting_userSelectedLanguageCode;
 
@@ -369,9 +362,6 @@ class DataCache{
     if(tmp == null){
       _persistentSetting_needBetterHaptics = true;
     }
-
-    tmp = await getInt('SETTING_RememberPasswordOnDevice');
-    _persistentSetting_rememberPasswordOnDevice = tmp != null && tmp != 0;
 
     tmp = await getInt('SETTING_UserWeekOffset');
     _persistentSetting_weekOffset = tmp ?? 0;
@@ -646,18 +636,6 @@ class DataCache{
   static Future<void> setIsDemoAccount(int? value) async{
     _instance._isDemoAccount = value != null && value != 0;
     await saveInt('IsDemoAccount', value ?? 0);
-  }
-
-  static bool? getRememberPasswordOnDevice() =>
-      _instance._persistentSetting_rememberPasswordOnDevice;
-
-  static Future<void> setRememberPasswordOnDevice(int? value) async {
-    final on = value != null && value != 0;
-    _instance._persistentSetting_rememberPasswordOnDevice = on;
-    await saveInt('SETTING_RememberPasswordOnDevice', on ? 1 : 0);
-    if (!on) {
-      await setPassword(null);
-    }
   }
 
   static bool? getNeedFamilyFriendlyComments(){return _instance._persistentSetting_familyFriendlyLoadingComments;}

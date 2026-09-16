@@ -235,9 +235,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       // Replace-all — never popUntil the only Home route into a blank stack.
       navigateToLoginRoot();
     });
-    // Continue (do not reset) the 10-minute wall-clock from login / cold start.
-    // Fire-and-forget; SessionGuard awaits prefs internally.
-    api.SessionGuard.startSessionWallClock();
+    _startForegroundTokenMaintenance();
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
 
@@ -2397,6 +2395,21 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
   }
 
   Timer? _calendarTimer;
+  Timer? _foregroundTokenMaintenanceTimer;
+
+  void _startForegroundTokenMaintenance() {
+    _foregroundTokenMaintenanceTimer?.cancel();
+    if (api.SessionGuard.isAuthBlocked) return;
+    _foregroundTokenMaintenanceTimer = Timer.periodic(
+      api.SessionGuard.foregroundTokenMaintenanceInterval,
+      (_) => api.SessionGuard.runForegroundTokenMaintenance(),
+    );
+  }
+
+  void _stopForegroundTokenMaintenance() {
+    _foregroundTokenMaintenanceTimer?.cancel();
+    _foregroundTokenMaintenanceTimer = null;
+  }
 
   bool _calendarDebounce = false;
   bool isLoadingCalendar = true;
@@ -2576,17 +2589,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Android often pauses/delays long Timers while inactive/paused/hidden;
-    // re-check wall-clock whenever we may return to a runnable state.
-    if (state == AppLifecycleState.resumed ||
-        state == AppLifecycleState.inactive) {
-      api.SessionGuard.checkSessionWallClockOnResume();
-    }
-    if (state == AppLifecycleState.resumed) {
-      // Refresh WidgetKit / App Widget payload from calendar cache (no JWT).
-      WidgetBridge.sync(
-        preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
-      );
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _startForegroundTokenMaintenance();
+        WidgetBridge.sync(
+          preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
+        );
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        _stopForegroundTokenMaintenance();
+        break;
     }
   }
 
@@ -2598,6 +2613,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     }
     _connectivitySubscription?.cancel();
     _calendarTimer?.cancel();
+    _stopForegroundTokenMaintenance();
     super.dispose();
     calendarEntries.clear();
     mondayCalendar.clear();

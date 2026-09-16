@@ -67,7 +67,11 @@ class SessionGuard {
 
   /// Proactive JWT refresh while the app is foreground-resumed ([HomePage] timer).
   static Future<void> runForegroundTokenMaintenance() =>
-      _APIRequest.runForegroundTokenMaintenance();
+      _APIRequest.runProactiveTokenMaintenance(fromBackground: false);
+
+  /// Optional background keep-alive ([HallgatoBackgroundKeepAlive]); no UI on auth failure.
+  static Future<void> runBackgroundTokenMaintenance() =>
+      _APIRequest.runProactiveTokenMaintenance(fromBackground: true);
 
   static void _clearAuthenticatedAt() {
     _authenticatedAt = null;
@@ -302,7 +306,11 @@ class SessionGuard {
       return _TokenRefreshOutcome.transientFailure;
     }
 
-    static Future<void> runForegroundTokenMaintenance() async {
+    /// Shared proactive `GetNewTokens` for foreground timer and optional background work.
+    /// Background: conservative OS scheduling; auth failure deferred to next foreground (no headless UI).
+    static Future<void> runProactiveTokenMaintenance({
+      required bool fromBackground,
+    }) async {
       if (SessionGuard.isAuthBlocked) return;
       if (!(storage.DataCache.getHasLogin() ?? false)) return;
       if (!storage.DataCache.getIsModernApi()) return;
@@ -311,28 +319,38 @@ class SessionGuard {
 
       if (_isRefreshingToken) {
         debug.log(
-          'Foreground token maintenance: refresh already in progress — skip',
+          '${fromBackground ? 'Background' : 'Foreground'} token maintenance: refresh already in progress — skip',
         );
         return;
       }
 
       _isRefreshingToken = true;
       try {
-        debug.log('Foreground token maintenance: GetNewTokens...');
+        debug.log(
+          '${fromBackground ? 'Background' : 'Foreground'} token maintenance: GetNewTokens...',
+        );
         final outcome = await _attemptTokenRefresh();
         switch (outcome) {
           case _TokenRefreshOutcome.success:
-            debug.log('Foreground token maintenance: OK');
+            debug.log(
+              '${fromBackground ? 'Background' : 'Foreground'} token maintenance: OK',
+            );
             break;
           case _TokenRefreshOutcome.authRejected:
-            debug.log(
-              'Foreground token maintenance: refresh dead — force logout',
-            );
-            await SessionGuard.forceExpiredLogout();
+            if (fromBackground) {
+              debug.log(
+                'Background token maintenance: refresh dead — defer to foreground',
+              );
+            } else {
+              debug.log(
+                'Foreground token maintenance: refresh dead — force logout',
+              );
+              await SessionGuard.forceExpiredLogout();
+            }
             break;
           case _TokenRefreshOutcome.transientFailure:
             debug.log(
-              'Foreground token maintenance: transient failure — retry later',
+              '${fromBackground ? 'Background' : 'Foreground'} token maintenance: transient failure — retry later',
             );
             break;
         }
