@@ -102,7 +102,7 @@ See [`samples/le_routes.md`](samples/le_routes.md). Expect:
 - Confirm lift/stair landings per floor against artwork (MVP assumes all shafts on all floors).
 - Join tables / aliases → **Phase 4 done** ([`../joins/`](../joins/)).
 - Package + checksums → **Phase 5 done**; QA → **Phase 6 done** ([`../../campus_map_package/QA_REPORT.md`](../../campus_map_package/QA_REPORT.md)).
-- Basemap redistribution permission still **pending** (JPG not product primary).
+- JPG basemaps are legacy/debug (not product primary; FootPrint/MVT is).
 - Repo **private** while strategy/assets unsettled.
 
 *Owner / developer: **Nanda**.*

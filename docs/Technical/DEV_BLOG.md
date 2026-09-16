@@ -7,6 +7,13 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — campus map polish paused (still in development)
+
+- **Docs / product honesty:** further campus-map UX polish is **paused** for now. Indoor campus map remains **in development / work-in-progress** — **not** a finished 1:1 clone of official BIS.
+- **Shipped so far (1.8.3):** BIS FootPrint room polygons; official light floor palette; LD+LE (IT faculty); pre-login Map; search / floors / tap room card; A→B path overlay (**approximate** affine ≈WGS). Coverage **2573/3112** MVT FootPrint (no catalog-bbox fakes); floor hull underlay.
+- **Still WIP:** holes / missing rings (especially **technical** spaces — BIS MVT exposes **0** technical FootPrints; ~399 catalog rooms skipped); not full official BIS visual parity; route alignment still approximate; further digitizing / coverage polish deferred until work resumes.
+- No marketing version bump for this docs pause. Owner **Nanda**.
+
 ## 2026-09-16 — release 1.8.3 (BIS light map look)
 
 - **Release 1.8.3** (`pubspec` **1.8.3+1**): patch on line **8**. Match official BIS floor look: pale yellow educational, tan hallways, blue/pink services; near-opaque continuous fills + floorPlate hull; denser z17–19 MVT (still **0** technical); **drop catalog-bbox** fake rooms; `roomNumber` labels inside polygons (declutter); tap → name card; A→B overlay kept. Coverage **2573/3112**. Docs EN+RU. GitHub Release **v1.8.3**. Owner **Nanda**.
@@ -23,59 +30,416 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 - **Release 1.8.0** (`pubspec` **1.8.0+1**): feature line **8**. Campus map primary view = **BIS FootPrint room polygons** (WGS84 fills by `roomType` like official BIS; tap card; floor/building filter). Bundled `assets/campus_map/polygons_{ld,le}.json` (**1375 + 1196 = 2571** of catalog **3670** — honest gap; floors −1…7). Graph A→B kept as path overlay: per-floor affine `basemapPx→WGS` from room `centroidWgs` control points (**approximate ~10–35 m**); room nodes prefer WGS centroids. Schematic ribbons / JPG no longer primary. Docs EN+RU + CAMPUS_MAP_PLAN synced. GitHub Release **v1.8.0**. Owner **Nanda**.
 
-## 2026-09-09
+## 2026-09-16 — release 1.7.2 (IT-only packs + docs scrub)
 
-**[2026-09-09, 23:06]**
+**[2026-09-16]**
 
-- Baseline Android release line **1.0.5+18** still branded as Neptun Mobile.
-- Pre–ELTE-only product: multi-institute list and older language packs still in tree.
+- **Release 1.7.2** (`pubspec` **1.7.2+1**): patch on line **7**. Clean room labels (collision offsets, progressive zoom, tap-to-focus — no sticker bomb); floor-aware corridor emphasis; strip tech honesty banner and “(for now)” / “2D schematic” footer junk; IT faculty chip shortened; docs scrub of obsolete basemap ship-blocker notes. GitHub Release **v1.7.2**. Owner **Nanda**.
+
+## 2026-09-16 — release 1.7.1 (mall-style schematic polygons)
+
+**[2026-09-16, ~20:15]**
+
+- **Release 1.7.1** (`pubspec` **1.7.1+1**): completes Strategy D look with **mall-style floor schematics** — building shell + courtyard holes + filled corridor ribbons from `schematic_ld.json` / `schematic_le.json` (not graph-edge glow as the building shape). Graph still drives routing/pins/route. JPG debug-only. Tag **v1.7.1**. Owner **Nanda**.
 
 ---
 
-## 2026-09-13 — iOS, languages, ELTE hub
+## 2026-09-16 — release 1.7.0 (Strategy D schematic map UX)
 
-**[2026-09-13, 00:18]**
+**[2026-09-16, ~20:00]**
 
-- Brought up the **iOS** project (`ios/`, CocoaPods, signing path for Automatic Team).
-- Physical iPhone: use **`flutter run --release`** so the home-screen icon appears (iOS 14+ debug limit).
-- Bundle ID **`com.nanda070.neptunmobile`** (no underscore — Xcode signing); Android stays `com.nanda070.neptun_mobile.app`.
-- Languages trimmed to **EN / HU** built-in + **RU / TR** GitHub packs.
-- Removed joke / unused packs (Pirate, Chinese, German, Spanish, Romanian, Ukrainian, UAE, etc.).
+- **Release 1.7.0** (`pubspec` **1.7.0+1**): feature line **7** — **Strategy D product UX**. Default campus map is a **graph-derived 2D schematic** (`CampusSchematicPainter`: corridor bands, room pins/labels, lift/stair markers, Chaikin-smoothed route) — **not** a floor-plan photo. JPG underlay is debug-only (off by default). LE centerline graph shipped (same chaining as LD). Pre-login Map / floors / search / A→B kept. Honesty: schematic MVP from campus graph; official BIS FootPrint path not yet the product primary at that moment; `routing.route` still **null**; repo **private**. Docs EN+RU + CAMPUS_MAP_PLAN synced. GitHub Release **v1.7.0**. Owner **Nanda**.
 
-**[2026-09-13, 00:29]**
+---
 
-- Login / **2FA** path extended for modern Neptun APIs (code entry after password).
-- First iOS login fixes land; still iterating on the real ELTE portal flow.
+## 2026-09-16 — release 1.6.1 (LD centerline paths + Strategy D + private repo)
 
-**[2026-09-13, 00:38 – 00:42]**
+**[2026-09-16, ~19:30]**
 
-- Developer / technical docs expanded (EN + RU) for iOS run, signing, and honesty notes.
+- **Release 1.6.1** (`pubspec` **1.6.1+1**): owner rejected Phase B MVP UX (raster floor photo + crooked hub-spoke paths). **Paths:** LD graph rebuilt so door mouths chain along corridor centerlines (not hub V-detours); diagonal courtyard backbone hops removed; Flutter path painter Chaikin-smooths display. LE still hub-heuristic (next). **Basemap Strategy D:** do not treat sarkozigergo JPG as final product map — seek official/authorized 2D schematic (ELTE IIG/BIS); photo package transitional; JPG basemap path still transitional at the time. BIS `routing.route` geometry still **null**. **Repo:** `Nanda070/Neptun-ELTE` set **private** (public sideload `AppUpdater` may fail for non-collaborators). Docs EN+RU synced. GitHub Release **v1.6.1**. Owner **Nanda**.
 
-**[2026-09-13, 01:45]**
+---
 
-- Product scoped to **ELTE only**.
-- Hub UI: one institute button — no multi-university picker, no custom URL.
-- `universityNameUrlPairs.json` reduced to a single entry: ELTE → **`https://neptun.elte.hu`**.
-- Explicitly **not** Obuda/BME-style **`/ujhallgato`**.
+## 2026-09-16 — release 1.6.0 (campus map Phase B MVP)
 
-**[2026-09-13, 01:50]**
+**[2026-09-16, ~19:15]**
 
-- Display / docs rename: **Neptun ELTE** (repo target **Neptun-ELTE**).
-- Themes catalog and language strings updated for the new name.
-- Android label / iOS display name aligned.
+- **Release 1.6.0** (`pubspec` **1.6.0+1**): feature line **6** — **Phase B** indoor campus map MVP. Login-hub **Campus map** (no Neptun JWT), drawer entry when logged in, LD/LE buildings, floor basemaps + pan/zoom, joins/aliases search, A→B Dijkstra path draw, honesty banner (approximate graph; basemap JPG path transitional at the time). Package bundled under `assets/campus_map/`. External LD/LE/LK Open map kept. GitHub Release **v1.6.0**. Owner **Nanda**.
 
-**[2026-09-13, 02:12]**
+---
 
-- Documented and wired student-web bridge awareness: after portal login, Student web lands on **`hallgatoN.neptun.elte.hu`** (load-balanced nodes `1…N`).
-- Do **not** hardcode a single `hallgato` host — the portal assigns the node (live HAR examples: `hallgato3` / `ELTE_HW3`).
+## 2026-09-16 — release 1.5.12 (iOS external Maps)
 
-**[2026-09-13, 04:20]**
+**[2026-09-16, ~19:00]**
 
-- Major login correction: **`POST https://neptun.elte.hu/api/Account/Authenticate` is a dead end for ELTE** (empty HTTP 400).
-- Correct path matches the website: portal **Potlap** `Login` → **`Login2FA`** (TOTP) → **`ToNeptunHWeb`** → **`OuterLogin`** JWT on the assigned `hallgatoN`.
-- Distinguishes **invalid password** vs **server busy** / overload (no longer shown as a bad password).
-- Email OTP format from HAR documented as **`XXX-XXXXXX`** (3-digit prefix + 6 digits); app UI still prioritizes **Authenticator TOTP**.
-- Obsolete banner “2FA won’t work / you can’t log in with 2FA” **removed** — ELTE requires 2FA and the app accepts a code.
+- **Release 1.5.12** (`pubspec` **1.5.12+1**): fix external Maps for LD/LE/LK on **iOS** — primary `maps:?q=…` (https://maps.apple.com often opened Safari), https Apple + Google fallbacks, Info.plist `maps` + `comgooglemaps`, **Open map** always visible under coded rooms (not decode-gated), `TextButton` so calendar row taps do not steal the control. Still **not** in-app indoor A→B at that ship (Phase B came later). GitHub Release **v1.5.12** + APK + install on iPhone. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.11 (campus map Phase A docs + ship)
+
+**[2026-09-16]**
+
+- **Release 1.5.11** (`pubspec` **1.5.11+1**): ship tag after campus map **Phase A (0–6)** close-out — MVP package + QA (**41 / 0 / 2**), honesty sync across README/TECHNICAL/plans (no in-app indoor A→B yet at that ship; Phase B Flutter came later; JPG basemap path transitional at the time). App runtime still **1.5.10** session reliability; this patch is the product/docs ship for device + GitHub. Detailed diary of Phases 0–6 is the next entry below. GitHub Release **v1.5.11** + APK (+ unsigned IPA if built). Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.10 (session keep-alive reliability)
+
+**[2026-09-16]**
+
+- **Release 1.5.10** (`pubspec` **1.5.10+1**): fix three session bugs from **1.5.8/1.5.9**. (1) Background keep-alive: drop `requiresDeviceIdle` (blocked nearly all WorkManager/BGFetch runs); keep network + battery-not-low + **45 min** period with **15 min** Android initial delay; re-arm on background; `WAKE_LOCK` declared. (2) On `resumed`: **immediate** `GetNewTokens` then calendar+mail refresh (do not wait for first 3m30 `Timer.periodic` tick); auth failure → `forceExpiredLogout`. (3) Remember-password ON keeps `neptun_password` across **manual** Log out too (still wipe JWTs/HasLogin). Docs EN+RU. GitHub Release **v1.5.10** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.9 (battery-minimized background keep-alive)
+
+**[2026-09-16]**
+
+- **Release 1.5.9** (`pubspec` **1.5.9+1**): optional background hallgato keep-alive drains less — Android WorkManager **45 min** (was 15) with network + battery-not-low + device-idle (still not charging-required); iOS Background Fetch minimum **45 min**; cancel OS tasks while `resumed`; skip background tick if last successful `GetNewTokens` within **25 min**. Toggle still default **off**; no register when logged out. GitHub Release **v1.5.9** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.8 (calendar week navigator UI + date range)
+
+**[2026-09-16]**
+
+- **Release 1.5.8** (`pubspec` **1.5.8+1**): Calendar education-week header + subtitle are one rounded card (`WeekoffseterElementWidget`); EN same-month range uses `${to.day}` (was `$to.day`, which printed `DateTime.toString()` + literal `.day`). `calendarWeekDateRange` normalizes to date-only. GitHub Release **v1.5.8** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.7 (background keep-alive + remember password)
+
+**[2026-09-16]**
+
+- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + **Remember password on this device** Settings (both default off). Password Dart was briefly on `main` then **reverted in 1.5.6** session-core cut; **1.5.7** restores toggle + `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix (manual logout always wipes; expiry/cold-start keep when opted in; login pre-fill; no auto-2FA). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK + unsigned IPA (`Neptun-ELTE-1.5.7-unsigned.ipa`). Owner **Nanda**.
+
+---
+
+## 2026-09-16 — release 1.5.6 (hallgato session v1 core)
+
+**[2026-09-16]**
+
+- **HALLGATO_SESSION_PLAN v1 core shipped:** removed client **10-minute** `SessionGuard` wall-clock (`startSessionWallClock`, `checkSessionWallClockOnResume`, `SESSION_StartedAtMs` enforcement, cold-start wall-clock branch). Session ends on manual logout or dead refresh only.
+- **Foreground JWT maintenance:** `HomePage` periodic timer every **3 min 30 s** while `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens` (modern API + refresh token); pauses on background; shares `_isRefreshingToken` with GET 401 recovery; ~45 s post-login grace unchanged.
+- **Mail + calendar (same tag):** corrupt mail cache no longer paints epoch/`ERROR` on cold Mail tab (`_cachedMailEntryValid` in `fetchMails`); calendar education-week header + date-range subtitle layout/copy polish.
+- **Not in 1.5.6:** Settings background keep-alive, password retention, portal/HWEB activity (shipped **1.5.7** or plan-only).
+- **Release 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK + unsigned IPA (`Neptun-ELTE-1.5.6-unsigned.ipa`). Owner **Nanda**.
+
+---
+
+## 2026-09-16 — diary: campus map Phase A (0–6) complete — sync + re-verify
+
+**[2026-09-16]** — **detailed / verbose entry (this time only)**
+
+### Why this entry is long
+
+Phase A (“finish the map data before any Flutter Map UI”) is closed for MVP. Earlier same-day Dev Blog bullets for Phases 0–6 stay as chronological crumbs; **this** entry is the full diary: what shipped, where it lives, how QA was proven, what was still honest-not-done then, and what Phase B meant later. Docs/data only at that moment — **no** Flutter Map screens yet, **no** marketing version bump. (Flutter Map UI shipped later in **1.6.0+**; FootPrint primary **1.8.x**, still WIP.) Owner **Nanda**.
+
+### Decision that framed the day
+
+Product rule (see [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md)): **map before app**. Indoor A→B for ELTE Lágymányos South (**LD / Déli**) and North (**LE / Északi**) must exist as an attributable, checksummed, QA’d package **before** any login-hub Map button, schedule deep-link into indoor paths, or graph loader in Dart. Shipped app maps behavior remains **external only**: tap room codes → decode → Apple/Google Maps building pin via `lib/Misc/elte_room_code.dart` (LD / LE / LK). That path was re-checked with `flutter test test/elte_room_code_test.dart` (all passed) and must not be confused with indoor routing.
+
+### Phase-by-phase delivery (0 → 6)
+
+| Phase | What landed | Canonical paths |
+|------:|-------------|-----------------|
+| **0** | Inventory freeze: public LD/LE JPGs + tables, BIS dump limits, Északi planner as UX reference only, **do not wait** for BIS `routing.route` polylines (null in research), JPG basemap redistribution noted historically (no longer a current product ship-blocker; FootPrint/MVT path shipped) | [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0 · [campus_map_research/README](campus_map_research/README.md) |
+| **1** | Locked schema: Building / Floor / Room / Node / Edge / Join; CRS = `basemapPx` (top-left); LD floor-0 example + join stubs | [`schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) |
+| **2** | LD corridor graph MVP: floors **−1…7**, shared hub template, room stubs, door stubs, entrances, vertical **lift + stair** links; Dijkstra samples | [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · [`samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md) · builder `build_graph_ld.py` |
+| **3** | LE corridor graph MVP: same floor set; double-courtyard + south-wing hubs; Dunapart-left artwork CRS; same vertical pattern | [`graph/graph_le.json`](campus_map_research/graph/graph_le.json) · [`samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md) · builder `build_graph_le.py` |
+| **4** | Neptun↔BIS joins + named-hall aliases + search fixtures + coverage honesty | [`joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, `JOIN_COVERAGE.md`) |
+| **5** | Ready-to-bundle package: graphs + joins + aliases + fixtures + stable `basemaps/{ld\|le}/f*.jpg` + `manifest.json` + `checksums.sha256` + `ATTRIBUTION.md` + `check_package.py` | [`campus_map_package/`](campus_map_package/) |
+| **6** | Full QA matrix runner + machine JSON + human report + owner **“map finished”** sign-off for MVP | [`run_qa.py`](campus_map_package/run_qa.py) · [`qa_matrix.json`](campus_map_package/qa_matrix.json) · [`QA_REPORT.md`](campus_map_package/QA_REPORT.md) |
+
+**Package counts (manifest):** LD **475** nodes / **639** edges / **134** rooms; LE **454** nodes / **600** edges / **92** rooms; floors **−1…7** each. Research graphs and package graphs match on topology; package only remaps `basemapAsset` to package-relative `basemaps/…` paths (research keeps `ld_south/floors/…` / `le_north/floors/…`).
+
+### Package layout (what “the deliverable” is)
+
+```
+docs/Technical/campus_map_package/
+  manifest.json, graph_ld.json, graph_le.json
+  joins_ld.json, joins_le.json, aliases.json, search_fixtures.json
+  basemaps/ld|le/f-1.jpg … f7.jpg
+  checksums.sha256, ATTRIBUTION.md
+  check_package.py          # Phase 5 smoke
+  run_qa.py → qa_matrix.json
+  QA_REPORT.md, README.md
+```
+
+Verify any time:
+
+```bash
+python3 docs/Technical/campus_map_package/check_package.py
+python3 docs/Technical/campus_map_package/run_qa.py
+```
+
+### QA numbers (re-run this pass)
+
+- **Phase 5 smoke:** manifest assets + required files OK; checksums OK (**30** files); sample A→B OK for LD same-floor / entrance→room / cross-floor and LE same trio.
+- **Phase 6 matrix:** **`pass=41` · `fail=0` · `waive=2` · total=43**.
+- **Passes include:** LD+LE same-floor triples; cross-floor forced **stair** and forced **lift**; entrance→classroom; named halls (LD: Bolyai, Fejér Lipót, Rényi — LE: Ortvay, Eötvös, Rybár István); Neptun join strings; all `search_fixtures` positives + three educational-only negatives (`LD 5.210` / `5.615` / `5.713` correctly have **no** graph pin); checksums; no-shortcut heuristics.
+- **Waives (explicit, not hidden fails):** `ld-restricted` / `le-restricted` — schema allows optional restricted/closed notes, but MVP `rooms[]` do **not** copy public-table strings (`16 után zárt`, `zárt terem`, …). Surfacing waits for Phase B UI or a dedicated annotation pass ([QA_REPORT](campus_map_package/QA_REPORT.md)).
+- **Connectivity spot-check:** from a basement entrance, all LD room nodes (**134**) and all LE room nodes (**92**) are reachable; joins with graph pins resolve; fixtures do not point at missing nodes.
+- **Bugbot-style review** of Phase 0–6 package/scripts + `elte_room_code`: **no bugs** reported. No Flutter Map UI invented.
+
+### Honesty (must stay visible everywhere)
+
+1. **Graphs are approximate MVP digitizations** — corridor hubs placed visually on ~800×800 basemap CRS; not survey-grade BIM; not live BIS polylines. Good enough for Phase A A→B demos and QA; expect refinement when/if Phase B ships.
+2. Basemap credits recorded in [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md); product map uses schematic (JPG not primary).
+3. **No Flutter indoor Map UI yet at that moment** — Phase **B** still ahead (later **1.6.0+**). Product README then must not claim in-app indoor A→B; timetable “Open map” remains external Maps (Campus Map WIP came later).
+4. **Join coverage is partial on-graph:** nearly all educational rooms have a Neptun join string; only ~14–15% already sit on the MVP graph pins (full matrix in [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only rooms are searchable as catalog facts, not walkable pins.
+5. **BIS** dump: rooms/floors/entities imported; cookies/tokens **not** in git; `routing.route` geometry still null from the research pass.
+6. **Legal:** no Privacy/Terms change this pass — app still does not collect GPS for indoor graph (and has no indoor map screen).
+
+### Docs synced this pass
+
+Product + technical docs brought in line with “Phase 0–6 done / Phase A map finished / Phase B Flutter later / package path”: README EN+RU (feature honesty + doc-map package link), root short README pointer, TECHNICAL EN+RU (already pointed at package + QA), CAMPUS_MAP_PLAN EN+RU, research + package READMEs, schema note that Phases 2–3 graphs exist, this detailed Dev Blog EN+RU. HALLGATO plans unchanged (no stale map cross-links). Legal untouched.
+
+### What’s next then (Phase B — not started at that moment; shipped later)
+
+Phase B Flutter (login-hub Map, search + A→B, floor switcher) came later in **1.6.0+**. No version bump required for this docs/data close-out.
+
+*Owner / developer: **Nanda**.*
+
+---
+
+## 2026-09-16 — docs: campus map Phase 6 (QA matrix)
+
+**[2026-09-16]**
+
+- Phase 6 QA against [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Result **pass=41 / fail=0 / waive=2** (restricted/closed notes not on MVP rooms). Owner sign-off: Phase A **map finished** for MVP. Phase B Flutter not started yet at that moment. Docs/data only; no Dart / version bump. Owner **Nanda**. *(Full diary: entry above.)*
+
+## 2026-09-16 — docs: campus map Phase 5 (package deliverable)
+
+**[2026-09-16]**
+
+- Phase 5 ready-to-bundle package: [`campus_map_package/`](campus_map_package/) (`graph_ld/le`, joins, aliases, stable `basemaps/{ld|le}/f*.jpg`, `manifest.json`, `checksums.sha256`, `ATTRIBUTION.md`, `check_package.py`). JPG basemaps packaged for research/QA (later legacy/debug; FootPrint/MVT became product primary). Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map Phase 4 (joins + aliases)
+
+**[2026-09-16]**
+
+- Phase 4 Neptun↔BIS joins + named-hall aliases: [`campus_map_research/joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, coverage report). Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map Phase 3 (LE graph MVP)
+
+**[2026-09-16]**
+
+- Phase 3 LE corridor graph MVP: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) (floors −1…7, 92 room stubs, vertical lifts/stairs) + samples + builder. Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map Phase 2 (LD graph MVP)
+
+**[2026-09-16]**
+
+- Phase 2 LD corridor graph MVP: [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) (floors −1…7, 134 room stubs, vertical lifts/stairs) + samples + builder. Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map Phase 0+1 (schema)
+
+**[2026-09-16]**
+
+- Closed Phase 0 (frozen inventory + basemap/search/no-BIS-polyline decisions). Phase 1 data model under [`campus_map_research/schema/`](campus_map_research/schema/SCHEMA.md) (`SCHEMA.md`, LD floor-0 example, join stubs). Next: Phase 2 digitize LD. Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map plan (map first)
+
+**[2026-09-16]**
+
+- Added [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): finish LD/LE indoor graph package + QA **before** Flutter Map UI (Phase B planned after 0–6; later shipped). Cross-linked from `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Docs-only; no Dart / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: campus map research dump
+
+**[2026-09-16]**
+
+- Committed authenticated **BIS** research dump under [`campus_map_research/`](campus_map_research/README.md) (rooms/floors/entities via system Chrome; `routing.route` geometry **null** this pass; no cookies/tokens in git) + public LD/LE JPG extracts + Északi planner sample + BIS import reports EN+RU. **Not** wired into the app. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
+
+**[2026-09-16, 08:15]**
+
+- Deleted `docs/Technical/IOS_VS_ANDROID.md` + `.ru.md` after Android APK functional parity — separate platform matrix no longer wanted.
+- Cross-links removed from README / TECHNICAL EN+RU; brief platform-only bullets (updater / signing / CI / haptics / toast / IDs) folded into TECHNICAL §14–15.
+- `.cursor/rules/keep-docs-current.mdc` no longer lists `IOS_VS_ANDROID*` as mandatory. Docs-only; no version bump / tag / APK. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: honesty sync (translator + backlog)
+
+**[2026-09-16]**
+
+- Docs honesty: mail/message translator marked **working** (not “verify on device”); README session line matches **1.5.10** remember-password on manual logout; restored tracked **HALLGATO_SESSION_PLAN** EN+RU (were removed in `remove plans`, status synced through **1.5.10**). Refreshed Dev Blog “In progress”. No marketing version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — Settings: optional background hallgato keep-alive
+
+**[2026-09-16]**
+
+- Shipped **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`, default **off**): Android `workmanager` periodic **15 min**; iOS `background_fetch` (system-deferred **15+ min**). `HallgatoBackgroundKeepAlive` + `SessionGuard.runBackgroundTokenMaintenance()` shares `GetNewTokens` / refresh mutex with foreground; headless **401/403** defers UI to next foreground. Toggle off or logged out → tasks cancelled. EN/HU/RU Settings strings; TECHNICAL + HALLGATO EN+RU. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — Settings: optional password retention (opt-in)
+
+**[2026-09-16]**
+
+- Shipped **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default off) in Settings → Behavior & other; EN/HU/RU strings. `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix: manual log out always wipes password; token failure / `forceExpiredLogout` retains `neptun_password` when opted in; login pre-fill only (no auto-2FA). TECHNICAL + HALLGATO plan EN+RU updated. No marketing version bump (Agent #3 owns 1.5.6). Owner **Nanda**.
+
+---
+
+## 2026-09-16 — plan: optional background, portal research, password toggle
+
+**[2026-09-16]**
+
+- Extended **HALLGATO_SESSION_PLAN** EN+RU: optional Settings **background keep-alive** (WorkManager / BGTask, default off, battery-conservative); **portal/HWEB activity** as unproven lower-priority research; **opt-in password retention** (`neptun_password`, 2FA still manual). Checklist steps 11–16. Docs-only; no Dart / SessionGuard / version bump. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — plan: mail + calendar bugs
+
+**[2026-09-16, 08:45]**
+
+- Extended [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU twin with **planned bug fixes** (mail epoch/`ERROR` on cold Mail tab until refresh; calendar week header/subtitle layout + formatting). **Shipped in 1.5.6** (same tag as session v1); plan EN+RU synced 16 Sep 2026. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: hallgato session maintenance plan
+
+**[2026-09-16]**
+
+- Added design-only **HALLGATO_SESSION_PLAN** EN+RU (`docs/Technical/`) — foreground proactive `GetNewTokens` every 3–4 min, planned removal of 10-min `SessionGuard` wall-clock; **no app code change**, no version bump / tag / APK. TECHNICAL EN+RU pointer in session section. Owner **Nanda**.
+
+---
+
+## 2026-09-16 — docs: session / API honesty
+
+**[2026-09-16]**
+
+- **TECHNICAL EN+RU synced to code** (no app change, no `1.x.y` bump, no tag/APK): after ELTE login, student-data REST is **GET + Bearer JWT** on assigned `hallgatoN` (portal cookies not on those GETs); **POST** = portal Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read only; **no PUT/DELETE**; `trySilentReauth()` false for ELTE; SessionGuard **10 min wall-clock from session start** (not idle, independent of JWT refresh; `exp` not parsed; ~10–15 min access lifetime observational); 401 retry on GET only; email OTP helper in code unused by UI; no Workmanager / background_fetch. Owner **Nanda**.
+
+---
+
+## 2026-09-15 — release 1.5.5 (drawer icons + splash)
+
+**[2026-09-15]**
+
+- **Bug — double symbols in drawer rows:** Settings / Bug report / Logout had a Material leading icon plus emoji in the translated label. Fixed with `stripLeadingEmoji` + plain `Text` next to Material icons.
+- **Bug — launcher icon on app entry:** `flutter_native_splash` still used the refreshed logo/icon asset as splash image. Splash is now color-only; Android 12 uses a solid tile so the launcher icon stays launcher-only. Launcher AppIcon / adaptive icons unchanged.
+- **Release 1.5.5** (`pubspec` **1.5.5+1**). GitHub Release **v1.5.5** + APK (+ unsigned IPA via Actions if available). Owner **Nanda**.
+
+---
+
+## 2026-09-15 — release 1.5.4 (session wall-clock + emoji)
+
+**[2026-09-15]**
+
+- **Bug — Android 10-min logout:** `SessionGuard.startSessionWallClock()` reset the stamp on every Home entry and raced prefs (`cancel` wrote `SESSION_StartedAtMs=0` vs new start). Long one-shot `Timer`s were unreliable on Android. **Fix:** continue existing in-window stamp; generation-guarded prefs writes; **15 s** periodic ticker + lifecycle re-check on `resumed`/`inactive`. Policy still **10 min** wall-clock (not idle). Background: OS-killed process is enforced on next cold start/resume via persisted stamp.
+- **Bug — duplicate Bug report emoji:** `EmojiRichText` / tinted `TextStyle.color` on Noto Color Emoji painted a ghost monochrome glyph under the real emoji (`🐞 Bug report`). **Fix:** untinted emoji spans in `EmojiRichText`; drawer Bug report / Settings / Logout use `EmojiRichText`.
+- **Release 1.5.4** (`pubspec` **1.5.4+1**). GitHub Release **v1.5.4** + APK (+ unsigned IPA via Actions). Owner **Nanda**.
+
+---
+
+## 2026-09-15 — release 1.5.3 (new app icon)
+
+**[2026-09-15]**
+
+- **New launcher branding:** cropped square master (`assets/app_icon.png`) from the ELTE Neptun book + circuit **N** (+ crest); Android adaptive foreground + white background; full iOS `AppIcon` set via `flutter_launcher_icons`. Splash / branding asset `assets/neptun2_logo.png` refreshed from the same source (project already used it for `flutter_native_splash`).
+- Source kept under `assets/branding/`. Session policy **unchanged** (still **10 min** / `SessionGuard` not touched).
+- **Note:** Android OTP white-screen fix shipped earlier as a **1.5.2** APK rebuild (`--clobber` on **v1.5.2**); this **1.5.3** tag is required so sideload users pick up via in-app GitHub updater (new `tag_name` > installed `versionName`).
+- **Release 1.5.3** (`pubspec` **1.5.3+1**). GitHub Release **v1.5.3** + APK (+ unsigned IPA via Actions). Owner **Nanda**.
+
+---
+
+## 2026-09-15 — ship policy: new tag for Android updater
+
+**[2026-09-15]**
+
+- **Policy (docs/rules only, no app bump):** from now on, every **shipped Android APK / GitHub Release** must use a **new marketing `1.x.y`** and a **new** git tag `v1.x.y`. Replacing an APK on the same tag (clobber) does **not** trigger in-app auto-update (`AppUpdater` requires `tag_name` strictly newer than installed `versionName`). Cursor rule: `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not tag unless an APK ships. Owner **Nanda**.
+
+---
+
+## 2026-09-15 — release 1.5.2 (Android parity)
+
+**[2026-09-15]**
+
+- **Android parity with iOS (~1.5.1 surface):** shared Flutter features already matched (auth portal+2FA+OuterLogin+JWT, shortcuts, maps, mail search, semester compare, student card, calendar without Next 48h). **No** Android-only auth blockers found (same Dart `HttpClient` / portal path; no cleartext / WebView gate).
+- **Android App Widget MVP** (`TodayClassesWidgetProvider`): today’s classes from calendar cache via `WidgetBridge` → SharedPreferences JSON — **no JWT**. Tap → `neptunelte://shortcut/calendar`. Manifest deep-link + maps/mailto `<queries>`. RemoteViews layout (not Glance Compose) — same honesty as iOS WidgetKit.
+- Release APK: `flutter build apk --release`; signing falls back to debug keystore when `key.properties` absent. GitHub Release **v1.5.2** attaches APK (+ unsigned IPA via Actions as usual).
+- **Session policy unchanged:** still **10-minute** wall-clock + existing `SessionGuard` — not modified.
+- **Release 1.5.2** (`pubspec` **1.5.2+1**). Owner **Nanda**.
+
+### 2026-09-15 — Android OTP white-screen fix (still 1.5.2)
+
+**[2026-09-15]**
+
+- **Bug (Android-only):** after password, OTP/2FA step showed a **plain white screen** (iOS TOTP UI was fine). Root cause: 2FA used transparent popup mode 9 (`opaque: false`) gated on async `PackageInfo` + **`Language.getAllLanguages()`** (GitHub HTTP). On Android that delay / window-background bleed left a blank white view with no usable code field.
+- **Fix:** opaque full-screen `TwoFactorCodePage` via root `appNavigatorKey` (`lib/Pages/two_factor_page.dart`); popup open no longer waits on the language-list HTTP. Session policy **unchanged** (still **10 min**). APK re-uploaded to GitHub Release **v1.5.2** (`--clobber`). Owner **Nanda**.
+
+---
+
+
+## 2026-09-14 — release 1.5.1 (Next 48h strip)
+
+**[2026-09-14, ~21:11]**
+
+- **Release 1.5.1** (`pubspec` **1.5.1+1**): patch for user-facing Calendar cleanup — ships the **“Next 48 hours”** strip removal from **72b5aea**. No other feature work in this cut.
+- **Session policy unchanged:** still **10-minute** session + existing `SessionGuard` / auto-login behavior — **no** SessionGuard or idle-timeout changes in this release.
+- GitHub Release **v1.5.1** + unsigned IPA via Actions. Owner **Nanda**.
+
+---
+
+## 2026-09-14 — docs sync after 1.5.0 (plan files deleted)
+
+**[2026-09-14, docs]**
+
+- Full docs refresh to match shipped **1.5.0**: removed all live links to deleted `IMPLEMENTATION_PLAN*` (backlog = TECHNICAL honesty + DEV_BLOG “In progress”); fixed stale “no iOS CI” / “no tests” claims (`ios-ipa.yml` unsigned IPA; `test/elte_room_code_test.dart` + placeholder `widget_test.dart`); TOC/home-tabs anchors; version rows (feature line **5**, item **11** dropped, **2.0.0** = final); student card claim/bank/profile **no QR**; iOS WidgetKit MVP / Android Glance deferred; mail translator still “verify offline/failure”; Student web full + 10-min session + 4-tab nav honesty. Cursor rules `keep-docs-current` / `versioning` no longer mandate IMPLEMENTATION_PLAN. Owner **Nanda**. Docs-only; no app version bump.
+
+**[2026-09-14, ~20:56]**
+
+- Calendar: removed the **“Next 48 hours”** strip (classes+exams list above the week tabs). Kept today summary, ZH/deadline strip, period banners, week view, ICS export, What’s Changed. Dropped unused `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. Owner **Nanda**.
+
+---
+
+## 2026-09-14 — semester compare, widgets MVP, drop #11 → 1.5.0
+
+**[2026-09-14, ~14:30]**
+
+- **Plan item 10 — semester comparison:** `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (per-term completed credits, átlag, **/30** via same `MarkbookMath.fromCompleted` as the markbook header). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); fetch missing terms only when the session is usable; cap ~8 (newest first); demo returns two canned terms. Markbook side-by-side cards + i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
+
+**[2026-09-14, ~14:35]**
+
+- **Plan item 11 removed (Academic Progress / tanterv):** dropped from the implementation plan entirely (EN+RU priority tables + §11). Sep 2026 HARs never captured a tanterv graph; live HWEB has **no Tanterv menu** (`GetCurriculums` **404**; Advancement templates / `creditprogress` empty this term). We will **not** ship a fake progress bar from current-term credits alone. Curriculum leftovers stay honesty notes only — not a backlog item. Owner **Nanda**.
+
+**[2026-09-14, ~14:40]**
+
+- **Plan item 14 — homescreen widgets (honest MVP):** **iOS WidgetKit** extension `ios/TodayClassesWidget/` — today’s **classes** from calendar cache only via `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Synced from calendar refresh paths. **No JWT**, passwords, or tokens in the widget process. Missing cache → “Open Neptun ELTE”; stale day labeled; empty day → “No classes today”. Tap → `neptunelte://shortcut/calendar`. Aligns with the 10-minute session wall (offline snapshot). **Android Glance** deferred — docs stay honest. Owner **Nanda**.
+
+**[2026-09-14]**
+
+- **Release 1.5.0** (`pubspec` **1.5.0+1**): feature line **5** — ships plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widgets not yet). Plan item **11** removed (not shipped). Student card remains claim/bank/profile only (**no QR** — unchanged from **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA via Actions. Owner **Nanda**.
+
+---
+
+## 2026-09-14 — student card claim / bank / profile (item 12)
+
+**[2026-09-14]**
+
+- **Plan item 12:** `StudentCardPage` (drawer + Settings) shows HAR-honest **claim status**, bank **visibility flags** (owner / bank name / default / foreign / valid / OTP — **never** IBAN/SWIFT), optional `GetGeneralUserData` + contacts. Cache `STUDENT_CardCacheJson` for offline non-secret flags + existing photo cache.
+- **Honesty:** **no QR**, no invented card number / expiry (HWEB `/administrations/student-card` is claim-only). No version bump. Owner **Nanda**.
+- **Release 1.4.0** (`pubspec` **1.4.0+1**): feature line **4** — ships plan items **5** (ghost what-if), **6** (today/ZH/ICS export/class-notif granularity), **7** (payments honesty + ≤1/day notifs), **8** (maps deep-link), **9** (What’s Changed), **12** (student card claim/bank/profile — **no QR**), **13** (home shortcuts Calendar/Mail/Payments). GitHub Release **v1.4.0** + unsigned IPA via Actions. Owner **Nanda**.
 
 ---
 
@@ -217,416 +581,59 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
-## 2026-09-14 — student card claim / bank / profile (item 12)
+## 2026-09-13 — iOS, languages, ELTE hub
 
-**[2026-09-14]**
+**[2026-09-13, 00:18]**
 
-- **Plan item 12:** `StudentCardPage` (drawer + Settings) shows HAR-honest **claim status**, bank **visibility flags** (owner / bank name / default / foreign / valid / OTP — **never** IBAN/SWIFT), optional `GetGeneralUserData` + contacts. Cache `STUDENT_CardCacheJson` for offline non-secret flags + existing photo cache.
-- **Honesty:** **no QR**, no invented card number / expiry (HWEB `/administrations/student-card` is claim-only). No version bump. Owner **Nanda**.
-- **Release 1.4.0** (`pubspec` **1.4.0+1**): feature line **4** — ships plan items **5** (ghost what-if), **6** (today/ZH/ICS export/class-notif granularity), **7** (payments honesty + ≤1/day notifs), **8** (maps deep-link), **9** (What’s Changed), **12** (student card claim/bank/profile — **no QR**), **13** (home shortcuts Calendar/Mail/Payments). GitHub Release **v1.4.0** + unsigned IPA via Actions. Owner **Nanda**.
+- Brought up the **iOS** project (`ios/`, CocoaPods, signing path for Automatic Team).
+- Physical iPhone: use **`flutter run --release`** so the home-screen icon appears (iOS 14+ debug limit).
+- Bundle ID **`com.nanda070.neptunmobile`** (no underscore — Xcode signing); Android stays `com.nanda070.neptun_mobile.app`.
+- Languages trimmed to **EN / HU** built-in + **RU / TR** GitHub packs.
+- Removed joke / unused packs (Pirate, Chinese, German, Spanish, Romanian, Ukrainian, UAE, etc.).
 
----
+**[2026-09-13, 00:29]**
 
-## 2026-09-14 — semester compare, widgets MVP, drop #11 → 1.5.0
+- Login / **2FA** path extended for modern Neptun APIs (code entry after password).
+- First iOS login fixes land; still iterating on the real ELTE portal flow.
 
-**[2026-09-14, ~14:30]**
+**[2026-09-13, 00:38 – 00:42]**
 
-- **Plan item 10 — semester comparison:** `MarkbookRequest.getSemesterComparison` / `TermComparisonStat` (per-term completed credits, átlag, **/30** via same `MarkbookMath.fromCompleted` as the markbook header). Cache-first `TakenSubjects` (`CachedMarkbookTerm_*`); fetch missing terms only when the session is usable; cap ~8 (newest first); demo returns two canned terms. Markbook side-by-side cards + i18n `markbook_semesterCompare_*` (HU/EN + RU/TR). Flat “grades from other terms” history stays. **Not** a tanterv / diploma % view. Owner **Nanda**.
+- Developer / technical docs expanded (EN + RU) for iOS run, signing, and honesty notes.
 
-**[2026-09-14, ~14:35]**
+**[2026-09-13, 01:45]**
 
-- **Plan item 11 removed (Academic Progress / tanterv):** dropped from the implementation plan entirely (EN+RU priority tables + §11). Sep 2026 HARs never captured a tanterv graph; live HWEB has **no Tanterv menu** (`GetCurriculums` **404**; Advancement templates / `creditprogress` empty this term). We will **not** ship a fake progress bar from current-term credits alone. Curriculum leftovers stay honesty notes only — not a backlog item. Owner **Nanda**.
+- Product scoped to **ELTE only**.
+- Hub UI: one institute button — no multi-university picker, no custom URL.
+- `universityNameUrlPairs.json` reduced to a single entry: ELTE → **`https://neptun.elte.hu`**.
+- Explicitly **not** Obuda/BME-style **`/ujhallgato`**.
 
-**[2026-09-14, ~14:40]**
+**[2026-09-13, 01:50]**
 
-- **Plan item 14 — homescreen widgets (honest MVP):** **iOS WidgetKit** extension `ios/TodayClassesWidget/` — today’s **classes** from calendar cache only via `lib/widget_bridge.dart` → App Group `group.com.nanda070.neptunmobile` (title / start / end / location). Synced from calendar refresh paths. **No JWT**, passwords, or tokens in the widget process. Missing cache → “Open Neptun ELTE”; stale day labeled; empty day → “No classes today”. Tap → `neptunelte://shortcut/calendar`. Aligns with the 10-minute session wall (offline snapshot). **Android Glance** deferred — docs stay honest. Owner **Nanda**.
+- Display / docs rename: **Neptun ELTE** (repo target **Neptun-ELTE**).
+- Themes catalog and language strings updated for the new name.
+- Android label / iOS display name aligned.
 
-**[2026-09-14]**
+**[2026-09-13, 02:12]**
 
-- **Release 1.5.0** (`pubspec` **1.5.0+1**): feature line **5** — ships plan items **10** (semester comparison) + **14** (iOS WidgetKit MVP; Android widgets not yet). Plan item **11** removed (not shipped). Student card remains claim/bank/profile only (**no QR** — unchanged from **1.4.0**). GitHub Release **v1.5.0** + unsigned IPA via Actions. Owner **Nanda**.
+- Documented and wired student-web bridge awareness: after portal login, Student web lands on **`hallgatoN.neptun.elte.hu`** (load-balanced nodes `1…N`).
+- Do **not** hardcode a single `hallgato` host — the portal assigns the node (live HAR examples: `hallgato3` / `ELTE_HW3`).
 
----
+**[2026-09-13, 04:20]**
 
-## 2026-09-14 — docs sync after 1.5.0 (plan files deleted)
-
-**[2026-09-14, docs]**
-
-- Full docs refresh to match shipped **1.5.0**: removed all live links to deleted `IMPLEMENTATION_PLAN*` (backlog = TECHNICAL honesty + DEV_BLOG “In progress”); fixed stale “no iOS CI” / “no tests” claims (`ios-ipa.yml` unsigned IPA; `test/elte_room_code_test.dart` + placeholder `widget_test.dart`); TOC/home-tabs anchors; version rows (feature line **5**, item **11** dropped, **2.0.0** = final); student card claim/bank/profile **no QR**; iOS WidgetKit MVP / Android Glance deferred; mail translator still “verify offline/failure”; Student web full + 10-min session + 4-tab nav honesty. Cursor rules `keep-docs-current` / `versioning` no longer mandate IMPLEMENTATION_PLAN. Owner **Nanda**. Docs-only; no app version bump.
-
-**[2026-09-14, ~20:56]**
-
-- Calendar: removed the **“Next 48 hours”** strip (classes+exams list above the week tabs). Kept today summary, ZH/deadline strip, period banners, week view, ICS export, What’s Changed. Dropped unused `calendar_next48h_Header` (EN/HU + RU/TR). Docs EN+RU. Owner **Nanda**.
-
----
-
-## 2026-09-14 — release 1.5.1 (Next 48h strip)
-
-**[2026-09-14, ~21:11]**
-
-- **Release 1.5.1** (`pubspec` **1.5.1+1**): patch for user-facing Calendar cleanup — ships the **“Next 48 hours”** strip removal from **72b5aea**. No other feature work in this cut.
-- **Session policy unchanged:** still **10-minute** session + existing `SessionGuard` / auto-login behavior — **no** SessionGuard or idle-timeout changes in this release.
-- GitHub Release **v1.5.1** + unsigned IPA via Actions. Owner **Nanda**.
+- Major login correction: **`POST https://neptun.elte.hu/api/Account/Authenticate` is a dead end for ELTE** (empty HTTP 400).
+- Correct path matches the website: portal **Potlap** `Login` → **`Login2FA`** (TOTP) → **`ToNeptunHWeb`** → **`OuterLogin`** JWT on the assigned `hallgatoN`.
+- Distinguishes **invalid password** vs **server busy** / overload (no longer shown as a bad password).
+- Email OTP format from HAR documented as **`XXX-XXXXXX`** (3-digit prefix + 6 digits); app UI still prioritizes **Authenticator TOTP**.
+- Obsolete banner “2FA won’t work / you can’t log in with 2FA” **removed** — ELTE requires 2FA and the app accepts a code.
 
 ---
 
-## 2026-09-15 — release 1.5.2 (Android parity)
+## 2026-09-09
 
-**[2026-09-15]**
+**[2026-09-09, 23:06]**
 
-- **Android parity with iOS (~1.5.1 surface):** shared Flutter features already matched (auth portal+2FA+OuterLogin+JWT, shortcuts, maps, mail search, semester compare, student card, calendar without Next 48h). **No** Android-only auth blockers found (same Dart `HttpClient` / portal path; no cleartext / WebView gate).
-- **Android App Widget MVP** (`TodayClassesWidgetProvider`): today’s classes from calendar cache via `WidgetBridge` → SharedPreferences JSON — **no JWT**. Tap → `neptunelte://shortcut/calendar`. Manifest deep-link + maps/mailto `<queries>`. RemoteViews layout (not Glance Compose) — same honesty as iOS WidgetKit.
-- Release APK: `flutter build apk --release`; signing falls back to debug keystore when `key.properties` absent. GitHub Release **v1.5.2** attaches APK (+ unsigned IPA via Actions as usual).
-- **Session policy unchanged:** still **10-minute** wall-clock + existing `SessionGuard` — not modified.
-- **Release 1.5.2** (`pubspec` **1.5.2+1**). Owner **Nanda**.
-
-### 2026-09-15 — Android OTP white-screen fix (still 1.5.2)
-
-**[2026-09-15]**
-
-- **Bug (Android-only):** after password, OTP/2FA step showed a **plain white screen** (iOS TOTP UI was fine). Root cause: 2FA used transparent popup mode 9 (`opaque: false`) gated on async `PackageInfo` + **`Language.getAllLanguages()`** (GitHub HTTP). On Android that delay / window-background bleed left a blank white view with no usable code field.
-- **Fix:** opaque full-screen `TwoFactorCodePage` via root `appNavigatorKey` (`lib/Pages/two_factor_page.dart`); popup open no longer waits on the language-list HTTP. Session policy **unchanged** (still **10 min**). APK re-uploaded to GitHub Release **v1.5.2** (`--clobber`). Owner **Nanda**.
-
----
-
-
-## 2026-09-15 — ship policy: new tag for Android updater
-
-**[2026-09-15]**
-
-- **Policy (docs/rules only, no app bump):** from now on, every **shipped Android APK / GitHub Release** must use a **new marketing `1.x.y`** and a **new** git tag `v1.x.y`. Replacing an APK on the same tag (clobber) does **not** trigger in-app auto-update (`AppUpdater` requires `tag_name` strictly newer than installed `versionName`). Cursor rule: `.cursor/rules/android-github-release-tags.mdc`. Pure docs/chore commits need not tag unless an APK ships. Owner **Nanda**.
-
----
-
-## 2026-09-15 — release 1.5.3 (new app icon)
-
-**[2026-09-15]**
-
-- **New launcher branding:** cropped square master (`assets/app_icon.png`) from the ELTE Neptun book + circuit **N** (+ crest); Android adaptive foreground + white background; full iOS `AppIcon` set via `flutter_launcher_icons`. Splash / branding asset `assets/neptun2_logo.png` refreshed from the same source (project already used it for `flutter_native_splash`).
-- Source kept under `assets/branding/`. Session policy **unchanged** (still **10 min** / `SessionGuard` not touched).
-- **Note:** Android OTP white-screen fix shipped earlier as a **1.5.2** APK rebuild (`--clobber` on **v1.5.2**); this **1.5.3** tag is required so sideload users pick up via in-app GitHub updater (new `tag_name` > installed `versionName`).
-- **Release 1.5.3** (`pubspec` **1.5.3+1**). GitHub Release **v1.5.3** + APK (+ unsigned IPA via Actions). Owner **Nanda**.
-
----
-
-## 2026-09-15 — release 1.5.4 (session wall-clock + emoji)
-
-**[2026-09-15]**
-
-- **Bug — Android 10-min logout:** `SessionGuard.startSessionWallClock()` reset the stamp on every Home entry and raced prefs (`cancel` wrote `SESSION_StartedAtMs=0` vs new start). Long one-shot `Timer`s were unreliable on Android. **Fix:** continue existing in-window stamp; generation-guarded prefs writes; **15 s** periodic ticker + lifecycle re-check on `resumed`/`inactive`. Policy still **10 min** wall-clock (not idle). Background: OS-killed process is enforced on next cold start/resume via persisted stamp.
-- **Bug — duplicate Bug report emoji:** `EmojiRichText` / tinted `TextStyle.color` on Noto Color Emoji painted a ghost monochrome glyph under the real emoji (`🐞 Bug report`). **Fix:** untinted emoji spans in `EmojiRichText`; drawer Bug report / Settings / Logout use `EmojiRichText`.
-- **Release 1.5.4** (`pubspec` **1.5.4+1**). GitHub Release **v1.5.4** + APK (+ unsigned IPA via Actions). Owner **Nanda**.
-
----
-
-## 2026-09-15 — release 1.5.5 (drawer icons + splash)
-
-**[2026-09-15]**
-
-- **Bug — double symbols in drawer rows:** Settings / Bug report / Logout had a Material leading icon plus emoji in the translated label. Fixed with `stripLeadingEmoji` + plain `Text` next to Material icons.
-- **Bug — launcher icon on app entry:** `flutter_native_splash` still used the refreshed logo/icon asset as splash image. Splash is now color-only; Android 12 uses a solid tile so the launcher icon stays launcher-only. Launcher AppIcon / adaptive icons unchanged.
-- **Release 1.5.5** (`pubspec` **1.5.5+1**). GitHub Release **v1.5.5** + APK (+ unsigned IPA via Actions if available). Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: session / API honesty
-
-**[2026-09-16]**
-
-- **TECHNICAL EN+RU synced to code** (no app change, no `1.x.y` bump, no tag/APK): after ELTE login, student-data REST is **GET + Bearer JWT** on assigned `hallgatoN` (portal cookies not on those GETs); **POST** = portal Login / Login2FA / OuterLogin / `GetNewTokens` / mark-read only; **no PUT/DELETE**; `trySilentReauth()` false for ELTE; SessionGuard **10 min wall-clock from session start** (not idle, independent of JWT refresh; `exp` not parsed; ~10–15 min access lifetime observational); 401 retry on GET only; email OTP helper in code unused by UI; no Workmanager / background_fetch. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: hallgato session maintenance plan
-
-**[2026-09-16]**
-
-- Added design-only **HALLGATO_SESSION_PLAN** EN+RU (`docs/Technical/`) — foreground proactive `GetNewTokens` every 3–4 min, planned removal of 10-min `SessionGuard` wall-clock; **no app code change**, no version bump / tag / APK. TECHNICAL EN+RU pointer in session section. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.6 (hallgato session v1 core)
-
-**[2026-09-16]**
-
-- **HALLGATO_SESSION_PLAN v1 core shipped:** removed client **10-minute** `SessionGuard` wall-clock (`startSessionWallClock`, `checkSessionWallClockOnResume`, `SESSION_StartedAtMs` enforcement, cold-start wall-clock branch). Session ends on manual logout or dead refresh only.
-- **Foreground JWT maintenance:** `HomePage` periodic timer every **3 min 30 s** while `AppLifecycleState.resumed` → `SessionGuard.runForegroundTokenMaintenance()` → `POST /api/Account/GetNewTokens` (modern API + refresh token); pauses on background; shares `_isRefreshingToken` with GET 401 recovery; ~45 s post-login grace unchanged.
-- **Mail + calendar (same tag):** corrupt mail cache no longer paints epoch/`ERROR` on cold Mail tab (`_cachedMailEntryValid` in `fetchMails`); calendar education-week header + date-range subtitle layout/copy polish.
-- **Not in 1.5.6:** Settings background keep-alive, password retention, portal/HWEB activity (shipped **1.5.7** or plan-only).
-- **Release 1.5.6** (`pubspec` **1.5.6+1**). GitHub Release **v1.5.6** + APK + unsigned IPA (`Neptun-ELTE-1.5.6-unsigned.ipa`). Owner **Nanda**.
-
----
-
-## 2026-09-16 — plan: mail + calendar bugs
-
-**[2026-09-16, 08:45]**
-
-- Extended [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) + RU twin with **planned bug fixes** (mail epoch/`ERROR` on cold Mail tab until refresh; calendar week header/subtitle layout + formatting). **Shipped in 1.5.6** (same tag as session v1); plan EN+RU synced 16 Sep 2026. Owner **Nanda**.
-
----
-
-## 2026-09-16 — plan: optional background, portal research, password toggle
-
-**[2026-09-16]**
-
-- Extended **HALLGATO_SESSION_PLAN** EN+RU: optional Settings **background keep-alive** (WorkManager / BGTask, default off, battery-conservative); **portal/HWEB activity** as unproven lower-priority research; **opt-in password retention** (`neptun_password`, 2FA still manual). Checklist steps 11–16. Docs-only; no Dart / SessionGuard / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — Settings: optional password retention (opt-in)
-
-**[2026-09-16]**
-
-- Shipped **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default off) in Settings → Behavior & other; EN/HU/RU strings. `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix: manual log out always wipes password; token failure / `forceExpiredLogout` retains `neptun_password` when opted in; login pre-fill only (no auto-2FA). TECHNICAL + HALLGATO plan EN+RU updated. No marketing version bump (Agent #3 owns 1.5.6). Owner **Nanda**.
-
----
-
-## 2026-09-16 — Settings: optional background hallgato keep-alive
-
-**[2026-09-16]**
-
-- Shipped **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`, default **off**): Android `workmanager` periodic **15 min**; iOS `background_fetch` (system-deferred **15+ min**). `HallgatoBackgroundKeepAlive` + `SessionGuard.runBackgroundTokenMaintenance()` shares `GetNewTokens` / refresh mutex with foreground; headless **401/403** defers UI to next foreground. Toggle off or logged out → tasks cancelled. EN/HU/RU Settings strings; TECHNICAL + HALLGATO EN+RU. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.10 (session keep-alive reliability)
-
-**[2026-09-16]**
-
-- **Release 1.5.10** (`pubspec` **1.5.10+1**): fix three session bugs from **1.5.8/1.5.9**. (1) Background keep-alive: drop `requiresDeviceIdle` (blocked nearly all WorkManager/BGFetch runs); keep network + battery-not-low + **45 min** period with **15 min** Android initial delay; re-arm on background; `WAKE_LOCK` declared. (2) On `resumed`: **immediate** `GetNewTokens` then calendar+mail refresh (do not wait for first 3m30 `Timer.periodic` tick); auth failure → `forceExpiredLogout`. (3) Remember-password ON keeps `neptun_password` across **manual** Log out too (still wipe JWTs/HasLogin). Docs EN+RU. GitHub Release **v1.5.10** + APK + unsigned IPA. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.9 (battery-minimized background keep-alive)
-
-**[2026-09-16]**
-
-- **Release 1.5.9** (`pubspec` **1.5.9+1**): optional background hallgato keep-alive drains less — Android WorkManager **45 min** (was 15) with network + battery-not-low + device-idle (still not charging-required); iOS Background Fetch minimum **45 min**; cancel OS tasks while `resumed`; skip background tick if last successful `GetNewTokens` within **25 min**. Toggle still default **off**; no register when logged out. GitHub Release **v1.5.9** + APK + unsigned IPA. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.8 (calendar week navigator UI + date range)
-
-**[2026-09-16]**
-
-- **Release 1.5.8** (`pubspec` **1.5.8+1**): Calendar education-week header + subtitle are one rounded card (`WeekoffseterElementWidget`); EN same-month range uses `${to.day}` (was `$to.day`, which printed `DateTime.toString()` + literal `.day`). `calendarWeekDateRange` normalizes to date-only. GitHub Release **v1.5.8** + APK + unsigned IPA. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.7 (background keep-alive + remember password)
-
-**[2026-09-16]**
-
-- **Release 1.5.7** (`pubspec` **1.5.7+1**): optional background hallgato JWT keep-alive + **Remember password on this device** Settings (both default off). Password Dart was briefly on `main` then **reverted in 1.5.6** session-core cut; **1.5.7** restores toggle + `sessionWipeKeepCache(wipePassword:)` + `SessionGuard` matrix (manual logout always wipes; expiry/cold-start keep when opted in; login pre-fill; no auto-2FA). Logout cancels background tasks via `SessionGuard.registerAuthWipedHook`. GitHub Release **v1.5.7** + APK + unsigned IPA (`Neptun-ELTE-1.5.7-unsigned.ipa`). Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
-
-**[2026-09-16, 08:15]**
-
-- Deleted `docs/Technical/IOS_VS_ANDROID.md` + `.ru.md` after Android APK functional parity — separate platform matrix no longer wanted.
-- Cross-links removed from README / TECHNICAL EN+RU; brief platform-only bullets (updater / signing / CI / haptics / toast / IDs) folded into TECHNICAL §14–15.
-- `.cursor/rules/keep-docs-current.mdc` no longer lists `IOS_VS_ANDROID*` as mandatory. Docs-only; no version bump / tag / APK. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.7.2 (IT-only packs + docs scrub)
-
-**[2026-09-16]**
-
-- **Release 1.7.2** (`pubspec` **1.7.2+1**): patch on line **7**. Clean room labels (collision offsets, progressive zoom, tap-to-focus — no sticker bomb); floor-aware corridor emphasis; strip tech honesty banner and “(for now)” / “2D schematic” footer junk; IT faculty chip shortened; docs scrub of obsolete basemap ship-blocker notes. GitHub Release **v1.7.2**. Owner **Nanda**.
-
-## 2026-09-16 — release 1.7.1 (mall-style schematic polygons)
-
-**[2026-09-16, ~20:15]**
-
-- **Release 1.7.1** (`pubspec` **1.7.1+1**): completes Strategy D look with **mall-style floor schematics** — building shell + courtyard holes + filled corridor ribbons from `schematic_ld.json` / `schematic_le.json` (not graph-edge glow as the building shape). Graph still drives routing/pins/route. JPG debug-only. Tag **v1.7.1**. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.7.0 (Strategy D schematic map UX)
-
-**[2026-09-16, ~20:00]**
-
-- **Release 1.7.0** (`pubspec` **1.7.0+1**): feature line **7** — **Strategy D product UX**. Default campus map is a **graph-derived 2D schematic** (`CampusSchematicPainter`: corridor bands, room pins/labels, lift/stair markers, Chaikin-smoothed route) — **not** a floor-plan photo. JPG underlay is debug-only (off by default). LE centerline graph shipped (same chaining as LD). Pre-login Map / floors / search / A→B kept. Honesty: schematic MVP from campus graph; official BIS artwork still pending; `routing.route` still **null**; repo **private**. Docs EN+RU + CAMPUS_MAP_PLAN synced. GitHub Release **v1.7.0**. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.6.1 (LD centerline paths + Strategy D + private repo)
-
-**[2026-09-16, ~19:30]**
-
-- **Release 1.6.1** (`pubspec` **1.6.1+1**): owner rejected Phase B MVP UX (raster floor photo + crooked hub-spoke paths). **Paths:** LD graph rebuilt so door mouths chain along corridor centerlines (not hub V-detours); diagonal courtyard backbone hops removed; Flutter path painter Chaikin-smooths display. LE still hub-heuristic (next). **Basemap Strategy D:** do not treat sarkozigergo JPG as final product map — seek official/authorized 2D schematic (ELTE IIG/BIS); photo package transitional; permission still pending. BIS `routing.route` geometry still **null**. **Repo:** `Nanda070/Neptun-ELTE` set **private** (public sideload `AppUpdater` may fail for non-collaborators). Docs EN+RU synced. GitHub Release **v1.6.1**. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.6.0 (campus map Phase B MVP)
-
-**[2026-09-16, ~19:15]**
-
-- **Release 1.6.0** (`pubspec` **1.6.0+1**): feature line **6** — **Phase B** indoor campus map MVP. Login-hub **Campus map** (no Neptun JWT), drawer entry when logged in, LD/LE buildings, floor basemaps + pan/zoom, joins/aliases search, A→B Dijkstra path draw, honesty banner (approximate graph; basemap permission still pending). Package bundled under `assets/campus_map/`. External LD/LE/LK Open map kept. GitHub Release **v1.6.0**. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.12 (iOS external Maps)
-
-**[2026-09-16, ~19:00]**
-
-- **Release 1.5.12** (`pubspec` **1.5.12+1**): fix external Maps for LD/LE/LK on **iOS** — primary `maps:?q=…` (https://maps.apple.com often opened Safari), https Apple + Google fallbacks, Info.plist `maps` + `comgooglemaps`, **Open map** always visible under coded rooms (not decode-gated), `TextButton` so calendar row taps do not steal the control. Still **not** in-app indoor A→B (Phase B deferred). GitHub Release **v1.5.12** + APK + install on iPhone. Owner **Nanda**.
-
----
-
-## 2026-09-16 — release 1.5.11 (campus map Phase A docs + ship)
-
-**[2026-09-16]**
-
-- **Release 1.5.11** (`pubspec` **1.5.11+1**): ship tag after campus map **Phase A (0–6)** close-out — MVP package + QA (**41 / 0 / 2**), honesty sync across README/TECHNICAL/plans (no in-app indoor A→B; Phase B Flutter deferred; basemap permission **pending**). App runtime still **1.5.10** session reliability; this patch is the product/docs ship for device + GitHub. Detailed diary of Phases 0–6 is the next entry below. GitHub Release **v1.5.11** + APK (+ unsigned IPA if built). Owner **Nanda**.
-
----
-
-## 2026-09-16 — diary: campus map Phase A (0–6) complete — sync + re-verify
-
-**[2026-09-16]** — **detailed / verbose entry (this time only)**
-
-### Why this entry is long
-
-Phase A (“finish the map data before any Flutter Map UI”) is closed for MVP. Earlier same-day Dev Blog bullets for Phases 0–6 stay as chronological crumbs; **this** entry is the full diary: what shipped, where it lives, how QA was proven, what is still honest-not-done, and what Phase B would mean later. Docs/data only — **no** Flutter Map screens, **no** marketing version bump, **no** APK/App Store bundling of basemaps. Owner **Nanda**.
-
-### Decision that framed the day
-
-Product rule (see [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md)): **map before app**. Indoor A→B for ELTE Lágymányos South (**LD / Déli**) and North (**LE / Északi**) must exist as an attributable, checksummed, QA’d package **before** any login-hub Map button, schedule deep-link into indoor paths, or graph loader in Dart. Shipped app maps behavior remains **external only**: tap room codes → decode → Apple/Google Maps building pin via `lib/Misc/elte_room_code.dart` (LD / LE / LK). That path was re-checked with `flutter test test/elte_room_code_test.dart` (all passed) and must not be confused with indoor routing.
-
-### Phase-by-phase delivery (0 → 6)
-
-| Phase | What landed | Canonical paths |
-|------:|-------------|-----------------|
-| **0** | Inventory freeze: public LD/LE JPGs + tables, BIS dump limits, Északi planner as UX reference only, **do not wait** for BIS `routing.route` polylines (null in research), basemap permission treated as ship-blocker | [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0 · [campus_map_research/README](campus_map_research/README.md) |
-| **1** | Locked schema: Building / Floor / Room / Node / Edge / Join; CRS = `basemapPx` (top-left); LD floor-0 example + join stubs | [`schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) |
-| **2** | LD corridor graph MVP: floors **−1…7**, shared hub template, room stubs, door stubs, entrances, vertical **lift + stair** links; Dijkstra samples | [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · [`samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md) · builder `build_graph_ld.py` |
-| **3** | LE corridor graph MVP: same floor set; double-courtyard + south-wing hubs; Dunapart-left artwork CRS; same vertical pattern | [`graph/graph_le.json`](campus_map_research/graph/graph_le.json) · [`samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md) · builder `build_graph_le.py` |
-| **4** | Neptun↔BIS joins + named-hall aliases + search fixtures + coverage honesty | [`joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, `JOIN_COVERAGE.md`) |
-| **5** | Ready-to-bundle package: graphs + joins + aliases + fixtures + stable `basemaps/{ld\|le}/f*.jpg` + `manifest.json` + `checksums.sha256` + `ATTRIBUTION.md` + `check_package.py` | [`campus_map_package/`](campus_map_package/) |
-| **6** | Full QA matrix runner + machine JSON + human report + owner **“map finished”** sign-off for MVP | [`run_qa.py`](campus_map_package/run_qa.py) · [`qa_matrix.json`](campus_map_package/qa_matrix.json) · [`QA_REPORT.md`](campus_map_package/QA_REPORT.md) |
-
-**Package counts (manifest):** LD **475** nodes / **639** edges / **134** rooms; LE **454** nodes / **600** edges / **92** rooms; floors **−1…7** each. Research graphs and package graphs match on topology; package only remaps `basemapAsset` to package-relative `basemaps/…` paths (research keeps `ld_south/floors/…` / `le_north/floors/…`).
-
-### Package layout (what “the deliverable” is)
-
-```
-docs/Technical/campus_map_package/
-  manifest.json, graph_ld.json, graph_le.json
-  joins_ld.json, joins_le.json, aliases.json, search_fixtures.json
-  basemaps/ld|le/f-1.jpg … f7.jpg
-  checksums.sha256, ATTRIBUTION.md
-  check_package.py          # Phase 5 smoke
-  run_qa.py → qa_matrix.json
-  QA_REPORT.md, README.md
-```
-
-Verify any time:
-
-```bash
-python3 docs/Technical/campus_map_package/check_package.py
-python3 docs/Technical/campus_map_package/run_qa.py
-```
-
-### QA numbers (re-run this pass)
-
-- **Phase 5 smoke:** manifest assets + required files OK; checksums OK (**30** files); sample A→B OK for LD same-floor / entrance→room / cross-floor and LE same trio.
-- **Phase 6 matrix:** **`pass=41` · `fail=0` · `waive=2` · total=43**.
-- **Passes include:** LD+LE same-floor triples; cross-floor forced **stair** and forced **lift**; entrance→classroom; named halls (LD: Bolyai, Fejér Lipót, Rényi — LE: Ortvay, Eötvös, Rybár István); Neptun join strings; all `search_fixtures` positives + three educational-only negatives (`LD 5.210` / `5.615` / `5.713` correctly have **no** graph pin); checksums; no-shortcut heuristics.
-- **Waives (explicit, not hidden fails):** `ld-restricted` / `le-restricted` — schema allows optional restricted/closed notes, but MVP `rooms[]` do **not** copy public-table strings (`16 után zárt`, `zárt terem`, …). Surfacing waits for Phase B UI or a dedicated annotation pass ([QA_REPORT](campus_map_package/QA_REPORT.md)).
-- **Connectivity spot-check:** from a basement entrance, all LD room nodes (**134**) and all LE room nodes (**92**) are reachable; joins with graph pins resolve; fixtures do not point at missing nodes.
-- **Bugbot-style review** of Phase 0–6 package/scripts + `elte_room_code`: **no bugs** reported. No Flutter Map UI invented.
-
-### Honesty (must stay visible everywhere)
-
-1. **Graphs are approximate MVP digitizations** — corridor hubs placed visually on ~800×800 basemap CRS; not survey-grade BIM; not live BIS polylines. Good enough for Phase A A→B demos and QA; expect refinement when/if Phase B ships.
-2. Basemap credits recorded in [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md); product map uses schematic (JPG not primary).
-3. **No Flutter indoor Map UI** — Phase **B** deferred. Product README must not claim in-app indoor A→B; timetable “Open map” remains external Maps only.
-4. **Join coverage is partial on-graph:** nearly all educational rooms have a Neptun join string; only ~14–15% already sit on the MVP graph pins (full matrix in [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only rooms are searchable as catalog facts, not walkable pins.
-5. **BIS** dump: rooms/floors/entities imported; cookies/tokens **not** in git; `routing.route` geometry still null from the research pass.
-6. **Legal:** no Privacy/Terms change this pass — app still does not collect GPS for indoor graph (and has no indoor map screen).
-
-### Docs synced this pass
-
-Product + technical docs brought in line with “Phase 0–6 done / Phase A map finished / Phase B deferred / basemap pending / package path”: README EN+RU (feature honesty + doc-map package link), root short README pointer, TECHNICAL EN+RU (already pointed at package + QA), CAMPUS_MAP_PLAN EN+RU, research + package READMEs, schema note that Phases 2–3 graphs exist, this detailed Dev Blog EN+RU. HALLGATO plans unchanged (no stale map cross-links). Legal untouched.
-
-### What’s next (Phase B — not started)
-
-Only when product chooses: load package offline, login-hub Map without hallgato JWT, search + A→B overlay on floor basemaps, floor switcher, optional schedule deep-link to indoor pin — **still** blocked for binary redistribution until basemap permission clears. No version bump required for this docs/data close-out.
-
-*Owner / developer: **Nanda**.*
-
----
-
-## 2026-09-16 — docs: campus map Phase 6 (QA matrix)
-
-**[2026-09-16]**
-
-- Phase 6 QA against [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Result **pass=41 / fail=0 / waive=2** (restricted/closed notes not on MVP rooms). Owner sign-off: Phase A **map finished** for MVP. Phase B Flutter still deferred; basemap permission **pending**. Docs/data only; no Dart / version bump. Owner **Nanda**. *(Full diary: entry above.)*
-
-## 2026-09-16 — docs: campus map Phase 5 (package deliverable)
-
-**[2026-09-16]**
-
-- Phase 5 ready-to-bundle package: [`campus_map_package/`](campus_map_package/) (`graph_ld/le`, joins, aliases, stable `basemaps/{ld|le}/f*.jpg`, `manifest.json`, `checksums.sha256`, `ATTRIBUTION.md`, `check_package.py`). Basemap JPG redistribution **pending** (**block ship** App Store/APK). Docs/data only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map Phase 4 (joins + aliases)
-
-**[2026-09-16]**
-
-- Phase 4 Neptun↔BIS joins + named-hall aliases: [`campus_map_research/joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, coverage report). Docs/data only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map Phase 3 (LE graph MVP)
-
-**[2026-09-16]**
-
-- Phase 3 LE corridor graph MVP: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) (floors −1…7, 92 room stubs, vertical lifts/stairs) + samples + builder. Docs/data only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map Phase 2 (LD graph MVP)
-
-**[2026-09-16]**
-
-- Phase 2 LD corridor graph MVP: [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) (floors −1…7, 134 room stubs, vertical lifts/stairs) + samples + builder. Docs/data only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map Phase 0+1 (schema)
-
-**[2026-09-16]**
-
-- Closed Phase 0 (frozen inventory + basemap/search/no-BIS-polyline decisions). Phase 1 data model under [`campus_map_research/schema/`](campus_map_research/schema/SCHEMA.md) (`SCHEMA.md`, LD floor-0 example, join stubs). Next: Phase 2 digitize LD. Docs/data only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map plan (map first)
-
-**[2026-09-16]**
-
-- Added [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [`.ru.md`](CAMPUS_MAP_PLAN.ru.md): finish LD/LE indoor graph package + QA **before** Flutter Map UI (Phase B deferred). Cross-linked from `campus_map_research/README.md`, TECHNICAL EN+RU, `keep-docs-current.mdc`. Docs-only; no Dart / version bump. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: campus map research dump
-
-**[2026-09-16]**
-
-- Committed authenticated **BIS** research dump under [`campus_map_research/`](campus_map_research/README.md) (rooms/floors/entities via system Chrome; `routing.route` geometry **null** this pass; no cookies/tokens in git) + public LD/LE JPG extracts + Északi planner sample + BIS import reports EN+RU. **Not** wired into the app. Owner **Nanda**.
-
----
-
-## 2026-09-16 — docs: honesty sync (translator + backlog)
-
-**[2026-09-16]**
-
-- Docs honesty: mail/message translator marked **working** (not “verify on device”); README session line matches **1.5.10** remember-password on manual logout; restored tracked **HALLGATO_SESSION_PLAN** EN+RU (were removed in `remove plans`, status synced through **1.5.10**). Refreshed Dev Blog “In progress”. No marketing version bump. Owner **Nanda**.
+- Baseline Android release line **1.0.5+18** still branded as Neptun Mobile.
+- Pre–ELTE-only product: multi-institute list and older language packs still in tree.
 
 ---
 
@@ -634,18 +641,18 @@ Only when product chooses: load package offline, login-hub Map without hallgato 
 
 **[ongoing]**
 
-### Done / working on main (~1.6.1)
+### Done / working on main (**1.8.3**)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
 - Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map Phase A package + Phase B UI; **1.7.1** mall schematic + IT-only banner. See diary 2026-09-16.
+- **Campus map (shipped foundation, still WIP):** **1.8.3** BIS FootPrint polygons + official light palette; LD+LE; pre-login Map; approximate A→B. Coverage **2573/3112**. Map UX polish **paused** (2026-09-16).
 
 ### Still unfinished / research
 
-- **Campus indoor map** — **1.7.1** mall-style schematic shipped (IT faculty LD+LE); further floor digitizing refinements optional. BIS route polylines still **null** in research.
+- **Campus indoor map — still in development:** not a finished official-BIS 1:1 product. Remaining: holes / missing technical rings, denser coverage, tighter route alignment, further UX polish when resumed. BIS `routing.route` polylines still **null** in research (graph overlay used instead).
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

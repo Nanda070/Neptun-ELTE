@@ -62,7 +62,7 @@ Every graph / floor package JSON **must** include:
 | `basemapHeight` | int | yes | Pixel height of basemap |
 | `attribution` | string | no | Short credit line |
 
-**Honesty:** basemap artwork = sarkozigergo JPGs (**Héger Tamás** / aggregator **Sárközi Gergő**). Redistribution permission **still pending** — do not ship in App Store / APK until checklist cleared.
+**Honesty:** basemap artwork = sarkozigergo JPGs (**Héger Tamás** / aggregator **Sárközi Gergő**) — legacy/debug underlay. Product primary UI = derived BIS FootPrint/MVT polygons (see app **1.8.3**).
 
 ### Room
 

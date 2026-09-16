@@ -1,14 +1,14 @@
 # Campus map research dump (2026-09-16)
 
-Research material for future **2D A→B** indoor routing (LD/LE) in Neptun ELTE. **Not wired into the app yet.** Mix of public student/dept pages and an authenticated dump of official **BIS** (`bis.elte.hu`). Credit authors / ask ELTE before shipping artwork or geometry.
+Research material for **2D A→B** indoor routing (LD/LE) in Neptun ELTE. Mix of public student/dept pages and an authenticated dump of official **BIS** (`bis.elte.hu`). Credits in package `ATTRIBUTION.md`.
 
-**Product decision (2026-09-16):** finish the map data/graph completely first — see the plan **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)** ([RU](../CAMPUS_MAP_PLAN.ru.md)). Flutter Map UI is Phase B only (after LD + LE package + QA).
+**Product status (2026-09-16):** indoor Campus Map is **in the app** and **still in development / WIP** — not a finished official-BIS 1:1. Primary UI = BIS FootPrint polygons (**1.8.3**, **2573/3112**); approximate A→B; polish paused. See **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)** ([RU](../CAMPUS_MAP_PLAN.ru.md)).
 
 ## Reports
 
 | Doc | Language |
 |------|----------|
-| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B (**0–6 done**; Phase A map finished) |
+| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — phases 0–6 + in-app Phase B (**0–6 done**; FootPrint UX **WIP**) |
 | [CAMPUS_MAP_PLAN.ru.md](../CAMPUS_MAP_PLAN.ru.md) | RU — same facts |
 | [schema/SCHEMA.md](./schema/SCHEMA.md) | EN — Phase 1 Building/Floor/Room/Node/Edge/Join + coords |
 | [graph/README.md](./graph/README.md) | Phase 2–3 LD+LE MVP graphs |
@@ -50,7 +50,7 @@ campus_map_research/
     html/ · js/ · assets/
 ```
 
-**Phase status (2026-09-16):** Phase **0–6 done** (inventory, schema, LD+LE MVP graphs, joins/aliases, package, QA). Phase A **map finished** for MVP. Phase **B** (Flutter) deferred. Deliverable: [`../campus_map_package/`](../campus_map_package/) · [QA_REPORT](../campus_map_package/QA_REPORT.md).
+**Phase status (2026-09-16):** Phase **0–6 done** (inventory, schema, LD+LE MVP graphs, joins/aliases, package, QA). Phase A package **done** for MVP. Phase **B** Flutter later shipped (**1.6.0+**); current FootPrint UX (**1.8.3**) still **WIP**. Deliverable: [`../campus_map_package/`](../campus_map_package/) · [QA_REPORT](../campus_map_package/QA_REPORT.md).
 
 ## BIS (official) — what we have
 

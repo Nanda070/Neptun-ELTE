@@ -12,6 +12,8 @@ Discovered in Diorama `webpackChunk_diorama_web` style module: PostGIS `rooms` t
 
 ## Counts (app bundle 1.8.3)
 
+Indoor Campus Map is **still in development / WIP** — these counts are the shipped FootPrint set, **not** full official-BIS visual parity (holes / missing technical rings remain).
+
 | Set | Polygons (MVT FootPrint) | Catalog bbox fill | Catalog (codes) | Skipped (no FootPrint) |
 |-----|--------------------------|-------------------|-----------------|------------------------|
 | South / LD | **1375** | **0** | 1661 | 201 (all technical) |

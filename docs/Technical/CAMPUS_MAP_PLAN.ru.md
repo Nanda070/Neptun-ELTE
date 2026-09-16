@@ -1,14 +1,13 @@
-# Карта кампуса — план «сначала карта полностью»
+# Карта кампуса — план indoor-карты (research + WIP в приложении)
 
-**Статус (2026-09-16):** Research-пакет фаз **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic/ленты **заменены**. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + ≈78.5° plan-rotation; **1.8.2** = hull + bbox; **1.8.3** = denser z19 MVT, без catalog-bbox, светлая палитра BIS + подписи в полигоне (**2573/3112**). Граф A→B affine≈WGS; чип IK.
+**Статус (2026-09-16):** Indoor-карта кампуса **всё ещё в разработке / WIP** — это **не** готовый 1:1 продукт официального BIS. Research-пакет фаз **0–6** сохранён. Phase **B MVP (1.6.0)** фото-UX **отвергнут**. **1.7.x** schematic/ленты **заменены**. **1.8.0** = **полигоны BIS FootPrint**; **1.8.1** = reanchor к centroid каталога + ≈78.5° plan-rotation; **1.8.2** = hull + bbox; **1.8.3** = denser z19 MVT, без catalog-bbox, светлая палитра BIS + подписи в полигоне (**2573/3112**). В приложении: Map до логина, LD+LE (IK), приблизительный A→B. Ещё WIP: дыры / technical-кольца, выравнивание маршрута, полировка (**на паузе**). Граф A→B affine≈WGS; чип IK.
 
-
-**Владелец:** Nanda. 
-**Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение. 
+**Владелец:** Nanda.  
+**Решение (обновлено 2026-09-16):** фундамент карты **в приложении** (полигоны FootPrint); дальнейшая полировка UX/покрытия **на паузе**, фича честно помечена как WIP.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
 
-> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/) 
-> Уже в приложении (только внешний deep-link): `lib/Misc/elte_room_code.dart` — **не** indoor A→B.
+> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/)  
+> Внешний deep-link: `lib/Misc/elte_room_code.dart` — пины корпусов; indoor A→B — экран Campus Map (WIP).
 
 ---
 
@@ -19,10 +18,10 @@
 | Тема | Выбор |
 |------|--------|
 | **Пути** | Маршруты по **осевым коридоров**; сглаженный display (цепочка + Chaikin). |
-| **Визуальная карта** | **Схема этажа в стиле ТЦ** — оболочка + **ленты** коридоров из vector JSON. **Не** рисовать рёбра графа как карту. **Не** JPG как primary (debug-подложка опциональна). |
+| **Визуальная карта** | **Полигоны BIS FootPrint** (заливки WGS84 по типу комнаты). **Не** ленты графа и **не** JPG этажа как primary. |
 | **Охват** | **Пока только IK / факультет информатики** — LD (Déli) + LE (Északi). |
 | **Полилинии BIS** | В research всё ещё **null** — маршруты по derived-графу; не ship-blocker. |
-| **UI фазы B** | **1.8.0** — schematic-полигоны + баннер «только IK»; поиск / этажи / A→B / pre-login сохранены. |
+| **UI фазы B** | **В приложении (WIP):** **1.8.3** полигоны BIS FootPrint + светлая палитра + чип IK; поиск / этажи / приблизительный A→B / pre-login. Не готовый BIS 1:1; полировка на паузе. |
 
 ### Геометрия схемы
 
@@ -46,11 +45,11 @@
 
 | Правило | Смысл |
 |---------|--------|
-| **Сначала карта, потом приложение** | Нет новых Flutter-экранов карты / загрузчиков графа, пока нет deliverable фазы 5 и QA фазы 6 по согласованным корпусам. |
+| **Сначала карта, потом приложение** | Историческое правило фазы A (пакет + QA до Flutter). **Для продукта снято:** Map UI в приложении с **1.6.0+**; сейчас primary — FootPrint (**1.8.x**), всё ещё WIP. |
 | **Свой граф, не live API** | Оцифровываем узлы/рёбра коридоров сами (или из разрешённых export). **Не** блокируемся на геометрию BIS `routing.route` (в research-дампе — null). |
 | **Сначала LD, потом LE** | Полный граф Юга + валидация, затем тот же пайплайн для Севера. |
 | **Join позже, схема сразу** | Поля Neptun↔BIS фиксируем в фазе 1; таблицы join заполняем в фазе 4. |
-| **Атрибуция до ship** | Не бандлить чужой artwork в App Store / GitHub APK, пока чеклист не закрыт. |
+| **Атрибуция до ship** | Кредиты в `ATTRIBUTION.md` пакета. Primary UI = derived FootPrint/MVT (JPG basemap — legacy/debug, не product primary). |
 
 ---
 
@@ -65,7 +64,7 @@
 | **4** | Join-таблицы + поисковые алиасы | Нет |
 | **5** | Упаковка deliverable | Нет |
 | **6** | QA-матрица | Нет |
-| **B** | Интеграция в приложение (позже) | **Да — только после 0–6** |
+| **B** | Интеграция в приложение (**в приложении, всё ещё WIP**) | **Да — с 1.6.0; FootPrint primary с 1.8.0** |
 
 ---
 
@@ -109,7 +108,7 @@
 
 | Решение | Выбор |
 |---------|--------|
-| Basemap | JPG sarkozigergo в `ld_south/floors/` + `le_north/floors/` — **разрешение ещё pending** (honesty) |
+| Basemap | JPG sarkozigergo в `ld_south/floors/` + `le_north/floors/` — legacy/debug; product primary = FootPrint/MVT |
 | Поисковые узлы | Centroids/коды BIS + публичные таблицы комнат |
 | Геометрия маршрутов | Оцифровываем свой граф — **не** ждём полилинии BIS `routing.route` |
 
@@ -282,7 +281,7 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 ### Дистрибуция
 
 - **Выбрано:** ready-to-bundle в [`docs/Technical/campus_map_package/`](campus_map_package/) (графы, joins, алиасы, basemap, checksums, атрибуция, `check_package.py`).
-- Предпочитать производный JSON + разрешённые basemap вместо бандла BIS HTML/JS SPA. Разрешение на JPG basemap всё ещё **pending** — см. `ATTRIBUTION.md` пакета.
+- Предпочитать производный JSON + разрешённые basemap вместо бандла BIS HTML/JS SPA. JPG basemap — legacy/debug; product primary = FootPrint/MVT. См. `ATTRIBUTION.md` пакета.
 
 ### Критерии выхода
 
@@ -290,7 +289,7 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 - [x] `ATTRIBUTION.md` заполнен (кредиты).
 - [x] Пакет грузится в **не-Flutter** checker (`check_package.py`) и считает A→B для сэмплов.
 
-**Честность:** пакет лежит в [`campus_map_package/`](campus_map_package/) для Phase A / QA. Перераспространение basemap всё ещё **pending** — не бандлить в App Store / APK, пока чеклист не закрыт.
+**Честность:** пакет лежит в [`campus_map_package/`](campus_map_package/) для Phase A / QA. Product primary в приложении = BIS FootPrint/MVT; JPG в пакете — legacy/debug.
 
 ---
 
@@ -323,9 +322,9 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 
 ---
 
-## Фаза B — Интеграция в приложение (**MVP 1.6.0; после сброса — transitional**)
+## Фаза B — Интеграция в приложение (**MVP 1.6.0 → FootPrint 1.8.x WIP**)
 
-Фазы **0–6** — research. **MVP отгружен** в **1.6.0**, затем **UX отвергнут**. **1.6.1** = LD centerline-пути + honesty/repo strategy. UI может остаться как **переходный**, пока не будет basemap стратегии D + полных centerline-графов LD+LE.
+Фазы **0–6** — research. **MVP отгружен** в **1.6.0** (фото-UX отвергнут). **1.6.1** centerline. **1.7.0** graph-glow schematic **отвергнут**. **1.7.1** mall-style transitional. **1.8.0–1.8.3** = **BIS FootPrint** primary (светлая палитра, **2573/3112**). Indoor-карта **всё ещё WIP** (дыры / technical-кольца; приблизительные маршруты; полировка **на паузе**).
 
 | Пункт | Намерение |
 |-------|-----------|
@@ -341,14 +340,12 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 
 ## Чеклист лицензий / атрибуции
 
-Закрыть до попадания map-ассетов в публичный бинарь:
+Кредиты и атрибуция: [`campus_map_package/ATTRIBUTION.md`](campus_map_package/ATTRIBUTION.md). Primary UI = derived BIS FootPrint / MVT (не JPG sarkozigergo как product map). JPG в пакете — legacy/debug. **Без** cookies/токенов в пакете. Indoor map **без** GPS.
 
-- [ ] Планы **Héger Tamás** — письменное разрешение или подтверждённые условия публичного reuse; кредит in-app + `ATTRIBUTION.md`.
-- [ ] Агрегатор **Sárközi Gergő** — кредит; подтвердить перераспространение JPG.
-- [ ] **Eszényi Krisztián / terkeptar** — кредит; **без** wholesale GeoJSON без OK кафедры Cartography.
-- [ ] **BIS / ELTE IIG** — каталоги комнат только как derived data; спросить перед ship полных инвентарей, если redistribution ограничен; **без** cookies/токенов в пакете.
-- [~] Mapbox — только если сами встраиваем Mapbox (**N/A / waived для фазы A** pixel-графов; вернуться при Flutter map).
-- [~] Privacy / Terms — обновить Legal EN/RU/HU, если карта собирает location (**N/A до Flutter map**; по умолчанию GPS для indoor-графа **не** нужен).
+- [x] Кредиты research/JPG источников в `ATTRIBUTION.md` (Héger / Sárközi / Eszényi / ELTE IIG/BIS / Nanda).
+- [x] Primary ship path = FootPrint polygons (не блокируется JPG basemap redistribution).
+- [~] Mapbox SDK — **N/A** (тайлы research-only; в приложении бандлятся derived JSON).
+- [x] Privacy — indoor map без GPS; Legal без изменений для map location.
 
 ---
 
@@ -386,9 +383,9 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 2. В пакете есть `graph_ld.json`, `graph_le.json`, basemap, checksums, атрибуция.
 3. Join + алиасы поддерживают Neptun-коды и именные залы для QA-фикстур.
 4. QA-матрица фазы 6 пройдена (или waived-пункты явно задокументированы).
-5. **Никакая** Flutter-фича карты не начата под видом «просто подключить» неполные данные.
+5. Фаза A исторически требовала **не** начинать Flutter map до QA пакета — **выполнено**. Позже Map UI отгружен (**1.6.0+**); текущий FootPrint UX **всё ещё WIP**, не «карта закончена» как BIS 1:1.
 
-До этого продукт остаётся на **внешнем maps deep-link** (`Open map` → поиск корпуса в Apple/Google Maps).
+Внешний maps deep-link остаётся для пинов корпусов; indoor A→B — через Campus Map (WIP).
 
 ---
 

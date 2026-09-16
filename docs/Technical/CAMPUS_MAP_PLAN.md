@@ -1,14 +1,13 @@
-# Campus map — finish-the-map-first plan
+# Campus map — indoor map plan (research + in-app WIP)
 
-**Status (2026-09-16):** Phase **0–6** research package remains. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + ≈78.5° plan rotation; **1.8.2** = hull + bbox fill; **1.8.3** = denser z19 MVT, drop catalog-bbox, official BIS light palette + in-polygon labels (**2573/3112**). Graph A→B affine≈WGS; IT faculty chip.
-
+**Status (2026-09-16):** Indoor campus map is **still in development / WIP** — **not** a finished 1:1 official-BIS product. Research package phases **0–6** kept. Phase **B MVP (1.6.0)** photo UX **rejected**. **1.7.x** schematic / ribbon UX **superseded**. **1.8.0** = **BIS FootPrint polygon map**; **1.8.1** = catalog-centroid reanchor + ≈78.5° plan rotation; **1.8.2** = hull + bbox fill; **1.8.3** = denser z19 MVT, drop catalog-bbox, official BIS light palette + in-polygon labels (**2573/3112**). Shipped in app: pre-login Map, LD+LE (IT), approximate A→B. Still WIP: holes / missing technical rings, route alignment, further polish (**paused**). Graph A→B affine≈WGS; IT faculty chip.
 
 **Owner:** Nanda.  
-**Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
+**Decision (updated 2026-09-16):** map foundation is **in the app** (FootPrint polygons); further UX/coverage polish is **paused** while the feature stays honestly marked WIP.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
 
 > Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md) · Package: [`campus_map_package/`](campus_map_package/)  
-> Related shipped maps (external deep-link only): `lib/Misc/elte_room_code.dart` — **not** indoor A→B.
+> Related shipped maps (external deep-link): `lib/Misc/elte_room_code.dart` — building pins; indoor A→B is the Campus Map screen (WIP).
 
 ---
 
@@ -22,7 +21,7 @@ Owner rejected Phase B photo map and the **1.7.0** graph-edge glow look. Decisio
 | **Visual map** | **BIS FootPrint polygons** (WGS84 room fills by type). Do **not** use graph ribbons or floor JPG as primary. |
 | **Scope** | **IT faculty only (for now)** — LD (Déli / South) + LE (Északi / North) Lágymányos IK buildings. |
 | **BIS polylines** | Still **null** in research dump — routes use derived graph; not a ship blocker. |
-| **Phase B UI** | **1.8.0** ships BIS FootPrint polygons + IT faculty chip; search / floors / A→B / pre-login kept. |
+| **Phase B UI** | **In app (WIP):** **1.8.3** BIS FootPrint polygons + light palette + IT chip; search / floors / approximate A→B / pre-login kept. Not a finished BIS 1:1; polish paused. |
 
 ### Schematic geometry
 
@@ -46,11 +45,11 @@ Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lá
 
 | Rule | Meaning |
 |------|---------|
-| **Map before app** | No new Flutter map screens / graph loaders until Phase 5 deliverable exists and Phase 6 QA passes for the agreed buildings. |
+| **Map before app** | Historical Phase A rule (package + QA before Flutter). **Superseded for product:** Map UI is in the app from **1.6.0+**; current primary is FootPrint (**1.8.x**), still WIP. |
 | **Derived graph, not live API** | Digitize corridor nodes/edges ourselves (or from permitted exports). Do **not** block on BIS `routing.route` geometry (still null in research dump). |
 | **LD first, LE next** | Complete South graph + validation, then run the same pipeline for North. |
 | **Join later, schema early** | Lock Neptun↔BIS join fields in Phase 1; fill join tables in Phase 4. |
-| **Attribution before ship** | No App Store / GitHub APK bundling of third-party artwork until checklist cleared. |
+| **Attribution before ship** | Credits in package `ATTRIBUTION.md`. Primary UI = derived FootPrint/MVT (JPG basemaps are legacy/debug, not product primary). |
 
 ---
 
@@ -65,7 +64,7 @@ Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lá
 | **4** | Join tables + search aliases | No |
 | **5** | Package deliverable | No |
 | **6** | QA matrix | No |
-| **B** | App integration (later) | **Yes — only after 0–6** |
+| **B** | App integration (**in app, still WIP**) | **Yes — shipped from 1.6.0; FootPrint primary since 1.8.0** |
 
 ---
 
@@ -264,7 +263,7 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ## Phase 5 — Package deliverable
 
-**Purpose:** one versioned folder (or release asset) ready to host or bundle — **still no Flutter UI**.
+**Purpose:** one versioned folder (or release asset) ready to host or bundle — Phase A had **no** Flutter UI yet (Flutter came in Phase B / **1.6.0+**).
 
 ### Required files
 
@@ -323,9 +322,9 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ---
 
-## Phase B — App integration (**MVP 1.6.0; transitional after reset**)
+## Phase B — App integration (**MVP 1.6.0 → FootPrint 1.8.x WIP**)
 
-Phases **0–6** done as research. **MVP shipped** in **1.6.0** (photo UX rejected). **1.6.1** centerline. **1.7.0** graph-glow schematic **rejected**. **1.8.0** mall-style floor schematic + IT-only scope.
+Phases **0–6** done as research. **MVP shipped** in **1.6.0** (photo UX rejected). **1.6.1** centerline. **1.7.0** graph-glow schematic **rejected**. **1.7.1** mall-style schematic transitional. **1.8.0–1.8.3** = **BIS FootPrint** primary (light palette, **2573/3112**). Indoor map remains **work-in-progress** (holes / missing technical rings; approximate routes; polish **paused**).
 
 | Item | Intent |
 |------|--------|
@@ -379,7 +378,7 @@ Phase A is **done** (**completed 2026-09-16**) when **all** of the following are
 2. Package contains `graph_ld.json`, `graph_le.json`, basemaps, checksums, attribution.
 3. Join + alias tables support Neptun-style codes and named halls for QA fixtures.
 4. Phase 6 QA matrix passes (or only waived items are explicitly documented).
-5. **No** Flutter map feature has been started under the guise of “just wiring” incomplete data.
+5. Phase A originally required **no** Flutter map feature before package QA — **met historically**. App Map UI later shipped (**1.6.0+**); current FootPrint UX is **still WIP**, not “map finished” as a BIS 1:1 product.
 
 External maps deep-link remains for timetable room codes; indoor A→B is additional via Campus Map.
 
