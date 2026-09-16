@@ -414,11 +414,95 @@
 
 ---
 
+## 2026-09-16 — релиз 1.5.11 (фаза A карты кампуса + ship)
+
+**[2026-09-16]**
+
+- **Релиз 1.5.11** (`pubspec` **1.5.11+1**): тег после закрытия **фазы A (0–6)** карты кампуса — MVP-пакет + QA (**41 / 0 / 2**), синхронизация честности README/TECHNICAL/планов (в приложении нет indoor A→B; Flutter фаза B отложена; basemap permission **pending**). Рантайм приложения по-прежнему линия надёжности сессии **1.5.10**; этот патч — продуктовый/docs ship на device + GitHub. Подробный дневник фаз 0–6 — следующая запись ниже. GitHub Release **v1.5.11** + APK (+ unsigned IPA если собран). Владелец **Nanda**.
+
+---
+
+## 2026-09-16 — дневник: карта кампуса фаза A (0–6) готова — синхронизация + перепроверка
+
+**[2026-09-16]** — **подробная / развёрнутая запись (только в этот раз)**
+
+### Зачем эта запись длинная
+
+Фаза A («сначала закончить данные карты, потом любой Flutter Map UI») закрыта для MVP. Короткие буллеты того же дня по фазам 0–6 остаются хронологическими крошками; **эта** запись — полный дневник: что сдано, где лежит, как доказан QA, что честно ещё не сделано, и что будет значить фаза B позже. Только docs/data — **без** Flutter-экранов карты, **без** bump маркетинговой версии, **без** бандлинга basemap в APK/App Store. Владелец **Nanda**.
+
+### Решение, задавшее день
+
+Правило продукта (см. [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md)): **сначала карта, потом приложение**. Indoor A→B для ELTE Lágymányos Юг (**LD / Déli**) и Север (**LE / Északi**) должен существовать как атрибутируемый, checksummed, прошедший QA пакет **до** любой кнопки Map на login-хабе, deep-link из расписания в indoor-путь или загрузчика графа в Dart. Поведение карт в уже выпущенном приложении остаётся **только внешним**: тап по коду аудитории → расшифровка → пин корпуса в Apple/Google Maps через `lib/Misc/elte_room_code.dart` (LD / LE / LK). Этот путь перепроверен `flutter test test/elte_room_code_test.dart` (все тесты зелёные) и его нельзя путать с indoor-маршрутизацией.
+
+### Сдача по фазам (0 → 6)
+
+| Фаза | Что появилось | Канонические пути |
+|-----:|---------------|-------------------|
+| **0** | Заморозка инвентаря: публичные JPG+таблицы LD/LE, пределы дампа BIS, планировщик Északi только как UX-референс, **не ждать** полилинии BIS `routing.route` (null в research), разрешение basemap = ship-blocker | [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фаза 0 · [campus_map_research/README](campus_map_research/README.md) |
+| **1** | Зафиксированная схема: Building / Floor / Room / Node / Edge / Join; CRS = `basemapPx` (top-left); пример LD floor-0 + join-заглушки | [`schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) |
+| **2** | MVP графа коридоров LD: этажи **−1…7**, общий шаблон хабов, room/door stubs, входы, вертикальные **лифт + лестница**; сэмплы Dijkstra | [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · [`samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md) · builder `build_graph_ld.py` |
+| **3** | MVP графа коридоров LE: тот же набор этажей; хабы double-courtyard + южное крыло; CRS с Dunapart слева; тот же вертикальный паттерн | [`graph/graph_le.json`](campus_map_research/graph/graph_le.json) · [`samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md) · builder `build_graph_le.py` |
+| **4** | Neptun↔BIS joins + алиасы именных залов + search fixtures + честность покрытия | [`joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, `JOIN_COVERAGE.md`) |
+| **5** | Ready-to-bundle пакет: графы + joins + алиасы + fixtures + стабильные `basemaps/{ld\|le}/f*.jpg` + `manifest.json` + `checksums.sha256` + `ATTRIBUTION.md` + `check_package.py` | [`campus_map_package/`](campus_map_package/) |
+| **6** | Полный QA-runner + машинный JSON + человеческий отчёт + sign-off владельца **«карта закончена»** для MVP | [`run_qa.py`](campus_map_package/run_qa.py) · [`qa_matrix.json`](campus_map_package/qa_matrix.json) · [`QA_REPORT.md`](campus_map_package/QA_REPORT.md) |
+
+**Счётчики пакета (manifest):** LD **475** nodes / **639** edges / **134** rooms; LE **454** nodes / **600** edges / **92** rooms; этажи **−1…7** у обоих. Research- и package-графы совпадают по топологии; пакет только переписывает `basemapAsset` на package-relative `basemaps/…` (в research остаются `ld_south/floors/…` / `le_north/floors/…`).
+
+### Раскладка пакета (что есть «deliverable»)
+
+```
+docs/Technical/campus_map_package/
+  manifest.json, graph_ld.json, graph_le.json
+  joins_ld.json, joins_le.json, aliases.json, search_fixtures.json
+  basemaps/ld|le/f-1.jpg … f7.jpg
+  checksums.sha256, ATTRIBUTION.md
+  check_package.py          # smoke фазы 5
+  run_qa.py → qa_matrix.json
+  QA_REPORT.md, README.md
+```
+
+Проверка в любой момент:
+
+```bash
+python3 docs/Technical/campus_map_package/check_package.py
+python3 docs/Technical/campus_map_package/run_qa.py
+```
+
+### Цифры QA (перезапуск в этом проходе)
+
+- **Smoke фазы 5:** assets манифеста + нужные файлы OK; checksums OK (**30** файлов); sample A→B OK для LD same-floor / entrance→room / cross-floor и той же тройки LE.
+- **Матрица фазы 6:** **`pass=41` · `fail=0` · `waive=2` · total=43**.
+- **В том числе pass:** тройки same-floor LD+LE; cross-floor с forced **stair** и forced **lift**; entrance→аудитория; именные залы (LD: Bolyai, Fejér Lipót, Rényi — LE: Ortvay, Eötvös, Rybár István); строки Neptun join; все позитивы `search_fixtures` + три educational-only негатива (`LD 5.210` / `5.615` / `5.713` корректно **без** graph pin); checksums; эвристики no-shortcut.
+- **Waive (явные, не скрытые fail):** `ld-restricted` / `le-restricted` — схема допускает optional restricted/closed, но MVP `rooms[]` **не** копирует строки публичных таблиц (`16 után zárt`, `zárt terem`, …). Показ ждёт UI фазы B или отдельный annotation pass ([QA_REPORT](campus_map_package/QA_REPORT.md)).
+- **Connectivity spot-check:** от входа в подвале достижимы все room nodes LD (**134**) и LE (**92**); joins с graph pin резолвятся; fixtures не ссылаются на отсутствующие nodes.
+- **Bugbot-style review** пакета/скриптов фазы 0–6 + `elte_room_code`: **багов не найдено**. Flutter Map UI не изобретали.
+
+### Честность (должна быть видна везде)
+
+1. **Графы — приблизительная MVP-оцифровка** — хабы коридоров расставлены визуально на CRS basemap ~800×800; это не survey-grade BIM и не живые полилинии BIS. Достаточно для демо A→B фазы A и QA; уточнение — когда/если поедет фаза B.
+2. **Разрешение на перераспространение JPG basemap всё ещё PENDING** (арт Héger Tamás / агрегатор Sárközi Gergő — см. [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md)). Пакет может жить в репо для фазы A/QA; **block ship** в App Store / GitHub Release APK, пока чеклист не закрыт.
+3. **Нет Flutter indoor Map UI** — фаза **B** отложена. Product README не должен обещать in-app indoor A→B; «Открыть карту» в расписании — только внешние Maps.
+4. **Join coverage на графе частичный:** почти у всех educational-комнат есть Neptun join-строка; только ~14–15% уже сидят на MVP graph pin (полная матрица в [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only комнаты — факты каталога, не walkable pin.
+5. **BIS**-дамп: rooms/floors/entities импортированы; cookies/токены **не** в git; геометрия `routing.route` по-прежнему null.
+6. **Legal:** Privacy/Terms в этом проходе не трогали — приложение по-прежнему не собирает GPS для indoor-графа (и нет экрана indoor-карты).
+
+### Docs, синхронизированные в этом проходе
+
+Product + technical docs приведены к фактам «фазы 0–6 готовы / фаза A карта закончена / фаза B отложена / basemap pending / путь пакета»: README EN+RU (честность фич + ссылка на пакет в карте docs), короткий root README, TECHNICAL EN+RU (уже указывал на пакет + QA), CAMPUS_MAP_PLAN EN+RU, research + package README, пометка в schema что графы фаз 2–3 существуют, этот подробный Dev Blog EN+RU. Планы HALLGATO без изменений (нет устаревших cross-link на карту). Legal не трогали.
+
+### Что дальше (фаза B — не начата)
+
+Только когда продукт решит: офлайн-загрузка пакета, Map на login-хабе без hallgato JWT, поиск + оверлей A→B на basemap этажа, переключатель этажей, опциональный deep-link из расписания на indoor pin — **всё ещё** нельзя класть в бинарники, пока не будет разрешения на basemap. Для этого docs/data close-out bump версии не нужен.
+
+*Владелец / разработчик: **Nanda**.*
+
+---
+
 ## 2026-09-16 — docs: карта кампуса фаза 6 (QA-матрица)
 
 **[2026-09-16]**
 
-- Фаза 6 QA по [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Итог **pass=41 / fail=0 / waive=2** (restricted/closed не на MVP-комнатах). Sign-off владельца: фаза A **карта закончена** для MVP. Flutter фаза B по-прежнему отложена; разрешение basemap **pending**. Только docs/data; без Dart / bump версии. Владелец **Nanda**.
+- Фаза 6 QA по [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Итог **pass=41 / fail=0 / waive=2** (restricted/closed не на MVP-комнатах). Sign-off владельца: фаза A **карта закончена** для MVP. Flutter фаза B по-прежнему отложена; разрешение basemap **pending**. Только docs/data; без Dart / bump версии. Владелец **Nanda**. *(Полный дневник: запись выше.)*
 
 ## 2026-09-16 — docs: карта кампуса фаза 5 (пакет deliverable)
 
@@ -488,18 +572,18 @@
 
 **[ongoing]**
 
-### Сделано / работает на main (~1.5.10)
+### Сделано / работает на main (~1.5.11)
 
 - Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
 - Опциональный **фоновый keep-alive** в Settings (default выкл; **45 мин**; idle снят в **1.5.10**) + **Запомнить пароль** (default выкл; сохраняется при ручном logout при вкл.).
 - UI навигатора учебной недели (**1.5.8**) + фикс битого кэша почты / epoch-`ERROR` (**1.5.6**).
 - **Переводчик** почты HU→EN/RU — **работает** (failure → оригинал; disclaimer один раз).
 - Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как раньше; п. **11** (tanterv) **снят**.
-- Research-дамп карты + план **сначала карта**; фазы **0–6 готовы** (фаза A карта закончена для MVP); Flutter Map UI не начат.
+- Карта кампуса **фаза A (0–6) готова** для MVP: research-дамп + схема + графы LD/LE + joins/алиасы + [`campus_map_package/`](campus_map_package/) + QA **41/0/2** ([QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI не начат. См. **подробный дневник** записью 2026-09-16 выше.
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза A** — **готова** для MVP ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) + [QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter UI (**фаза B**) отложена. Разрешение на basemap всё ещё pending.
+- **Indoor-карта фаза B (Flutter UI)** — отложена. MVP-пакет фазы A + QA готовы. Разрешение на JPG basemap всё ещё **pending** (не бандлить в APK/App Store). В приложении — только внешний Maps deep-link.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.

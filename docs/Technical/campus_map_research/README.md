@@ -51,6 +51,7 @@ campus_map_research/
 ```
 
 **Phase status (2026-09-16):** Phase **0–6 done** (inventory, schema, LD+LE MVP graphs, joins/aliases, package, QA). Phase A **map finished** for MVP. Phase **B** (Flutter) deferred. Deliverable: [`../campus_map_package/`](../campus_map_package/) · [QA_REPORT](../campus_map_package/QA_REPORT.md).
+
 ## BIS (official) — what we have
 
 Captured with **system Chrome** AppleScript/JXA against open `deli` 3D + `eszaki` 2D tabs (not IDE browser).
@@ -99,15 +100,14 @@ URL: `http://terkeptar.elte.hu/~campusrouting/utvonal/`
 
 Sample layer files saved under `eszaki_route_planner/layers/` (ground floor + basement). Room GeoJSON features in the sample often have **empty `properties`**; routing logic lives in `eszaki.js` + graph data elsewhere in full layer set.
 
-## Suggested next steps for Neptun ELTE A→B (LD first)
+## Suggested next steps (after Phase A)
 
-Canonical phased plan: **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)** (map data first; app later). Short reminder:
+Canonical phased plan: **[CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md)**. Phase **0–6 done**; deliverable [`../campus_map_package/`](../campus_map_package/).
 
-1. Seed searchable nodes from `bis/south/rooms_educational.json` (centroids + `LD-…` codes); cross-check with `ld_south/rooms.json` Neptun hints.
-2. Use `ld_south/floors/*.jpg` as basemaps; digitize corridor graph (schema 1–8 + lift/stair hubs).
-3. Optionally study North planner UX; ask Cartography dept before reusing their GeoJSON.
-4. Optional: second BIS pass after a manual UI route to capture non-null `routing.route` geometry.
-5. **After** `graph_ld.json` / `graph_le.json` + QA: login-hub Map + A→B UI (Phase B in the plan) — not started now.
+1. Clear basemap JPG redistribution permission (Héger / Sárközi) before any App Store / APK bundling of artwork.
+2. Optional: denser corridor hubs / more educational rooms on-graph beyond the MVP stub set.
+3. Optional: second BIS pass after a manual UI route to capture non-null `routing.route` geometry.
+4. **Phase B** (not started): login-hub Map + A→B UI loading the package offline — only when product chooses.
 
 ## License / honesty
 

@@ -4,7 +4,7 @@
 **Owner:** Nanda.  
 **Plan:** [CAMPUS_MAP_PLAN.md](../../CAMPUS_MAP_PLAN.md) · [RU](../../CAMPUS_MAP_PLAN.ru.md).
 
-This schema describes the **map data package** (buildings, floors, rooms, graph nodes/edges, Neptun↔BIS joins). It is **not** Flutter UI. Digitization of full LD/LE graphs is Phases 2–3.
+This schema describes the **map data package** (buildings, floors, rooms, graph nodes/edges, Neptun↔BIS joins). It is **not** Flutter UI. Digitization of LD/LE MVP graphs is **done** (Phases 2–3); package + QA are Phases 5–6 under [`../../campus_map_package/`](../../campus_map_package/).
 
 ## Files in this folder
 

@@ -414,11 +414,95 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.11 (campus map Phase A docs + ship)
+
+**[2026-09-16]**
+
+- **Release 1.5.11** (`pubspec` **1.5.11+1**): ship tag after campus map **Phase A (0–6)** close-out — MVP package + QA (**41 / 0 / 2**), honesty sync across README/TECHNICAL/plans (no in-app indoor A→B; Phase B Flutter deferred; basemap permission **pending**). App runtime still **1.5.10** session reliability; this patch is the product/docs ship for device + GitHub. Detailed diary of Phases 0–6 is the next entry below. GitHub Release **v1.5.11** + APK (+ unsigned IPA if built). Owner **Nanda**.
+
+---
+
+## 2026-09-16 — diary: campus map Phase A (0–6) complete — sync + re-verify
+
+**[2026-09-16]** — **detailed / verbose entry (this time only)**
+
+### Why this entry is long
+
+Phase A (“finish the map data before any Flutter Map UI”) is closed for MVP. Earlier same-day Dev Blog bullets for Phases 0–6 stay as chronological crumbs; **this** entry is the full diary: what shipped, where it lives, how QA was proven, what is still honest-not-done, and what Phase B would mean later. Docs/data only — **no** Flutter Map screens, **no** marketing version bump, **no** APK/App Store bundling of basemaps. Owner **Nanda**.
+
+### Decision that framed the day
+
+Product rule (see [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md)): **map before app**. Indoor A→B for ELTE Lágymányos South (**LD / Déli**) and North (**LE / Északi**) must exist as an attributable, checksummed, QA’d package **before** any login-hub Map button, schedule deep-link into indoor paths, or graph loader in Dart. Shipped app maps behavior remains **external only**: tap room codes → decode → Apple/Google Maps building pin via `lib/Misc/elte_room_code.dart` (LD / LE / LK). That path was re-checked with `flutter test test/elte_room_code_test.dart` (all passed) and must not be confused with indoor routing.
+
+### Phase-by-phase delivery (0 → 6)
+
+| Phase | What landed | Canonical paths |
+|------:|-------------|-----------------|
+| **0** | Inventory freeze: public LD/LE JPGs + tables, BIS dump limits, Északi planner as UX reference only, **do not wait** for BIS `routing.route` polylines (null in research), basemap permission treated as ship-blocker | [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0 · [campus_map_research/README](campus_map_research/README.md) |
+| **1** | Locked schema: Building / Floor / Room / Node / Edge / Join; CRS = `basemapPx` (top-left); LD floor-0 example + join stubs | [`schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) |
+| **2** | LD corridor graph MVP: floors **−1…7**, shared hub template, room stubs, door stubs, entrances, vertical **lift + stair** links; Dijkstra samples | [`graph/graph_ld.json`](campus_map_research/graph/graph_ld.json) · [`samples/ld_routes.md`](campus_map_research/graph/samples/ld_routes.md) · builder `build_graph_ld.py` |
+| **3** | LE corridor graph MVP: same floor set; double-courtyard + south-wing hubs; Dunapart-left artwork CRS; same vertical pattern | [`graph/graph_le.json`](campus_map_research/graph/graph_le.json) · [`samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md) · builder `build_graph_le.py` |
+| **4** | Neptun↔BIS joins + named-hall aliases + search fixtures + coverage honesty | [`joins/`](campus_map_research/joins/) (`joins_ld.json`, `joins_le.json`, `aliases.json`, `search_fixtures.json`, `JOIN_COVERAGE.md`) |
+| **5** | Ready-to-bundle package: graphs + joins + aliases + fixtures + stable `basemaps/{ld\|le}/f*.jpg` + `manifest.json` + `checksums.sha256` + `ATTRIBUTION.md` + `check_package.py` | [`campus_map_package/`](campus_map_package/) |
+| **6** | Full QA matrix runner + machine JSON + human report + owner **“map finished”** sign-off for MVP | [`run_qa.py`](campus_map_package/run_qa.py) · [`qa_matrix.json`](campus_map_package/qa_matrix.json) · [`QA_REPORT.md`](campus_map_package/QA_REPORT.md) |
+
+**Package counts (manifest):** LD **475** nodes / **639** edges / **134** rooms; LE **454** nodes / **600** edges / **92** rooms; floors **−1…7** each. Research graphs and package graphs match on topology; package only remaps `basemapAsset` to package-relative `basemaps/…` paths (research keeps `ld_south/floors/…` / `le_north/floors/…`).
+
+### Package layout (what “the deliverable” is)
+
+```
+docs/Technical/campus_map_package/
+  manifest.json, graph_ld.json, graph_le.json
+  joins_ld.json, joins_le.json, aliases.json, search_fixtures.json
+  basemaps/ld|le/f-1.jpg … f7.jpg
+  checksums.sha256, ATTRIBUTION.md
+  check_package.py          # Phase 5 smoke
+  run_qa.py → qa_matrix.json
+  QA_REPORT.md, README.md
+```
+
+Verify any time:
+
+```bash
+python3 docs/Technical/campus_map_package/check_package.py
+python3 docs/Technical/campus_map_package/run_qa.py
+```
+
+### QA numbers (re-run this pass)
+
+- **Phase 5 smoke:** manifest assets + required files OK; checksums OK (**30** files); sample A→B OK for LD same-floor / entrance→room / cross-floor and LE same trio.
+- **Phase 6 matrix:** **`pass=41` · `fail=0` · `waive=2` · total=43**.
+- **Passes include:** LD+LE same-floor triples; cross-floor forced **stair** and forced **lift**; entrance→classroom; named halls (LD: Bolyai, Fejér Lipót, Rényi — LE: Ortvay, Eötvös, Rybár István); Neptun join strings; all `search_fixtures` positives + three educational-only negatives (`LD 5.210` / `5.615` / `5.713` correctly have **no** graph pin); checksums; no-shortcut heuristics.
+- **Waives (explicit, not hidden fails):** `ld-restricted` / `le-restricted` — schema allows optional restricted/closed notes, but MVP `rooms[]` do **not** copy public-table strings (`16 után zárt`, `zárt terem`, …). Surfacing waits for Phase B UI or a dedicated annotation pass ([QA_REPORT](campus_map_package/QA_REPORT.md)).
+- **Connectivity spot-check:** from a basement entrance, all LD room nodes (**134**) and all LE room nodes (**92**) are reachable; joins with graph pins resolve; fixtures do not point at missing nodes.
+- **Bugbot-style review** of Phase 0–6 package/scripts + `elte_room_code`: **no bugs** reported. No Flutter Map UI invented.
+
+### Honesty (must stay visible everywhere)
+
+1. **Graphs are approximate MVP digitizations** — corridor hubs placed visually on ~800×800 basemap CRS; not survey-grade BIM; not live BIS polylines. Good enough for Phase A A→B demos and QA; expect refinement when/if Phase B ships.
+2. **Basemap JPG redistribution permission is still PENDING** (Héger Tamás artwork / Sárközi Gergő aggregator — see [ATTRIBUTION.md](campus_map_package/ATTRIBUTION.md)). Package may live in the repo for Phase A/QA; **block ship** into App Store builds or GitHub Release APKs until the checklist clears.
+3. **No Flutter indoor Map UI** — Phase **B** deferred. Product README must not claim in-app indoor A→B; timetable “Open map” remains external Maps only.
+4. **Join coverage is partial on-graph:** nearly all educational rooms have a Neptun join string; only ~14–15% already sit on the MVP graph pins (full matrix in [`JOIN_COVERAGE.md`](campus_map_research/joins/JOIN_COVERAGE.md)). Educational-only rooms are searchable as catalog facts, not walkable pins.
+5. **BIS** dump: rooms/floors/entities imported; cookies/tokens **not** in git; `routing.route` geometry still null from the research pass.
+6. **Legal:** no Privacy/Terms change this pass — app still does not collect GPS for indoor graph (and has no indoor map screen).
+
+### Docs synced this pass
+
+Product + technical docs brought in line with “Phase 0–6 done / Phase A map finished / Phase B deferred / basemap pending / package path”: README EN+RU (feature honesty + doc-map package link), root short README pointer, TECHNICAL EN+RU (already pointed at package + QA), CAMPUS_MAP_PLAN EN+RU, research + package READMEs, schema note that Phases 2–3 graphs exist, this detailed Dev Blog EN+RU. HALLGATO plans unchanged (no stale map cross-links). Legal untouched.
+
+### What’s next (Phase B — not started)
+
+Only when product chooses: load package offline, login-hub Map without hallgato JWT, search + A→B overlay on floor basemaps, floor switcher, optional schedule deep-link to indoor pin — **still** blocked for binary redistribution until basemap permission clears. No version bump required for this docs/data close-out.
+
+*Owner / developer: **Nanda**.*
+
+---
+
 ## 2026-09-16 — docs: campus map Phase 6 (QA matrix)
 
 **[2026-09-16]**
 
-- Phase 6 QA against [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Result **pass=41 / fail=0 / waive=2** (restricted/closed notes not on MVP rooms). Owner sign-off: Phase A **map finished** for MVP. Phase B Flutter still deferred; basemap permission **pending**. Docs/data only; no Dart / version bump. Owner **Nanda**.
+- Phase 6 QA against [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Result **pass=41 / fail=0 / waive=2** (restricted/closed notes not on MVP rooms). Owner sign-off: Phase A **map finished** for MVP. Phase B Flutter still deferred; basemap permission **pending**. Docs/data only; no Dart / version bump. Owner **Nanda**. *(Full diary: entry above.)*
 
 ## 2026-09-16 — docs: campus map Phase 5 (package deliverable)
 
@@ -488,18 +572,18 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 **[ongoing]**
 
-### Done / working on main (~1.5.10)
+### Done / working on main (~1.5.11)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
 - Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map **research dump** + **map-first plan**; Phase **0–6 done** (Phase A map finished for MVP); app Map UI not started.
+- Campus map **Phase A (0–6) done** for MVP: research dump + schema + LD/LE graphs + joins/aliases + [`campus_map_package/`](campus_map_package/) + QA **41/0/2** ([QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI not started. See **detailed diary** entry 2026-09-16 above.
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase A** — **done** for MVP ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) + [QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI (**Phase B**) deferred. Basemap permission still pending.
+- **Campus indoor map Phase B (Flutter UI)** — deferred. Phase A MVP package + QA done. Basemap JPG permission still **pending** (block APK/App Store bundling). Shipped app = external Maps deep-link only.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.
