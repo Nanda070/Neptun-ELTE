@@ -1,6 +1,6 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **Фазы 0–2 готовы** (MVP-граф LD). Далее: **фаза 3** — оцифровка LE. **Фаза B (Flutter-приложение)** отложена, пока графы LD (+ LE) не упакованы и не прошли QA.  
+**Статус:** **Фазы 0–3 готовы** (MVP-графы LD + LE). Далее: **фаза 4** — join-таблицы + алиасы. **Фаза B (Flutter-приложение)** отложена, пока графы не упакованы и не прошли QA.  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
@@ -61,6 +61,7 @@
 | Отчёты импорта BIS | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
 | **Схема фазы 1** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
 | **Граф LD фазы 2** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
+| **Граф LE фазы 3** | `graph/graph_le.json` · `graph/samples/le_routes.md` · `graph/build_graph_le.py` |
 | Basemap JPG LD | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | Публичная таблица комнат LD | `ld_south/rooms.json` (~134 подписанных комнат; схема коридоров 1–8) |
 | Basemap JPG LE | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -180,6 +181,8 @@
 
 ## Фаза 3 — Полная оцифровка графа LE
 
+**Статус:** **ГОТОВО** — MVP **2026-09-16**. Артефакт: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) · заметки: [`graph/README.md`](campus_map_research/graph/README.md) · сэмплы: [`graph/samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md).
+
 **Зачем:** тот же пайплайн для **Севера / Északi (LE)**.
 
 ### Объём (LE)
@@ -192,10 +195,12 @@
 
 ### Критерии выхода
 
-- [ ] Та же планка связности, что у LD, для этажей −1…7.
-- [ ] ≥5 задокументированных сэмплов A→B.
-- [ ] Черновик `graph_le.json` существует.
-- [ ] Вертикальные коннекторы согласованы с планами Севера.
+- [x] Та же планка связности, что у LD, для этажей −1…7.
+- [x] ≥5 задокументированных сэмплов A→B.
+- [x] Черновик `graph_le.json` существует.
+- [x] Вертикальные коннекторы согласованы с планами Севера.
+
+**Честность:** пиксели хабов/дверей — **полуручные / приблизительные** (stub по зоне номера комнаты + визуальный double-loop / крыло), не CV-точные двери. В `rooms.json` поле `floor` часто `?` — этаж выводится из кода. Bare-коды LK включены в LE. Этажи BIS вне −1…7 опущены. Пиксели уточним позже; связность для MVP полная.
 
 ---
 

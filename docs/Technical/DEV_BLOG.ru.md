@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — docs: карта кампуса фаза 3 (MVP-граф LE)
+
+**[2026-09-16]**
+
+- Фаза 3 MVP графа коридоров LE: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) (этажи −1…7, 92 room stub, вертикальные лифты/лестницы) + сэмплы + builder. Только docs/data; без Dart / bump версии. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: карта кампуса фаза 2 (MVP-граф LD)
 
 **[2026-09-16]**
@@ -469,7 +477,7 @@
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза A** — далее фаза 3 оцифровка LE ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
+- **Indoor-карта фаза A** — далее фаза 4 join/алиасы ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); Flutter UI (**фаза B**) отложена, пока карта не готова.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.

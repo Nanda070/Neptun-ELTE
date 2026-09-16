@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–2 done** (LD MVP graph). Next: **Phase 3** digitize LE. **Phase B (Flutter app)** deferred until LD (+ LE) graphs are packaged + QA’d.  
+**Status:** **Phase 0–3 done** (LD + LE MVP graphs). Next: **Phase 4** join tables + aliases. **Phase B (Flutter app)** deferred until graphs are packaged + QA’d.  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -61,6 +61,7 @@ Paths under `docs/Technical/campus_map_research/`:
 | BIS import reports | `BIS_IMPORT_REPORT.md` · `BIS_IMPORT_REPORT.ru.md` |
 | **Phase 1 schema** | `schema/SCHEMA.md` · `schema/schema.example.ld.floor0.json` · `schema/joins_ld.stub.*` |
 | **Phase 2 LD graph** | `graph/graph_ld.json` · `graph/README.md` · `graph/samples/ld_routes.md` · `graph/build_graph_ld.py` |
+| **Phase 3 LE graph** | `graph/graph_le.json` · `graph/samples/le_routes.md` · `graph/build_graph_le.py` |
 | LD basemap JPGs | `ld_south/floors/` — `deli_-1_emelet.jpg`, `deli_foldszint.jpg`, `deli_1_emelet.jpg`…`deli_7_emelet.jpg`, `delitomb_0.jpg` |
 | LD public room table | `ld_south/rooms.json` (~134 labeled rooms; corridor schema 1–8) |
 | LE basemap JPGs | `le_north/floors/` — `eszaki_-1_emelet.jpg`, `eszaki_foldszint.jpg`, `eszaki_1_emelet.jpg`…`eszaki_7_emelet.jpg` |
@@ -180,6 +181,8 @@ Document at least **5** LD routes with expected floor changes, e.g.:
 
 ## Phase 3 — Digitize LE graph fully
 
+**Status:** **DONE** — MVP **2026-09-16**. Artifact: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) · notes: [`graph/README.md`](campus_map_research/graph/README.md) · samples: [`graph/samples/le_routes.md`](campus_map_research/graph/samples/le_routes.md).
+
 **Purpose:** same pipeline for **North / Északi (LE)**.
 
 ### Scope (LE)
@@ -192,10 +195,12 @@ Document at least **5** LD routes with expected floor changes, e.g.:
 
 ### Exit criteria
 
-- [ ] Same connectivity bar as LD for floors −1…7.
-- [ ] ≥5 A→B validation samples documented.
-- [ ] Draft `graph_le.json` exists.
-- [ ] Vertical connectors consistent with North floor plans.
+- [x] Same connectivity bar as LD for floors −1…7.
+- [x] ≥5 A→B validation samples documented.
+- [x] Draft `graph_le.json` exists.
+- [x] Vertical connectors consistent with North floor plans.
+
+**Honesty:** hub/door pixels are **semi-manual / approximate** (zone stubs from room-number heuristic + visual double-loop / wing hubs), not CV-perfect doors. `rooms.json` `floor` often `?` — level inferred from code. LK bare codes folded into LE. BIS floors outside −1…7 omitted. Refine pixels later; connectivity is complete for MVP.
 
 ---
 

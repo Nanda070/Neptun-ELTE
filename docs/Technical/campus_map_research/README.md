@@ -37,7 +37,7 @@ campus_map_research/
   README.md
   BIS_IMPORT_REPORT.md · BIS_IMPORT_REPORT.ru.md
   schema/                   ← Phase 1 data model (SCHEMA.md + LD floor-0 example + join stubs)
-  graph/                    ← Phase 2 LD MVP corridor graph (graph_ld.json + builder + samples)
+  graph/                    ← Phase 2–3 LD+LE MVP corridor graphs (graph_*.json + builders + samples)
   ld_south/                 ← public JPG plans + 134-room table (sarkozigergo)
   le_north/                 ← public JPG + room table
   eszaki_route_planner/     ← sample working A→B stack (North / terkeptar)
@@ -47,7 +47,7 @@ campus_map_research/
     html/ · js/ · assets/
 ```
 
-**Phase status (2026-09-16):** Phase **0** inventory freeze **done**; Phase **1** schema **done**; Phase **2** LD MVP graph **done** — see [`graph/`](graph/). Next: Phase **3** digitize LE ([CAMPUS_MAP_PLAN](../CAMPUS_MAP_PLAN.md)).
+**Phase status (2026-09-16):** Phase **0** inventory freeze **done**; Phase **1** schema **done**; Phase **2** LD MVP graph **done**; Phase **3** LE MVP graph **done** — see [`graph/`](graph/). Next: Phase **4** joins + aliases ([CAMPUS_MAP_PLAN](../CAMPUS_MAP_PLAN.md)).
 ## BIS (official) — what we have
 
 Captured with **system Chrome** AppleScript/JXA against open `deli` 3D + `eszaki` 2D tabs (not IDE browser).

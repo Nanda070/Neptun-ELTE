@@ -12,7 +12,7 @@ Last sync with the codebase: **16 September 2026** (repo **Neptun-ELTE**, displa
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
 **Backlog** (remaining work): this file’s [honesty table](#11-honesty-full-vs-thin) + [§20 decisions](#20-why-we-chose-this) and the Dev Blog [“In progress / planned”](DEV_BLOG.md#in-progress--planned-honest) section. Numbered `IMPLEMENTATION_PLAN.md` / `.ru.md` were **deleted** after **1.5.0** (plan item **11** Academic Progress / tanterv was **dropped** earlier — do not rebuild).  
-Indoor campus map (LD/LE A→B): **map data first** — [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md); Phase **0–2 done** (LD MVP graph in [`campus_map_research/graph/`](campus_map_research/graph/)); Flutter UI deferred until the graph package is finished. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor campus map (LD/LE A→B): **map data first** — [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md); Phase **0–3 done** (LD + LE MVP graphs in [`campus_map_research/graph/`](campus_map_research/graph/)); Flutter UI deferred until the graph package is finished. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
@@ -479,7 +479,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Today’s classes from calendar cache; no JWT. Shared `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Mail translator | **Working** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
-| Campus indoor map | **Research + LD graph MVP** | Dump + schema + [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0–2 done, Phase 3 (digitize LE) next; Flutter UI deferred (Phase B). Shipped app still external maps deep-link only |
+| Campus indoor map | **Research + LD/LE graph MVP** | Dump + schema + [`graph_ld.json`](campus_map_research/graph/graph_ld.json) + [`graph_le.json`](campus_map_research/graph/graph_le.json); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0–3 done, Phase 4 (joins/aliases) next; Flutter UI deferred (Phase B). Shipped app still external maps deep-link only |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |
@@ -767,7 +767,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Hallgato JWT maintenance — **v1 core + mail/calendar fixes shipped 1.5.6**; optional background keep-alive + password retention **1.5.7**; battery minimization **1.5.9**; reliability (idle drop, resume refresh, password on manual logout) **1.5.10**; portal/HWEB research still design-only |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Finish-the-map-first plan — Phase 0–2 done (LD MVP graph); Phase 3 digitize LE next; Phase B (Flutter) deferred; research + schema + graph under `campus_map_research/` |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Finish-the-map-first plan — Phase 0–3 done (LD + LE MVP graphs); Phase 4 joins/aliases next; Phase B (Flutter) deferred; research + schema + graph under `campus_map_research/` |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

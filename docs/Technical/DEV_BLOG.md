@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — docs: campus map Phase 3 (LE graph MVP)
+
+**[2026-09-16]**
+
+- Phase 3 LE corridor graph MVP: [`campus_map_research/graph/graph_le.json`](campus_map_research/graph/graph_le.json) (floors −1…7, 92 room stubs, vertical lifts/stairs) + samples + builder. Docs/data only; no Dart / version bump. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: campus map Phase 2 (LD graph MVP)
 
 **[2026-09-16]**
@@ -469,7 +477,7 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase A** — Phase 3 digitize LE next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
+- **Campus indoor map Phase A** — Phase 4 join tables + aliases next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); Flutter Map UI (**Phase B**) deferred until map finished.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

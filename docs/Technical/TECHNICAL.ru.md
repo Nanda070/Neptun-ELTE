@@ -12,7 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
-Indoor-карта кампуса (LD/LE A→B): **сначала данные карты** — [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md); фазы **0–2 готовы** (MVP-граф LD в [`campus_map_research/graph/`](campus_map_research/graph/)); Flutter UI отложен, пока пакет графа не готов. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor-карта кампуса (LD/LE A→B): **сначала данные карты** — [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md); фазы **0–3 готовы** (MVP-графы LD + LE в [`campus_map_research/graph/`](campus_map_research/graph/)); Flutter UI отложен, пока пакет графа не готов. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -479,7 +479,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Research + MVP-граф LD** | Дамп + схема + [`campus_map_research/graph/graph_ld.json`](campus_map_research/graph/graph_ld.json); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фазы 0–2 готовы, далее фаза 3 (оцифровка LE); Flutter UI отложен (фаза B). В приложении по-прежнему только внешний maps deep-link |
+| Indoor-карта кампуса | **Research + MVP-графы LD/LE** | Дамп + схема + [`graph_ld.json`](campus_map_research/graph/graph_ld.json) + [`graph_le.json`](campus_map_research/graph/graph_le.json); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фазы 0–3 готовы, далее фаза 4 (join/алиасы); Flutter UI отложен (фаза B). В приложении по-прежнему только внешний maps deep-link |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -767,7 +767,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (фазы 0–2 готовы: MVP-граф LD; далее фаза 3 оцифровка LE; фаза B Flutter отложена); research + схема + граф в `campus_map_research/` |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (фазы 0–3 готовы: MVP-графы LD + LE; далее фаза 4 join/алиасы; фаза B Flutter отложена); research + схема + граф в `campus_map_research/` |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |
