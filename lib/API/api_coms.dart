@@ -23,6 +23,14 @@ class SessionGuard {
   static const Duration foregroundTokenMaintenanceInterval =
       Duration(minutes: 3, seconds: 30);
 
+  /// Shared prefs key: last successful proactive `GetNewTokens` (fg or bg).
+  static const String lastTokenMaintenanceSuccessPrefsKey =
+      'HallgatoLastTokenMaintenanceSuccessMs';
+
+  /// Skip a background tick if a successful refresh happened within this window
+  /// (coalesce with foreground 3m30s; reduces duplicate GetNewTokens).
+  static const Duration backgroundCoalesceWindow = Duration(minutes: 25);
+
   static bool _authBlocked = false;
   static bool _handlingExpired = false;
   static String? _pendingUserMessage;
@@ -326,7 +334,8 @@ class SessionGuard {
     }
 
     /// Shared proactive `GetNewTokens` for foreground timer and optional background work.
-    /// Background: conservative OS scheduling; auth failure deferred to next foreground (no headless UI).
+    /// Background: conservative OS scheduling; coalesces with recent fg/bg success;
+    /// auth failure deferred to next foreground (no headless UI).
     static Future<void> runProactiveTokenMaintenance({
       required bool fromBackground,
     }) async {
@@ -335,6 +344,25 @@ class SessionGuard {
       if (!storage.DataCache.getIsModernApi()) return;
       final refreshToken = storage.DataCache.getRefreshToken();
       if (refreshToken == null || refreshToken.isEmpty) return;
+
+      if (fromBackground) {
+        final lastMs = await storage.getInt(
+          SessionGuard.lastTokenMaintenanceSuccessPrefsKey,
+        );
+        if (lastMs != null) {
+          final age = DateTime.now().difference(
+            DateTime.fromMillisecondsSinceEpoch(lastMs),
+          );
+          if (age < SessionGuard.backgroundCoalesceWindow) {
+            debug.log(
+              'Background token maintenance: skip — recent success '
+              '${age.inMinutes}m ago (coalesce '
+              '${SessionGuard.backgroundCoalesceWindow.inMinutes}m)',
+            );
+            return;
+          }
+        }
+      }
 
       if (_isRefreshingToken) {
         debug.log(
@@ -351,6 +379,10 @@ class SessionGuard {
         final outcome = await _attemptTokenRefresh();
         switch (outcome) {
           case _TokenRefreshOutcome.success:
+            await storage.saveInt(
+              SessionGuard.lastTokenMaintenanceSuccessPrefsKey,
+              DateTime.now().millisecondsSinceEpoch,
+            );
             debug.log(
               '${fromBackground ? 'Background' : 'Foreground'} token maintenance: OK',
             );

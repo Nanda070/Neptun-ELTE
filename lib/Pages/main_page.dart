@@ -237,7 +237,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       navigateToLoginRoot();
     });
     _startForegroundTokenMaintenance();
-    Future.microtask(HallgatoBackgroundKeepAlive.syncScheduledTasks);
+    // Foreground owns JWT maintenance while resumed — do not leave BG tasks armed.
+    Future.microtask(HallgatoBackgroundKeepAlive.cancelScheduledTasks);
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
 
@@ -2594,15 +2595,21 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
     switch (state) {
       case AppLifecycleState.resumed:
         _startForegroundTokenMaintenance();
+        // Cancel WorkManager / iOS fetch while foreground timer runs.
+        Future.microtask(HallgatoBackgroundKeepAlive.cancelScheduledTasks);
         WidgetBridge.sync(
           preferEntries: currentWeekOffset == 1 ? calendarEntries : null,
         );
         break;
       case AppLifecycleState.inactive:
+        // Brief (Control Center, etc.) — keep foreground timer; do not arm BG yet.
+        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
         _stopForegroundTokenMaintenance();
+        // Re-arm optional background keep-alive only when leaving foreground.
+        Future.microtask(HallgatoBackgroundKeepAlive.syncScheduledTasks);
         break;
     }
   }

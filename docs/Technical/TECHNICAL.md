@@ -55,7 +55,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The app authenticates on the **portal**, then sets the institute URL to the assigned **`hallgatoN`** and calls modern JWT REST **there**. Do not hardcode `N`.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.5.8+1** — user-facing / Settings / docs = **1.5.8** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.5.9+1** — user-facing / Settings / docs = **1.5.9** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -67,7 +67,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.8`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.9`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -77,7 +77,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.5.8** | **Current.** Patch on feature line **5** — Calendar **education-week navigator**: single-card layout (`WeekoffseterElementWidget`) + fix EN same-month date range (`${to.day}` not `$to.day`). Tag **v1.5.8**. |
+| **1.5.9** | **Current.** Patch — battery-minimized optional **background hallgato keep-alive**: Android WorkManager **45 min** (was 15) with network + `requiresBatteryNotLow` + `requiresDeviceIdle` (not charging-required); iOS Background Fetch minimum **45 min**; cancel OS tasks while `resumed`; coalesce skip if last `GetNewTokens` success within **25 min**. Tag **v1.5.9**. |
+| **1.5.8** | Patch on feature line **5** — Calendar **education-week navigator**: single-card layout (`WeekoffseterElementWidget`) + fix EN same-month date range (`${to.day}` not `$to.day`). Tag **v1.5.8**. |
 | **1.5.7** | Patch — optional Settings **background hallgato keep-alive** (`SETTING_BackgroundHallgatoKeepAlive`, default off; Android WorkManager 15 min / iOS Background Fetch 15+ min; shared `GetNewTokens`) + **restore** opt-in **Remember password on this device** (`SETTING_RememberPasswordOnDevice`; Dart paths were briefly on `main` then **reverted in 1.5.6**, restored here). Builds on **1.5.6** session v1 core. Tag **v1.5.7**. |
 | **1.5.6** | [HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md) **v1 core**: removed client **10-minute** session wall-clock; foreground proactive `POST /api/Account/GetNewTokens` every **3 min 30 s** while `AppLifecycleState.resumed`; pause on background; reactive GET 401 refresh unchanged; ~45 s post-login grace kept. Tag **v1.5.6**. |
 | **1.5.5** | Patch — drawer Settings/Bug report/Logout no longer double Material icon + label emoji (`stripLeadingEmoji`); splash is color-only (no launcher icon on entry; Android 12 uses solid tile). Tag **v1.5.5**. |
@@ -89,7 +90,7 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.4.0** | Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
-| **1.5.8**, … | Further patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
+| **1.5.9**, … | Further patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
@@ -210,7 +211,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → `SessionGuard.checkSessionWallClockOnResume` |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.7` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.9` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -380,9 +381,9 @@ Refresh / re-login on **401/403 GET** lives in `_APIRequest` via `ensureValidSes
 
 **Session end policy (1.5.6 / HALLGATO v1 core):** No client **10-minute wall-clock** forced logout. Session ends on **manual logout** or when refresh is dead (`GetNewTokens` fails with 401/403 or empty tokens on proactive or reactive refresh). The client does **not** parse JWT `exp`. Access JWT lifetime ~10–15 min is **observational** (Neptun practice). `SessionGuard.markParticipantSessionStarted()` (from `SetupPage`, before `navigateToHomeRoot`) sets post-login grace only — it does **not** persist `SESSION_StartedAtMs` or arm timers.
 
-**Foreground proactive refresh (1.5.6):** While `AppLifecycleState.resumed`, `HomePage` runs a periodic timer every **3 min 30 s** (`SessionGuard.foregroundTokenMaintenanceInterval`) calling `SessionGuard.runForegroundTokenMaintenance()` → `_APIRequest.runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` when `getIsModernApi()` and a refresh token exist. Timer is **cancelled** on `inactive` / `paused` / `detached` / `hidden`. Uses the same `_isRefreshingToken` lock as reactive `ensureValidSession` (skips tick if refresh in flight). **401/403** on foreground maintenance → `forceExpiredLogout`; network / transient errors → retry on next tick (GET 401 path remains fallback).
+**Foreground proactive refresh (1.5.6):** While `AppLifecycleState.resumed`, `HomePage` runs a periodic timer every **3 min 30 s** (`SessionGuard.foregroundTokenMaintenanceInterval`) calling `SessionGuard.runForegroundTokenMaintenance()` → `_APIRequest.runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` when `getIsModernApi()` and a refresh token exist. Timer is **cancelled** on `paused` / `detached` / `hidden` (kept during brief `inactive`). Uses the same `_isRefreshingToken` lock as reactive `ensureValidSession` (skips tick if refresh in flight). **401/403** on foreground maintenance → `forceExpiredLogout`; network / transient errors → retry on next tick (GET 401 path remains fallback).
 
-**Optional background keep-alive (Settings, default OFF):** Toggle **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`). When on and logged in with a refresh token, `HallgatoBackgroundKeepAlive.syncScheduledTasks()` registers **Android** `workmanager` periodic work (**15 min**, network + not low battery) and starts **iOS** `background_fetch` (minimum **15 min**, system-deferred). Headless runs call `SessionGuard.runBackgroundTokenMaintenance()` → same `GetNewTokens` path with `fromBackground: true` (shared refresh mutex; **401/403** logged only — no headless logout UI). When off or logged out, tasks are cancelled. Honesty: OS may skip runs; not a SLA.
+**Optional background keep-alive (Settings, default OFF; battery tune 1.5.9):** Toggle **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`). When on, logged in with a refresh token, **and** lifecycle is `paused` / `hidden` / `detached`, `HallgatoBackgroundKeepAlive.syncScheduledTasks()` registers **Android** `workmanager` periodic work (**45 min**; network + battery not low + device idle; **not** charging-required) and starts **iOS** `background_fetch` (minimum **45 min**, system-deferred — OS may never run). While `resumed`, background tasks are **cancelled** (foreground 3m30s owns maintenance). Headless / fetch ticks call `SessionGuard.runBackgroundTokenMaintenance()` → same `GetNewTokens` with `fromBackground: true`; skip if last successful proactive refresh was within **25 min** (shared prefs coalesce). Shared refresh mutex; **401/403** logged only — no headless logout UI. When off or logged out, tasks are cancelled. Tradeoff vs former 15 min: less refresh guarantee while backgrounded, less battery. Honesty: not a SLA.
 
 **Post-login grace (1.3.3):** For ~45 s after `markParticipantSessionStarted`, `ensureValidSession` does **not** call `forceExpiredLogout` when refresh/silent re-auth fail but an access token is still present — avoids an immediate kick from a race or flaky first API after fresh 2FA.
 
@@ -470,7 +471,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | JWT Authenticate on neptun.elte.hu | **Dead for ELTE** | Empty HTTP 400; AD institute uses portal |
 | Silent ELTE re-auth | **Disabled** | `trySilentReauth()` returns false; password stored but 2FA is interactive |
 | Student-data writes | **Mark-read only** | Card / payments / mail compose / exam registration are not writes |
-| Session keep-alive | **Foreground + optional background (1.5.6+)** | Foreground 3 min 30 s while `resumed`; optional Settings background (`workmanager` / `background_fetch`, 15+ min, default off). Widgets cache-only, no JWT |
+| Session keep-alive | **Foreground + optional background (1.5.6+)** | Foreground 3 min 30 s while `resumed`; optional Settings background (`workmanager` / `background_fetch`, **45 min** + coalesce / cancel-while-resumed since **1.5.9**, default off). Widgets cache-only, no JWT |
 | Old API 2FA | **None** | |
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
@@ -742,7 +743,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | No Authenticator deep-link / auto-OTP | TOTP is typed manually; Microsoft Authenticator stays external |
 | Email OTP helper exists; unused by UI | `elteRequestEmailOtp` implements portal `GetEmail` / `CodePrefix`; UI is TOTP-first (no email OTP screen) |
 | SessionGuard JWT maintenance, not wall-clock | No 10 min client timer; logout on manual / dead refresh; `exp` not decoded |
-| Background session keep-alive | Optional Settings toggle (default off); 15+ min OS-scheduled; foreground 3 min 30 s remains primary; widgets sync cache without JWT |
+| Background session keep-alive | Optional Settings toggle (default off); **45 min** OS-scheduled + battery-not-low + idle (**1.5.9**); coalesce 25 min; cancel while resumed; foreground 3 min 30 s remains primary; widgets sync cache without JWT |
 | `loginServerBusy` ≠ invalid password | Neptun overload was shown as a bad password |
 | `loginStudentWebFull` ≠ invalid password | HWEB capacity full after correct 2FA was painted as bad password (`submitTwoFactor` → `false` → `_paintRed`) |
 | ELTE hub → `https://neptun.elte.hu` | Portal login + 2FA. After `/ToNeptunWeb/ToNeptunHWeb`, JWT REST is on load-balanced `hallgato1…N` — never hardcode a single node |
@@ -762,7 +763,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.md` | This document (EN) |
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
-| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Hallgato JWT maintenance — **v1 core + mail/calendar fixes shipped 1.5.6**; optional background keep-alive + password retention **1.5.7**; portal/HWEB research still design-only |
+| `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Hallgato JWT maintenance — **v1 core + mail/calendar fixes shipped 1.5.6**; optional background keep-alive + password retention **1.5.7**; battery minimization **1.5.9**; portal/HWEB research still design-only |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

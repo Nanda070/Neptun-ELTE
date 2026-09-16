@@ -11,10 +11,17 @@ import 'package:workmanager/workmanager.dart' as wm;
 
 /// Optional hallgato JWT maintenance while the app is not foreground-resumed.
 ///
-/// **Battery / OS honesty:** intervals are conservative (15+ min). Android WorkManager
-/// and iOS Background Fetch defer or skip tasks (Doze, Low Power Mode, force-stop).
-/// Uses the same [SessionGuard.runBackgroundTokenMaintenance] helper as foreground
-/// maintenance; shares [_APIRequest] refresh mutex — no parallel GetNewTokens.
+/// **Battery / OS honesty:** Android periodic is **45 min** (was 15) with
+/// network + battery-not-low + device-idle — fewer guaranteed refreshes, less
+/// drain. iOS minimum fetch interval **45 min**; the OS may defer or never run
+/// (Low Power, Background App Refresh off, force-quit). Do **not** require
+/// charging (would make keep-alive too weak). Foreground 3 min 30 s remains
+/// primary; background tasks are cancelled while `resumed` and coalesced via
+/// [SessionGuard] last-success timestamp.
+///
+/// Uses the same [SessionGuard.runBackgroundTokenMaintenance] helper as
+/// foreground maintenance; shares [_APIRequest] refresh mutex — no parallel
+/// GetNewTokens.
 class HallgatoBackgroundKeepAlive {
   HallgatoBackgroundKeepAlive._();
 
@@ -24,8 +31,13 @@ class HallgatoBackgroundKeepAlive {
       'com.nanda070.neptunmobile.hallgato_keepalive';
   static const String _workTaskName = 'hallgatoTokenRefresh';
 
-  /// Android WorkManager minimum practical period (OS may defer further).
-  static const Duration _androidPeriod = Duration(minutes: 15);
+  /// Android WorkManager period. Longer than the OS 15 min floor to cut battery
+  /// cost; tradeoff vs 15 min: less refresh guarantee while backgrounded.
+  static const Duration androidPeriod = Duration(minutes: 45);
+
+  /// iOS Background Fetch minimum interval (minutes). System may schedule later
+  /// or never.
+  static const int iosMinimumFetchIntervalMinutes = 45;
 
   static bool _workmanagerInitialized = false;
   static bool _backgroundFetchConfigured = false;
@@ -47,14 +59,14 @@ class HallgatoBackgroundKeepAlive {
     if (Platform.isIOS && !_backgroundFetchConfigured) {
       await BackgroundFetch.configure(
         BackgroundFetchConfig(
-          minimumFetchInterval: 15,
+          minimumFetchInterval: iosMinimumFetchIntervalMinutes,
           stopOnTerminate: false,
           enableHeadless: true,
           startOnBoot: true,
           requiresBatteryNotLow: true,
           requiresCharging: false,
           requiresStorageNotLow: false,
-          requiresDeviceIdle: false,
+          requiresDeviceIdle: true,
           requiredNetworkType: bg.NetworkType.ANY,
         ),
         _onBackgroundFetchEvent,
@@ -64,7 +76,18 @@ class HallgatoBackgroundKeepAlive {
     }
   }
 
+  /// True when the OS should own JWT maintenance (app not actively resumed).
+  static bool get _lifecycleAllowsBackgroundRegistration {
+    final life = WidgetsBinding.instance.lifecycleState;
+    return life == AppLifecycleState.paused ||
+        life == AppLifecycleState.hidden ||
+        life == AppLifecycleState.detached;
+  }
+
   /// Register or cancel platform tasks from Settings + after [DataCache.loadData].
+  ///
+  /// Registers only when toggle **on**, logged in with refresh token, modern API,
+  /// and lifecycle is **not** `resumed` (foreground timer owns maintenance then).
   static Future<void> syncScheduledTasks() async {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
@@ -79,21 +102,32 @@ class HallgatoBackgroundKeepAlive {
       return;
     }
 
+    // Avoid duplicate WorkManager / BGFetch ticks while foreground 3m30s runs.
+    if (!_lifecycleAllowsBackgroundRegistration) {
+      await _cancelAll();
+      return;
+    }
+
     await initialize();
 
     if (Platform.isAndroid) {
       await wm.Workmanager().registerPeriodicTask(
         _workUniqueName,
         _workTaskName,
-        frequency: _androidPeriod,
-        initialDelay: _androidPeriod,
+        frequency: androidPeriod,
+        initialDelay: androidPeriod,
         constraints: wm.Constraints(
           networkType: wm.NetworkType.connected,
           requiresBatteryNotLow: true,
+          requiresCharging: false,
+          requiresDeviceIdle: true,
         ),
         existingWorkPolicy: wm.ExistingPeriodicWorkPolicy.update,
       );
-      debug.log('HallgatoBackgroundKeepAlive: WorkManager periodic registered');
+      debug.log(
+        'HallgatoBackgroundKeepAlive: WorkManager periodic registered '
+        '(${androidPeriod.inMinutes} min, batteryNotLow+idle)',
+      );
     }
 
     if (Platform.isIOS) {
@@ -109,7 +143,7 @@ class HallgatoBackgroundKeepAlive {
     }
   }
 
-  /// Cancel platform tasks (logout / toggle off / not logged in).
+  /// Cancel platform tasks (logout / toggle off / not logged in / resumed).
   static Future<void> cancelScheduledTasks() => _cancelAll();
 
   static Future<void> _cancelAll() async {

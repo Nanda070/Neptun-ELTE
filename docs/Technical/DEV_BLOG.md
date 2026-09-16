@@ -372,6 +372,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.9 (battery-minimized background keep-alive)
+
+**[2026-09-16]**
+
+- **Release 1.5.9** (`pubspec` **1.5.9+1**): optional background hallgato keep-alive drains less — Android WorkManager **45 min** (was 15) with network + battery-not-low + device-idle (still not charging-required); iOS Background Fetch minimum **45 min**; cancel OS tasks while `resumed`; skip background tick if last successful `GetNewTokens` within **25 min**. Toggle still default **off**; no register when logged out. GitHub Release **v1.5.9** + APK + unsigned IPA. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.5.8 (calendar week navigator UI + date range)
 
 **[2026-09-16]**

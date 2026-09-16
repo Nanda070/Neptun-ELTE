@@ -109,17 +109,18 @@ Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 
 | Платформа | Отгрузка | Заметки |
 |-----------|----------|---------|
-| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Период **15 мин** минимум; сеть + не низкий заряд; Doze/OEM могут откладывать. |
-| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; **15+ мин**, система откладывает; force-quit / выкл. Background Refresh — без гарантий. |
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Период **45 мин** (батарея **1.5.9**; пол ОС 15 мин); сеть + `requiresBatteryNotLow` + `requiresDeviceIdle`; **без** обязательной зарядки; Doze/OEM могут откладывать. |
+| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; минимум **45 мин**; система может отложить или **не** запустить (force-quit / выкл. Background Refresh). |
 
-**Ограничение — батарея:** **консервативные** интервалы в фоне (не те же 3–4 мин, что на foreground). Один путь `GetNewTokens` с foreground maintenance; **без** агрессивного polling и параллельных таймеров. Честно: **ОС может откладывать или пропускать** задачи; фоновый maintenance — **best-effort**, не SLA.
+**Ограничение — батарея (1.5.9):** длиннее интервалы (**45 мин**) вместо пола 15 мин — меньше гарантий refresh, меньше расход. Отмена WorkManager / BGFetch в `resumed` (foreground 3м30с основной). Coalesce: skip фона, если последний успешный `GetNewTokens` был в течение **25 мин**. Без `requiresCharging`. Честно: **ОС может откладывать или пропускать**; фон — **best-effort**, не SLA.
 
 ### Поведение при включении
 
 - **`POST …/api/Account/GetNewTokens`** (как основной foreground-механизм), когда срабатывает фоновая задача и auth не заблокирован.
-- Уважать lock refresh (`_isRefreshingToken`); пропускать тик при foreground refresh.
+- Уважать lock refresh (`_isRefreshingToken`); пропускать тик при foreground refresh или если последний успех в окне coalesce (**25 мин**, **1.5.9**).
 - **401/403** в фоне: **без headless UI** — лог и отложить до foreground GET / proactive refresh или login + TOTP.
 - **Сеть:** повтор на следующем запуске по расписанию ОС; не спамить ELTE.
+- Регистрировать OS-задачи только при toggle **вкл** + login + **не** `resumed`; отмена на resume / logout / toggle выкл.
 
 ### Риски и политика магазинов
 
@@ -241,8 +242,8 @@ Wall-clock снят; токены в `flutter_secure_storage` (`DataCache`).
 9. **Ручная матрица тестов** — **не автоматизировано** — foreground 20+ min; фон 30+ min; kill с живым/мёртвым refresh; offline на тике.
 10. **Регрессия виджетов** — **без изменений** — кэш-only, без JWT.
 11. **Настройки — фоновый keep-alive** — **готово (1.5.7)** — `SETTING_BackgroundHallgatoKeepAlive`, строки, default **выкл**; `HallgatoBackgroundKeepAlive.syncScheduledTasks()` регистрирует WorkManager / iOS fetch только при вкл + login.
-12. **Выбор фонового плагина** — **готово (1.5.7)** — Android `workmanager` **15 мин**; iOS `background_fetch` **15+ мин**; TECHNICAL § Session recovery.
-13. **Политика батареи / ELTE** — **готово (1.5.7)** — консервативный фон; общий `GetNewTokens` + mutex; без дублирующего timer при `resumed`.
+12. **Выбор фонового плагина** — **готово (1.5.7)**; **батарея (1.5.9)** — Android `workmanager` **45 мин** + battery-not-low + idle; iOS `background_fetch` **45+ мин**; TECHNICAL § Session recovery.
+13. **Политика батареи / ELTE** — **готово (1.5.7 / 1.5.9)** — длинный фон; общий `GetNewTokens` + mutex; отмена BG в `resumed`; coalesce 25 мин; без обязательной зарядки.
 14. **Настройки — сохранение пароля** — **готово (1.5.7)** — toggle (`SETTING_RememberPasswordOnDevice`, default **выкл**); `sessionWipeKeepCache(wipePassword:)` + матрица `SessionGuard` (ручной / expiry / cold-start); pre-fill входа; строки EN/HU/RU. (**1.5.6** откатил Dart; восстановлено в **1.5.7**.)
 15. **Store / manifest** — **готово (1.5.7)** — iOS `UIBackgroundModes` = `fetch` для опционального фона; Android WorkManager при toggle on.
 16. **Исследование portal / HWEB** — при продолжении: spike с HAR, endpoints, pass/fail до user-facing «activity»; приоритет ниже шагов 2–10.
