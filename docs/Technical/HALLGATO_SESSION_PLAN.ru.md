@@ -1,6 +1,6 @@
 # Поддержка сессии hallgato — план (дизайн)
 
-**Статус:** **ядро v1 отгружено в приложении 1.5.6** (16 сентября 2026). Опциональные уровни Settings (фон, пароль, portal activity) — **только дизайн**.  
+**Статус:** **ядро v1 отгружено в приложении 1.5.6** (16 сентября 2026). **Фоновый keep-alive (Settings, default OFF) — отгружен.** Опциональный пароль в Settings — отдельно; portal activity — **только дизайн**.  
 **Владелец:** Nanda.  
 **Каноническая пара:** [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md) (EN).
 
@@ -97,20 +97,20 @@
 
 ## Опциональный фоновый keep-alive (Настройки, по умолчанию ВЫКЛ)
 
-**Статус:** дизайн / опциональный уровень — **не** часть ядра отгрузки v1, пока продукт явно не включит. **По умолчанию: ВЫКЛ.**
+**Статус:** **отгружено** (опциональный уровень, **по умолчанию ВЫКЛ**) — `SETTING_BackgroundHallgatoKeepAlive`, `lib/Misc/hallgato_background_keepalive.dart`, Настройки → Поведение.
 
 ### Управление пользователем
 
-- **Переключатель в Настройках** — напр. «Поддерживать сессию в фоне» (точный текст — в `language.dart` EN/RU/HU).
+- **Переключатель в Настройках** — «Поддерживать сессию в фоне» (`settings_backgroundHallgatoKeepAlive` в `language.dart` EN/HU/RU).
 - **Выкл** (default): как в [Целевое поведение — закрыто / долгий фон](#целевое-поведение--закрыто--долгий-фон) — только foreground maintenance.
 - **Вкл:** best-effort поддержка hallgato, пока приложение **не** в `AppLifecycleState.resumed`.
 
-### Механизмы платформ (выбор при реализации — описать в TECHNICAL при отгрузке)
+### Механизмы платформ (отгружено — TECHNICAL § Session recovery)
 
-| Платформа | Кандидат | Заметки |
+| Платформа | Отгрузка | Заметки |
 |-----------|----------|---------|
-| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) (или аналог) | Периодическая работа под Doze, App Standby, OEM — не real-time. |
-| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) и/или **BGTaskScheduler** | Интервалы **задаёт система**; часто **15+ минут** и дольше; cadence 3–4 мин в фоне **не гарантируется**. |
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Период **15 мин** минимум; сеть + не низкий заряд; Doze/OEM могут откладывать. |
+| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; **15+ мин**, система откладывает; force-quit / выкл. Background Refresh — без гарантий. |
 
 **Ограничение — батарея:** **консервативные** интервалы в фоне (не те же 3–4 мин, что на foreground). Один путь `GetNewTokens` с foreground maintenance; **без** агрессивного polling и параллельных таймеров. Честно: **ОС может откладывать или пропускать** задачи; фоновый maintenance — **best-effort**, не SLA.
 
@@ -118,7 +118,7 @@
 
 - **`POST …/api/Account/GetNewTokens`** (как основной foreground-механизм), когда срабатывает фоновая задача и auth не заблокирован.
 - Уважать lock refresh (`_isRefreshingToken`); пропускать тик при foreground refresh.
-- **401/403** в фоне: по возможности **не** показывать UI из headless-задачи — сохранить «refresh мёртв» или отложить до foreground → login + TOTP (UX TBD; не конфликтовать с `SessionGuard` при реализации).
+- **401/403** в фоне: **без headless UI** — лог и отложить до foreground GET / proactive refresh или login + TOTP.
 - **Сеть:** повтор на следующем запуске по расписанию ОС; не спамить ELTE.
 
 ### Риски и политика магазинов

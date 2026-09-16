@@ -363,6 +363,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — Settings: optional background hallgato keep-alive
+
+**[2026-09-16]**
+
+- Shipped **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`, default **off**): Android `workmanager` periodic **15 min**; iOS `background_fetch` (system-deferred **15+ min**). `HallgatoBackgroundKeepAlive` + `SessionGuard.runBackgroundTokenMaintenance()` shares `GetNewTokens` / refresh mutex with foreground; headless **401/403** defers UI to next foreground. Toggle off or logged out → tasks cancelled. EN/HU/RU Settings strings; TECHNICAL + HALLGATO EN+RU. No separate version bump / tag (bundle with **1.5.6** session wave unless split release). Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: remove IOS_VS_ANDROID matrix
 
 **[2026-09-16, 08:15]**

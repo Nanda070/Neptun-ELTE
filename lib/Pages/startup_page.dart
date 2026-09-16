@@ -7,6 +7,7 @@ import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../storage.dart';
+import '../Misc/hallgato_background_keepalive.dart';
 import 'main_page.dart' as main_page;
 import 'setup_page.dart' as setup_page;
 
@@ -52,6 +53,7 @@ class _SplitterState extends State<Splitter>{
         final pinfo = await PackageInfo.fromPlatform();
         DataCache.setIsInstalledFromGPlay(pinfo.installerStore == 'com.android.vending' ? 2 : 1);
       }
+      await HallgatoBackgroundKeepAlive.syncScheduledTasks();
     }).then((value)async{
       await AppStrings.loadDownloadedLanguageData(context);
       Future.delayed(Duration.zero,()async{

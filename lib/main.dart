@@ -7,15 +7,18 @@ import 'package:provider/provider.dart';
 import 'Pages/main_page.dart';
 import 'Pages/startup_page.dart';
 import 'language.dart';
+import 'Misc/hallgato_background_keepalive.dart';
 
 void main() {
   //DataCache.dataWipeNoKeep();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  HallgatoBackgroundKeepAlive.registerHeadlessEntryPoints();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   DataCache.loadThemeOnly().whenComplete(() async {
     AppColors.initialize();
     await AppStrings.loadBundledLanguagePacks();
     AppStrings.initialize();
+    await HallgatoBackgroundKeepAlive.initialize();
     registerAppRoots(
       loginRoot: (_) => const Splitter(),
       homeRoot: (_) => const HomePage(),

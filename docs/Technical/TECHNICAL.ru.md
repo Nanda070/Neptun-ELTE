@@ -77,7 +77,7 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.6** | **Текущая.** Патч на линии **5** — [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) **v1 core**: снят клиентский **10-минутный** wall-clock; проактивный `POST /api/Account/GetNewTokens` каждые **3 мин 30 с** в `AppLifecycleState.resumed` (modern API + refresh token); пауза в фоне; реактивный GET 401 без изменений; grace ~45 с сохранён. Без Settings background/password. Тег **v1.5.6**. |
+| **1.5.6** | **Текущая.** Патч на линии **5** — [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md) **v1 core**: снят клиентский **10-минутный** wall-clock; проактивный `POST /api/Account/GetNewTokens` каждые **3 мин 30 с** в `AppLifecycleState.resumed` (modern API + refresh token); пауза в фоне; реактивный GET 401 без изменений; grace ~45 с сохранён. Опциональные переключатели Настроек: **пароль** и **фоновый keep-alive** (оба default off). Тег **v1.5.6**. |
 | **1.5.5** | Патч — drawer без двойных icon/emoji + color-only splash. Тег **v1.5.5**. |
 | **1.5.4** | Патч — надёжность 10-мин wall-clock сессии на Android (`SessionGuard`: продолжение stamp, фикс гонки prefs, тикер 15 с + lifecycle re-check); фикс двойных emoji в Bug report (`EmojiRichText` без tint на color-emoji). Политика по-прежнему **10 мин**. Тег **v1.5.4**. |
 | **1.5.3** | Патч — новая launcher / adaptive иконка (Android + iOS) из обновлённого брендинга ELTE Neptun; splash использует обновлённый `assets/neptun2_logo.png`. Политика сессии без изменений (по-прежнему **10 мин**). Тег **v1.5.3**. |
@@ -378,7 +378,9 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 **Политика окончания сессии (1.5.6 / HALLGATO v1 core):** Нет клиентского **10-минутного wall-clock**. Выход — **ручной logout** или мёртвый refresh (`GetNewTokens` → 401/403 или пустые токены при проактивном или реактивном refresh). Клиент **не** парсит JWT `exp`. `markParticipantSessionStarted()` задаёт только post-login grace — **не** пишет `SESSION_StartedAtMs` и не ставит таймеры.
 
-**Проактивный refresh на foreground (1.5.6):** В `AppLifecycleState.resumed` `HomePage` каждые **3 мин 30 с** (`SessionGuard.foregroundTokenMaintenanceInterval`) вызывает `runForegroundTokenMaintenance()` → `POST …/api/Account/GetNewTokens` при `getIsModernApi()` и refresh token. Таймер **отменяется** на `inactive` / `paused` / `detached` / `hidden`. Общий lock `_isRefreshingToken` с `ensureValidSession`. **401/403** на maintenance → `forceExpiredLogout`; сеть/временные ошибки → следующий tick. **Нет** `workmanager` / `background_fetch` в v1.
+**Проактивный refresh на foreground (1.5.6):** В `AppLifecycleState.resumed` `HomePage` каждые **3 мин 30 с** (`SessionGuard.foregroundTokenMaintenanceInterval`) вызывает `runForegroundTokenMaintenance()` → `runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` при `getIsModernApi()` и refresh token. Таймер **отменяется** на `inactive` / `paused` / `detached` / `hidden`. Общий lock `_isRefreshingToken` с `ensureValidSession`. **401/403** на foreground maintenance → `forceExpiredLogout`; сеть/временные ошибки → следующий tick.
+
+**Опциональный фоновый keep-alive (Настройки, по умолчанию ВЫКЛ):** «Поддерживать сессию в фоне» (`SETTING_BackgroundHallgatoKeepAlive`). При включении и наличии refresh token: **Android** `workmanager` (**15 мин**, сеть + не низкий заряд), **iOS** `background_fetch` (**15+ мин**, система откладывает). Headless → `runBackgroundTokenMaintenance()` (тот же `GetNewTokens`, **401/403** без UI). Выкл / logout → отмена задач. Best-effort, не SLA.
 
 **Grace после входа (1.3.3):** ~45 с после `markParticipantSessionStarted` `ensureValidSession` **не** вызывает `forceExpiredLogout`, если refresh/тихий re-auth провалились, но access token ещё есть.
 
@@ -386,7 +388,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 **Честность кэша (п. 1 сделан):** Каждая home-поверхность (календарь / зачётка / периоды / почта / платежи) сначала рисует из `HasCached*`; сеть — тихий refresh. При мёртвой сессии / offline / ошибке refresh списки **не** заменяются пустым спиннером. Баннер `cache_showingFromCache`. Пустые недели календаря кэшируются как `len == 0`. Обход семестров зачётки пропускается при `SessionGuard.isAuthBlocked`.
 
-**Опциональное сохранение пароля (частично):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. Фоновый keep-alive и portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
+**Опциональное сохранение пароля (частично):** Настройки → **Működés / Behavior** → **Запомнить пароль на этом устройстве** (`SETTING_RememberPasswordOnDevice`, default **выкл**). При вкл. `neptun_password` переживает `sessionWipeKeepCache` при `forceExpiredLogout` (pre-fill поля входа; **2FA вручную**). **Log out** всегда удаляет пароль. Выключение toggle очищает пароль. Portal/HWEB — только дизайн в [HALLGATO_SESSION_PLAN.ru.md](HALLGATO_SESSION_PLAN.ru.md).
 
 ---
 
@@ -466,7 +468,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | JWT Authenticate на neptun.elte.hu | **Мёртв для ELTE** | Пустой HTTP 400; AD → портал |
 | Тихий re-auth ELTE | **Отключён** | `trySilentReauth()` возвращает false; пароль хранится, но 2FA интерактивна |
 | Записи student-data | **Только mark-read** | Студенческий / платежи / compose почты / запись на экзамен — не записи |
-| Keep-alive сессии | **Только foreground (1.5.6)** | Проактивный `GetNewTokens` каждые 3 мин 30 с в `resumed`; нет Workmanager / background_fetch. Виджеты только кэш, без JWT |
+| Keep-alive сессии | **Foreground + опциональный фон (1.5.6+)** | Foreground 3 мин 30 с в `resumed`; опционально Настройки (`workmanager` / `background_fetch`, 15+ мин, default off). Виджеты только кэш, без JWT |
 | Old API 2FA | **Нет** | |
 | Локальные уведомления iOS | **Working MVP** | Нет exact alarm как на Android |
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
@@ -738,7 +740,7 @@ Release на iPhone: `--release` (см. §14).
 | Нет deep-link / auto-OTP из Authenticator | TOTP вводится вручную; Microsoft Authenticator снаружи |
 | Helper email OTP есть; UI не вызывает | `elteRequestEmailOtp` реализует портальный `GetEmail` / `CodePrefix`; UI сначала TOTP (экрана email OTP нет) |
 | SessionGuard JWT maintenance, не wall-clock | Нет 10-мин таймера; logout при ручном выходе / мёртвом refresh; `exp` не декодируется |
-| Нет фонового keep-alive (v1) | Только foreground 3 мин 30 с; виджеты синхронизируют кэш без JWT |
+| Фоновый keep-alive | Опционально в Настройках (default off): `workmanager` / `background_fetch`, 15+ мин; foreground 3 мин 30 с остаётся основным |
 | `loginServerBusy` ≠ invalid password | Перегрузка Neptun маскировалась под «неверный пароль» |
 | `loginStudentWebFull` ≠ invalid password | Переполнение HWEB после верного 2FA красилось как неверный пароль (`submitTwoFactor` → `false` → `_paintRed`) |
 | Хаб ELTE → `https://neptun.elte.hu` | Портальный логин + 2FA. После `/ToNeptunWeb/ToNeptunHWeb` JWT REST на балансируемых `hallgato1…N` — один узел не хардкодить |

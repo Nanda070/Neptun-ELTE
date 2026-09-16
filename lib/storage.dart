@@ -230,6 +230,8 @@ class DataCache{
   late bool? _persistentSetting_showPeriodsNotifications = true;
   late int? _persistentSetting_weekOffset = 0;
   late bool? _persistentSetting_needBetterHaptics = true;
+  /// Optional hallgato JWT refresh while app is backgrounded (default OFF).
+  late bool? _persistentSetting_backgroundHallgatoKeepAlive = false;
   late int? _persistentSetting_userSelectedLanguage = -1;
   String? _persistentSetting_userSelectedLanguageCode;
 
@@ -362,6 +364,9 @@ class DataCache{
     if(tmp == null){
       _persistentSetting_needBetterHaptics = true;
     }
+
+    tmp = await getInt('SETTING_BackgroundHallgatoKeepAlive');
+    _persistentSetting_backgroundHallgatoKeepAlive = tmp != null && tmp != 0;
 
     tmp = await getInt('SETTING_UserWeekOffset');
     _persistentSetting_weekOffset = tmp ?? 0;
@@ -642,6 +647,15 @@ class DataCache{
   static Future<void> setNeedFamilyFriendlyComments(int? value) async{
     _instance._persistentSetting_familyFriendlyLoadingComments = value != null && value != 0;
     await saveInt('SETTING_IsFamilyFriendlyLoading', value ?? 0);
+  }
+
+  static bool? getBackgroundHallgatoKeepAlive() =>
+      _instance._persistentSetting_backgroundHallgatoKeepAlive;
+
+  static Future<void> setBackgroundHallgatoKeepAlive(int? value) async {
+    final on = value != null && value != 0;
+    _instance._persistentSetting_backgroundHallgatoKeepAlive = on;
+    await saveInt('SETTING_BackgroundHallgatoKeepAlive', on ? 1 : 0);
   }
 
   static bool? getNeedExamNotifications(){return _instance._persistentSetting_showExamNotifications;}

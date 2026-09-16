@@ -395,6 +395,9 @@ class AppStrings{
       settings_rememberPasswordOnDevice: 'Jelszó megjegyzése ezen az eszközön',
       settings_rememberPasswordOnDevice_Subtitle:
           'Kényelmi funkció: a jelszó biztonságos tárolóban marad kijelentkezés után is (2FA továbbra is kell). Megosztott eszközön kapcsold ki. Kézi kijelentkezés mindig törli a jelszót.',
+      settings_backgroundHallgatoKeepAlive: 'Munkamenet ébren tartása háttérben',
+      settings_backgroundHallgatoKeepAlive_Subtitle:
+          'Opcionális: ritkán (kb. 15+ perc) frissíti a hallgatói JWT-t, amikor az app nincs előtérben. Több akkumulátor; az OS késleltetheti vagy kihagyhatja. Alapból ki.',
       mail_error_Prefix: 'Hiba: %0',
       mail_error_EmptyMessage: 'Üres üzenet.',
       popup_case9_2faHeader: 'Kétlépcsős azonosítás',
@@ -780,6 +783,9 @@ class AppStrings{
       settings_rememberPasswordOnDevice: 'Remember password on this device',
       settings_rememberPasswordOnDevice_Subtitle:
           'Convenience only: keeps your password in secure storage after session expiry (2FA still required). Turn off on shared devices. Manual log out always clears the password.',
+      settings_backgroundHallgatoKeepAlive: 'Keep session alive in background',
+      settings_backgroundHallgatoKeepAlive_Subtitle:
+          'Optional: occasionally (about 15+ min) refreshes your hallgato JWT while the app is not in the foreground. Uses more battery; the OS may defer or skip runs. Off by default.',
       mail_error_Prefix: 'Error: %0',
       mail_error_EmptyMessage: 'Empty message.',
       popup_case9_2faHeader: 'Two-step authentication',
@@ -1438,6 +1444,8 @@ class LanguagePack{
   final String settings_fontScale_Label;
   final String settings_rememberPasswordOnDevice;
   final String settings_rememberPasswordOnDevice_Subtitle;
+  final String settings_backgroundHallgatoKeepAlive;
+  final String settings_backgroundHallgatoKeepAlive_Subtitle;
   final String mail_error_Prefix;
   final String mail_error_EmptyMessage;
   final String popup_case9_2faHeader;
@@ -1760,6 +1768,8 @@ class LanguagePack{
     required this.settings_fontScale_Label,
     required this.settings_rememberPasswordOnDevice,
     required this.settings_rememberPasswordOnDevice_Subtitle,
+    required this.settings_backgroundHallgatoKeepAlive,
+    required this.settings_backgroundHallgatoKeepAlive_Subtitle,
     required this.mail_error_Prefix,
     required this.mail_error_EmptyMessage,
     required this.popup_case9_2faHeader,
@@ -2171,6 +2181,12 @@ class LanguagePack{
         settings_rememberPasswordOnDevice_Subtitle: getStr(
             'settings_rememberPasswordOnDevice_Subtitle',
             en.settings_rememberPasswordOnDevice_Subtitle),
+        settings_backgroundHallgatoKeepAlive: getStr(
+            'settings_backgroundHallgatoKeepAlive',
+            en.settings_backgroundHallgatoKeepAlive),
+        settings_backgroundHallgatoKeepAlive_Subtitle: getStr(
+            'settings_backgroundHallgatoKeepAlive_Subtitle',
+            en.settings_backgroundHallgatoKeepAlive_Subtitle),
         mail_error_Prefix: getStr('mail_error_Prefix', en.mail_error_Prefix),
         mail_error_EmptyMessage: getStr('mail_error_EmptyMessage', en.mail_error_EmptyMessage),
         popup_case9_2faHeader: getStr('popup_case9_2faHeader', en.popup_case9_2faHeader),
@@ -2626,6 +2642,8 @@ class LanguagePack{
       'settings_fontScale_Label':lang.settings_fontScale_Label,
       'settings_rememberPasswordOnDevice':lang.settings_rememberPasswordOnDevice,
       'settings_rememberPasswordOnDevice_Subtitle':lang.settings_rememberPasswordOnDevice_Subtitle,
+      'settings_backgroundHallgatoKeepAlive':lang.settings_backgroundHallgatoKeepAlive,
+      'settings_backgroundHallgatoKeepAlive_Subtitle':lang.settings_backgroundHallgatoKeepAlive_Subtitle,
       'mail_error_Prefix':lang.mail_error_Prefix,
       'mail_error_EmptyMessage':lang.mail_error_EmptyMessage,
       'popup_case9_2faHeader':lang.popup_case9_2faHeader,

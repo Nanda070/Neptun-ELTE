@@ -363,6 +363,14 @@
 
 ---
 
+## 2026-09-16 — Настройки: опциональный фоновый hallgato keep-alive
+
+**[2026-09-16]**
+
+- **Поддерживать сессию в фоне** (`SETTING_BackgroundHallgatoKeepAlive`, default **выкл**): Android `workmanager` **15 мин**; iOS `background_fetch` (система **15+ мин**). `HallgatoBackgroundKeepAlive` + `runBackgroundTokenMaintenance()` — тот же `GetNewTokens` и mutex refresh; headless **401/403** без UI до foreground. Выкл / logout → отмена задач. EN/HU/RU; TECHNICAL + HALLGATO EN+RU. Отдельный bump/тег не делали (волна **1.5.6**). Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — docs: удаление матрицы IOS_VS_ANDROID
 
 **[2026-09-16, 08:15]**

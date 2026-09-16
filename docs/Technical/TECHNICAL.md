@@ -77,7 +77,7 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.5.6** | **Current.** Patch on feature line **5** — [HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md) **v1 core**: removed client **10-minute** session wall-clock; foreground proactive `POST /api/Account/GetNewTokens` every **3 min 30 s** while `AppLifecycleState.resumed` (modern API + refresh token); pause on background; reactive GET 401 refresh unchanged; ~45 s post-login grace kept. Opt-in **password retention** Settings toggle shipped (default off); background keep-alive toggle not yet. Tag **v1.5.6** (session v1 core may land same wave). |
+| **1.5.6** | **Current.** Patch on feature line **5** — [HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md) **v1 core**: removed client **10-minute** session wall-clock; foreground proactive `POST /api/Account/GetNewTokens` every **3 min 30 s** while `AppLifecycleState.resumed` (modern API + refresh token); pause on background; reactive GET 401 refresh unchanged; ~45 s post-login grace kept. Opt-in **password retention** and **background keep-alive** Settings toggles (both default off). Tag **v1.5.6**. |
 | **1.5.5** | Patch — drawer Settings/Bug report/Logout no longer double Material icon + label emoji (`stripLeadingEmoji`); splash is color-only (no launcher icon on entry; Android 12 uses solid tile). Tag **v1.5.5**. |
 | **1.5.4** | Patch — Android 10-min session wall-clock reliability (`SessionGuard` continue-from-stamp, prefs race fix, 15s ticker + lifecycle re-check); Bug report / emoji ghost duplicate fix (`EmojiRichText` untinted color-emoji spans). Policy still **10 min** wall-clock. Tag **v1.5.4**. |
 | **1.5.3** | Patch — new launcher / adaptive app icon (Android + iOS) from updated ELTE Neptun branding; splash uses refreshed `assets/neptun2_logo.png`. Session policy unchanged (still **10 min**). Tag **v1.5.3**. |
@@ -378,7 +378,9 @@ Refresh / re-login on **401/403 GET** lives in `_APIRequest` via `ensureValidSes
 
 **Session end policy (1.5.6 / HALLGATO v1 core):** No client **10-minute wall-clock** forced logout. Session ends on **manual logout** or when refresh is dead (`GetNewTokens` fails with 401/403 or empty tokens on proactive or reactive refresh). The client does **not** parse JWT `exp`. Access JWT lifetime ~10–15 min is **observational** (Neptun practice). `SessionGuard.markParticipantSessionStarted()` (from `SetupPage`, before `navigateToHomeRoot`) sets post-login grace only — it does **not** persist `SESSION_StartedAtMs` or arm timers.
 
-**Foreground proactive refresh (1.5.6):** While `AppLifecycleState.resumed`, `HomePage` runs a periodic timer every **3 min 30 s** (`SessionGuard.foregroundTokenMaintenanceInterval`) calling `SessionGuard.runForegroundTokenMaintenance()` → `_APIRequest.runForegroundTokenMaintenance()` → `POST …/api/Account/GetNewTokens` when `getIsModernApi()` and a refresh token exist. Timer is **cancelled** on `inactive` / `paused` / `detached` / `hidden`. Uses the same `_isRefreshingToken` lock as reactive `ensureValidSession` (skips tick if refresh in flight). **401/403** on maintenance → `forceExpiredLogout`; network / transient errors → retry on next tick (GET 401 path remains fallback). **No** `workmanager` / `background_fetch` in v1.
+**Foreground proactive refresh (1.5.6):** While `AppLifecycleState.resumed`, `HomePage` runs a periodic timer every **3 min 30 s** (`SessionGuard.foregroundTokenMaintenanceInterval`) calling `SessionGuard.runForegroundTokenMaintenance()` → `_APIRequest.runProactiveTokenMaintenance(fromBackground: false)` → `POST …/api/Account/GetNewTokens` when `getIsModernApi()` and a refresh token exist. Timer is **cancelled** on `inactive` / `paused` / `detached` / `hidden`. Uses the same `_isRefreshingToken` lock as reactive `ensureValidSession` (skips tick if refresh in flight). **401/403** on foreground maintenance → `forceExpiredLogout`; network / transient errors → retry on next tick (GET 401 path remains fallback).
+
+**Optional background keep-alive (Settings, default OFF):** Toggle **Keep session alive in background** (`SETTING_BackgroundHallgatoKeepAlive`). When on and logged in with a refresh token, `HallgatoBackgroundKeepAlive.syncScheduledTasks()` registers **Android** `workmanager` periodic work (**15 min**, network + not low battery) and starts **iOS** `background_fetch` (minimum **15 min**, system-deferred). Headless runs call `SessionGuard.runBackgroundTokenMaintenance()` → same `GetNewTokens` path with `fromBackground: true` (shared refresh mutex; **401/403** logged only — no headless logout UI). When off or logged out, tasks are cancelled. Honesty: OS may skip runs; not a SLA.
 
 **Post-login grace (1.3.3):** For ~45 s after `markParticipantSessionStarted`, `ensureValidSession` does **not** call `forceExpiredLogout` when refresh/silent re-auth fail but an access token is still present — avoids an immediate kick from a race or flaky first API after fresh 2FA.
 
@@ -386,7 +388,7 @@ Refresh / re-login on **401/403 GET** lives in `_APIRequest` via `ensureValidSes
 
 **Cache honesty (plan item 1 shipped):** Every home surface (calendar / markbook / periods / mail / payments) paints from `HasCached*` lists first when present; network refresh is silent. On dead session / offline / failed refresh, lists are **not** replaced with an empty spinner. UI may show `cache_showingFromCache` banner. Empty calendar weeks are cached as `len == 0` so freedays render without a loading spinner. Multi-term markbook walks skip when `SessionGuard.isAuthBlocked`.
 
-**Optional password retention (partial):** Settings → **Behavior & other** → **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default **off**). When on, `neptun_password` survives `sessionWipeKeepCache` on token failure / `forceExpiredLogout` (login field pre-fill; **2FA still manual**). Manual **Log out** always deletes password. Turning the toggle off clears stored password. Background keep-alive and portal/HWEB activity remain design-only in [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md).
+**Optional password retention (partial):** Settings → **Behavior & other** → **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default **off**). When on, `neptun_password` survives `sessionWipeKeepCache` on token failure / `forceExpiredLogout` (login field pre-fill; **2FA still manual**). Manual **Log out** always deletes password. Turning the toggle off clears stored password. Portal/HWEB activity remains design-only in [HALLGATO_SESSION_PLAN.md](HALLGATO_SESSION_PLAN.md).
 
 ---
 
@@ -466,7 +468,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | JWT Authenticate on neptun.elte.hu | **Dead for ELTE** | Empty HTTP 400; AD institute uses portal |
 | Silent ELTE re-auth | **Disabled** | `trySilentReauth()` returns false; password stored but 2FA is interactive |
 | Student-data writes | **Mark-read only** | Card / payments / mail compose / exam registration are not writes |
-| Session keep-alive | **Foreground only (1.5.6)** | Proactive `GetNewTokens` every 3 min 30 s while `resumed`; no Workmanager / background_fetch. Widgets cache-only, no JWT |
+| Session keep-alive | **Foreground + optional background (1.5.6+)** | Foreground 3 min 30 s while `resumed`; optional Settings background (`workmanager` / `background_fetch`, 15+ min, default off). Widgets cache-only, no JWT |
 | Old API 2FA | **None** | |
 | Local iOS notifications | **Working MVP** | No Android-style exact alarm |
 | ICS | **Dead UI** | Class exists, no setup entry |
@@ -738,7 +740,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | No Authenticator deep-link / auto-OTP | TOTP is typed manually; Microsoft Authenticator stays external |
 | Email OTP helper exists; unused by UI | `elteRequestEmailOtp` implements portal `GetEmail` / `CodePrefix`; UI is TOTP-first (no email OTP screen) |
 | SessionGuard JWT maintenance, not wall-clock | No 10 min client timer; logout on manual / dead refresh; `exp` not decoded |
-| No background session keep-alive (v1) | Foreground 3 min 30 s refresh only; widgets sync cache without JWT |
+| Background session keep-alive | Optional Settings toggle (default off); 15+ min OS-scheduled; foreground 3 min 30 s remains primary; widgets sync cache without JWT |
 | `loginServerBusy` ≠ invalid password | Neptun overload was shown as a bad password |
 | `loginStudentWebFull` ≠ invalid password | HWEB capacity full after correct 2FA was painted as bad password (`submitTwoFactor` → `false` → `_paintRed`) |
 | ELTE hub → `https://neptun.elte.hu` | Portal login + 2FA. After `/ToNeptunWeb/ToNeptunHWeb`, JWT REST is on load-balanced `hallgato1…N` — never hardcode a single node |

@@ -19,6 +19,7 @@ import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/auto_updater.dart';
+import '../Misc/hallgato_background_keepalive.dart';
 import '../haptics.dart';
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
@@ -236,6 +237,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin, Widge
       navigateToLoginRoot();
     });
     _startForegroundTokenMaintenance();
+    Future.microtask(HallgatoBackgroundKeepAlive.syncScheduledTasks);
 
     Future.microtask(() => api.CalendarRequest.refreshUserProfile());
 

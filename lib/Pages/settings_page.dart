@@ -11,6 +11,7 @@ import '../storage.dart';
 import '../Misc/emojirich_text.dart';
 import '../Pages/startup_page.dart';
 import '../Misc/auto_updater.dart';
+import '../Misc/hallgato_background_keepalive.dart';
 import '../Pages/student_card_page.dart';
 
 
@@ -463,6 +464,24 @@ class _SettingsPageState extends State<SettingsPage> {
           // --- 3. operation and others ---
           _buildSectionHeader(AppStrings.getLanguagePack().settings_section_BehaviorOther, Icons.build_circle_rounded),
 
+          SwitchListTile(
+            title: Text(
+              AppStrings.getLanguagePack().settings_backgroundHallgatoKeepAlive,
+              style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              AppStrings.getLanguagePack().settings_backgroundHallgatoKeepAlive_Subtitle,
+              style: TextStyle(color: AppColors.getTheme().textColor.withValues(alpha: 0.55), fontSize: 13),
+            ),
+            activeThumbColor: AppColors.getTheme().secondary,
+            value: DataCache.getBackgroundHallgatoKeepAlive() ?? false,
+            onChanged: (b) async {
+              AppHaptics.lightImpact();
+              await DataCache.setBackgroundHallgatoKeepAlive(b ? 1 : 0);
+              await HallgatoBackgroundKeepAlive.syncScheduledTasks();
+              setState(() {});
+            },
+          ),
           SwitchListTile(
             title: Text(AppStrings.getLanguagePack().popup_case1_settingOption1_FamilyFriendlyLoadingText, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
             activeThumbColor: AppColors.getTheme().secondary,

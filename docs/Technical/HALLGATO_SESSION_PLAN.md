@@ -97,20 +97,20 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 ## Optional background keep-alive (Settings, default OFF)
 
-**Status:** design / optional tier — **not** part of v1 core shipping criteria unless product explicitly promotes it. **Default: OFF.**
+**Status:** **shipped** (optional tier, **default OFF**) — `SETTING_BackgroundHallgatoKeepAlive`, `lib/Misc/hallgato_background_keepalive.dart`, Settings → Behavior & other. **Not** required for v1 core; foreground 3 min 30 s maintenance remains primary.
 
 ### User control
 
-- **Settings toggle** — e.g. “Keep session alive in background” (exact copy TBD in `language.dart` EN/RU/HU).
+- **Settings toggle** — **Keep session alive in background** (`settings_backgroundHallgatoKeepAlive` in `language.dart` EN/HU/RU).
 - When **off** (default): behavior matches [Target behavior — app closed / long background](#target-behavior--app-closed--long-background) — foreground maintenance only.
 - When **on**: best-effort hallgato session maintenance while the app is **not** in `AppLifecycleState.resumed`.
 
-### Platform mechanisms (implementation choice — document in TECHNICAL when shipped)
+### Platform mechanisms (shipped — see TECHNICAL § Session recovery)
 
-| Platform | Candidate | Notes |
-|----------|-----------|--------|
-| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) (or equivalent) | Periodic / expedited work subject to Doze, App Standby, OEM killers; not real-time. |
-| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) and/or **BGTaskScheduler** | Intervals are **system-controlled**; often **15+ minutes** or longer; no guarantee of 3–4 min cadence in background. |
+| Platform | Shipped | Notes |
+|----------|---------|--------|
+| **Android** | [`workmanager`](https://pub.dev/packages/workmanager) | Periodic work **15 min** minimum; `requiresBatteryNotLow` + network connected; Doze / OEM may defer. |
+| **iOS** | [`background_fetch`](https://pub.dev/packages/background_fetch) | `UIBackgroundModes` = `fetch`; system-controlled **15+ min**; no guarantee while force-quit or Background App Refresh off. |
 
 **Design constraint — battery:** use **conservative** intervals in background (e.g. align with OS minimum practical cadence — **not** the same 3–4 min as foreground). Coalesce with the same `GetNewTokens` helper as foreground maintenance; **no** aggressive polling or parallel timers. Document honestly that **OS may defer or skip** tasks; background maintenance is **best-effort**, not a SLA.
 
@@ -118,7 +118,7 @@ Assumes wall-clock removal and persisted tokens in `flutter_secure_storage` (`Da
 
 - Run **`POST …/api/Account/GetNewTokens`** (same as foreground primary mechanism) when a background task fires and auth is not blocked.
 - Respect existing refresh lock (`_isRefreshingToken`); skip tick if a foreground refresh is in flight.
-- **401/403** on background refresh: prefer **not** to show UI from a headless task — persist “refresh dead” state or defer to next foreground open → login + TOTP (exact UX TBD; must not fight `SessionGuard` rules when implemented).
+- **401/403** on background refresh: **no headless UI** — log and defer; next foreground GET / proactive refresh or login + TOTP.
 - **Network errors:** retry on next OS-scheduled run; do not spam ELTE.
 
 ### Risks and store policy
