@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../colors.dart';
+import '../haptics.dart';
 import '../language.dart';
 
 /// Parsed ELTE-style room code: `Campus-Floor-Room[-Stream][-Group]`.
@@ -73,22 +74,51 @@ class ElteRoomCode {
     }
   }
 
+  /// Preferred Maps URI for the current platform.
+  ///
+  /// iOS/macOS: native `maps:` scheme (https://maps.apple.com often opens Safari
+  /// on recent iOS instead of the Maps app). Android: Google Maps search URL.
   Uri? mapsUri() {
     final q = mapsSearchQuery();
     if (q == null) return null;
     final encoded = Uri.encodeComponent(q);
     if (Platform.isIOS || Platform.isMacOS) {
-      return Uri.parse('https://maps.apple.com/?q=$encoded');
+      return Uri.parse('maps:?q=$encoded');
     }
     return Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$encoded',
     );
   }
 
+  /// Ordered fallbacks when [mapsUri] fails to launch.
+  List<Uri> mapsUriFallbacks() {
+    final q = mapsSearchQuery();
+    if (q == null) return const [];
+    final encoded = Uri.encodeComponent(q);
+    final out = <Uri>[];
+    final primary = mapsUri();
+    if (primary != null) out.add(primary);
+    if (Platform.isIOS || Platform.isMacOS) {
+      final appleHttps = Uri.parse('https://maps.apple.com/?q=$encoded');
+      if (!out.contains(appleHttps)) out.add(appleHttps);
+    }
+    final google = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$encoded',
+    );
+    if (!out.contains(google)) out.add(google);
+    return out;
+  }
+
   Future<bool> openMaps() async {
-    final uri = mapsUri();
-    if (uri == null) return false;
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
+    for (final uri in mapsUriFallbacks()) {
+      try {
+        final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        if (ok) return true;
+      } catch (_) {
+        // try next candidate
+      }
+    }
+    return false;
   }
 
   String buildingName(LanguagePack lang) {
@@ -121,9 +151,9 @@ class ElteRoomCode {
   }
 }
 
-/// Tap toggles coded room ↔ localized decode. Known LD/LE/LK buildings expose
-/// an “Open map” deep-link after decode. Non-coded / unknown-prefix text stays
-/// text-only (no map pin).
+/// Tap toggles coded room ↔ localized decode. Known LD/LE/LK buildings always
+/// expose an “Open map” control (external Apple/Google Maps). Non-coded /
+/// unknown-prefix text stays text-only (no map pin).
 class DecodableRoomText extends StatefulWidget {
   final String room;
   final TextStyle? style;
@@ -173,13 +203,17 @@ class _DecodableRoomTextState extends State<DecodableRoomText> {
 
     final lang = AppStrings.getLanguagePack();
     final display = _expanded ? parsed.formatSummary(lang) : widget.room.trim();
-    final showMap = _expanded && parsed.hasMapsDeepLink;
+    // Always show map for LD/LE/LK — do not hide behind expand (discoverability,
+    // especially on iOS where nested card taps are easy to miss).
+    final showMap = parsed.hasMapsDeepLink;
     final align = widget.textAlign ?? TextAlign.start;
     final cross = align == TextAlign.center
         ? CrossAxisAlignment.center
         : (align == TextAlign.end || align == TextAlign.right)
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start;
+    final accent = AppColors.getTheme().onSecondaryContainer;
+    final fontSize = (widget.style?.fontSize) ?? 14;
 
     return Column(
       crossAxisAlignment: cross,
@@ -188,6 +222,7 @@ class _DecodableRoomTextState extends State<DecodableRoomText> {
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
+            AppHaptics.lightImpact();
             setState(() => _expanded = !_expanded);
           },
           child: Text(
@@ -200,37 +235,37 @@ class _DecodableRoomTextState extends State<DecodableRoomText> {
           ),
         ),
         if (showMap)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                parsed.openMaps();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.map_outlined,
-                    size: ((widget.style?.fontSize) ?? 14) + 2,
-                    color: AppColors.getTheme().onSecondaryContainer,
-                  ),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      lang.roomCode_OpenMap,
-                      style: (widget.style ?? const TextStyle()).copyWith(
-                        color: AppColors.getTheme().onSecondaryContainer,
-                        decoration: TextDecoration.underline,
-                        decorationColor:
-                            AppColors.getTheme().onSecondaryContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: widget.textAlign,
+          // TextButton wins the gesture arena over a parent card GestureDetector
+          // (list row tap → course popup) so Open map works on iOS and Android.
+          TextButton(
+            onPressed: () {
+              AppHaptics.lightImpact();
+              parsed.openMaps();
+            },
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              foregroundColor: accent,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.map_outlined, size: fontSize + 2, color: accent),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    lang.roomCode_OpenMap,
+                    style: (widget.style ?? const TextStyle()).copyWith(
+                      color: accent,
+                      decoration: TextDecoration.underline,
+                      decorationColor: accent,
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: widget.textAlign,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
       ],

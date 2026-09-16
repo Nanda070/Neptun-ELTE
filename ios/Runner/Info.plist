@@ -36,6 +36,9 @@
 			<string>tg</string>
 			<string>telegram</string>
 			<string>discord</string>
+			<!-- External Maps deep-link from LD/LE/LK room codes (url_launcher). -->
+			<string>maps</string>
+			<string>comgooglemaps</string>
 		</array>
 		<key>UIApplicationSceneManifest</key>
 		<dict>

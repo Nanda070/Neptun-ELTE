@@ -56,7 +56,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.5.11+1** — для пользователя / Settings / docs = **1.5.11** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.5.12+1** — для пользователя / Settings / docs = **1.5.12** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -68,7 +68,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.11`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.12`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.11** | **Текущая.** Патч — **фаза A (0–6)** indoor-карты кампуса: docs/data готовы (MVP-пакет + QA **41 pass / 0 fail / 2 waive**); синхронизация честности (в приложении ещё нет indoor A→B; Flutter фаза B отложена; разрешение JPG basemap **pending** / не бандлить artwork в APK). Бинарь той же продуктовой линии, что **1.5.10** (надёжность сессии) + тег для device/GitHub. Тег **v1.5.11**. |
+| **1.5.12** | **Текущая.** Патч — iOS внешние Maps для LD/LE/LK: native `maps:` URI (+ https fallback), `maps`/`comgooglemaps` в `LSApplicationQueriesSchemes`, **Открыть карту** всегда видно (не только после decode), `TextButton` чтобы тап строки списка не перехватывал. Тег **v1.5.12**. |
+| **1.5.11** | Патч — **фаза A (0–6)** indoor-карты кампуса: docs/data готовы (MVP-пакет + QA **41 pass / 0 fail / 2 waive**); синхронизация честности (в приложении ещё нет indoor A→B; Flutter фаза B отложена; разрешение JPG basemap **pending** / не бандлить artwork в APK). Бинарь той же продуктовой линии, что **1.5.10** (надёжность сессии) + тег для device/GitHub. Тег **v1.5.11**. |
 | **1.5.10** | Патч — надёжность session maintenance: убран WorkManager / BGFetch **`requiresDeviceIdle`** (в 1.5.9 idle почти блокировал все фоновые запуски); сеть + battery-not-low + период **45 мин** + Android initial delay **15 мин**; на `resumed` **сразу** `GetNewTokens` и refresh календаря/почты; remember-password сохраняет пароль и при **ручном** Log out. Тег **v1.5.10**. |
 | **1.5.9** | Патч — щадящий для батареи опциональный **фоновый hallgato keep-alive**: Android WorkManager **45 мин** (было 15) + сеть + `requiresBatteryNotLow` + `requiresDeviceIdle` (без обязательной зарядки); iOS Background Fetch минимум **45 мин**; отмена OS-задач в `resumed`; coalesce, если последний успешный `GetNewTokens` был в течение **25 мин**. Тег **v1.5.9**. |
 | **1.5.8** | Патч на линии **5** — навигатор **учебной недели** в календаре: одна карточка (`WeekoffseterElementWidget`) + фикс EN диапазона в одном месяце (`${to.day}`, не `$to.day`). Тег **v1.5.8**. |
@@ -93,7 +94,7 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.4.0** | Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
-| **1.5.11**, … | Дальнейшие патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
+| **1.5.12**, … | Дальнейшие патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
@@ -214,7 +215,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → foreground JWT maintenance + sync опционального фонового keep-alive |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.11` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.12` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -420,7 +421,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 
 ### 10.1 Расписание
 
-Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI (п. **3**): ZH/дедлайны = ближайшие задания + экзамены от сейчас (сортировка по `startEpoch`); баннеры периодов (`typeId == 6`) **только** в полосе периодов. Бывшая полоса «Следующие 48 часов» (пары+экзамены) **удалена**. Pull-to-refresh не обнуляет неделю из кэша. Переключатель обучения в drawer, если известно несколько training. **Коды аудиторий** вида `Кампус-Этаж-Аудитория[-Поток][-Группа]` (напр. `LD-0-805` или `LD-0-805-01-11`) нажимаются в списке расписания, диалоге занятия и popup экзамена/legacy: тап переключает короткий код ↔ локализованную расшифровку. Префиксы: **LD** Южный / Déli, **LE**/LÉ Северный / Északi, **LK** хим. блок (Северный); неизвестный префикс как есть. После расшифровки для **LD/LE/LK** — **Открыть карту** (`roomCode_OpenMap`) → поиск здания в Apple Maps / Google Maps (`ELTE Déli Tömb` / `Északi Tömb` / `Kémiai tömb`, 1117 Budapest) через `url_launcher`; неизвестный префикс — только текст (без чужого пина). Координаты не выдумываются. Поток/Группа только если есть в коде (`lib/Misc/elte_room_code.dart`).
+Неделя, сдвиг `getUserWeekOffset()`, первая неделя семестра `getFirstWeekEpoch()` из `getFirstStudyweek()`. Якорь — понедельник недели сезона семестра (осень: неделя с **1 сент.**; весна: неделя с **1 февр.**), если учебный/`szorgalmi` период начинается в те же ~2 недели — **не** окна записи на предметы / bejelentkezés (из‑за них раньше получались ~36, затем ~16). Окт. неделя = целые недели с того понедельника до *текущего* понедельника + `currentWeekOffset` (1 = текущая страница календаря). Пример ELTE осень 2026: **1–7 сент. → неделя 1**, **7–14 сент. → неделя 2**. При онлайн-открытии home epoch всегда пересчитывается. Modern: `GetCalendarEvents` с **пн–вс** `endDate` (не следующий понедельник — иначе подтягивались занятия следующего пн, ложный «перерыв» ~163 ч и дубли). События вне окна отбрасываются. Чипы перерыва только в тот же день (5 мин–12 ч), строки локализованы. Детали курса + фильтры календаря в настройках (`isClassesVisible` / exams / periods). Полосы UI (п. **3**): ZH/дедлайны = ближайшие задания + экзамены от сейчас (сортировка по `startEpoch`); баннеры периодов (`typeId == 6`) **только** в полосе периодов. Бывшая полоса «Следующие 48 часов» (пары+экзамены) **удалена**. Pull-to-refresh не обнуляет неделю из кэша. Переключатель обучения в drawer, если известно несколько training. **Коды аудиторий** вида `Кампус-Этаж-Аудитория[-Поток][-Группа]` (напр. `LD-0-805` или `LD-0-805-01-11`) нажимаются в списке расписания, диалоге занятия и popup экзамена/legacy: тап переключает короткий код ↔ локализованную расшифровку. Префиксы: **LD** Южный / Déli, **LE**/LÉ Северный / Északi, **LK** хим. блок (Северный); неизвестный префикс как есть. Для **LD/LE/LK** всегда видно **Открыть карту** (`roomCode_OpenMap`) под кодом (не только после расшифровки) → внешний поиск здания в Apple/Google Maps (`ELTE Déli Tömb` / `Északi Tömb` / `Kémiai tömb`, 1117 Budapest) через `url_launcher`. **iOS (1.5.12+):** основной URI — native `maps:?q=…` (https://maps.apple.com на новых iOS часто открывает Safari); fallback `https://maps.apple.com`, затем Google Maps https; в Info.plist — `maps` + `comgooglemaps`. Контрол — `TextButton`, чтобы тап строки списка не перехватывал. Неизвестный префикс — только текст. Координаты не выдумываются; это не in-app indoor A→B. Поток/Группа только если есть в коде (`lib/Misc/elte_room_code.dart`).
 
 ### 10.2 Зачётка
 
@@ -570,7 +571,7 @@ Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.7**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.12**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
 
 **Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
 
@@ -590,7 +591,7 @@ Android `applicationId` **другой**: `com.nanda070.neptun_mobile.app`. Та
 ### Info.plist (важное)
 
 - `NSUserNotificationsUsageDescription`
-- `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`
+- `LSApplicationQueriesSchemes`: `https`, `http`, `mailto`, `tg`, `telegram`, `discord`, `maps`, `comgooglemaps` (внешние Maps LD/LE/LK)
 - `UIApplicationShortcutItems`: Calendar / Mail / Payments (п. **13**)
 
 ### Platform-only заметки

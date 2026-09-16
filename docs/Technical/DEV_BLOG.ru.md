@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — релиз 1.5.12 (внешние Maps на iOS)
+
+**[2026-09-16, ~19:00]**
+
+- **Релиз 1.5.12** (`pubspec` **1.5.12+1**): фикс внешних Maps для LD/LE/LK на **iOS** — основной `maps:?q=…` (https://maps.apple.com часто открывал Safari), fallback https Apple + Google, Info.plist `maps` + `comgooglemaps`, **Открыть карту** всегда под кодом аудитории (не только после decode), `TextButton` чтобы тап строки календаря не перехватывал. По-прежнему **не** in-app indoor A→B (фаза B отложена). GitHub Release **v1.5.12** + APK + установка на iPhone. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — релиз 1.5.11 (фаза A карты кампуса + ship)
 
 **[2026-09-16]**
@@ -572,7 +580,7 @@ Product + technical docs приведены к фактам «фазы 0–6 г�
 
 **[ongoing]**
 
-### Сделано / работает на main (~1.5.11)
+### Сделано / работает на main (~1.5.12)
 
 - Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
 - Опциональный **фоновый keep-alive** в Settings (default выкл; **45 мин**; idle снят в **1.5.10**) + **Запомнить пароль** (default выкл; сохраняется при ручном logout при вкл.).

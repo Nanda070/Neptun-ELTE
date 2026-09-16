@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.5.12 (iOS external Maps)
+
+**[2026-09-16, ~19:00]**
+
+- **Release 1.5.12** (`pubspec` **1.5.12+1**): fix external Maps for LD/LE/LK on **iOS** — primary `maps:?q=…` (https://maps.apple.com often opened Safari), https Apple + Google fallbacks, Info.plist `maps` + `comgooglemaps`, **Open map** always visible under coded rooms (not decode-gated), `TextButton` so calendar row taps do not steal the control. Still **not** in-app indoor A→B (Phase B deferred). GitHub Release **v1.5.12** + APK + install on iPhone. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.5.11 (campus map Phase A docs + ship)
 
 **[2026-09-16]**
@@ -572,7 +580,7 @@ Only when product chooses: load package offline, login-hub Map without hallgato 
 
 **[ongoing]**
 
-### Done / working on main (~1.5.11)
+### Done / working on main (~1.5.12)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
 - Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
