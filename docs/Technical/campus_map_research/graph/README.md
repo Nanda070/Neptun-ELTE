@@ -96,12 +96,13 @@ See [`samples/le_routes.md`](samples/le_routes.md). Expect:
 | 6 | `0.81` → `3.67` | Multi-floor, prefers lift |
 | 7 | `039` → `115` | LK / hajóorr wing path |
 
-## Remaining gaps (before Phase 5–6)
+## Remaining gaps (post Phase 6)
 
-- Per-door pixel refinement on each floor JPG.
+- Per-door pixel refinement on each floor JPG (optional polish).
 - Confirm lift/stair landings per floor against artwork (MVP assumes all shafts on all floors).
 - Join tables / aliases → **Phase 4 done** ([`../joins/`](../joins/)).
-- Package + checksums → **Phase 5**.
-- Basemap redistribution permission still **pending**.
+- Package + checksums → **Phase 5 done**; QA → **Phase 6 done** ([`../../campus_map_package/QA_REPORT.md`](../../campus_map_package/QA_REPORT.md)).
+- Basemap redistribution permission still **pending** (**block ship**).
+- Flutter Map UI → **Phase B** only.
 
 *Owner / developer: **Nanda**.*

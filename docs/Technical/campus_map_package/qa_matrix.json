@@ -1,0 +1,732 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "qaMatrix",
+  "generatedAt": "2026-09-16",
+  "phase": 6,
+  "owner": "Nanda",
+  "summary": {
+    "pass": 41,
+    "fail": 0,
+    "waive": 2
+  },
+  "matrix": {
+    "same-floor": {
+      "label": "Same-floor A→B (3 pairs)",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "cross-stair": {
+      "label": "Cross-floor via stair",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "cross-lift": {
+      "label": "Cross-floor via lift",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "entrance": {
+      "label": "Entrance → classroom",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "named-hall": {
+      "label": "Named-hall search → pin",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "neptun-join": {
+      "label": "Neptun code join → pin",
+      "ld": "pass",
+      "le": "pass"
+    },
+    "restricted": {
+      "label": "Restricted / closed note surfaced (if modeled)",
+      "ld": "waive",
+      "le": "waive"
+    },
+    "topology": {
+      "label": "No obvious wall / outdoor shortcut",
+      "ld": "pass",
+      "le": "pass"
+    }
+  },
+  "checks": [
+    {
+      "id": "checksums",
+      "building": "both",
+      "category": "integrity",
+      "status": "pass",
+      "detail": "30 files match checksums.sha256",
+      "evidence": {
+        "fileCount": 30
+      }
+    },
+    {
+      "id": "ld-same-floor-1",
+      "building": "ld",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "0-821→0-805 neighbors: hops=4 cost=259.8",
+      "evidence": {
+        "start": "ld-n-ld-f0-room-0-821",
+        "goal": "ld-n-ld-f0-room-0-805",
+        "hops": 4,
+        "cost": 259.8,
+        "verticalKinds": [],
+        "pathPreview": [
+          "ld-n-ld-f0-room-0-821",
+          "ld-n-ld-f0-door-0-821",
+          "ld-n-ld-f0-c8-hub",
+          "ld-n-ld-f0-door-0-805",
+          "ld-n-ld-f0-room-0-805"
+        ]
+      }
+    },
+    {
+      "id": "ld-same-floor-2",
+      "building": "ld",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "0-220→0-412 cross-corridor: hops=7 cost=588.3",
+      "evidence": {
+        "start": "ld-n-ld-f0-room-0-220",
+        "goal": "ld-n-ld-f0-room-0-412",
+        "hops": 7,
+        "cost": 588.3,
+        "verticalKinds": [],
+        "pathPreview": [
+          "ld-n-ld-f0-room-0-220",
+          "ld-n-ld-f0-door-0-220",
+          "ld-n-ld-f0-c2-hub",
+          "ld-n-ld-f0-c3-hub",
+          "ld-n-ld-f0-stair-ne",
+          "ld-n-ld-f0-c4-hub",
+          "ld-n-ld-f0-door-0-412",
+          "ld-n-ld-f0-room-0-412"
+        ]
+      }
+    },
+    {
+      "id": "ld-same-floor-3",
+      "building": "ld",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "Bolyai→Rényi same floor: hops=8 cost=790.1",
+      "evidence": {
+        "start": "ld-n-ld-f0-room-0-821",
+        "goal": "ld-n-ld-f0-room-0-412",
+        "hops": 8,
+        "cost": 790.1,
+        "verticalKinds": [],
+        "pathPreview": [
+          "ld-n-ld-f0-room-0-821",
+          "ld-n-ld-f0-door-0-821",
+          "ld-n-ld-f0-c8-hub",
+          "ld-n-ld-f0-c1-w",
+          "ld-n-ld-f0-c1-hub",
+          "ld-n-ld-f0-c1-e",
+          "ld-n-ld-f0-c4-hub",
+          "ld-n-ld-f0-door-0-412",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "ld-cross-stair",
+      "building": "ld",
+      "category": "cross-stair",
+      "status": "pass",
+      "detail": "0-206→2-107 lifts forbidden: hops=10 cost=810.9",
+      "evidence": {
+        "start": "ld-n-ld-f0-room-0-206",
+        "goal": "ld-n-ld-f2-room-2-107",
+        "hops": 10,
+        "cost": 810.9,
+        "verticalKinds": [
+          "verticalStair",
+          "verticalStair"
+        ],
+        "pathPreview": [
+          "ld-n-ld-f0-room-0-206",
+          "ld-n-ld-f0-door-0-206",
+          "ld-n-ld-f0-c2-hub",
+          "ld-n-ld-f0-stair-nw",
+          "ld-n-ld-f1-stair-nw",
+          "ld-n-ld-f2-stair-nw",
+          "ld-n-ld-f2-c2-hub",
+          "ld-n-ld-f2-c1-w",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "ld-cross-lift",
+      "building": "ld",
+      "category": "cross-lift",
+      "status": "pass",
+      "detail": "0-206→2-107 stairs forbidden: hops=10 cost=767.5",
+      "evidence": {
+        "start": "ld-n-ld-f0-room-0-206",
+        "goal": "ld-n-ld-f2-room-2-107",
+        "hops": 10,
+        "cost": 767.5,
+        "verticalKinds": [
+          "verticalLift",
+          "verticalLift"
+        ],
+        "pathPreview": [
+          "ld-n-ld-f0-room-0-206",
+          "ld-n-ld-f0-door-0-206",
+          "ld-n-ld-f0-c2-hub",
+          "ld-n-ld-f0-c1-w",
+          "ld-n-ld-f0-lift-B",
+          "ld-n-ld-f1-lift-B",
+          "ld-n-ld-f2-lift-B",
+          "ld-n-ld-f2-c1-w",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "ld-entrance",
+      "building": "ld",
+      "category": "entrance",
+      "status": "pass",
+      "detail": "west entrance→0-412: hops=7 cost=794.1",
+      "evidence": {
+        "start": "ld-n-ld-f0-entrance-west",
+        "goal": "ld-n-ld-f0-room-0-412",
+        "hops": 7,
+        "cost": 794.1,
+        "verticalKinds": [],
+        "pathPreview": [
+          "ld-n-ld-f0-entrance-west",
+          "ld-n-ld-f0-c8-hub",
+          "ld-n-ld-f0-c1-w",
+          "ld-n-ld-f0-c1-hub",
+          "ld-n-ld-f0-c1-e",
+          "ld-n-ld-f0-c4-hub",
+          "ld-n-ld-f0-door-0-412",
+          "ld-n-ld-f0-room-0-412"
+        ]
+      }
+    },
+    {
+      "id": "ld-named-hall-1",
+      "building": "ld",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Bolyai → ld-n-ld-f0-room-0-821",
+      "evidence": {
+        "alias": "Bolyai",
+        "nodeId": "ld-n-ld-f0-room-0-821",
+        "roomId": "ld-room-0-821"
+      }
+    },
+    {
+      "id": "ld-named-hall-2",
+      "building": "ld",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Fejér Lipót → ld-n-ld-f0-room-0-805",
+      "evidence": {
+        "alias": "Fejér Lipót",
+        "nodeId": "ld-n-ld-f0-room-0-805",
+        "roomId": "ld-room-0-805"
+      }
+    },
+    {
+      "id": "ld-named-hall-3",
+      "building": "ld",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Rényi → ld-n-ld-f0-room-0-412",
+      "evidence": {
+        "alias": "Rényi",
+        "nodeId": "ld-n-ld-f0-room-0-412",
+        "roomId": "ld-room-0-412"
+      }
+    },
+    {
+      "id": "ld-neptun-join-1",
+      "building": "ld",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LD 0.821 → ld-n-ld-f0-room-0-821",
+      "evidence": {
+        "query": "LD 0.821",
+        "nodeId": "ld-n-ld-f0-room-0-821",
+        "roomId": "ld-room-0-821",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "ld-neptun-join-2",
+      "building": "ld",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LD-0-805 → ld-n-ld-f0-room-0-805",
+      "evidence": {
+        "query": "LD-0-805",
+        "nodeId": "ld-n-ld-f0-room-0-805",
+        "roomId": "ld-room-0-805",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "ld-neptun-join-3",
+      "building": "ld",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LD 00.112 → ld-n-ld-f-1-room-00-112",
+      "evidence": {
+        "query": "LD 00.112",
+        "nodeId": "ld-n-ld-f-1-room-00-112",
+        "roomId": "ld-room-00-112",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "ld-restricted",
+      "building": "ld",
+      "category": "restricted",
+      "status": "waive",
+      "detail": "MVP rooms omit restricted/closed fields (schema optional; public table notes not copied onto graph rooms)",
+      "evidence": {
+        "roomCount": 134,
+        "schemaField": "restricted (optional)"
+      }
+    },
+    {
+      "id": "ld-no-shortcut",
+      "building": "ld",
+      "category": "topology",
+      "status": "pass",
+      "detail": "no wall/outdoor shortcut heuristics tripped (max same-floor weight=290.0)",
+      "evidence": {
+        "maxSameFloorWeight": 290.0
+      }
+    },
+    {
+      "id": "le-same-floor-1",
+      "building": "le",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "0.81→0.83 neighbors: hops=4 cost=276.3",
+      "evidence": {
+        "start": "le-n-le-f0-room-0_81",
+        "goal": "le-n-le-f0-room-0_83",
+        "hops": 4,
+        "cost": 276.3,
+        "verticalKinds": [],
+        "pathPreview": [
+          "le-n-le-f0-room-0_81",
+          "le-n-le-f0-door-0_81",
+          "le-n-le-f0-loop-e",
+          "le-n-le-f0-door-0_83",
+          "le-n-le-f0-room-0_83"
+        ]
+      }
+    },
+    {
+      "id": "le-same-floor-2",
+      "building": "le",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "0.100A→0.89 west→east: hops=8 cost=918.6",
+      "evidence": {
+        "start": "le-n-le-f0-room-0_100A",
+        "goal": "le-n-le-f0-room-0_89",
+        "hops": 8,
+        "cost": 918.6,
+        "verticalKinds": [],
+        "pathPreview": [
+          "le-n-le-f0-room-0_100A",
+          "le-n-le-f0-door-0_100A",
+          "le-n-le-f0-loop-w",
+          "le-n-le-f0-cross-w",
+          "le-n-le-f0-cross-mid",
+          "le-n-le-f0-cross-e",
+          "le-n-le-f0-loop-e",
+          "le-n-le-f0-door-0_89",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "le-same-floor-3",
+      "building": "le",
+      "category": "same-floor",
+      "status": "pass",
+      "detail": "039→Ortvay same floor: hops=5 cost=307.3",
+      "evidence": {
+        "start": "le-n-le-f0-room-039",
+        "goal": "le-n-le-f0-room-0_81",
+        "hops": 5,
+        "cost": 307.3,
+        "verticalKinds": [],
+        "pathPreview": [
+          "le-n-le-f0-room-039",
+          "le-n-le-f0-door-039",
+          "le-n-le-f0-loop-e-s",
+          "le-n-le-f0-loop-e",
+          "le-n-le-f0-door-0_81",
+          "le-n-le-f0-room-0_81"
+        ]
+      }
+    },
+    {
+      "id": "le-cross-stair",
+      "building": "le",
+      "category": "cross-stair",
+      "status": "pass",
+      "detail": "0.100A→2.104 lifts forbidden: hops=10 cost=966.1",
+      "evidence": {
+        "start": "le-n-le-f0-room-0_100A",
+        "goal": "le-n-le-f2-room-2_104",
+        "hops": 10,
+        "cost": 966.1,
+        "verticalKinds": [
+          "verticalStair",
+          "verticalStair"
+        ],
+        "pathPreview": [
+          "le-n-le-f0-room-0_100A",
+          "le-n-le-f0-door-0_100A",
+          "le-n-le-f0-loop-w",
+          "le-n-le-f0-loop-w-s",
+          "le-n-le-f0-stair-sw",
+          "le-n-le-f1-stair-sw",
+          "le-n-le-f2-stair-sw",
+          "le-n-le-f2-loop-w-s",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "le-cross-lift",
+      "building": "le",
+      "category": "cross-lift",
+      "status": "pass",
+      "detail": "0.100A→2.104 stairs forbidden: hops=10 cost=979.5",
+      "evidence": {
+        "start": "le-n-le-f0-room-0_100A",
+        "goal": "le-n-le-f2-room-2_104",
+        "hops": 10,
+        "cost": 979.5,
+        "verticalKinds": [
+          "verticalLift",
+          "verticalLift"
+        ],
+        "pathPreview": [
+          "le-n-le-f0-room-0_100A",
+          "le-n-le-f0-door-0_100A",
+          "le-n-le-f0-loop-w",
+          "le-n-le-f0-cross-w",
+          "le-n-le-f0-lift-A",
+          "le-n-le-f1-lift-A",
+          "le-n-le-f2-lift-A",
+          "le-n-le-f2-cross-w",
+          "…"
+        ]
+      }
+    },
+    {
+      "id": "le-entrance",
+      "building": "le",
+      "category": "entrance",
+      "status": "pass",
+      "detail": "Dunapart→Ortvay: hops=7 cost=739.5",
+      "evidence": {
+        "start": "le-n-le-f0-entrance-dunapart",
+        "goal": "le-n-le-f0-room-0_81",
+        "hops": 7,
+        "cost": 739.5,
+        "verticalKinds": [],
+        "pathPreview": [
+          "le-n-le-f0-entrance-dunapart",
+          "le-n-le-f0-loop-w",
+          "le-n-le-f0-cross-w",
+          "le-n-le-f0-cross-mid",
+          "le-n-le-f0-cross-e",
+          "le-n-le-f0-loop-e",
+          "le-n-le-f0-door-0_81",
+          "le-n-le-f0-room-0_81"
+        ]
+      }
+    },
+    {
+      "id": "le-named-hall-1",
+      "building": "le",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Ortvay → le-n-le-f0-room-0_81",
+      "evidence": {
+        "alias": "Ortvay",
+        "nodeId": "le-n-le-f0-room-0_81",
+        "roomId": "le-room-0_81"
+      }
+    },
+    {
+      "id": "le-named-hall-2",
+      "building": "le",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Eötvös → le-n-le-f0-room-0_83",
+      "evidence": {
+        "alias": "Eötvös",
+        "nodeId": "le-n-le-f0-room-0_83",
+        "roomId": "le-room-0_83"
+      }
+    },
+    {
+      "id": "le-named-hall-3",
+      "building": "le",
+      "category": "named-hall",
+      "status": "pass",
+      "detail": "Rybár István → le-n-le-f-1-room-_1_64",
+      "evidence": {
+        "alias": "Rybár István",
+        "nodeId": "le-n-le-f-1-room-_1_64",
+        "roomId": "le-room-_1_64"
+      }
+    },
+    {
+      "id": "le-neptun-join-1",
+      "building": "le",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LE 0.81 → le-n-le-f0-room-0_81",
+      "evidence": {
+        "query": "LE 0.81",
+        "nodeId": "le-n-le-f0-room-0_81",
+        "roomId": "le-room-0_81",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "le-neptun-join-2",
+      "building": "le",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LE-0-83 → le-n-le-f0-room-0_83",
+      "evidence": {
+        "query": "LE-0-83",
+        "nodeId": "le-n-le-f0-room-0_83",
+        "roomId": "le-room-0_83",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "le-neptun-join-3",
+      "building": "le",
+      "category": "neptun-join",
+      "status": "pass",
+      "detail": "LE -1.53 → le-n-le-f-1-room-_1_53",
+      "evidence": {
+        "query": "LE -1.53",
+        "nodeId": "le-n-le-f-1-room-_1_53",
+        "roomId": "le-room-_1_53",
+        "confidence": "exact"
+      }
+    },
+    {
+      "id": "le-restricted",
+      "building": "le",
+      "category": "restricted",
+      "status": "waive",
+      "detail": "MVP rooms omit restricted/closed fields (schema optional; public table notes not copied onto graph rooms)",
+      "evidence": {
+        "roomCount": 92,
+        "schemaField": "restricted (optional)"
+      }
+    },
+    {
+      "id": "le-no-shortcut",
+      "building": "le",
+      "category": "topology",
+      "status": "pass",
+      "detail": "no wall/outdoor shortcut heuristics tripped (max same-floor weight=230.5)",
+      "evidence": {
+        "maxSameFloorWeight": 230.5
+      }
+    },
+    {
+      "id": "fixture-1",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'LD 0.821' → ld-n-ld-f0-room-0-821",
+      "evidence": {
+        "query": "LD 0.821",
+        "nodeId": "ld-n-ld-f0-room-0-821",
+        "roomId": "ld-room-0-821"
+      }
+    },
+    {
+      "id": "fixture-2",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'LD-0-805' → ld-n-ld-f0-room-0-805",
+      "evidence": {
+        "query": "LD-0-805",
+        "nodeId": "ld-n-ld-f0-room-0-805",
+        "roomId": "ld-room-0-805"
+      }
+    },
+    {
+      "id": "fixture-3",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'0-412' → ld-n-ld-f0-room-0-412",
+      "evidence": {
+        "query": "0-412",
+        "nodeId": "ld-n-ld-f0-room-0-412",
+        "roomId": "ld-room-0-412"
+      }
+    },
+    {
+      "id": "fixture-4",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Bolyai' → ld-n-ld-f0-room-0-821",
+      "evidence": {
+        "query": "Bolyai",
+        "nodeId": "ld-n-ld-f0-room-0-821",
+        "roomId": "ld-room-0-821"
+      }
+    },
+    {
+      "id": "fixture-5",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Fejér Lipót' → ld-n-ld-f0-room-0-805",
+      "evidence": {
+        "query": "Fejér Lipót",
+        "nodeId": "ld-n-ld-f0-room-0-805",
+        "roomId": "ld-room-0-805"
+      }
+    },
+    {
+      "id": "fixture-6",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Rényi' → ld-n-ld-f0-room-0-412",
+      "evidence": {
+        "query": "Rényi",
+        "nodeId": "ld-n-ld-f0-room-0-412",
+        "roomId": "ld-room-0-412"
+      }
+    },
+    {
+      "id": "fixture-7",
+      "building": "le",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'LE 0.81' → le-n-le-f0-room-0_81",
+      "evidence": {
+        "query": "LE 0.81",
+        "nodeId": "le-n-le-f0-room-0_81",
+        "roomId": "le-room-0_81"
+      }
+    },
+    {
+      "id": "fixture-8",
+      "building": "le",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'LE-0-83' → le-n-le-f0-room-0_83",
+      "evidence": {
+        "query": "LE-0-83",
+        "nodeId": "le-n-le-f0-room-0_83",
+        "roomId": "le-room-0_83"
+      }
+    },
+    {
+      "id": "fixture-9",
+      "building": "le",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Ortvay' → le-n-le-f0-room-0_81",
+      "evidence": {
+        "query": "Ortvay",
+        "nodeId": "le-n-le-f0-room-0_81",
+        "roomId": "le-room-0_81"
+      }
+    },
+    {
+      "id": "fixture-10",
+      "building": "le",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Eötvös' → le-n-le-f0-room-0_83",
+      "evidence": {
+        "query": "Eötvös",
+        "nodeId": "le-n-le-f0-room-0_83",
+        "roomId": "le-room-0_83"
+      }
+    },
+    {
+      "id": "fixture-11",
+      "building": "le",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "'Rybár István' → le-n-le-f-1-room-_1_64",
+      "evidence": {
+        "query": "Rybár István",
+        "nodeId": "le-n-le-f-1-room-_1_64",
+        "roomId": "le-room-_1_64"
+      }
+    },
+    {
+      "id": "fixture-12",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "negative OK: 'LD 5.210' has no graph pin (educational-only (no graph pin))",
+      "evidence": {
+        "query": "LD 5.210",
+        "why": "educational-only (no graph pin)"
+      }
+    },
+    {
+      "id": "fixture-13",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "negative OK: 'LD 5.615' has no graph pin (educational-only (no graph pin))",
+      "evidence": {
+        "query": "LD 5.615",
+        "why": "educational-only (no graph pin)"
+      }
+    },
+    {
+      "id": "fixture-14",
+      "building": "ld",
+      "category": "search-fixture",
+      "status": "pass",
+      "detail": "negative OK: 'LD 5.713' has no graph pin (educational-only (no graph pin))",
+      "evidence": {
+        "query": "LD 5.713",
+        "why": "educational-only (no graph pin)"
+      }
+    }
+  ],
+  "exitCriteria": {
+    "matrixCompleteLdLe": true,
+    "failuresFiledAsGraphBugs": true,
+    "ownerSignOffMapFinished": true,
+    "waivesDocumented": true
+  },
+  "honesty": {
+    "basemapPermission": "pending",
+    "flutterUi": "not started (Phase B)",
+    "note": "Phase A map finished for MVP QA; do not App Store/APK-bundle until ATTRIBUTION checklist cleared."
+  }
+}

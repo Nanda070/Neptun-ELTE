@@ -8,12 +8,12 @@ Research material for future **2D A→B** indoor routing (LD/LE) in Neptun ELTE.
 
 | Doc | Language |
 |------|----------|
-| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B (**0–5 done**; Phase 6 QA next) |
+| [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) | EN — **map-first** phases 0–6 + deferred app Phase B (**0–6 done**; Phase A map finished) |
 | [CAMPUS_MAP_PLAN.ru.md](../CAMPUS_MAP_PLAN.ru.md) | RU — same facts |
 | [schema/SCHEMA.md](./schema/SCHEMA.md) | EN — Phase 1 Building/Floor/Room/Node/Edge/Join + coords |
 | [graph/README.md](./graph/README.md) | Phase 2–3 LD+LE MVP graphs |
 | [joins/README.md](./joins/README.md) | Phase 4 Neptun↔BIS joins + aliases + fixtures |
-| [../campus_map_package/](../campus_map_package/) | Phase 5 ready-to-bundle package (graphs + joins + basemaps + checksums) |
+| [../campus_map_package/](../campus_map_package/) | Phase 5–6 package + [QA_REPORT](../campus_map_package/QA_REPORT.md) |
 | [BIS_IMPORT_REPORT.md](./BIS_IMPORT_REPORT.md) | EN — auth, APIs, rooms/floors import, A→B status, inventory, recommended path |
 | [BIS_IMPORT_REPORT.ru.md](./BIS_IMPORT_REPORT.ru.md) | RU — same facts |
 
@@ -50,7 +50,7 @@ campus_map_research/
     html/ · js/ · assets/
 ```
 
-**Phase status (2026-09-16):** Phase **0–5 done** (inventory, schema, LD+LE MVP graphs, joins/aliases, package). Next: Phase **6** QA ([CAMPUS_MAP_PLAN](../CAMPUS_MAP_PLAN.md)). Deliverable: [`../campus_map_package/`](../campus_map_package/).
+**Phase status (2026-09-16):** Phase **0–6 done** (inventory, schema, LD+LE MVP graphs, joins/aliases, package, QA). Phase A **map finished** for MVP. Phase **B** (Flutter) deferred. Deliverable: [`../campus_map_package/`](../campus_map_package/) · [QA_REPORT](../campus_map_package/QA_REPORT.md).
 ## BIS (official) — what we have
 
 Captured with **system Chrome** AppleScript/JXA against open `deli` 3D + `eszaki` 2D tabs (not IDE browser).

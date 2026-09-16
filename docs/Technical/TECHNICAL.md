@@ -12,7 +12,7 @@ Last sync with the codebase: **16 September 2026** (repo **Neptun-ELTE**, displa
 
 Product overview + Legal index: [`docs/README.md`](../README.md) / [`docs/README.ru.md`](../README.ru.md).  
 **Backlog** (remaining work): this file’s [honesty table](#11-honesty-full-vs-thin) + [§20 decisions](#20-why-we-chose-this) and the Dev Blog [“In progress / planned”](DEV_BLOG.md#in-progress--planned-honest) section. Numbered `IMPLEMENTATION_PLAN.md` / `.ru.md` were **deleted** after **1.5.0** (plan item **11** Academic Progress / tanterv was **dropped** earlier — do not rebuild).  
-Indoor campus map (LD/LE A→B): **map data first** — [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md); Phase **0–5 done** (LD + LE MVP graphs + joins/aliases + package under [`campus_map_package/`](campus_map_package/)); next Phase **6** QA; Flutter UI deferred until QA passes. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor campus map (LD/LE A→B): **map data first** — [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md) / [RU](CAMPUS_MAP_PLAN.ru.md); Phase **0–6 done** (MVP package + [QA_REPORT](campus_map_package/QA_REPORT.md); Phase A map finished); Flutter UI (**Phase B**) deferred. Basemap permission **pending**. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Dev diary: [`DEV_BLOG.md`](DEV_BLOG.md) / [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md).  
 Legal files: [Privacy EN](../Legal-En/PRIVACY.md) · [Terms EN](../Legal-En/TERMS.md) · [Cookies EN](../Legal-En/COOKIES.md) · [RU](../Legal-Ru/) · [HU](../Legal-Hu/).  
 iOS quick start: [§14](#14-ios) only — **no** separate `DEVELOPER.md`.  
@@ -141,7 +141,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Downloadable language catalog (`ru`, `tr` only) |
 | `Themes/` | Downloadable theme catalog |
-| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` + `CAMPUS_MAP_PLAN*` (EN + RU); research under `campus_map_research/`; Phase 5 package under `campus_map_package/` |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` + `CAMPUS_MAP_PLAN*` (EN + RU); research under `campus_map_research/`; Phase 5–6 package + QA under `campus_map_package/` |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Full product README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -479,7 +479,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Today’s classes from calendar cache; no JWT. Shared `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Mail translator | **Working** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
-| Campus indoor map | **Research + LD/LE package (Phase 5)** | Dump + schema + graphs + joins + [`campus_map_package/`](campus_map_package/); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0–5 done, Phase 6 QA next; Flutter UI deferred (Phase B). Basemap JPG permission **pending** (block APK/App Store bundling). Shipped app still external maps deep-link only |
+| Campus indoor map | **Phase A map finished (0–6)** | Dump + schema + graphs + joins + [`campus_map_package/`](campus_map_package/) + [QA_REPORT](campus_map_package/QA_REPORT.md); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0–6 done; Flutter UI deferred (Phase B). Basemap JPG permission **pending** (block APK/App Store bundling). Shipped app still external maps deep-link only |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |
@@ -767,7 +767,7 @@ License: LGPL-3.0-only ([`docs/LICENSE`](../LICENSE); root `LICENSE` is an ident
 | `docs/Technical/TECHNICAL.ru.md` | Russian version |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Chronological dev diary + remaining backlog notes |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Hallgato JWT maintenance — **v1 core + mail/calendar fixes shipped 1.5.6**; optional background keep-alive + password retention **1.5.7**; battery minimization **1.5.9**; reliability (idle drop, resume refresh, password on manual logout) **1.5.10**; portal/HWEB research still design-only |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Finish-the-map-first plan — Phase 0–5 done (LD + LE MVP graphs + joins/aliases + [`campus_map_package/`](campus_map_package/)); Phase 6 QA next; Phase B (Flutter) deferred; research under `campus_map_research/` |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Finish-the-map-first plan — Phase 0–6 done (MVP package + QA; Phase A map finished); Phase B (Flutter) deferred; research under `campus_map_research/`; package [`campus_map_package/`](campus_map_package/) |
 | `test/elte_room_code_test.dart` | Unit tests for ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

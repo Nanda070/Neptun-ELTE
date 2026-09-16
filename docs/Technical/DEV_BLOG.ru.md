@@ -414,6 +414,12 @@
 
 ---
 
+## 2026-09-16 — docs: карта кампуса фаза 6 (QA-матрица)
+
+**[2026-09-16]**
+
+- Фаза 6 QA по [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Итог **pass=41 / fail=0 / waive=2** (restricted/closed не на MVP-комнатах). Sign-off владельца: фаза A **карта закончена** для MVP. Flutter фаза B по-прежнему отложена; разрешение basemap **pending**. Только docs/data; без Dart / bump версии. Владелец **Nanda**.
+
 ## 2026-09-16 — docs: карта кампуса фаза 5 (пакет deliverable)
 
 **[2026-09-16]**
@@ -489,11 +495,11 @@
 - UI навигатора учебной недели (**1.5.8**) + фикс битого кэша почты / epoch-`ERROR` (**1.5.6**).
 - **Переводчик** почты HU→EN/RU — **работает** (failure → оригинал; disclaimer один раз).
 - Пункты плана **1** / **1a–1c** / **5–10** / **12–14** как раньше; п. **11** (tanterv) **снят**.
-- Research-дамп карты + план **сначала карта**; фазы **0–4 готовы** (MVP-графы LD/LE + joins/алиасы); Flutter Map UI не начат.
+- Research-дамп карты + план **сначала карта**; фазы **0–6 готовы** (фаза A карта закончена для MVP); Flutter Map UI не начат.
 
 ### Ещё не сделано / исследование
 
-- **Indoor-карта фаза A** — далее фаза 6 QA ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md)); пакет [`campus_map_package/`](campus_map_package/); Flutter UI (**фаза B**) отложена, пока не пройдёт QA. Разрешение на basemap всё ещё pending.
+- **Indoor-карта фаза A** — **готова** для MVP ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) + [QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter UI (**фаза B**) отложена. Разрешение на basemap всё ещё pending.
 - Остатки HALLGATO: проактивный `GetNewTokens` на cold start; парсинг JWT `exp`; исследование portal/HWEB; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.ru.md)).
 - Полный UI email OTP (`elteRequestEmailOtp` есть; UI не вызывает — сначала TOTP).
 - Студенческий **без** QR/wallet; запись на экзамен/курс **не планируем**.

@@ -1,11 +1,11 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–5 done** (LD + LE MVP graphs + joins/aliases + [`campus_map_package/`](campus_map_package/)). Next: **Phase 6** QA matrix. **Phase B (Flutter app)** deferred until Phase 6 QA passes.  
+**Status:** **Phase 0–6 done** — Phase A **map finished** for MVP (LD + LE package + [QA_REPORT.md](campus_map_package/QA_REPORT.md)). **Phase B (Flutter app)** deferred. Basemap JPG permission still **pending** (block App Store / APK bundling).  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
 
-> Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md)  
+> Research dump: [`campus_map_research/`](campus_map_research/README.md) · Schema: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · BIS import: [BIS_IMPORT_REPORT.md](campus_map_research/BIS_IMPORT_REPORT.md) · Package: [`campus_map_package/`](campus_map_package/)  
 > Related shipped maps (external deep-link only): `lib/Misc/elte_room_code.dart` — **not** indoor A→B.
 
 ---
@@ -272,26 +272,30 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ## Phase 6 — QA matrix
 
+**Status:** **DONE** — **2026-09-16**. Report: [`campus_map_package/QA_REPORT.md`](campus_map_package/QA_REPORT.md) · machine: [`qa_matrix.json`](campus_map_package/qa_matrix.json) · runner: [`run_qa.py`](campus_map_package/run_qa.py).
+
 **Purpose:** manual / tool route tests before declaring the map finished.
 
 ### Matrix (paper or checker tool)
 
 | Check | LD | LE |
 |-------|----|----|
-| Same-floor A→B (3 pairs) | ☐ | ☐ |
-| Cross-floor via stair | ☐ | ☐ |
-| Cross-floor via lift | ☐ | ☐ |
-| Entrance → classroom | ☐ | ☐ |
-| Named-hall search → pin | ☐ | ☐ |
-| Neptun code join → pin | ☐ | ☐ |
-| Restricted / closed note surfaced (if modeled) | ☐ | ☐ |
-| No obvious wall / outdoor shortcut | ☐ | ☐ |
+| Same-floor A→B (3 pairs) | ☑ pass | ☑ pass |
+| Cross-floor via stair | ☑ pass | ☑ pass |
+| Cross-floor via lift | ☑ pass | ☑ pass |
+| Entrance → classroom | ☑ pass | ☑ pass |
+| Named-hall search → pin | ☑ pass | ☑ pass |
+| Neptun code join → pin | ☑ pass | ☑ pass |
+| Restricted / closed note surfaced (if modeled) | ☑ **waive** | ☑ **waive** |
+| No obvious wall / outdoor shortcut | ☑ pass | ☑ pass |
+
+**Summary:** pass=41 · fail=0 · waive=2 (MVP rooms omit optional `restricted` / closed notes — documented, not deferred as a silent fail). Checksums + `search_fixtures.json` also verified by `run_qa.py`.
 
 ### Exit criteria
 
-- [ ] Matrix complete for **LD** and **LE** (agreed floor range).
-- [ ] Failures filed as graph bugs (fix in Phase 2/3), not deferred to app UI.
-- [ ] Owner sign-off: **“map finished”** for Phase A.
+- [x] Matrix complete for **LD** and **LE** (agreed floor range −1…7).
+- [x] Failures filed as graph bugs (fix in Phase 2/3), not deferred to app UI — **none open**.
+- [x] Owner sign-off: **“map finished”** for Phase A (Nanda, 2026-09-16).
 
 ---
 

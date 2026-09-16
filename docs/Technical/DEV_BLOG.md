@@ -414,6 +414,12 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — docs: campus map Phase 6 (QA matrix)
+
+**[2026-09-16]**
+
+- Phase 6 QA against [`campus_map_package/`](campus_map_package/): [`run_qa.py`](campus_map_package/run_qa.py) → [`qa_matrix.json`](campus_map_package/qa_matrix.json) + [`QA_REPORT.md`](campus_map_package/QA_REPORT.md). Result **pass=41 / fail=0 / waive=2** (restricted/closed notes not on MVP rooms). Owner sign-off: Phase A **map finished** for MVP. Phase B Flutter still deferred; basemap permission **pending**. Docs/data only; no Dart / version bump. Owner **Nanda**.
+
 ## 2026-09-16 — docs: campus map Phase 5 (package deliverable)
 
 **[2026-09-16]**
@@ -489,11 +495,11 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 - Calendar education-week navigator UI (**1.5.8**) + mail corrupt-cache / epoch-`ERROR` fix (**1.5.6**).
 - Mail **translator** HU→EN/RU — **working** (failure keeps original; one-time disclaimer).
 - Plan items **1** / **1a–1c** / **5–10** / **12–14** shipped as previously documented; item **11** (tanterv) **dropped**.
-- Campus map **research dump** + **map-first plan**; Phase **0–4 done** (LD/LE MVP graphs + joins/aliases); app Map UI not started.
+- Campus map **research dump** + **map-first plan**; Phase **0–6 done** (Phase A map finished for MVP); app Map UI not started.
 
 ### Still unfinished / research
 
-- **Campus indoor map Phase A** — Phase 6 QA next ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md)); package at [`campus_map_package/`](campus_map_package/); Flutter Map UI (**Phase B**) deferred until QA passes. Basemap permission still pending.
+- **Campus indoor map Phase A** — **done** for MVP ([CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) + [QA_REPORT](campus_map_package/QA_REPORT.md)); Flutter Map UI (**Phase B**) deferred. Basemap permission still pending.
 - Hallgato plan leftovers: cold-start proactive `GetNewTokens`; JWT `exp` parse; portal/HWEB activity research; live-test matrix ([HALLGATO_SESSION_PLAN](HALLGATO_SESSION_PLAN.md)).
 - Email OTP full UI (`elteRequestEmailOtp` exists; unused — TOTP-first).
 - Student card still **no** QR/wallet; exam/course registration **not planned**.

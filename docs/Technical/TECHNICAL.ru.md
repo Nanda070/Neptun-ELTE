@@ -12,7 +12,7 @@
 
 Продуктовый обзор + индекс Legal: [`docs/README.ru.md`](../README.ru.md) / [`docs/README.md`](../README.md).  
 **Бэклог** (остаток работы): [честная таблица](#11-честность-full-vs-thin) + [§20 решения](#20-ключевые-решения-почему-так) в этом файле и раздел Dev Blog [«В работе / запланировано»](DEV_BLOG.ru.md#в-работе--запланировано-честно). Нумерованные `IMPLEMENTATION_PLAN.md` / `.ru.md` **удалены** после **1.5.0** (п. **11** Academic Progress / tanterv **снят** раньше — не восстанавливать).  
-Indoor-карта кампуса (LD/LE A→B): **сначала данные карты** — [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md); фазы **0–5 готовы** (MVP-графы LD + LE + joins/алиасы + пакет [`campus_map_package/`](campus_map_package/)); далее фаза **6** QA; Flutter UI отложен, пока не пройдёт QA. Research: [`campus_map_research/`](campus_map_research/README.md).  
+Indoor-карта кампуса (LD/LE A→B): **сначала данные карты** — [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md) / [EN](CAMPUS_MAP_PLAN.md); фазы **0–6 готовы** (MVP-пакет + [QA_REPORT](campus_map_package/QA_REPORT.md); фаза A карта закончена); Flutter UI (**фаза B**) отложена. Разрешение на basemap **pending**. Research: [`campus_map_research/`](campus_map_research/README.md).  
 Дневник разработки: [`DEV_BLOG.ru.md`](DEV_BLOG.ru.md) / [`DEV_BLOG.md`](DEV_BLOG.md).  
 Legal: [Конфиденциальность RU](../Legal-Ru/PRIVACY.md) · [Условия RU](../Legal-Ru/TERMS.md) · [Cookie RU](../Legal-Ru/COOKIES.md) · [EN](../Legal-En/) · [HU](../Legal-Hu/).  
 Краткий iOS-старт: только [§14](#14-ios) — **отдельного** `DEVELOPER.md` **нет**.  
@@ -141,7 +141,7 @@ Neptun-ELTE/
 | `ios/` | Xcode, Bundle ID `com.nanda070.neptunmobile` |
 | `Languages/` | Каталог скачиваемых языков (сейчас только `ru`, `tr`) |
 | `Themes/` | Каталог скачиваемых тем |
-| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` + `CAMPUS_MAP_PLAN*` (EN + RU); research в `campus_map_research/`; пакет фазы 5 в `campus_map_package/` |
+| `docs/Technical/` | TECHNICAL + DEV_BLOG + `HALLGATO_SESSION_PLAN*` + `CAMPUS_MAP_PLAN*` (EN + RU); research в `campus_map_research/`; пакет фазы 5–6 + QA в `campus_map_package/` |
 | `docs/Legal-*` | Privacy, Terms, Cookies (EN / RU / HU) |
 | `docs/README*.md` | Полный продуктовый README |
 | `test/` | Unit smoke: `elte_room_code_test.dart`; placeholder `widget_test.dart` |
@@ -479,7 +479,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Research + пакет LD/LE (фаза 5)** | Дамп + схема + графы + joins + [`campus_map_package/`](campus_map_package/); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фазы 0–5 готовы, далее фаза 6 QA; Flutter UI отложен (фаза B). Разрешение на JPG basemap **pending** (не бандлить в APK/App Store). В приложении по-прежнему только внешний maps deep-link |
+| Indoor-карта кампуса | **Фаза A карта закончена (0–6)** | Дамп + схема + графы + joins + [`campus_map_package/`](campus_map_package/) + [QA_REPORT](campus_map_package/QA_REPORT.md); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фазы 0–6 готовы; Flutter UI отложен (фаза B). Разрешение на JPG basemap **pending** (не бандлить в APK/App Store). В приложении по-прежнему только внешний maps deep-link |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -767,7 +767,7 @@ Release на iPhone: `--release` (см. §14).
 | `docs/Technical/TECHNICAL.ru.md` | Русская версия |
 | `docs/Technical/DEV_BLOG.md` / `DEV_BLOG.ru.md` | Хронологический Dev Blog + заметки по остатку бэклога |
 | `docs/Technical/HALLGATO_SESSION_PLAN.md` / `.ru.md` | Поддержка JWT hallgato — **ядро v1 + почта/календарь отгружены 1.5.6**; опциональный фон + пароль **1.5.7**; минимизация батареи **1.5.9**; надёжность (снятие idle, resume refresh, пароль при ручном logout) **1.5.10**; portal/HWEB — только дизайн |
-| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (фазы 0–5 готовы: MVP-графы LD + LE + joins/алиасы + [`campus_map_package/`](campus_map_package/); далее фаза 6 QA; фаза B Flutter отложена); research в `campus_map_research/` |
+| `docs/Technical/CAMPUS_MAP_PLAN.md` / `.ru.md` | Indoor-карта кампуса — **сначала карта** (фазы 0–6 готовы: MVP-пакет + QA; фаза A закончена; фаза B Flutter отложена); research в `campus_map_research/`; пакет [`campus_map_package/`](campus_map_package/) |
 | `test/elte_room_code_test.dart` | Unit-тесты ELTE room-code / maps deep-link |
 | `test/widget_test.dart` | Placeholder widget test |
 | `docs/Legal-En/` · `Legal-Ru/` · `Legal-Hu/` | Privacy, Terms, Cookies |

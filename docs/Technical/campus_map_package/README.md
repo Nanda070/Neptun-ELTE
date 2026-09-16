@@ -1,12 +1,12 @@
-# Campus map package (Phase 5)
+# Campus map package (Phase 5–6)
 
 Ready-to-host / ready-to-bundle indoor routing package for ELTE Lágymányos **LD (South)** + **LE (North)**.
 
-**Status:** Phase 5 deliverable · **2026-09-16** · Owner **Nanda**  
-**Not Flutter.** App integration is Phase B after Phase 6 QA.  
+**Status:** Phase **0–6 done** (map finished for MVP) · QA **2026-09-16** · Owner **Nanda**  
+**Not Flutter.** App integration is **Phase B** (deferred).  
 **Basemap permission:** **PENDING** — see [ATTRIBUTION.md](ATTRIBUTION.md) (**block ship** to App Store / APK).
 
-Plan: [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) · Research sources: [campus_map_research/](../campus_map_research/README.md)
+Plan: [CAMPUS_MAP_PLAN.md](../CAMPUS_MAP_PLAN.md) · Research: [campus_map_research/](../campus_map_research/README.md) · QA: [QA_REPORT.md](QA_REPORT.md)
 
 ## Layout
 
@@ -18,12 +18,15 @@ campus_map_package/
   joins_ld.json          Neptun↔BIS joins (LD)
   joins_le.json          Neptun↔BIS joins (LE)
   aliases.json           Named-hall / search strings
-  search_fixtures.json   Search QA fixtures (Phase 6 helper)
+  search_fixtures.json   Search QA fixtures
   basemaps/ld/f-1.jpg … f7.jpg
   basemaps/le/f-1.jpg … f7.jpg
   checksums.sha256
   ATTRIBUTION.md
-  check_package.py       Non-Flutter checker (checksums + sample A→B)
+  check_package.py       Phase 5 smoke (checksums + sample A→B)
+  run_qa.py              Phase 6 QA matrix → qa_matrix.json
+  qa_matrix.json         Last machine QA result
+  QA_REPORT.md           Human QA report + owner sign-off
   README.md
 ```
 
@@ -33,6 +36,10 @@ Stable basemap names: `basemaps/{ld|le}/f{level}.jpg` (`f-1`, `f0` … `f7`). Gr
 
 ```bash
 python3 docs/Technical/campus_map_package/check_package.py
+python3 docs/Technical/campus_map_package/run_qa.py
 ```
 
-Exit 0 = checksums match and sample A→B paths exist for LD + LE.
+- `check_package.py` exit 0 = checksums + sample A→B for LD + LE.
+- `run_qa.py` exit 0 = Phase 6 matrix has **no fails** (waives OK if documented in [QA_REPORT.md](QA_REPORT.md)).
+
+**Last QA:** pass=41 · fail=0 · waive=2 (restricted/closed notes not on MVP rooms).

@@ -1,11 +1,11 @@
 # Карта кампуса — план «сначала карта полностью»
 
-**Статус:** **Фазы 0–5 готовы** (MVP-графы LD + LE + joins/алиасы + [`campus_map_package/`](campus_map_package/)). Далее: **фаза 6** — QA-матрица. **Фаза B (Flutter-приложение)** отложена, пока не пройдёт QA фазы 6.  
+**Статус:** **Фазы 0–6 готовы** — фаза A **карта закончена** для MVP (пакет LD + LE + [QA_REPORT.md](campus_map_package/QA_REPORT.md)). **Фаза B (Flutter-приложение)** отложена. Разрешение на JPG basemap всё ещё **pending** (не бандлить в App Store / APK).  
 **Владелец:** Nanda.  
 **Решение (2026-09-16):** сначала полностью закончить indoor-карту; только потом внедрять в приложение.  
 **Канонический близнец:** [CAMPUS_MAP_PLAN.md](CAMPUS_MAP_PLAN.md).
 
-> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md)  
+> Research-дамп: [`campus_map_research/`](campus_map_research/README.md) · Схема: [`campus_map_research/schema/SCHEMA.md`](campus_map_research/schema/SCHEMA.md) · импорт BIS: [BIS_IMPORT_REPORT.ru.md](campus_map_research/BIS_IMPORT_REPORT.ru.md) · Пакет: [`campus_map_package/`](campus_map_package/)  
 > Уже в приложении (только внешний deep-link): `lib/Misc/elte_room_code.dart` — **не** indoor A→B.
 
 ---
@@ -272,26 +272,30 @@ Confidence: `exact` = публичный/graph `codeBis` совпал с educati
 
 ## Фаза 6 — QA-матрица
 
+**Статус:** **ГОТОВО** — **2026-09-16**. Отчёт: [`campus_map_package/QA_REPORT.md`](campus_map_package/QA_REPORT.md) · машина: [`qa_matrix.json`](campus_map_package/qa_matrix.json) · runner: [`run_qa.py`](campus_map_package/run_qa.py).
+
 **Зачем:** ручные / tool-тесты маршрутов до объявления карты законченной.
 
 ### Матрица (на бумаге или в checker)
 
 | Проверка | LD | LE |
 |----------|----|----|
-| A→B на одном этаже (3 пары) | ☐ | ☐ |
-| Межэтажно через лестницу | ☐ | ☐ |
-| Межэтажно через лифт | ☐ | ☐ |
-| Вход → аудитория | ☐ | ☐ |
-| Поиск именного зала → пин | ☐ | ☐ |
-| Join кода Neptun → пин | ☐ | ☐ |
-| Пометка restricted / closed (если моделируется) | ☐ | ☐ |
-| Нет явного «сквозь стену» / outdoor shortcut | ☐ | ☐ |
+| A→B на одном этаже (3 пары) | ☑ pass | ☑ pass |
+| Межэтажно через лестницу | ☑ pass | ☑ pass |
+| Межэтажно через лифт | ☑ pass | ☑ pass |
+| Вход → аудитория | ☑ pass | ☑ pass |
+| Поиск именного зала → пин | ☑ pass | ☑ pass |
+| Join кода Neptun → пин | ☑ pass | ☑ pass |
+| Пометка restricted / closed (если моделируется) | ☑ **waive** | ☑ **waive** |
+| Нет явного «сквозь стену» / outdoor shortcut | ☑ pass | ☑ pass |
+
+**Итог:** pass=41 · fail=0 · waive=2 (на MVP-комнатах нет optional `restricted` / closed — задокументировано, не скрытый fail). Checksums + `search_fixtures.json` тоже проверены `run_qa.py`.
 
 ### Критерии выхода
 
-- [ ] Матрица закрыта для **LD** и **LE** (согласованный диапазон этажей).
-- [ ] Провалы — баги графа (фикс в фазах 2/3), не откладываются на UI приложения.
-- [ ] Sign-off владельца: **«карта закончена»** для фазы A.
+- [x] Матрица закрыта для **LD** и **LE** (этажи −1…7).
+- [x] Провалы — баги графа (фикс в фазах 2/3), не откладываются на UI — **открытых нет**.
+- [x] Sign-off владельца: **«карта закончена»** для фазы A (Nanda, 2026-09-16).
 
 ---
 
