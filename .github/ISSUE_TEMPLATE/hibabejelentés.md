@@ -7,6 +7,8 @@ assignees: Nanda070
 
 ---
 
+> **Preferred:** please report bugs via **[nanda.is-a.dev](https://nanda.is-a.dev)** (not GitHub Issues). Issues filed here may be soft-deprioritized; the site is the primary intake.
+
 **What problem did you experience?**
 A clear description of the issue.
 

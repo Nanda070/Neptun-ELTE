@@ -46,7 +46,7 @@ Public source pages used during research:
 - [ ] Eszényi Krisztián / terkeptar — credit only; no wholesale GeoJSON without Cartography OK
 - [ ] BIS / ELTE IIG — derived joins only; ask before shipping full inventories if restricted
 - [x] No cookies, session tokens, or personal screenshots in this package
-- [ ] Legal EN/RU/HU update only if map later collects location (default: no GPS for indoor graph)
+- [x] Legal EN/RU/HU update only if map later collects location — **N/A until Flutter map** (default: no GPS for indoor graph; waived for Phase A)
 
 ## Contact
 

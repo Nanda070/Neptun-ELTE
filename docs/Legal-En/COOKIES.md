@@ -134,7 +134,9 @@ As of the documented codebase:
 
 | Action | Effect |
 |--------|--------|
-| Logout in app | Clears password / tokens / academic cache; username may remain for prefill |
+| Logout in app | **JWTs always wiped**; academic cache cleared on wipe paths; username may remain for prefill |
+| Password on logout | Cleared by default; **may remain** if Settings **Remember password on this device** is on (opt-in, default off) |
+| Background keep-alive (optional) | Settings toggle (default off) may schedule ~45 min WorkManager / Background Fetch token refresh — local prefs only, not ad cookies |
 | Clear app storage (OS settings) | Removes prefs / secure storage for the app |
 | Uninstall | Removes app data (subject to OS) |
 | Browser cookies for sites you opened | Clear in that browser |

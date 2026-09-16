@@ -174,7 +174,9 @@ Telepítés / jogosultságok / áruházi analitika az ő feltételeik szerint.
 
 - Érzékeny adatok: platform secure storage.
 - A HTTP kliens **bármely** TLS tanúsítványt elfogadhat (campus cert hack) → **MITM** kockázat; megbízható hálózat ajánlott.
-- Kijelentkezés: jelszó / token / cache törlése; a felhasználónév megmaradhat.
+- Kijelentkezés / session wipe: a **JWT mindig törlődik**; a felhasználónév megmaradhat előtöltéshez.
+- **Jelszó kijelentkezéskor:** alapból törlődik. Ha a Beállításokban be van kapcsolva a **Jelszó megjegyzése ezen az eszközön** (alapból **ki**, **1.5.7** / kézi logout **1.5.10**), a jelszó **megmaradhat** secure storage-ban előtöltéshez (**2FA továbbra is kézi**). A kapcsoló kikapcsolása törli a jelszót.
+- Opcionális **háttér hallgató keep-alive** (Beállítások, alapból **ki**, **1.5.7+**): WorkManager / Background Fetch, ~**45 perc**, best-effort `GetNewTokens` — nem tracking/hirdetés.
 - Nem hivatalos kliens — saját felelősségre.
 
 ---
@@ -183,9 +185,11 @@ Telepítés / jogosultságok / áruházi analitika az ő feltételeik szerint.
 
 | Művelet | Hatás |
 |---------|--------|
-| Kijelentkezés | jelszó / token / cache törlése; username megmaradhat |
+| Kijelentkezés / session wipe | **JWT mindig törlődik**; academic cache a wipe útvonalakon; username megmaradhat |
+| Jelszó kijelentkezéskor | Alapból törlés; **megmaradhat**, ha a „jelszó megjegyzése” opt-in be van kapcsolva |
+| Háttér keep-alive (opcionális) | Csak ha a felhasználó bekapcsolta; ~45 perc best-effort token refresh |
 | App adat törlés (OS) | helyi tároló ürítése |
-| Eltávolítás | app adatok törlése (OS szerint) |
+| Eltávolítás | app adatok törlés (OS szerint) |
 | Neptun szerverek | ELTE megőrzési szabályai |
 
 ---

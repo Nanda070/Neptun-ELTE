@@ -15,7 +15,7 @@ Owner: **Nanda**. Canonical detail: `docs/Technical/TECHNICAL.md` § Versioning 
   - Feature line advances when a planned foundation/feature block ships.
   - Patch advances for bugfixes / auth / small tweaks within that line.
 - **`2.0.0`** = final / release-candidate product line. Everything before that is **1.x.y** only.
-- Current line example: **`1.5.12`** = feature line **5** patches (maps/iOS deep-link; earlier **1.5.11** = Phase A campus map docs). Next big block → **1.6.0** (or **2.0.0** if that is the final/RC cut).
+- Current line example: **`1.6.0`** = feature line **6** (campus map Phase B indoor UI). Previous line **5** patches were **1.5.x**. Next big block → **1.7.0** (or **2.0.0** if final/RC).
 
 ## When bumping
 

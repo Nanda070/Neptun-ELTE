@@ -80,9 +80,12 @@ Opcionális nyelv / intézet / téma JSON a **GitHub raw** URL-ekről. A GitHub 
 
 ## 7. Hogyan törölhetsz
 
-- **Kijelentkezés** az appban — jelszó / token / akadémiai cache (a username megmaradhat);
-- **Alkalmazásadatok törlése** az Android / iOS beállításokban;
-- **Eltávolítás**.
+| Művelet | Hatás |
+|---------|--------|
+| **Kijelentkezés** | **JWT mindig törlődik**; username megmaradhat |
+| Jelszó kijelentkezéskor | Alapból törlés; **megmaradhat**, ha a Beállításokban a jelszó megjegyzése be van kapcsolva (opt-in) |
+| Háttér keep-alive (opcionális) | Csak bekapcsolt toggle esetén (~45 perc WorkManager / Background Fetch) |
+| **Alkalmazásadatok törlés** / **Eltávolítás** | prefs / secure storage ürítése |
 
 A külön böngészőben megnyitott oldalak sütijei a böngészőben törlendők.
 

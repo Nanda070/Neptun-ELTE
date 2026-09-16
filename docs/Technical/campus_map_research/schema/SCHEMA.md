@@ -31,7 +31,7 @@ Every graph / floor package JSON **must** include:
 ```
 
 - **`schemaVersion`:** integer. Bump only when breaking field names/semantics. Current = **`1`**.
-- Phase 5 `manifest.json` will also carry `schemaVersion` for the whole deliverable. **Shipped package:** [`../../campus_map_package/`](../../campus_map_package/) (`schemaVersion`: **1**).
+- Phase 5 `manifest.json` **also carries** `schemaVersion` for the whole deliverable. **Shipped package:** [`../../campus_map_package/`](../../campus_map_package/) (`manifest.json`, `schemaVersion`: **1**, Phase 5–6).
 
 ---
 
@@ -120,7 +120,7 @@ Walkable graph vertex. Rooms attach via a **room** node (or a short stub edge fr
 | `confidence` | string | yes | `exact` \| `heuristic` \| `manual` |
 | `notes` | string | no | |
 
-Full join tables are Phase **4** — see [`../joins/`](../joins/). Stubs under this folder are samples only.
+Full join tables are Phase **4** (**done**) — see [`../joins/`](../joins/). Stubs under this folder remain samples only.
 
 ---
 
@@ -153,7 +153,7 @@ Full join tables are Phase **4** — see [`../joins/`](../joins/). Stubs under t
 
 ### Honesty on sample coords
 
-`schema.example.ld.floor0.json` uses **placeholder** pixel positions for corridors/stairs (not yet digitized). Room `centroidWgs` values are **real** BIS centroids. Phase 2 replaces placeholder pixels by tracing on `ld_south/floors/deli_foldszint.jpg` (800×800).
+`schema.example.ld.floor0.json` was an **illustrative** Phase 1 sample (placeholder corridor/stair pixels; real BIS `centroidWgs` on rooms). **Full** LD/LE graphs (−1…7) were digitized in Phases **2–3** (`../graph/graph_ld.json`, `../graph/graph_le.json`) and packaged under [`../../campus_map_package/`](../../campus_map_package/). The sample file remains a schema teaching aid — **not** the production graph.
 
 ---
 

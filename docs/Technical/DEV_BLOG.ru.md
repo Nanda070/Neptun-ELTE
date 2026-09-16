@@ -414,6 +414,14 @@
 
 ---
 
+## 2026-09-16 — релиз 1.6.0 (карта кампуса фаза B MVP)
+
+**[2026-09-16, ~19:15]**
+
+- **Релиз 1.6.0** (`pubspec` **1.6.0+1**): feature-line **6** — **фаза B** indoor-карты кампуса MVP. Кнопка **Карта кампуса** на login-хабе (без JWT), пункт в drawer, корпуса LD/LE, этажи + pan/zoom, поиск joins/aliases, A→B Dijkstra, honesty-баннер (приблизительный граф; basemap permission pending). Пакет в `assets/campus_map/`. Внешний Open map для LD/LE/LK сохранён. GitHub Release **v1.6.0**. Владелец **Nanda**.
+
+---
+
 ## 2026-09-16 — релиз 1.5.12 (внешние Maps на iOS)
 
 **[2026-09-16, ~19:00]**
@@ -580,7 +588,7 @@ Product + technical docs приведены к фактам «фазы 0–6 г�
 
 **[ongoing]**
 
-### Сделано / работает на main (~1.5.12)
+### Сделано / работает на main (~1.6.0)
 
 - Hallgato **session v1** (без 10-мин wall-clock; foreground `GetNewTokens` каждые **3 мин 30 с**; сразу refresh при resume).
 - Опциональный **фоновый keep-alive** в Settings (default выкл; **45 мин**; idle снят в **1.5.10**) + **Запомнить пароль** (default выкл; сохраняется при ручном logout при вкл.).

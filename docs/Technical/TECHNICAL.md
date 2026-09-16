@@ -56,7 +56,7 @@ UI mockups (Figma, not shipped code): [Neptun ELTE — UI Mockups](https://www.f
 - Setup UI is an **ELTE hub**: one button → login (no institute list, no custom URL).
 - ELTE uses a **central** portal (`neptun.elte.hu` / login + News). It does **not** use Obuda/BME-style `/ujhallgato`. After portal login, **Student web** bridges via `/ToNeptunWeb/ToNeptunHWeb` onto one of several identical HWEB hosts: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (load-balanced; e.g. `hallgato4`). The app authenticates on the **portal**, then sets the institute URL to the assigned **`hallgatoN`** and calls modern JWT REST **there**. Do not hardcode `N`.
 - Display name: **Neptun ELTE**.
-- Version (`pubspec.yaml`): **1.5.12+1** — user-facing / Settings / docs = **1.5.12** (see [Versioning](#versioning) below).
+- Version (`pubspec.yaml`): **1.6.0+1** — user-facing / Settings / docs = **1.6.0** (see [Versioning](#versioning) below).
 - Dart package: `neptun2` (imports `package:neptun2/...`).
 - UI languages: **EN** (default) and **HU** built-in; **RU** and **TR** downloaded from GitHub.
 - Platforms: **Android** and **iOS**. No `web/`, Windows, macOS, or Linux in this repo (`linux/` was removed).
@@ -68,7 +68,7 @@ Repo: [Nanda070/Neptun-ELTE](https://github.com/Nanda070/Neptun-ELTE). Independe
 
 Owner policy (**Nanda**). **Marketing / user-facing version is always three numbers `1.x.y`.** Do **not** treat Flutter `+build` (e.g. old `+21`) as the version story in Settings, README, or product talk.
 
-Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.5.12`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
+Flutter still needs `x.y.z+build` in `pubspec.yaml` for stores. Prefer **`1.x.y+1`**. Use a larger `+N` only if Android requires a monotonic `versionCode`; never advertise `+N` as the product version. Settings shows **`info.version` only** (e.g. `1.6.0`). Mirror `build-name` to iOS `MARKETING_VERSION` / Android `versionName` fallbacks.
 
 Scheme: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.3.0** | Feature line **3** = plan items **1–3** shipped (session cache, markbook math, calendar strips). |
 | **1.3.3** | Line 3 + patch for immediate post-2FA session-expired logout (`SessionGuard` stale wall-clock / 401 grace). |
 | **1.3.4** | Line 3 + plan item **4** — mail local search + unread-only chip (`filterType=0` stays API-honest). |
-| **1.5.12** | **Current.** Patch — iOS external Maps for LD/LE/LK: native `maps:` URI (+ https fallbacks), `maps`/`comgooglemaps` in `LSApplicationQueriesSchemes`, **Open map** always visible (not only after decode), `TextButton` so list-row taps do not steal the control. Tag **v1.5.12**. |
+| **1.6.0** | **Current.** Feature line **6** — campus map **Phase B** MVP: pre-login Map, LD/LE floors, search, A→B Dijkstra, package in `assets/campus_map/`. Basemap permission still **pending**. Tag **v1.6.0**. |
+| **1.5.12** | Patch — iOS external Maps for LD/LE/LK: native `maps:` URI (+ https fallbacks), `maps`/`comgooglemaps` in `LSApplicationQueriesSchemes`, **Open map** always visible (not only after decode), `TextButton` so list-row taps do not steal the control. Tag **v1.5.12**. |
 | **1.5.11** | Patch — campus map **Phase A (0–6)** docs/data complete (MVP package + QA **41 pass / 0 fail / 2 waive**); honesty sync (no in-app indoor A→B yet; Phase B Flutter deferred; basemap JPG permission **pending** / block APK bundling of artwork). App binary same product line as **1.5.10** session reliability + ship tag for device/GitHub. Tag **v1.5.11**. |
 | **1.5.10** | Patch — session maintenance reliability: drop WorkManager / BGFetch **`requiresDeviceIdle`** (1.5.9 idle blocked nearly all background runs); keep network + battery-not-low + **45 min** period with **15 min** Android initial delay; on `resumed` **immediate** `GetNewTokens` then calendar+mail refresh; remember-password keeps password across **manual** log out too. Tag **v1.5.10**. |
 | **1.5.9** | Patch — battery-minimized optional **background hallgato keep-alive**: Android WorkManager **45 min** (was 15) with network + `requiresBatteryNotLow` + `requiresDeviceIdle` (not charging-required); iOS Background Fetch minimum **45 min**; cancel OS tasks while `resumed`; coalesce skip if last `GetNewTokens` success within **25 min**. Tag **v1.5.9**. |
@@ -94,7 +95,7 @@ Scheme: **`1.<feature-line>.<patch>`**
 | **1.4.0** | Feature line **4** — plan items **5–9** + **12–13** (ghost what-if, calendar today/ZH/ICS export/class-notif granularity, payments honesty, maps deep-link, What’s Changed, student card claim/bank/profile **no QR**, home shortcuts). |
 | **1.3.2** | Line 3 + patch for post-2FA black-screen navigation (`app_navigator`). |
 | **1.3.1** | Line 3 + patch for auth / 2FA / Student-web-full messaging fixes. |
-| **1.5.12**, … | Further patches on feature line **5**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
+| **1.6.x**, … | Patches on feature line **6**. Next big block → **1.7.0**. Next big block after **1.5.x** → **1.6.0** (or **2.0.0** if that is the final/RC cut). |
 | **2.0.0** | Final / release-candidate product line. Everything before that stays **1.x.y**. |
 
 Bump `pubspec.yaml` (and iOS / Android mirrors) when releasing. Keep docs EN+RU and Settings aligned on the three-number marketing version.
@@ -215,7 +216,7 @@ Navigation: `MaterialPageRoute`, no `routes:` map.
 | `SetupPageLogin` | Neptun-код + password |
 | `SetupPageCalendarLogin` | ICS import (class exists; **not opened from the hub**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** bottom tabs after login (Calendar, Markbook, Periods, Mail). Payments = drawer index 4. `WidgetsBindingObserver` → foreground JWT maintenance + optional background keep-alive sync |
-| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.5.12` — no `+build`) at bottom |
+| `SettingsPage` (`settings_page.dart`) | Theme, language, font, notifications, haptics, week offset; optional **background keep-alive** + **Remember password on this device**; **Contacts** sheet + marketing version only (`package_info_plus` `info.version`, e.g. `1.6.0` — no `+build`) at bottom |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Greeting = `UserInfo` full name + Neptun code (no training ID under name); avatar photo from HWEB base64 (`userAvatar` / `GetUserAvatar`) with initials fallback; term, balance, multi-training switcher; **Student card / profile** page (item **12**); **Payments above Settings**; update (Android), logout |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Modal modes 0–9 |
 
@@ -481,7 +482,7 @@ Also localized through `LanguagePack`: class/exam notification bodies (`notif_ex
 | ICS | **Dead UI** | Class exists, no setup entry |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Today’s classes from calendar cache; no JWT. Shared `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Mail translator | **Working** | HU→EN/RU via public gtx endpoint; failure → keep original; disclaimer once per device |
-| Campus indoor map | **Phase A map finished (0–6)** | Dump + schema + graphs + joins + [`campus_map_package/`](campus_map_package/) + [QA_REPORT](campus_map_package/QA_REPORT.md); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.md) Phase 0–6 done; Flutter UI deferred (Phase B). Basemap JPG permission **pending** (block APK/App Store bundling). Shipped app still external maps deep-link only |
+| Campus indoor map | **Phase A + Phase B MVP** | Phase A package + Flutter `CampusMapPage` (pre-login hub + drawer): LD/LE, floors, joins/aliases search, A→B Dijkstra, basemap pan/zoom. Assets: `assets/campus_map/`. External Open map for room codes kept. Basemap JPG permission **pending**. |
 | App shortcuts | **Shipped (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start session gate |
 | Automated tests | **Thin** | `test/elte_room_code_test.dart` (room/maps); `test/widget_test.dart` placeholder — **no** CI analyze/test job yet |
 | APK / Play update | **Android only** | Hidden on iOS |
@@ -571,7 +572,7 @@ On the phone: **Settings → General → VPN & Device Management** → trust the
 | Team (local) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (do not change — breaks Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.5.12**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` ships CFBundleVersion / ShortVersion from build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, kept in sync with marketing **1.6.0**). Empty appex `CFBundleVersion` fails device install (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` reads the same JSON snapshot (no JWT).
 
 **Why no underscore in the Bundle ID:** Automatic Signing names the profile `XC com nanda070 neptun_mobile app`. Underscores in that name are invalid → `The attribute 'name' is invalid` / no profiles.
 

@@ -384,6 +384,22 @@ class AppStrings{
       roomCode_Building_LE: 'Északi Tömb',
       roomCode_Building_LK: 'Kémiai tömb (Északi)',
       roomCode_OpenMap: 'Térkép megnyitása',
+      campusMap_Title: 'Campus térkép',
+      campusMap_HonestyBanner:
+          'MVP beltéri térkép (közelítő folyosók). A basemap képek újrafelhasználási engedélye még pending — sideload/dev. Nem hivatalos ELTE BIS.',
+      campusMap_HubButton: 'Campus térkép',
+      campusMap_HubButtonDescription:
+          'Beltéri A→B a Lágymányos Déli (LD) és Északi (LE) tömbökben. Neptun bejelentkezés nélkül.',
+      campusMap_SearchFrom: 'Induló terem / teremkeresés…',
+      campusMap_SearchTo: 'Cél terem keresése…',
+      campusMap_From: 'Honnan',
+      campusMap_To: 'Hova',
+      campusMap_Route: 'Útvonal',
+      campusMap_Clear: 'Törlés',
+      campusMap_LoadError: 'Nem sikerült betölteni a campus térkép csomagot',
+      campusMap_NoPath: 'Nincs útvonal ezek között a termek között',
+      campusMap_CrossBuildingHint: 'Az indítás és a cél legyen ugyanabban az épületben (LD vagy LE)',
+      campusMap_FloorsOnPath: 'Emeletek az úton',
       markbook_creditAbbrev: 'kr',
       notif_exam_BodyToday: '"%0" tárgyból vizsgád lesz MA!',
       notif_exam_BodyTomorrow: '"%0" tárgyból vizsgád lesz HOLNAP!',
@@ -771,7 +787,22 @@ class AppStrings{
       roomCode_Building_LD: 'Southern Building',
       roomCode_Building_LE: 'Northern Building',
       roomCode_Building_LK: 'Chemistry block (Northern Building)',
-      roomCode_OpenMap: 'Open map',
+      campusMap_Title: 'Campus map',
+      campusMap_HonestyBanner:
+          'MVP indoor map (approximate corridors). Basemap artwork redistribution permission still pending — sideload/dev use. Not official ELTE BIS.',
+      campusMap_HubButton: 'Campus map',
+      campusMap_HubButtonDescription:
+          'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
+      campusMap_SearchFrom: 'Search start room / hall…',
+      campusMap_SearchTo: 'Search destination…',
+      campusMap_From: 'From',
+      campusMap_To: 'To',
+      campusMap_Route: 'Route',
+      campusMap_Clear: 'Clear',
+      campusMap_LoadError: 'Could not load campus map package',
+      campusMap_NoPath: 'No path found between these rooms',
+      campusMap_CrossBuildingHint: 'Pick start and end in the same building (LD or LE)',
+      campusMap_FloorsOnPath: 'Floors on path',
       markbook_creditAbbrev: 'cr',
       notif_exam_BodyToday: '"%0" exam is TODAY!',
       notif_exam_BodyTomorrow: '"%0" exam is TOMORROW!',
@@ -1434,6 +1465,20 @@ class LanguagePack{
   final String roomCode_Building_LE;
   final String roomCode_Building_LK;
   final String roomCode_OpenMap;
+  final String campusMap_Title;
+  final String campusMap_HonestyBanner;
+  final String campusMap_HubButton;
+  final String campusMap_HubButtonDescription;
+  final String campusMap_SearchFrom;
+  final String campusMap_SearchTo;
+  final String campusMap_From;
+  final String campusMap_To;
+  final String campusMap_Route;
+  final String campusMap_Clear;
+  final String campusMap_LoadError;
+  final String campusMap_NoPath;
+  final String campusMap_CrossBuildingHint;
+  final String campusMap_FloorsOnPath;
   final String markbook_creditAbbrev;
   final String notif_exam_BodyToday;
   final String notif_exam_BodyTomorrow;
@@ -1758,6 +1803,22 @@ class LanguagePack{
     this.roomCode_Building_LE = 'Northern Building',
     this.roomCode_Building_LK = 'Chemistry block (Northern Building)',
     this.roomCode_OpenMap = 'Open map',
+    this.campusMap_Title = 'Campus map',
+    this.campusMap_HonestyBanner =
+        'MVP indoor map (approximate corridors). Basemap artwork redistribution permission still pending — sideload/dev use. Not official ELTE BIS.',
+    this.campusMap_HubButton = 'Campus map',
+    this.campusMap_HubButtonDescription =
+        'Indoor A→B for Lágymányos South (LD) and North (LE). No Neptun login required.',
+    this.campusMap_SearchFrom = 'Search start room / hall…',
+    this.campusMap_SearchTo = 'Search destination…',
+    this.campusMap_From = 'From',
+    this.campusMap_To = 'To',
+    this.campusMap_Route = 'Route',
+    this.campusMap_Clear = 'Clear',
+    this.campusMap_LoadError = 'Could not load campus map package',
+    this.campusMap_NoPath = 'No path found between these rooms',
+    this.campusMap_CrossBuildingHint = 'Pick start and end in the same building (LD or LE)',
+    this.campusMap_FloorsOnPath = 'Floors on path',
     required this.markbook_creditAbbrev,
     required this.notif_exam_BodyToday,
     required this.notif_exam_BodyTomorrow,
@@ -2168,6 +2229,20 @@ class LanguagePack{
         roomCode_Building_LE: getStr('roomCode_Building_LE', en.roomCode_Building_LE),
         roomCode_Building_LK: getStr('roomCode_Building_LK', en.roomCode_Building_LK),
         roomCode_OpenMap: getStr('roomCode_OpenMap', en.roomCode_OpenMap),
+        campusMap_Title: getStr('campusMap_Title', en.campusMap_Title),
+        campusMap_HonestyBanner: getStr('campusMap_HonestyBanner', en.campusMap_HonestyBanner),
+        campusMap_HubButton: getStr('campusMap_HubButton', en.campusMap_HubButton),
+        campusMap_HubButtonDescription: getStr('campusMap_HubButtonDescription', en.campusMap_HubButtonDescription),
+        campusMap_SearchFrom: getStr('campusMap_SearchFrom', en.campusMap_SearchFrom),
+        campusMap_SearchTo: getStr('campusMap_SearchTo', en.campusMap_SearchTo),
+        campusMap_From: getStr('campusMap_From', en.campusMap_From),
+        campusMap_To: getStr('campusMap_To', en.campusMap_To),
+        campusMap_Route: getStr('campusMap_Route', en.campusMap_Route),
+        campusMap_Clear: getStr('campusMap_Clear', en.campusMap_Clear),
+        campusMap_LoadError: getStr('campusMap_LoadError', en.campusMap_LoadError),
+        campusMap_NoPath: getStr('campusMap_NoPath', en.campusMap_NoPath),
+        campusMap_CrossBuildingHint: getStr('campusMap_CrossBuildingHint', en.campusMap_CrossBuildingHint),
+        campusMap_FloorsOnPath: getStr('campusMap_FloorsOnPath', en.campusMap_FloorsOnPath),
         markbook_creditAbbrev: getStr('markbook_creditAbbrev', en.markbook_creditAbbrev),
         notif_exam_BodyToday: getStr('notif_exam_BodyToday', en.notif_exam_BodyToday),
         notif_exam_BodyTomorrow: getStr('notif_exam_BodyTomorrow', en.notif_exam_BodyTomorrow),
@@ -2632,6 +2707,20 @@ class LanguagePack{
       'roomCode_Building_LE':lang.roomCode_Building_LE,
       'roomCode_Building_LK':lang.roomCode_Building_LK,
       'roomCode_OpenMap':lang.roomCode_OpenMap,
+      'campusMap_Title':lang.campusMap_Title,
+      'campusMap_HonestyBanner':lang.campusMap_HonestyBanner,
+      'campusMap_HubButton':lang.campusMap_HubButton,
+      'campusMap_HubButtonDescription':lang.campusMap_HubButtonDescription,
+      'campusMap_SearchFrom':lang.campusMap_SearchFrom,
+      'campusMap_SearchTo':lang.campusMap_SearchTo,
+      'campusMap_From':lang.campusMap_From,
+      'campusMap_To':lang.campusMap_To,
+      'campusMap_Route':lang.campusMap_Route,
+      'campusMap_Clear':lang.campusMap_Clear,
+      'campusMap_LoadError':lang.campusMap_LoadError,
+      'campusMap_NoPath':lang.campusMap_NoPath,
+      'campusMap_CrossBuildingHint':lang.campusMap_CrossBuildingHint,
+      'campusMap_FloorsOnPath':lang.campusMap_FloorsOnPath,
       'markbook_creditAbbrev':lang.markbook_creditAbbrev,
       'notif_exam_BodyToday':lang.notif_exam_BodyToday,
       'notif_exam_BodyTomorrow':lang.notif_exam_BodyTomorrow,

@@ -377,5 +377,19 @@
   "studentCard_Citizenship": "Vatandaşlık",
   "studentCard_ExtraField": "Ek alan",
   "studentCard_Emails": "E-posta",
-  "studentCard_Phones": "Telefon"
+  "studentCard_Phones": "Telefon",
+  "campusMap_Title": "Kampüs haritası",
+  "campusMap_HonestyBanner": "MVP iç mekan haritası (yaklaşık koridorlar). Basemap izinleri hâlâ pending — sideload/dev. Resmi ELTE BIS değil.",
+  "campusMap_HubButton": "Kampüs haritası",
+  "campusMap_HubButtonDescription": "Lágymányos Güney (LD) ve Kuzey (LE) için iç mekan A→B. Neptun girişi gerekmez.",
+  "campusMap_SearchFrom": "Başlangıç oda / salon ara…",
+  "campusMap_SearchTo": "Hedef ara…",
+  "campusMap_From": "Nereden",
+  "campusMap_To": "Nereye",
+  "campusMap_Route": "Rota",
+  "campusMap_Clear": "Temizle",
+  "campusMap_LoadError": "Kampüs harita paketi yüklenemedi",
+  "campusMap_NoPath": "Bu odalar arasında yol bulunamadı",
+  "campusMap_CrossBuildingHint": "Başlangıç ve bitiş aynı binada olsun (LD veya LE)",
+  "campusMap_FloorsOnPath": "Yoldaki katlar"
 }

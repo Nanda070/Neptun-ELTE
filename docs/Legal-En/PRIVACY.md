@@ -256,7 +256,9 @@ Historical notes (donate buttons, obsolete version gates, etc.) may appear as **
 ### Measures
 
 - Sensitive secrets intended for **platform secure storage** (`flutter_secure_storage`).
-- Logout clears password / tokens / academic cache (username may remain).
+- Logout / session wipe **always clears JWTs** (`accessToken` / refresh) and academic cache intent; **username may remain** for form prefill.
+- **Password on logout:** cleared by default. If the user opted in to Settings **Remember password on this device** (`SETTING_RememberPasswordOnDevice`, default **off**, shipped **1.5.7** / manual-logout keep **1.5.10**), the Neptun password may **remain** in secure storage after logout for login prefill (**2FA is still manual**). Turning the toggle off clears the stored password.
+- Optional **background hallgato keep-alive** (Settings, default **off**, **1.5.7+**): Android WorkManager / iOS Background Fetch, typical cadence **~45 min**, best-effort `GetNewTokens` only — not tracking/ads.
 - TLS is used for HTTPS endpoints in normal operation.
 
 ### Known / accepted risks (honest)
@@ -275,7 +277,9 @@ Historical notes (donate buttons, obsolete version gates, etc.) may appear as **
 | Action | Effect |
 |--------|--------|
 | Stay logged in | Session + cache remain until cleared or expired by Neptun |
-| Logout (`dataWipe`-style) | Clears password, tokens, academic cache; **may keep username** for prefill |
+| Logout / session wipe | **Always wipes JWTs** + login flag; academic cache cleared on full wipe paths; **username may remain** for prefill |
+| Password on logout | Cleared **unless** Remember-password opt-in is on (then password may stay for prefill; **2FA still required**) |
+| Background keep-alive (optional) | Only if user enabled it; ~45 min best-effort token refresh while backgrounded |
 | Clear app data (OS) | Removes local prefs / secure storage for the app |
 | Uninstall | Removes app storage (subject to OS behaviour) |
 | Neptun servers | Retain data per **ELTE** policy — independent of this app |

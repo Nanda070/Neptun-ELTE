@@ -15,6 +15,7 @@ import '../language.dart';
 import '../notifications.dart';
 import '../Pages/settings_page.dart';
 import '../Pages/student_card_page.dart';
+import '../CampusMap/campus_map_page.dart';
 import '../Misc/auto_updater.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -670,6 +671,18 @@ class _AppDrawerState extends State<AppDrawer> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const StudentCardPage()),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.map_rounded, color: AppColors.getTheme().textColor),
+                      title: Text(AppStrings.getLanguagePack().campusMap_HubButton, style: TextStyle(color: AppColors.getTheme().textColor, fontWeight: FontWeight.w600)),
+                      onTap: () {
+                        AppHaptics.lightImpact();
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CampusMapPage()),
                         );
                       },
                     ),

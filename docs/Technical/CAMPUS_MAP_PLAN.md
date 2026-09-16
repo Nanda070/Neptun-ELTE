@@ -1,6 +1,6 @@
 # Campus map — finish-the-map-first plan
 
-**Status:** **Phase 0–6 done** — Phase A **map finished** for MVP (LD + LE package + [QA_REPORT.md](campus_map_package/QA_REPORT.md)). **Phase B (Flutter app)** deferred. Basemap JPG permission still **pending** (block App Store / APK bundling).  
+**Status:** **Phase 0–6 done** — Phase A **map finished** for MVP (LD + LE package + [QA_REPORT.md](campus_map_package/QA_REPORT.md)). **Phase B (Flutter) MVP shipped in 1.6.0**. Basemap JPG permission still **pending** (block App Store redistribution claims; sideload/dev OK with honesty banner).  
 **Owner:** Nanda.  
 **Decision (2026-09-16):** finish the indoor map completely first; only then implement in the app.  
 **Canonical twin:** [CAMPUS_MAP_PLAN.ru.md](CAMPUS_MAP_PLAN.ru.md).
@@ -14,11 +14,13 @@
 
 Deliver a **complete, attributable, QA’d indoor routing package** for ELTE Lágymányos **South (LD / Déli)** and **North (LE / Északi)** that the Neptun ELTE app can later load without depending on live BIS login or live `routing.route`.
 
-**Map finished** means: Phase **0–6** exit criteria all met (see [Success definition](#success-definition-map-finished)). Flutter screens, login-hub Map button, and schedule deep-links are **Phase B** — listed for clarity, **not started now**.
+**Map finished** means: Phase **0–6** exit criteria all met (see [Success definition](#success-definition-map-finished)). Flutter screens / login-hub Map / A→B are **Phase B** — **MVP shipped in 1.6.0**.
 
 ---
 
 ## Principles
+
+> Historical Phase A rules — **Completed 2026-09-16 for Phase A MVP** (package + QA). Phase B (Flutter) MVP — **1.6.0**.
 
 | Rule | Meaning |
 |------|---------|
@@ -299,9 +301,9 @@ Confidence: `exact` = public/graph `codeBis` matched educational `roomNumber` (o
 
 ---
 
-## Phase B — App integration (**later**, not started now)
+## Phase B — App integration (**MVP shipped 1.6.0**)
 
-Only after Phases **0–6** are done. Listed so product docs know the intended UI; **do not implement yet**.
+Phases **0–6** done. **MVP shipped** in marketing **1.6.0**: `lib/CampusMap/campus_map_page.dart` + `assets/campus_map/` (graphs, joins, aliases, basemaps).
 
 | Item | Intent |
 |------|--------|
@@ -311,7 +313,7 @@ Only after Phases **0–6** are done. Listed so product docs know the intended U
 | Packaging in app | Load Phase 5 JSON + assets from bundle or first-run download. |
 | Optional | Deep-link / WebView to BIS for users with ELTE login — secondary, not a substitute for our graph. |
 
-**Exit criteria for Phase B** (future): separate app release notes; version bump per `versioning.mdc` when shipping Android APK.
+**Exit criteria for Phase B** (MVP met in **1.6.0**; polish later): pre-login Map, LD/LE, floor switcher, search, A→B path draw, honesty banner. Tag **v1.6.0**.
 
 ---
 
@@ -323,8 +325,8 @@ Complete before any public binary includes map assets:
 - [ ] **Sárközi Gergő** aggregator — credit; confirm JPG redistribution.
 - [ ] **Eszényi Krisztián / terkeptar** — credit; **no** wholesale GeoJSON reuse without Cartography dept OK.
 - [ ] **BIS / ELTE IIG** — room catalogs used as derived data only; ask before shipping full inventories if redistribution is restricted; **no** cookies/tokens in package.
-- [ ] Mapbox — only if we embed Mapbox ourselves (not required for Phase A pixel graphs).
-- [ ] App Privacy / Terms — update Legal EN/RU/HU if map collects location (default: **no** GPS required for indoor graph).
+- [~] Mapbox — only if we embed Mapbox ourselves (**N/A / waived for Phase A** pixel graphs; revisit at Flutter map)
+- [~] App Privacy / Terms — update Legal EN/RU/HU if map collects location (**N/A until Flutter map**; default: **no** GPS for indoor graph)
 
 ---
 
@@ -337,7 +339,7 @@ Complete before any public binary includes map assets:
 | Full 3D / VR | Product target is **2D** A→B |
 | Offline-first sync policy | Optional later; package may ship in-bundle |
 | LK as separate `graph_lk.json` | Fold into LE unless proven necessary |
-| Flutter Map UI | Phase B only |
+| Flutter Map UI | **Phase B MVP in 1.6.0** |
 | Exam/course registration, tanterv, etc. | Unrelated product backlog |
 
 ---
@@ -356,7 +358,7 @@ Complete before any public binary includes map assets:
 
 ## Success definition — “map finished”
 
-Phase A is **done** when **all** of the following are true:
+Phase A is **done** (**completed 2026-09-16**) when **all** of the following are true:
 
 1. **LD** and **LE** graphs cover agreed floors (−1…7) with corridors, vertical links, and entrances.
 2. Package contains `graph_ld.json`, `graph_le.json`, basemaps, checksums, attribution.
@@ -364,7 +366,7 @@ Phase A is **done** when **all** of the following are true:
 4. Phase 6 QA matrix passes (or only waived items are explicitly documented).
 5. **No** Flutter map feature has been started under the guise of “just wiring” incomplete data.
 
-Until then, the product remains on **external maps deep-link** only (`Open map` → Apple/Google building search).
+External maps deep-link remains for timetable room codes; indoor A→B is additional via Campus Map.
 
 ---
 

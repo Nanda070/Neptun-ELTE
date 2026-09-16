@@ -18,6 +18,7 @@ import '../Misc/emojirich_text.dart';
 import '../Misc/auto_updater.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
+import 'package:neptun2/CampusMap/campus_map_page.dart';
 import 'main_page.dart' as main_page;
 import 'two_factor_page.dart';
 
@@ -224,6 +225,66 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                       color: AppColors.getTheme().textColor.withValues(alpha: .6),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            AppHaptics.lightImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const CampusMapPage()),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.getTheme().rootBackground,
+                              borderRadius: const BorderRadius.all(Radius.circular(30)),
+                              border: Border.all(
+                                color: AppColors.getTheme().textColor.withValues(alpha: .3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Icon(
+                                      Icons.map_rounded,
+                                      color: AppColors.getTheme().textColor,
+                                      size: 40,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        AppStrings.getLanguagePack().campusMap_HubButton,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: AppColors.getTheme().textColor,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  AppStrings.getLanguagePack().campusMap_HubButtonDescription,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.getTheme().textColor.withValues(alpha: .6),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],

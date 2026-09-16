@@ -381,5 +381,19 @@
   "studentCard_Citizenship": "Гражданство",
   "studentCard_ExtraField": "Доп. поле",
   "studentCard_Emails": "Email",
-  "studentCard_Phones": "Телефон"
+  "studentCard_Phones": "Телефон",
+  "campusMap_Title": "Карта кампуса",
+  "campusMap_HonestyBanner": "MVP indoor-карта (приблизительные коридоры). Разрешение на basemap ещё pending — sideload/dev. Не официальный ELTE BIS.",
+  "campusMap_HubButton": "Карта кампуса",
+  "campusMap_HubButtonDescription": "Indoor A→B для Lágymányos Юг (LD) и Север (LE). Без входа в Neptun.",
+  "campusMap_SearchFrom": "Поиск старта (аудитория / зал)…",
+  "campusMap_SearchTo": "Поиск назначения…",
+  "campusMap_From": "Откуда",
+  "campusMap_To": "Куда",
+  "campusMap_Route": "Маршрут",
+  "campusMap_Clear": "Сброс",
+  "campusMap_LoadError": "Не удалось загрузить пакет карты кампуса",
+  "campusMap_NoPath": "Маршрут между этими аудиториями не найден",
+  "campusMap_CrossBuildingHint": "Старт и финиш должны быть в одном корпусе (LD или LE)",
+  "campusMap_FloorsOnPath": "Этажи на пути"
 }

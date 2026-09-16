@@ -75,7 +75,7 @@ While the app is in **`AppLifecycleState.resumed`**, run proactive maintenance e
 
 ## Target behavior — app closed / long background
 
-- **Default (v1 core):** **no** periodic requests while the Flutter isolate is not running. Only foreground **3–4 min** `GetNewTokens` applies (see above).
+- **Default (v1 core):** **no** periodic requests while the Flutter isolate is not running. Only foreground **3 min 30 s** `GetNewTokens` applies (see above).
 - Long background with default settings: refresh JWT may expire on the server; user may need full login when they return — **acceptable**; keep-alive is not guaranteed without optional background maintenance (below).
 - **Optional:** user may enable background keep-alive in Settings — see [Optional background keep-alive (Settings, default OFF)](#optional-background-keep-alive-settings-default-off).
 
@@ -132,17 +132,20 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 | **ELTE traffic pattern** | Frequent background refresh from many users could look unlike normal app use — keep intervals conservative; monitor 429 in testing. |
 | **Play / App Store** | Declare background modes / permissions only if implemented; justify as **optional** session maintenance the user explicitly enabled (not tracking, not ads). |
 
-### Open questions (plan-only)
+### Closed (shipped) vs backlog
 
-- Minimum interval that is both battery-safe and worth shipping?
-- Single combined plugin vs platform channels?
-- Should background refresh run only when refresh JWT is within N minutes of suspected expiry (requires optional JWT `exp` parsing)?
+| Topic | Status |
+|-------|--------|
+| Battery-safe interval + plugin choice | **Shipped** — Android WorkManager / iOS `background_fetch`, **45 min**, Settings default **off** (**1.5.7**…**1.5.10**) |
+| JWT `exp`-gated background refresh | **Backlog** — client still does **not** parse JWT `exp` |
+| Portal / HWEB activity | **Backlog** — research only (section below) |
+| Live-test matrix | **Backlog** |
 
 ---
 
 ## Portal / HWEB “activity” (research — optional, lower priority)
 
-**Status:** **possible future approach**, **on par with** (not replacing) foreground **3–4 min** `GetNewTokens`. **No implementation** in current plan wave; **research + optional**, **lower priority** than proactive JWT refresh.
+**Status:** **possible future approach**, **on par with** (not replacing) foreground **3 min 30 s** `GetNewTokens`. **No implementation** in current plan wave; **research + optional**, **lower priority** than proactive JWT refresh.
 
 ### Honesty
 
@@ -210,7 +213,7 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 | Topic | Risk |
 |-------|------|
 | **Refresh JWT TTL** | Unknown until live decode of JWT `exp` (or server docs). Plan may add optional `exp` parsing later — **not** required for v1 doc. |
-| **Rate limits** | ELTE / hallgato may throttle frequent `GetNewTokens`; 3–4 min interval is a balance — monitor 429 / errors in testing. |
+| **Rate limits** | ELTE / hallgato may throttle frequent `GetNewTokens`; **3 min 30 s** interval is a balance — monitor 429 / errors in testing. |
 | **Device session length** | Longer-lived sessions on device if wall-clock is removed — user stays “logged in” until refresh dies or manual logout. |
 | **Background** | With default Settings, cannot refresh while killed; optional background keep-alive is best-effort and OS-deferred — user may still need TOTP after long absence. |
 | **Optional background** | Battery drain, task cancellation, uneven ELTE load if intervals too aggressive — see [Optional background keep-alive](#optional-background-keep-alive-settings-default-off). |
@@ -221,7 +224,7 @@ Wall-clock removed; tokens in `flutter_secure_storage` (`DataCache`).
 
 ## Explicitly out of scope (v1 core)
 
-**v1 core** shipping criteria = foreground **3–4 min** `GetNewTokens` + planned wall-clock removal + cold-start token gating. Do **not** require for v1 core:
+**v1 core** shipping criteria = foreground **3 min 30 s** `GetNewTokens` + wall-clock removal + cold-start token gating. Do **not** require for v1 core:
 
 - Auto-2FA / stored TOTP seed
 - **Enabled-by-default** background keep-alive (optional toggle shipped **1.5.7**, default off — [Optional background keep-alive](#optional-background-keep-alive-settings-default-off))

@@ -207,7 +207,7 @@ campus_map_research/
 
 ## 12. Second-pass checklist (if needed)
 
-- [ ] In system Chrome, open South/North BIS and compute a visible A→B route.
-- [ ] Re-run in-tab capture of successful `routing.route` (+ any tile/GeoJSON assets).
-- [ ] Export corridor / graph layers if any appear under Network.
+- [~] In system Chrome, open South/North BIS and compute a visible A→B route — **deferred / won't-block Phase A** (MVP graphs are self-digitized).
+- [~] Re-run in-tab capture of successful `routing.route` (+ any tile/GeoJSON assets) — **deferred / won't-block Phase A**.
+- [~] Export corridor / graph layers if any appear under Network — **deferred / won't-block Phase A**.
 - [ ] Crop map-only screenshots into `bis/screenshots/` (no bookmarks bar).

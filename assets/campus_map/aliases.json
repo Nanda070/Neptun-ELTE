@@ -1,0 +1,3123 @@
+{
+  "schemaVersion": 1,
+  "packageKind": "aliases",
+  "generatedAt": "2026-09-16",
+  "notes": "Named-hall and free-text search strings → roomId/nodeId. Neptun codes live in joins_*.json.",
+  "aliasCount": 346,
+  "aliases": [
+    {
+      "alias": "Adatbazis labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-807",
+      "nodeId": "ld-n-ld-f-1-room-00-807",
+      "codeBis": "00-807",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Adatbázis labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-807",
+      "nodeId": "ld-n-ld-f-1-room-00-807",
+      "codeBis": "00-807",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Alk. Analizis tanszek",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-719",
+      "nodeId": "ld-n-ld-f3-room-3-719",
+      "codeBis": "3-719",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Alk. Analízis tanszék",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-719",
+      "nodeId": "ld-n-ld-f3-room-3-719",
+      "codeBis": "3-719",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Allatrendsz. lab. - Loksa terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-104",
+      "nodeId": "ld-n-ld-f7-room-7-104",
+      "codeBis": "7-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Allatszervezettani anatomiai labor I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-103",
+      "nodeId": "ld-n-ld-f6-room-6-103",
+      "codeBis": "6-103",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Allatszervezettani anatomiai labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-426",
+      "nodeId": "ld-n-ld-f7-room-7-426",
+      "codeBis": "7-426",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Allatszervezettani anatómiai labor I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-103",
+      "nodeId": "ld-n-ld-f6-room-6-103",
+      "codeBis": "6-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Allatszervezettani anatómiai labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-426",
+      "nodeId": "ld-n-ld-f7-room-7-426",
+      "codeBis": "7-426",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Allatszervezettani szovettani labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-502",
+      "nodeId": "ld-n-ld-f6-room-6-502",
+      "codeBis": "6-502",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Analizis tanszek",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-306",
+      "nodeId": "ld-n-ld-f3-room-3-306",
+      "codeBis": "3-306",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Analízis tanszék",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-306",
+      "nodeId": "ld-n-ld-f3-room-3-306",
+      "codeBis": "3-306",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Andreanszky Gabor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-103",
+      "nodeId": "ld-n-ld-f7-room-7-103",
+      "codeBis": "7-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Andreanszky Gábor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-103",
+      "nodeId": "ld-n-ld-f7-room-7-103",
+      "codeBis": "7-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Asvanyhatarozasi laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-620",
+      "nodeId": "ld-n-ld-f-1-room-00-620",
+      "codeBis": "00-620",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Asvanyhatarozasi laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-620",
+      "nodeId": "ld-n-ld-f-1-room-00-620",
+      "codeBis": "00-620",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Asvanytan - zart terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-708",
+      "nodeId": "ld-n-ld-f-1-room-00-708",
+      "codeBis": "00-708",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Asvanytani optikai gyakorlo",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-705",
+      "nodeId": "ld-n-ld-f-1-room-00-705",
+      "codeBis": "00-705",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Asvanytani optikai gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-705",
+      "nodeId": "ld-n-ld-f-1-room-00-705",
+      "codeBis": "00-705",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bioinformatikai terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-412",
+      "nodeId": "ld-n-ld-f7-room-7-412",
+      "codeBis": "7-412",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biokemia laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-106",
+      "nodeId": "ld-n-ld-f5-room-5-106",
+      "codeBis": "5-106",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Biokemia laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-106",
+      "nodeId": "ld-n-ld-f5-room-5-106",
+      "codeBis": "5-106",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biokémia laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-106",
+      "nodeId": "ld-n-ld-f5-room-5-106",
+      "codeBis": "5-106",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biologia szakmodsz. csop. labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-219",
+      "nodeId": "ld-n-ld-f7-room-7-219",
+      "codeBis": "7-219",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Biologia szakmodsz. csop. szem. szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-110",
+      "nodeId": "ld-n-ld-f7-room-7-110",
+      "codeBis": "7-110",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Biologiai Intezet Tanacsterem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-411",
+      "nodeId": "ld-n-ld-f7-room-7-411",
+      "codeBis": "7-411",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Biológia szakmódsz. csop. labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-219",
+      "nodeId": "ld-n-ld-f7-room-7-219",
+      "codeBis": "7-219",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biológia szakmódsz. csop. szem. szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-110",
+      "nodeId": "ld-n-ld-f7-room-7-110",
+      "codeBis": "7-110",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biológiai Intezet Tanacsterem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-411",
+      "nodeId": "ld-n-ld-f7-room-7-411",
+      "codeBis": "7-411",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Biológiai Intézet Tanácsterem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-411",
+      "nodeId": "ld-n-ld-f7-room-7-411",
+      "codeBis": "7-411",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bolyai",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-821",
+      "nodeId": "ld-n-ld-f0-room-0-821",
+      "codeBis": "0-821",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Bolyai Janos",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-821",
+      "nodeId": "ld-n-ld-f0-room-0-821",
+      "codeBis": "0-821",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Bolyai Janos terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-821",
+      "nodeId": "ld-n-ld-f0-room-0-821",
+      "codeBis": "0-821",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bolyai János",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-821",
+      "nodeId": "ld-n-ld-f0-room-0-821",
+      "codeBis": "0-821",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Bolyai János terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-821",
+      "nodeId": "ld-n-ld-f0-room-0-821",
+      "codeBis": "0-821",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "BTCS Szamitogepes labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-424",
+      "nodeId": "ld-n-ld-f7-room-7-424",
+      "codeBis": "7-424",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "BTCS Szamitógepes labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-424",
+      "nodeId": "ld-n-ld-f7-room-7-424",
+      "codeBis": "7-424",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "BTCS Számítógépes labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-424",
+      "nodeId": "ld-n-ld-f7-room-7-424",
+      "codeBis": "7-424",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bulla Bela terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-225",
+      "nodeId": "ld-n-ld-f1-room-1-225",
+      "codeBis": "1-225",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bulla Béla terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-225",
+      "nodeId": "ld-n-ld-f1-room-1-225",
+      "codeBis": "1-225",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Cholnoky Jeno terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-106",
+      "nodeId": "ld-n-ld-f1-room-1-106",
+      "codeBis": "1-106",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "csak elokeszito",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-102",
+      "nodeId": "ld-n-ld-f6-room-6-102",
+      "codeBis": "6-102",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "csak elokészíto",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-102",
+      "nodeId": "ld-n-ld-f6-room-6-102",
+      "codeBis": "6-102",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "csak keresre oszthato",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-204",
+      "nodeId": "ld-n-ld-f3-room-3-204",
+      "codeBis": "3-204",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "csak keresre osztható",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-204",
+      "nodeId": "ld-n-ld-f3-room-3-204",
+      "codeBis": "3-204",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "csak kérésre osztható",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-204",
+      "nodeId": "ld-n-ld-f3-room-3-204",
+      "codeBis": "3-204",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "D 1-817",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-817",
+      "nodeId": "ld-n-ld-f1-room-1-817",
+      "codeBis": "1-817",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "D 3-716",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-716",
+      "nodeId": "ld-n-ld-f3-room-3-716",
+      "codeBis": "3-716",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Deli Hali",
+      "buildingId": "ld",
+      "roomId": null,
+      "nodeId": null,
+      "codeBis": null,
+      "confidence": "heuristic",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Dudich Endre terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-817",
+      "nodeId": "ld-n-ld-f0-room-0-817",
+      "codeBis": "0-817",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Déli Hali",
+      "buildingId": "ld",
+      "roomId": null,
+      "nodeId": null,
+      "codeBis": null,
+      "confidence": "heuristic",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Egyed Laszlo terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-206",
+      "nodeId": "ld-n-ld-f7-room-7-206",
+      "codeBis": "7-206",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Egyed Laszló terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-206",
+      "nodeId": "ld-n-ld-f7-room-7-206",
+      "codeBis": "7-206",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Egyed László terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-206",
+      "nodeId": "ld-n-ld-f7-room-7-206",
+      "codeBis": "7-206",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Elettani gyakorlo I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-107",
+      "nodeId": "ld-n-ld-f6-room-6-107",
+      "codeBis": "6-107",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Elettani gyakorlo II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-106",
+      "nodeId": "ld-n-ld-f6-room-6-106",
+      "codeBis": "6-106",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Elettani gyakorló I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-107",
+      "nodeId": "ld-n-ld-f6-room-6-107",
+      "codeBis": "6-107",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Elettani gyakorló II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-106",
+      "nodeId": "ld-n-ld-f6-room-6-106",
+      "codeBis": "6-106",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Embertani szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-228",
+      "nodeId": "ld-n-ld-f4-room-4-228",
+      "codeBis": "4-228",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Embertani szemináriumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-228",
+      "nodeId": "ld-n-ld-f4-room-4-228",
+      "codeBis": "4-228",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Erdos Pal",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-718",
+      "nodeId": "ld-n-ld-f-1-room-00-718",
+      "codeBis": "00-718",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Erdos Pal terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-718",
+      "nodeId": "ld-n-ld-f-1-room-00-718",
+      "codeBis": "00-718",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Erdos Pál terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-718",
+      "nodeId": "ld-n-ld-f-1-room-00-718",
+      "codeBis": "00-718",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Erdős Pál",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-718",
+      "nodeId": "ld-n-ld-f-1-room-00-718",
+      "codeBis": "00-718",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Etologia laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-207",
+      "nodeId": "ld-n-ld-f6-room-6-207",
+      "codeBis": "6-207",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Etologia szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-218",
+      "nodeId": "ld-n-ld-f6-room-6-218",
+      "codeBis": "6-218",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Etológia laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-207",
+      "nodeId": "ld-n-ld-f6-room-6-207",
+      "codeBis": "6-207",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Etológia szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-218",
+      "nodeId": "ld-n-ld-f6-room-6-218",
+      "codeBis": "6-218",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Etológia szemináriumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-218",
+      "nodeId": "ld-n-ld-f6-room-6-218",
+      "codeBis": "6-218",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Farkas Gabor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-429",
+      "nodeId": "ld-n-ld-f4-room-4-429",
+      "codeBis": "4-429",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Farkas Gyula terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-825",
+      "nodeId": "ld-n-ld-f0-room-0-825",
+      "codeBis": "0-825",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Farkas Gábor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-429",
+      "nodeId": "ld-n-ld-f4-room-4-429",
+      "codeBis": "4-429",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Fejer Lipot",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-805",
+      "nodeId": "ld-n-ld-f0-room-0-805",
+      "codeBis": "0-805",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Fejer Lipot terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-805",
+      "nodeId": "ld-n-ld-f0-room-0-805",
+      "codeBis": "0-805",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Fejer Lipót terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-805",
+      "nodeId": "ld-n-ld-f0-room-0-805",
+      "codeBis": "0-805",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Fejér Lipót",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-805",
+      "nodeId": "ld-n-ld-f0-room-0-805",
+      "codeBis": "0-805",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Fejér Lipót terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-805",
+      "nodeId": "ld-n-ld-f0-room-0-805",
+      "codeBis": "0-805",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "FFI-TF zart",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-225",
+      "nodeId": "ld-n-ld-f1-room-1-225",
+      "codeBis": "1-225",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "FFI-TF zárt",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-225",
+      "nodeId": "ld-n-ld-f1-room-1-225",
+      "codeBis": "1-225",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Foldrajz pc labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-401",
+      "nodeId": "ld-n-ld-f1-room-1-401",
+      "codeBis": "1-401",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Foldrajz pc labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-417",
+      "nodeId": "ld-n-ld-f1-room-1-417",
+      "codeBis": "1-417",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Foldrajz szamitastechnikai labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-313",
+      "nodeId": "ld-n-ld-f1-room-1-313",
+      "codeBis": "1-313",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Friedmann Imre terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-203",
+      "nodeId": "ld-n-ld-f6-room-6-203",
+      "codeBis": "6-203",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Földrajz pc labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-401",
+      "nodeId": "ld-n-ld-f1-room-1-401",
+      "codeBis": "1-401",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Földrajz pc labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-417",
+      "nodeId": "ld-n-ld-f1-room-1-417",
+      "codeBis": "1-417",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Földrajz számítástechnikai labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-313",
+      "nodeId": "ld-n-ld-f1-room-1-313",
+      "codeBis": "1-313",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Gallai Tibor",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-312",
+      "nodeId": "ld-n-ld-f0-room-0-312",
+      "codeBis": "0-312",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Gallai Tibor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-312",
+      "nodeId": "ld-n-ld-f0-room-0-312",
+      "codeBis": "0-312",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Genetika gyakorlo",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-102",
+      "nodeId": "ld-n-ld-f5-room-5-102",
+      "codeBis": "5-102",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Genetika gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-102",
+      "nodeId": "ld-n-ld-f5-room-5-102",
+      "codeBis": "5-102",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Genetika szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-501",
+      "nodeId": "ld-n-ld-f5-room-5-501",
+      "codeBis": "5-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Genetika szemináriumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-501",
+      "nodeId": "ld-n-ld-f5-room-5-501",
+      "codeBis": "5-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geofizika Tsz. szmitogep terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-209",
+      "nodeId": "ld-n-ld-f7-room-7-209",
+      "codeBis": "7-209",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Geofizika Tsz. szmitógep terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-209",
+      "nodeId": "ld-n-ld-f7-room-7-209",
+      "codeBis": "7-209",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geofizika Tsz. szmítógép terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-209",
+      "nodeId": "ld-n-ld-f7-room-7-209",
+      "codeBis": "7-209",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geofizikai laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-309",
+      "nodeId": "ld-n-ld-f7-room-7-309",
+      "codeBis": "7-309",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Geofizikai laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-309",
+      "nodeId": "ld-n-ld-f7-room-7-309",
+      "codeBis": "7-309",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geokemiai szeminarium",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-504",
+      "nodeId": "ld-n-ld-f-1-room-00-504",
+      "codeBis": "00-504",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geokémiai szeminárium",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-504",
+      "nodeId": "ld-n-ld-f-1-room-00-504",
+      "codeBis": "00-504",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Geomorfologiai labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-207",
+      "nodeId": "ld-n-ld-f1-room-1-207",
+      "codeBis": "1-207",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Geomorfológiai labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-207",
+      "nodeId": "ld-n-ld-f1-room-1-207",
+      "codeBis": "1-207",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Grafika labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-219",
+      "nodeId": "ld-n-ld-f2-room-2-219",
+      "codeBis": "2-219",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hajos Gyorgy terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-820",
+      "nodeId": "ld-n-ld-f1-room-1-820",
+      "codeBis": "1-820",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hajós Gyorgy terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-820",
+      "nodeId": "ld-n-ld-f1-room-1-820",
+      "codeBis": "1-820",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hajós György terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-820",
+      "nodeId": "ld-n-ld-f1-room-1-820",
+      "codeBis": "1-820",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hantken Miksa - hallgatoi labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-206",
+      "nodeId": "ld-n-ld-f0-room-0-206",
+      "codeBis": "0-206",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hantken Miksa - hallgatói labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-206",
+      "nodeId": "ld-n-ld-f0-room-0-206",
+      "codeBis": "0-206",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hunfalvy Janos terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-820",
+      "nodeId": "ld-n-ld-f0-room-0-820",
+      "codeBis": "0-820",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hunfalvy János terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-820",
+      "nodeId": "ld-n-ld-f0-room-0-820",
+      "codeBis": "0-820",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "id. Entz Geza terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-104",
+      "nodeId": "ld-n-ld-f6-room-6-104",
+      "codeBis": "6-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "id. Entz Géza terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-104",
+      "nodeId": "ld-n-ld-f6-room-6-104",
+      "codeBis": "6-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Immunologia gyakorlo",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-104",
+      "nodeId": "ld-n-ld-f5-room-5-104",
+      "codeBis": "5-104",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Immunologia szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-202",
+      "nodeId": "ld-n-ld-f5-room-5-202",
+      "codeBis": "5-202",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Immunologia szovettenyeszto labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-103",
+      "nodeId": "ld-n-ld-f5-room-5-103",
+      "codeBis": "5-103",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Immunológia gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-104",
+      "nodeId": "ld-n-ld-f5-room-5-104",
+      "codeBis": "5-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Immunológia szeminariumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-202",
+      "nodeId": "ld-n-ld-f5-room-5-202",
+      "codeBis": "5-202",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Immunológia szemináriumi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-202",
+      "nodeId": "ld-n-ld-f5-room-5-202",
+      "codeBis": "5-202",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Immunológia szovettenyeszto labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-103",
+      "nodeId": "ld-n-ld-f5-room-5-103",
+      "codeBis": "5-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Immunológia szövettenyészto labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-5-103",
+      "nodeId": "ld-n-ld-f5-room-5-103",
+      "codeBis": "5-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Juhasz-Nagy Pal terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-102",
+      "nodeId": "ld-n-ld-f7-room-7-102",
+      "codeBis": "7-102",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Juhász-Nagy Pál terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-102",
+      "nodeId": "ld-n-ld-f7-room-7-102",
+      "codeBis": "7-102",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Karteszi Ferenc",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-220",
+      "nodeId": "ld-n-ld-f0-room-0-220",
+      "codeBis": "0-220",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Karteszi Ferenc terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-220",
+      "nodeId": "ld-n-ld-f0-room-0-220",
+      "codeBis": "0-220",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kitaibel Pal terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-823",
+      "nodeId": "ld-n-ld-f0-room-0-823",
+      "codeBis": "0-823",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kitaibel Pál terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-823",
+      "nodeId": "ld-n-ld-f0-room-0-823",
+      "codeBis": "0-823",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "kizarolag tsz. hasznalatra",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-409",
+      "nodeId": "ld-n-ld-f0-room-0-409",
+      "codeBis": "0-409",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "kizarólag tsz. hasznalatra",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-409",
+      "nodeId": "ld-n-ld-f0-room-0-409",
+      "codeBis": "0-409",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "kizárólag tsz. használatra",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-409",
+      "nodeId": "ld-n-ld-f0-room-0-409",
+      "codeBis": "0-409",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Koch Antal terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-108",
+      "nodeId": "ld-n-ld-f1-room-1-108",
+      "codeBis": "1-108",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "komp. alg.",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-218",
+      "nodeId": "ld-n-ld-f2-room-2-218",
+      "codeBis": "2-218",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Konig",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-311",
+      "nodeId": "ld-n-ld-f0-room-0-311",
+      "codeBis": "0-311",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Konig terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-311",
+      "nodeId": "ld-n-ld-f0-room-0-311",
+      "codeBis": "0-311",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "koz.tsz. zart terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-524",
+      "nodeId": "ld-n-ld-f-1-room-00-524",
+      "codeBis": "00-524",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "koz.tsz. zárt terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-524",
+      "nodeId": "ld-n-ld-f-1-room-00-524",
+      "codeBis": "00-524",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kozetgyakorlo laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-523",
+      "nodeId": "ld-n-ld-f1-room-1-523",
+      "codeBis": "1-523",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Kozetgyakorló laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-523",
+      "nodeId": "ld-n-ld-f1-room-1-523",
+      "codeBis": "1-523",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kozettani gyakorlo",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-501",
+      "nodeId": "ld-n-ld-f0-room-0-501",
+      "codeBis": "0-501",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Kozettani gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-501",
+      "nodeId": "ld-n-ld-f0-room-0-501",
+      "codeBis": "0-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kárteszi Ferenc",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-220",
+      "nodeId": "ld-n-ld-f0-room-0-220",
+      "codeBis": "0-220",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Kárteszi Ferenc terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-220",
+      "nodeId": "ld-n-ld-f0-room-0-220",
+      "codeBis": "0-220",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kőnig",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-311",
+      "nodeId": "ld-n-ld-f0-room-0-311",
+      "codeBis": "0-311",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Kőnig terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-311",
+      "nodeId": "ld-n-ld-f0-room-0-311",
+      "codeBis": "0-311",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kőzettani gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-501",
+      "nodeId": "ld-n-ld-f0-room-0-501",
+      "codeBis": "0-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Loczy Lajos",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-804",
+      "nodeId": "ld-n-ld-f0-room-0-804",
+      "codeBis": "0-804",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Loczy Lajos terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-804",
+      "nodeId": "ld-n-ld-f0-room-0-804",
+      "codeBis": "0-804",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Lóczy Lajos",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-804",
+      "nodeId": "ld-n-ld-f0-room-0-804",
+      "codeBis": "0-804",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Lóczy Lajos terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-804",
+      "nodeId": "ld-n-ld-f0-room-0-804",
+      "codeBis": "0-804",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Matematikai Szakmodszetani csoport",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-715",
+      "nodeId": "ld-n-ld-f3-room-3-715",
+      "codeBis": "3-715",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Matematikai Szakmódszetani csoport",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-715",
+      "nodeId": "ld-n-ld-f3-room-3-715",
+      "codeBis": "3-715",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mauritz Bela terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-524",
+      "nodeId": "ld-n-ld-f-1-room-00-524",
+      "codeBis": "00-524",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mauritz Béla terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-524",
+      "nodeId": "ld-n-ld-f-1-room-00-524",
+      "codeBis": "00-524",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "megszunt",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-516",
+      "nodeId": "ld-n-ld-f3-room-3-516",
+      "codeBis": "3-516",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mendol Tibor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-110",
+      "nodeId": "ld-n-ld-f1-room-1-110",
+      "codeBis": "1-110",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mendöl Tibor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-110",
+      "nodeId": "ld-n-ld-f1-room-1-110",
+      "codeBis": "1-110",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mesterseges Intelligencia labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-520",
+      "nodeId": "ld-n-ld-f2-room-2-520",
+      "codeBis": "2-520",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mesterséges Intelligencia labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-520",
+      "nodeId": "ld-n-ld-f2-room-2-520",
+      "codeBis": "2-520",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Microsoft Labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-124",
+      "nodeId": "ld-n-ld-f2-room-2-124",
+      "codeBis": "2-124",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mikrobiol. gyakorlo - Banhegyi Jozsef terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-730",
+      "nodeId": "ld-n-ld-f6-room-6-730",
+      "codeBis": "6-730",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Mikrobiol. gyakorló - Banhegyi József terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-730",
+      "nodeId": "ld-n-ld-f6-room-6-730",
+      "codeBis": "6-730",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mikrobiol. gyakorló - Bánhegyi József terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-730",
+      "nodeId": "ld-n-ld-f6-room-6-730",
+      "codeBis": "6-730",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Mogyorodi Jozsef terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-822",
+      "nodeId": "ld-n-ld-f0-room-0-822",
+      "codeBis": "0-822",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Mogyoródi József terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-822",
+      "nodeId": "ld-n-ld-f0-room-0-822",
+      "codeBis": "0-822",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Multimedias labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-402",
+      "nodeId": "ld-n-ld-f2-room-2-402",
+      "codeBis": "2-402",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Multimédiás labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-2-402",
+      "nodeId": "ld-n-ld-f2-room-2-402",
+      "codeBis": "2-402",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "nem oszthato",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-108",
+      "nodeId": "ld-n-ld-f6-room-6-108",
+      "codeBis": "6-108",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "nem osztható",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-108",
+      "nodeId": "ld-n-ld-f6-room-6-108",
+      "codeBis": "6-108",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novenyelettani laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-108",
+      "nodeId": "ld-n-ld-f4-room-4-108",
+      "codeBis": "4-108",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Novenyelettani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-108",
+      "nodeId": "ld-n-ld-f4-room-4-108",
+      "codeBis": "4-108",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novenyrendszertani laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-501",
+      "nodeId": "ld-n-ld-f7-room-7-501",
+      "codeBis": "7-501",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Novenyrendszertani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-501",
+      "nodeId": "ld-n-ld-f7-room-7-501",
+      "codeBis": "7-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novenyszervezettan labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-502",
+      "nodeId": "ld-n-ld-f4-room-4-502",
+      "codeBis": "4-502",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novenyszervezettani laboratorium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-104",
+      "nodeId": "ld-n-ld-f4-room-4-104",
+      "codeBis": "4-104",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Novenyszervezettani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-104",
+      "nodeId": "ld-n-ld-f4-room-4-104",
+      "codeBis": "4-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Növényrendszertani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-501",
+      "nodeId": "ld-n-ld-f7-room-7-501",
+      "codeBis": "7-501",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Növényszervezettan labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-502",
+      "nodeId": "ld-n-ld-f4-room-4-502",
+      "codeBis": "4-502",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Növényszervezettani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-104",
+      "nodeId": "ld-n-ld-f4-room-4-104",
+      "codeBis": "4-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Növényélettani laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-108",
+      "nodeId": "ld-n-ld-f4-room-4-108",
+      "codeBis": "4-108",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Oktató",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-511",
+      "nodeId": "ld-n-ld-f1-room-1-511",
+      "codeBis": "1-511",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Paal Arpad terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-428",
+      "nodeId": "ld-n-ld-f4-room-4-428",
+      "codeBis": "4-428",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Paál Árpád terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-428",
+      "nodeId": "ld-n-ld-f4-room-4-428",
+      "codeBis": "4-428",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Programozasi Nyelvi labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-803",
+      "nodeId": "ld-n-ld-f-1-room-00-803",
+      "codeBis": "00-803",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Programozási Nyelvi labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-803",
+      "nodeId": "ld-n-ld-f-1-room-00-803",
+      "codeBis": "00-803",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rajzterem - Geometriai tanszek",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-710",
+      "nodeId": "ld-n-ld-f4-room-4-710",
+      "codeBis": "4-710",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rajzterem - Geometriai tanszék",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-710",
+      "nodeId": "ld-n-ld-f4-room-4-710",
+      "codeBis": "4-710",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Renyi Alfred",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-412",
+      "nodeId": "ld-n-ld-f0-room-0-412",
+      "codeBis": "0-412",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Renyi Alfred terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-412",
+      "nodeId": "ld-n-ld-f0-room-0-412",
+      "codeBis": "0-412",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Riesz Frigyes terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-819",
+      "nodeId": "ld-n-ld-f1-room-1-819",
+      "codeBis": "1-819",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rényi",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-412",
+      "nodeId": "ld-n-ld-f0-room-0-412",
+      "codeBis": "0-412",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Rényi Alfréd",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-412",
+      "nodeId": "ld-n-ld-f0-room-0-412",
+      "codeBis": "0-412",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Rényi Alfréd terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-412",
+      "nodeId": "ld-n-ld-f0-room-0-412",
+      "codeBis": "0-412",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sarfalvi Bela terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-105",
+      "nodeId": "ld-n-ld-f1-room-1-105",
+      "codeBis": "1-105",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sarkany Sandor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-206",
+      "nodeId": "ld-n-ld-f4-room-4-206",
+      "codeBis": "4-206",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Soo Rezso terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-818",
+      "nodeId": "ld-n-ld-f0-room-0-818",
+      "codeBis": "0-818",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Soó Rezso terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-818",
+      "nodeId": "ld-n-ld-f0-room-0-818",
+      "codeBis": "0-818",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szabo Jozsef",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-803",
+      "nodeId": "ld-n-ld-f0-room-0-803",
+      "codeBis": "0-803",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Szabo Jozsef eloado",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-803",
+      "nodeId": "ld-n-ld-f0-room-0-803",
+      "codeBis": "0-803",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Szabó József",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-803",
+      "nodeId": "ld-n-ld-f0-room-0-803",
+      "codeBis": "0-803",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Szabó József eloadó",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-803",
+      "nodeId": "ld-n-ld-f0-room-0-803",
+      "codeBis": "0-803",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szamitogeptud.",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-607",
+      "nodeId": "ld-n-ld-f3-room-3-607",
+      "codeBis": "3-607",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Szamitógeptud.",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-607",
+      "nodeId": "ld-n-ld-f3-room-3-607",
+      "codeBis": "3-607",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szeminarium  6 fo",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-404",
+      "nodeId": "ld-n-ld-f1-room-1-404",
+      "codeBis": "1-404",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szeminárium  6 fő",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-404",
+      "nodeId": "ld-n-ld-f1-room-1-404",
+      "codeBis": "1-404",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sztrokay terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-708",
+      "nodeId": "ld-n-ld-f-1-room-00-708",
+      "codeBis": "00-708",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Sztrókay terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-708",
+      "nodeId": "ld-n-ld-f-1-room-00-708",
+      "codeBis": "00-708",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Számítógéptud.",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-607",
+      "nodeId": "ld-n-ld-f3-room-3-607",
+      "codeBis": "3-607",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sárfalvi Béla terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-1-105",
+      "nodeId": "ld-n-ld-f1-room-1-105",
+      "codeBis": "1-105",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sárkány Sándor terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-4-206",
+      "nodeId": "ld-n-ld-f4-room-4-206",
+      "codeBis": "4-206",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "tanszekvezetoi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-215",
+      "nodeId": "ld-n-ld-f0-room-0-215",
+      "codeBis": "0-215",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "tanszékvezetoi szoba",
+      "buildingId": "ld",
+      "roomId": "ld-room-0-215",
+      "nodeId": "ld-n-ld-f0-room-0-215",
+      "codeBis": "0-215",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatoi Alapitvany",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-734",
+      "nodeId": "ld-n-ld-f-1-room-00-734",
+      "codeBis": "00-734",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "TTK Hallgatoi Onkormanyzat",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-732",
+      "nodeId": "ld-n-ld-f-1-room-00-732",
+      "codeBis": "00-732",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "TTK Hallgatói Alapitvany",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-734",
+      "nodeId": "ld-n-ld-f-1-room-00-734",
+      "codeBis": "00-734",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatói Alapítvány",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-734",
+      "nodeId": "ld-n-ld-f-1-room-00-734",
+      "codeBis": "00-734",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatói Onkormanyzat",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-732",
+      "nodeId": "ld-n-ld-f-1-room-00-732",
+      "codeBis": "00-732",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatói Önkormányzat",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-732",
+      "nodeId": "ld-n-ld-f-1-room-00-732",
+      "codeBis": "00-732",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Turan Pal",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-219",
+      "nodeId": "ld-n-ld-f3-room-3-219",
+      "codeBis": "3-219",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Turan Pal terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-219",
+      "nodeId": "ld-n-ld-f3-room-3-219",
+      "codeBis": "3-219",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Turán Pál",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-219",
+      "nodeId": "ld-n-ld-f3-room-3-219",
+      "codeBis": "3-219",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Turán Pál terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-219",
+      "nodeId": "ld-n-ld-f3-room-3-219",
+      "codeBis": "3-219",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "UNIX labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-107",
+      "nodeId": "ld-n-ld-f3-room-3-107",
+      "codeBis": "3-107",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Valoszin.es Stat. tanszek",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-316",
+      "nodeId": "ld-n-ld-f3-room-3-316",
+      "codeBis": "3-316",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Valószin.es Stat. tanszek",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-316",
+      "nodeId": "ld-n-ld-f3-room-3-316",
+      "codeBis": "3-316",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Valószín.és Stat. tanszék",
+      "buildingId": "ld",
+      "roomId": "ld-room-3-316",
+      "nodeId": "ld-n-ld-f3-room-3-316",
+      "codeBis": "3-316",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Vizes labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-423",
+      "nodeId": "ld-n-ld-f7-room-7-423",
+      "codeBis": "7-423",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Állatrendsz. lab. - Loksa terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-104",
+      "nodeId": "ld-n-ld-f7-room-7-104",
+      "codeBis": "7-104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Állatszervezettani anatómiai labor I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-103",
+      "nodeId": "ld-n-ld-f6-room-6-103",
+      "codeBis": "6-103",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Állatszervezettani anatómiai labor II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-7-426",
+      "nodeId": "ld-n-ld-f7-room-7-426",
+      "codeBis": "7-426",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Állatszervezettani szövettani labor",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-502",
+      "nodeId": "ld-n-ld-f6-room-6-502",
+      "codeBis": "6-502",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Ásványhatározási laboratórium",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-620",
+      "nodeId": "ld-n-ld-f-1-room-00-620",
+      "codeBis": "00-620",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Ásványtan - zárt terem",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-708",
+      "nodeId": "ld-n-ld-f-1-room-00-708",
+      "codeBis": "00-708",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Ásványtani optikai gyakorló",
+      "buildingId": "ld",
+      "roomId": "ld-room-00-705",
+      "nodeId": "ld-n-ld-f-1-room-00-705",
+      "codeBis": "00-705",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Élettani gyakorló I.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-107",
+      "nodeId": "ld-n-ld-f6-room-6-107",
+      "codeBis": "6-107",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Élettani gyakorló II.",
+      "buildingId": "ld",
+      "roomId": "ld-room-6-106",
+      "nodeId": "ld-n-ld-f6-room-6-106",
+      "codeBis": "6-106",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Alt. Fiz. Tsz. Tanacsterme",
+      "buildingId": "le",
+      "roomId": "le-room-4_70",
+      "nodeId": "le-n-le-f4-room-4_70",
+      "codeBis": "4.70",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bekesy Gyorgy",
+      "buildingId": "le",
+      "roomId": "le-room-3_67",
+      "nodeId": "le-n-le-f3-room-3_67",
+      "codeBis": "3.67",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Bruckner terem",
+      "buildingId": "le",
+      "roomId": "le-room-063",
+      "nodeId": "le-n-le-f0-room-063",
+      "codeBis": "063",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Buzagh-labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_126",
+      "nodeId": "le-n-le-f2-room-2_126",
+      "codeBis": "2.126",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Buzágh-labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_126",
+      "nodeId": "le-n-le-f2-room-2_126",
+      "codeBis": "2.126",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Békésy György",
+      "buildingId": "le",
+      "roomId": "le-room-3_67",
+      "nodeId": "le-n-le-f3-room-3_67",
+      "codeBis": "3.67",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Cseh-Szombathy",
+      "buildingId": "le",
+      "roomId": "le-room-0_100B",
+      "nodeId": "le-n-le-f0-room-0_100B",
+      "codeBis": "0.100B",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Csillagaszati Tsz. szamitogepes labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_118",
+      "nodeId": "le-n-le-f6-room-6_118",
+      "codeBis": "6.118",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Csillagaszati Tsz. szamitógepes labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_118",
+      "nodeId": "le-n-le-f6-room-6_118",
+      "codeBis": "6.118",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Csillagászati Tsz. számítógépes labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_118",
+      "nodeId": "le-n-le-f6-room-6_118",
+      "codeBis": "6.118",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "D12 labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_121",
+      "nodeId": "le-n-le-f6-room-6_121",
+      "codeBis": "6.121",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Detre Laszlo terem",
+      "buildingId": "le",
+      "roomId": "le-room-6_88",
+      "nodeId": "le-n-le-f6-room-6_88",
+      "codeBis": "6.88",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Detre Laszló terem",
+      "buildingId": "le",
+      "roomId": "le-room-6_88",
+      "nodeId": "le-n-le-f6-room-6_88",
+      "codeBis": "6.88",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Detre László terem",
+      "buildingId": "le",
+      "roomId": "le-room-6_88",
+      "nodeId": "le-n-le-f6-room-6_88",
+      "codeBis": "6.88",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Elektronikai laboratorium",
+      "buildingId": "le",
+      "roomId": "le-room-5_87",
+      "nodeId": "le-n-le-f5-room-5_87",
+      "codeBis": "5.87",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Elektronikai laboratórium",
+      "buildingId": "le",
+      "roomId": "le-room-5_87",
+      "nodeId": "le-n-le-f5-room-5_87",
+      "codeBis": "5.87",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Eotvos",
+      "buildingId": "le",
+      "roomId": "le-room-0_83",
+      "nodeId": "le-n-le-f0-room-0_83",
+      "codeBis": "0.83",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Eotvos terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_83",
+      "nodeId": "le-n-le-f0-room-0_83",
+      "codeBis": "0.83",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Eszaki Hali",
+      "buildingId": "le",
+      "roomId": "le-room-0_100D",
+      "nodeId": "le-n-le-f0-room-0_100D",
+      "codeBis": "0.100D",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Eötvös",
+      "buildingId": "le",
+      "roomId": "le-room-0_83",
+      "nodeId": "le-n-le-f0-room-0_83",
+      "codeBis": "0.83",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Eötvös terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_83",
+      "nodeId": "le-n-le-f0-room-0_83",
+      "codeBis": "0.83",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "F4 Szeminarium",
+      "buildingId": "le",
+      "roomId": "le-room-6_101",
+      "nodeId": "le-n-le-f6-room-6_101",
+      "codeBis": "6.101",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "F4 Szeminárium",
+      "buildingId": "le",
+      "roomId": "le-room-6_101",
+      "nodeId": "le-n-le-f6-room-6_101",
+      "codeBis": "6.101",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "F5 Szeminarium",
+      "buildingId": "le",
+      "roomId": "le-room-6_53",
+      "nodeId": "le-n-le-f6-room-6_53",
+      "codeBis": "6.53",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "F5 Szeminárium",
+      "buildingId": "le",
+      "roomId": "le-room-6_53",
+      "nodeId": "le-n-le-f6-room-6_53",
+      "codeBis": "6.53",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "F6 Szeminarium",
+      "buildingId": "le",
+      "roomId": "le-room-6_85",
+      "nodeId": "le-n-le-f6-room-6_85",
+      "codeBis": "6.85",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "F6 Szeminárium",
+      "buildingId": "le",
+      "roomId": "le-room-6_85",
+      "nodeId": "le-n-le-f6-room-6_85",
+      "codeBis": "6.85",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "GIS Labor",
+      "buildingId": "le",
+      "roomId": "le-room-7_57",
+      "nodeId": "le-n-le-f7-room-7_57",
+      "codeBis": "7.57",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Groh terem",
+      "buildingId": "le",
+      "roomId": "le-room-062",
+      "nodeId": "le-n-le-f0-room-062",
+      "codeBis": "062",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Gróh terem",
+      "buildingId": "le",
+      "roomId": "le-room-062",
+      "nodeId": "le-n-le-f0-room-062",
+      "codeBis": "062",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Gyogyszeresz labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_113",
+      "nodeId": "le-n-le-f2-room-2_113",
+      "codeBis": "2.113",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Gyógyszeresz labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_113",
+      "nodeId": "le-n-le-f2-room-2_113",
+      "codeBis": "2.113",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Gyógyszerész labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_113",
+      "nodeId": "le-n-le-f2-room-2_113",
+      "codeBis": "2.113",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "hajoorr",
+      "buildingId": "le",
+      "roomId": "le-room-115",
+      "nodeId": "le-n-le-f1-room-115",
+      "codeBis": "115",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "hajóorr",
+      "buildingId": "le",
+      "roomId": "le-room-115",
+      "nodeId": "le-n-le-f1-room-115",
+      "codeBis": "115",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Hallgatoi Labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_105",
+      "nodeId": "le-n-le-f6-room-6_105",
+      "codeBis": "6.105",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatoi Laboratorium \"B\"",
+      "buildingId": "le",
+      "roomId": "le-room-2_77",
+      "nodeId": "le-n-le-f2-room-2_77",
+      "codeBis": "2.77",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatoi laboratorium \"C\".",
+      "buildingId": "le",
+      "roomId": "le-room-5_81",
+      "nodeId": "le-n-le-f5-room-5_81",
+      "codeBis": "5.81",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatoi Laboratorium III. Eves",
+      "buildingId": "le",
+      "roomId": "le-room-5_129",
+      "nodeId": "le-n-le-f5-room-5_129",
+      "codeBis": "5.129",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatói Labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_105",
+      "nodeId": "le-n-le-f6-room-6_105",
+      "codeBis": "6.105",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatói Laboratórium \"B\"",
+      "buildingId": "le",
+      "roomId": "le-room-2_77",
+      "nodeId": "le-n-le-f2-room-2_77",
+      "codeBis": "2.77",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatói laboratórium \"C\".",
+      "buildingId": "le",
+      "roomId": "le-room-5_81",
+      "nodeId": "le-n-le-f5-room-5_81",
+      "codeBis": "5.81",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Hallgatói Laboratórium III. Éves",
+      "buildingId": "le",
+      "roomId": "le-room-5_129",
+      "nodeId": "le-n-le-f5-room-5_129",
+      "codeBis": "5.129",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Harmonia terem",
+      "buildingId": "le",
+      "roomId": "le-room-_1_85",
+      "nodeId": "le-n-le-f-1-room-_1_85",
+      "codeBis": "-1.85",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Harmónia terem",
+      "buildingId": "le",
+      "roomId": "le-room-_1_85",
+      "nodeId": "le-n-le-f-1-room-_1_85",
+      "codeBis": "-1.85",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Informaciotechnologiai Lab",
+      "buildingId": "le",
+      "roomId": "le-room-5_84",
+      "nodeId": "le-n-le-f5-room-5_84",
+      "codeBis": "5.84",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Informaciotechnologiai laboratorium",
+      "buildingId": "le",
+      "roomId": "le-room-5_56",
+      "nodeId": "le-n-le-f5-room-5_56",
+      "codeBis": "5.56",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Informaciótechnológiai Lab",
+      "buildingId": "le",
+      "roomId": "le-room-5_84",
+      "nodeId": "le-n-le-f5-room-5_84",
+      "codeBis": "5.84",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Informaciótechnólógiai laboratórium",
+      "buildingId": "le",
+      "roomId": "le-room-5_56",
+      "nodeId": "le-n-le-f5-room-5_56",
+      "codeBis": "5.56",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Információtechnológiai Lab",
+      "buildingId": "le",
+      "roomId": "le-room-5_84",
+      "nodeId": "le-n-le-f5-room-5_84",
+      "codeBis": "5.84",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Információtechnólógiai laboratórium",
+      "buildingId": "le",
+      "roomId": "le-room-5_56",
+      "nodeId": "le-n-le-f5-room-5_56",
+      "codeBis": "5.56",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Janossy Lajos terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_79",
+      "nodeId": "le-n-le-f0-room-0_79",
+      "codeBis": "0.79",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Jedlik Anyos terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_89",
+      "nodeId": "le-n-le-f0-room-0_89",
+      "codeBis": "0.89",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Jedlik Ányos terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_89",
+      "nodeId": "le-n-le-f0-room-0_89",
+      "codeBis": "0.89",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Jánossy Lajos terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_79",
+      "nodeId": "le-n-le-f0-room-0_79",
+      "codeBis": "0.79",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kajtar terem",
+      "buildingId": "le",
+      "roomId": "le-room-060",
+      "nodeId": "le-n-le-f0-room-060",
+      "codeBis": "060",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kajtár terem",
+      "buildingId": "le",
+      "roomId": "le-room-060",
+      "nodeId": "le-n-le-f0-room-060",
+      "codeBis": "060",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Karman labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_133",
+      "nodeId": "le-n-le-f2-room-2_133",
+      "codeBis": "2.133",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Klasszikus fizikai labor",
+      "buildingId": "le",
+      "roomId": "le-room-5_138",
+      "nodeId": "le-n-le-f5-room-5_138",
+      "codeBis": "5.138",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Konferenciaterem",
+      "buildingId": "le",
+      "roomId": "le-room-_1_75",
+      "nodeId": "le-n-le-f-1-room-_1_75",
+      "codeBis": "-1.75",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Kármán labor",
+      "buildingId": "le",
+      "roomId": "le-room-2_133",
+      "nodeId": "le-n-le-f2-room-2_133",
+      "codeBis": "2.133",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Labor",
+      "buildingId": "le",
+      "roomId": "le-room-3_114",
+      "nodeId": "le-n-le-f3-room-3_114",
+      "codeBis": "3.114",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "laborok",
+      "buildingId": "le",
+      "roomId": "le-room-109_114",
+      "nodeId": "le-n-le-f1-room-109_114",
+      "codeBis": "109-114",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Marx terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_87",
+      "nodeId": "le-n-le-f0-room-0_87",
+      "codeBis": "0.87",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Meteorologia tsz. labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_129",
+      "nodeId": "le-n-le-f6-room-6_129",
+      "codeBis": "6.129",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Meteorológia tsz. labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_129",
+      "nodeId": "le-n-le-f6-room-6_129",
+      "codeBis": "6.129",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "modszertan",
+      "buildingId": "le",
+      "roomId": "le-room-202",
+      "nodeId": "le-n-le-f2-room-202",
+      "codeBis": "202",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "MsLabor",
+      "buildingId": "le",
+      "roomId": "le-room-7_15",
+      "nodeId": "le-n-le-f7-room-7_15",
+      "codeBis": "7.15",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "módszertan",
+      "buildingId": "le",
+      "roomId": "le-room-202",
+      "nodeId": "le-n-le-f2-room-202",
+      "codeBis": "202",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Nemeskeri",
+      "buildingId": "le",
+      "roomId": "le-room-6_80",
+      "nodeId": "le-n-le-f6-room-6_80",
+      "codeBis": "6.80",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Nemeskéri",
+      "buildingId": "le",
+      "roomId": "le-room-6_80",
+      "nodeId": "le-n-le-f6-room-6_80",
+      "codeBis": "6.80",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "NMR laboratorium",
+      "buildingId": "le",
+      "roomId": "le-room-039",
+      "nodeId": "le-n-le-f0-room-039",
+      "codeBis": "039",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "NMR laboratórium",
+      "buildingId": "le",
+      "roomId": "le-room-039",
+      "nodeId": "le-n-le-f0-room-039",
+      "codeBis": "039",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Noi mosdo",
+      "buildingId": "le",
+      "roomId": "le-room-0_99",
+      "nodeId": "le-n-le-f0-room-0_99",
+      "codeBis": "0.99",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Noi mosdó",
+      "buildingId": "le",
+      "roomId": "le-room-0_99",
+      "nodeId": "le-n-le-f0-room-0_99",
+      "codeBis": "0.99",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novobatzky Karoly terem",
+      "buildingId": "le",
+      "roomId": "le-room-2_54",
+      "nodeId": "le-n-le-f2-room-2_54",
+      "codeBis": "2.54",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Novobátzky Károly terem",
+      "buildingId": "le",
+      "roomId": "le-room-2_54",
+      "nodeId": "le-n-le-f2-room-2_54",
+      "codeBis": "2.54",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Női mosdó",
+      "buildingId": "le",
+      "roomId": "le-room-0_99",
+      "nodeId": "le-n-le-f0-room-0_99",
+      "codeBis": "0.99",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Oktatoi",
+      "buildingId": "le",
+      "roomId": "le-room-7_54",
+      "nodeId": "le-n-le-f7-room-7_54",
+      "codeBis": "7.54",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Oktatói",
+      "buildingId": "le",
+      "roomId": "le-room-7_54",
+      "nodeId": "le-n-le-f7-room-7_54",
+      "codeBis": "7.54",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Optikai es Szamitastechnikai labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_104",
+      "nodeId": "le-n-le-f6-room-6_104",
+      "codeBis": "6.104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Optikai és Számítástechnikai labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_104",
+      "nodeId": "le-n-le-f6-room-6_104",
+      "codeBis": "6.104",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Ortvay",
+      "buildingId": "le",
+      "roomId": "le-room-0_81",
+      "nodeId": "le-n-le-f0-room-0_81",
+      "codeBis": "0.81",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Ortvay Rudolf",
+      "buildingId": "le",
+      "roomId": "le-room-0_81",
+      "nodeId": "le-n-le-f0-room-0_81",
+      "codeBis": "0.81",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Ortvay terem",
+      "buildingId": "le",
+      "roomId": "le-room-0_81",
+      "nodeId": "le-n-le-f0-room-0_81",
+      "codeBis": "0.81",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Pocza Jeno",
+      "buildingId": "le",
+      "roomId": "le-room-1_71",
+      "nodeId": "le-n-le-f1-room-1_71",
+      "codeBis": "1.71",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Pocza Jeno terem",
+      "buildingId": "le",
+      "roomId": "le-room-1_71",
+      "nodeId": "le-n-le-f1-room-1_71",
+      "codeBis": "1.71",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Pócza Jeno terem",
+      "buildingId": "le",
+      "roomId": "le-room-1_71",
+      "nodeId": "le-n-le-f1-room-1_71",
+      "codeBis": "1.71",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Pócza Jenő",
+      "buildingId": "le",
+      "roomId": "le-room-1_71",
+      "nodeId": "le-n-le-f1-room-1_71",
+      "codeBis": "1.71",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Pócza Jenő terem",
+      "buildingId": "le",
+      "roomId": "le-room-1_71",
+      "nodeId": "le-n-le-f1-room-1_71",
+      "codeBis": "1.71",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rajzterem",
+      "buildingId": "le",
+      "roomId": "le-room-7_87",
+      "nodeId": "le-n-le-f7-room-7_87",
+      "codeBis": "7.87",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Ruff terem",
+      "buildingId": "le",
+      "roomId": "le-room-058",
+      "nodeId": "le-n-le-f0-room-058",
+      "codeBis": "058",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rybar Istvan",
+      "buildingId": "le",
+      "roomId": "le-room-_1_64",
+      "nodeId": "le-n-le-f-1-room-_1_64",
+      "codeBis": "-1.64",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Rybar Istvan terem",
+      "buildingId": "le",
+      "roomId": "le-room-_1_64",
+      "nodeId": "le-n-le-f-1-room-_1_64",
+      "codeBis": "-1.64",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Rybár István",
+      "buildingId": "le",
+      "roomId": "le-room-_1_64",
+      "nodeId": "le-n-le-f-1-room-_1_64",
+      "codeBis": "-1.64",
+      "confidence": "manual",
+      "source": "manual_seed"
+    },
+    {
+      "alias": "Rybár István terem",
+      "buildingId": "le",
+      "roomId": "le-room-_1_64",
+      "nodeId": "le-n-le-f-1-room-_1_64",
+      "codeBis": "-1.64",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "SPSS-labor",
+      "buildingId": "le",
+      "roomId": "le-room-6_79",
+      "nodeId": "le-n-le-f6-room-6_79",
+      "codeBis": "6.79",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Sulinet labor",
+      "buildingId": "le",
+      "roomId": "le-room-7_13",
+      "nodeId": "le-n-le-f7-room-7_13",
+      "codeBis": "7.13",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szebehely Gyozo terem",
+      "buildingId": "le",
+      "roomId": "le-room-6_100",
+      "nodeId": "le-n-le-f6-room-6_100",
+      "codeBis": "6.100",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szeminarium",
+      "buildingId": "le",
+      "roomId": "le-room-2_104",
+      "nodeId": "le-n-le-f2-room-2_104",
+      "codeBis": "2.104",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Szeminárium",
+      "buildingId": "le",
+      "roomId": "le-room-2_104",
+      "nodeId": "le-n-le-f2-room-2_104",
+      "codeBis": "2.104",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Szerves Kem. Lab.",
+      "buildingId": "le",
+      "roomId": "le-room-4_97",
+      "nodeId": "le-n-le-f4-room-4_97",
+      "codeBis": "4.97",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Szerves Kém. Lab.",
+      "buildingId": "le",
+      "roomId": "le-room-4_97",
+      "nodeId": "le-n-le-f4-room-4_97",
+      "codeBis": "4.97",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TaTK kari tanacsterem",
+      "buildingId": "le",
+      "roomId": "le-room-0_100C",
+      "nodeId": "le-n-le-f0-room-0_100C",
+      "codeBis": "0.100C",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Terem",
+      "buildingId": "le",
+      "roomId": "le-room-7_59",
+      "nodeId": "le-n-le-f7-room-7_59",
+      "codeBis": "7.59",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "Than Karoly terem",
+      "buildingId": "le",
+      "roomId": "le-room-065",
+      "nodeId": "le-n-le-f0-room-065",
+      "codeBis": "065",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Than Károly terem",
+      "buildingId": "le",
+      "roomId": "le-room-065",
+      "nodeId": "le-n-le-f0-room-065",
+      "codeBis": "065",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatoi Onkormanyzat",
+      "buildingId": "le",
+      "roomId": "le-room-0_75",
+      "nodeId": "le-n-le-f0-room-0_75",
+      "codeBis": "0.75",
+      "confidence": "exact",
+      "source": "graph.room.name"
+    },
+    {
+      "alias": "TTK Hallgatói Onkormanyzat",
+      "buildingId": "le",
+      "roomId": "le-room-0_75",
+      "nodeId": "le-n-le-f0-room-0_75",
+      "codeBis": "0.75",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TTK Hallgatói Önkormányzat",
+      "buildingId": "le",
+      "roomId": "le-room-0_75",
+      "nodeId": "le-n-le-f0-room-0_75",
+      "codeBis": "0.75",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "TáTK kari tanácsterem",
+      "buildingId": "le",
+      "roomId": "le-room-0_100C",
+      "nodeId": "le-n-le-f0-room-0_100C",
+      "codeBis": "0.100C",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Ált. Fiz. Tsz. Tanácsterme",
+      "buildingId": "le",
+      "roomId": "le-room-4_70",
+      "nodeId": "le-n-le-f4-room-4_70",
+      "codeBis": "4.70",
+      "confidence": "exact",
+      "source": "graph.room.aliases"
+    },
+    {
+      "alias": "Északi Hali",
+      "buildingId": "le",
+      "roomId": "le-room-0_100D",
+      "nodeId": "le-n-le-f0-room-0_100D",
+      "codeBis": "0.100D",
+      "confidence": "manual",
+      "source": "manual_seed"
+    }
+  ]
+}

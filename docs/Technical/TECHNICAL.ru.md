@@ -56,7 +56,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 - Экран setup — **хаб ELTE**: одна кнопка → логин (без списка вузов и без ручного URL).
 - ELTE — **центральный** портал (`neptun.elte.hu` / логин + News). **Нет** `/ujhallgato` как у Óbuda/BME. После логина **Student web** идёт через `/ToNeptunWeb/ToNeptunHWeb` на один из одинаковых HWEB-хостов: **`hallgato1`…`hallgatoN.neptun.elte.hu`** (балансировка; напр. `hallgato4`). Приложение логинится на **портале**, затем ставит institute URL на назначенный **`hallgatoN`** и зовёт modern JWT REST **там**. `N` не хардкодить.
 - Display name: **Neptun ELTE**.
-- Версия (`pubspec.yaml`): **1.5.12+1** — для пользователя / Settings / docs = **1.5.12** (см. [Версионирование](#версионирование) ниже).
+- Версия (`pubspec.yaml`): **1.6.0+1** — для пользователя / Settings / docs = **1.6.0** (см. [Версионирование](#версионирование) ниже).
 - Dart-пакет: `neptun2` (импорты `package:neptun2/...`).
 - Языки UI: **EN** (дефолт) и **HU** вшиты; **RU** и **TR** качаются с GitHub.
 - Платформы: **Android** и **iOS**. Web / Windows / macOS / Linux в репо **нет** (linux/ удалён).
@@ -68,7 +68,7 @@ UI-макеты (Figma, не код приложения): [Neptun ELTE — UI M
 
 Политика владельца (**Nanda**). **Маркетинговая / пользовательская версия — всегда три числа `1.x.y`.** Не считать Flutter `+build` (напр. старый `+21`) «версией продукта» в Settings, README или разговоре с пользователем.
 
-Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.5.12`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
+Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.yaml` для магазинов. Предпочтительно **`1.x.y+1`**. Больший `+N` — только если Android требует монотонный `versionCode`; **не** рекламировать `+N` как версию продукта. Settings показывает только **`info.version`** (напр. `1.6.0`). Зеркалить `build-name` в iOS `MARKETING_VERSION` / Android `versionName`.
 
 Схема: **`1.<feature-line>.<patch>`**
 
@@ -78,7 +78,8 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.3.0** | Линия **3** = пункты плана **1–3** (кэш сессии, markbook math, полосы календаря). |
 | **1.3.3** | Линия 3 + патч мгновенного «сессия истекла» после 2FA (`SessionGuard`, grace / stale wall-clock). |
 | **1.3.4** | Линия 3 + п. плана **4** — локальный поиск почты + чип непрочитанных (`filterType=0` остаётся честным к API). |
-| **1.5.12** | **Текущая.** Патч — iOS внешние Maps для LD/LE/LK: native `maps:` URI (+ https fallback), `maps`/`comgooglemaps` в `LSApplicationQueriesSchemes`, **Открыть карту** всегда видно (не только после decode), `TextButton` чтобы тап строки списка не перехватывал. Тег **v1.5.12**. |
+| **1.6.0** | **Текущая.** Feature-line **6** — **фаза B** indoor-карты: pre-login Map, LD/LE, этажи, поиск, A→B Dijkstra, пакет в `assets/campus_map/`. Basemap permission всё ещё **pending**. Тег **v1.6.0**. |
+| **1.5.12** | Патч — iOS внешние Maps для LD/LE/LK: native `maps:` URI (+ https fallback), `maps`/`comgooglemaps` в `LSApplicationQueriesSchemes`, **Открыть карту** всегда видно (не только после decode), `TextButton` чтобы тап строки списка не перехватывал. Тег **v1.5.12**. |
 | **1.5.11** | Патч — **фаза A (0–6)** indoor-карты кампуса: docs/data готовы (MVP-пакет + QA **41 pass / 0 fail / 2 waive**); синхронизация честности (в приложении ещё нет indoor A→B; Flutter фаза B отложена; разрешение JPG basemap **pending** / не бандлить artwork в APK). Бинарь той же продуктовой линии, что **1.5.10** (надёжность сессии) + тег для device/GitHub. Тег **v1.5.11**. |
 | **1.5.10** | Патч — надёжность session maintenance: убран WorkManager / BGFetch **`requiresDeviceIdle`** (в 1.5.9 idle почти блокировал все фоновые запуски); сеть + battery-not-low + период **45 мин** + Android initial delay **15 мин**; на `resumed` **сразу** `GetNewTokens` и refresh календаря/почты; remember-password сохраняет пароль и при **ручном** Log out. Тег **v1.5.10**. |
 | **1.5.9** | Патч — щадящий для батареи опциональный **фоновый hallgato keep-alive**: Android WorkManager **45 мин** (было 15) + сеть + `requiresBatteryNotLow` + `requiresDeviceIdle` (без обязательной зарядки); iOS Background Fetch минимум **45 мин**; отмена OS-задач в `resumed`; coalesce, если последний успешный `GetNewTokens` был в течение **25 мин**. Тег **v1.5.9**. |
@@ -94,7 +95,7 @@ Flutter по-прежнему нужен формат `x.y.z+build` в `pubspec.
 | **1.4.0** | Feature-line **4** — пункты плана **5–9** + **12–13** (ghost what-if, календарь today/ZH/ICS export/гранулярность пар, честность платежей, deep-link карт, «Что изменилось», студенческий заявка/банк/профиль **без QR**, home shortcuts). |
 | **1.3.2** | Линия 3 + патч чёрного экрана после 2FA (`app_navigator`). |
 | **1.3.1** | Линия 3 + патч auth / 2FA / messaging Student-web-full. |
-| **1.5.12**, … | Дальнейшие патчи на линии **5**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
+| **1.6.x**, … | Патчи на линии **6**. Следующий крупный блок → **1.7.0**. Следующий крупный блок после **1.5.x** → **1.6.0** (или **2.0.0**, если это финальный/RC срез). |
 | **2.0.0** | Финальная / release-candidate линия. Всё до неё — только **1.x.y**. |
 
 При релизе поднимать `pubspec.yaml` (и зеркала iOS / Android). Держать docs EN+RU и Settings на трёхзначной маркетинговой версии.
@@ -215,7 +216,7 @@ Neptun-ELTE/
 | `SetupPageLogin` | Neptun-код + пароль |
 | `SetupPageCalendarLogin` | ICS-импорт (класс есть; **с хаба не открывается**) |
 | `HomePage` (`lib/Pages/main_page.dart`) | **4** нижние вкладки после входа (Calendar, Markbook, Periods, Mail). Payments = индекс drawer 4. `WidgetsBindingObserver` → foreground JWT maintenance + sync опционального фонового keep-alive |
-| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.5.12` — без `+build`) внизу |
+| `SettingsPage` (`settings_page.dart`) | Тема, язык, шрифт, уведомления, хаптика, неделя; опционально **фоновый keep-alive** + **Запомнить пароль**; **Contacts** + только маркетинговая версия (`package_info_plus` `info.version`, напр. `1.6.0` — без `+build`) внизу |
 | `AppDrawer` (`lib/Misc/app_drawer.dart`) | Приветствие = полное имя из `UserInfo` + код Neptun (без training ID под именем); фото аватара из HWEB base64 (`userAvatar` / `GetUserAvatar`) с fallback на инициалы; семестр, баланс, переключатель training; страница **студенческий / профиль** (п. **12**); **Payments над Settings**; апдейт (Android), выход |
 | `PopupWidgetHandler` (`lib/Misc/popup.dart`) | Модальные режимы 0–9 |
 
@@ -481,7 +482,7 @@ Refresh / повторный логин при **401/403 GET** — в `_APIReque
 | ICS | **Dead UI** | Класс есть, входа с setup нет |
 | Homescreen widget | **iOS WidgetKit + Android App Widget MVP** | Пары сегодня из кэша календаря; без JWT. Общий `WidgetBridge` → App Group (iOS) / SharedPreferences (Android) |
 | Переводчик почты | **Работает** | HU→EN/RU через публичный gtx; failure → оригинал; disclaimer раз на устройство |
-| Indoor-карта кампуса | **Фаза A карта закончена (0–6)** | Дамп + схема + графы + joins + [`campus_map_package/`](campus_map_package/) + [QA_REPORT](campus_map_package/QA_REPORT.md); [CAMPUS_MAP_PLAN](CAMPUS_MAP_PLAN.ru.md) фазы 0–6 готовы; Flutter UI отложен (фаза B). Разрешение на JPG basemap **pending** (не бандлить в APK/App Store). В приложении по-прежнему только внешний maps deep-link |
+| Indoor-карта кампуса | **Фаза A + фаза B MVP** | Пакет Phase A + Flutter `CampusMapPage` (pre-login hub + drawer): LD/LE, этажи, поиск joins/aliases, A→B Dijkstra, basemap pan/zoom. Assets: `assets/campus_map/`. Внешний Open map для кодов аудиторий сохранён. Basemap JPG permission **pending**. |
 | App shortcuts | **Сделано (13)** | Android `shortcuts.xml` + iOS `UIApplicationShortcutItems`; Calendar / Mail / Payments; cold-start проверка сессии |
 | APK / Play update | **Android only** | На iOS скрыто |
 | Номер учебной недели | **Исправлено (сент. 2026)** | Понедельник сезона (неделя 1 сент./1 февр.) + учебный период; без якоря регистрации; онлайн-refresh перезаписывает кэш |
@@ -571,7 +572,7 @@ Signing: `ios/Runner.xcworkspace` → Automatically manage signing → Team.
 | Team (локальная разработка) | `48FW5533N7` (Automatic signing) |
 | `PRODUCT_NAME` | `Runner` (не менять — ломает Flutter) |
 
-**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.5.12**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
+**WidgetKit / App Widget:** iOS extension `TodayClassesWidget` — `CFBundleVersion` / ShortVersion из build settings (`CURRENT_PROJECT_VERSION` / `MARKETING_VERSION`, в синхроне с маркетингом **1.6.0**). Пустой `CFBundleVersion` у appex ломает install на устройстве (`MissingBundleVersion`). Android `TodayClassesWidgetProvider` читает тот же JSON-снимок (без JWT).
 
 **Почему Bundle ID без underscore:** Automatic Signing строит имя профиля `XC com nanda070 neptun_mobile app`. Подчёркивания в этом имени недопустимы → `The attribute 'name' is invalid` / no profiles.
 

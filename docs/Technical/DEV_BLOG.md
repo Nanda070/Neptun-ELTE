@@ -414,6 +414,14 @@ Times are **Europe/Budapest (UTC+2)**. Facts track the repo and live work — no
 
 ---
 
+## 2026-09-16 — release 1.6.0 (campus map Phase B MVP)
+
+**[2026-09-16, ~19:15]**
+
+- **Release 1.6.0** (`pubspec` **1.6.0+1**): feature line **6** — **Phase B** indoor campus map MVP. Login-hub **Campus map** (no Neptun JWT), drawer entry when logged in, LD/LE buildings, floor basemaps + pan/zoom, joins/aliases search, A→B Dijkstra path draw, honesty banner (approximate graph; basemap permission still pending). Package bundled under `assets/campus_map/`. External LD/LE/LK Open map kept. GitHub Release **v1.6.0**. Owner **Nanda**.
+
+---
+
 ## 2026-09-16 — release 1.5.12 (iOS external Maps)
 
 **[2026-09-16, ~19:00]**
@@ -580,7 +588,7 @@ Only when product chooses: load package offline, login-hub Map without hallgato 
 
 **[ongoing]**
 
-### Done / working on main (~1.5.12)
+### Done / working on main (~1.6.0)
 
 - Hallgato **session v1** (no 10-min wall-clock; foreground `GetNewTokens` every **3 min 30 s**; immediate refresh on resume).
 - Optional Settings **background keep-alive** (default off; **45 min**; idle constraint dropped in **1.5.10**) + **Remember password** (default off; kept on manual logout when on).
